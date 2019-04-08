@@ -32,9 +32,6 @@ class BaseTest {
     @Value("\${fagmodul.url:http://localhost:8081}")
     lateinit var fagmodulUrl: String
 
-    @Value("\${eessi.pensjon.frontend.api.fss.url}")
-    lateinit var apiFssUrl: String
-
     @Value("\${aktoerregister.api.v1.url}")
     lateinit var aktoerregisterUrl: String
 
@@ -66,15 +63,6 @@ class BaseTest {
         return Mockito.spy(fagmodulRestTemplate)
     }
 
-    fun generateMockApiFSSRestTemplate(): RestTemplate {
-
-        val apiFssRestTemplate = RestTemplateBuilder()
-                .rootUri(apiFssUrl)
-                .errorHandler(DefaultResponseErrorHandler())
-                .additionalInterceptors()
-                .build()
-        return Mockito.spy(apiFssRestTemplate)
-    }
 
     fun generateMockAktoerregisterRestTemplate(): RestTemplate {
 

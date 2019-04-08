@@ -8,7 +8,6 @@ import no.nav.eessi.fagmodul.frontend.utils.typeRef
 import no.nav.security.oidc.api.Protected
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.context.annotation.Profile
 import org.springframework.http.*
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.client.RestTemplate
@@ -16,7 +15,6 @@ import org.springframework.web.util.UriComponentsBuilder
 import java.util.*
 
 @Protected
-@Profile("fss")
 @RestController
 @RequestMapping("/sed")
 class SedController(private val fagmodulRestTemplate: RestTemplate) {

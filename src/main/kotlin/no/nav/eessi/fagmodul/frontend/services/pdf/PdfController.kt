@@ -2,7 +2,6 @@ package no.nav.eessi.fagmodul.frontend.services.pdf
 
 import no.nav.security.oidc.api.Protected
 import org.slf4j.LoggerFactory
-import org.springframework.context.annotation.Profile
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController
 
 private val logger = LoggerFactory.getLogger(PdfController::class.java)
 
-@Profile("fss")
 @Protected
 @RestController
 @RequestMapping("/pdf")

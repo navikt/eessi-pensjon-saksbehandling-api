@@ -16,8 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 @Protected
 @RequestMapping("/api")
 class UserInfoController(val oidcRequestContextHolder: OIDCRequestContextHolder,
-                         val whitelistService: WhitelistService,
-                         @Value("\${no.nav.sone}") var sone: String) {
+                         val whitelistService: WhitelistService) {
 
     private val logger = LoggerFactory.getLogger(UserInfoController::class.java)
 

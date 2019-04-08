@@ -1,0 +1,110 @@
+name: eessi-pensjon-frontend-api-fss
+image: repo.adeo.no:5443/eessi-pensjon-frontend-api-fss
+team: eessipensjon
+
+replicas:
+  min: 1
+  max: 1
+  cpuThresholdPercentage: 50
+
+prometheus:
+  enabled: true
+  path: /actuator/prometheus
+
+port: 8080
+healthcheck:
+  liveness:
+    initialDelay: 60
+    path: /internal/isalive
+  readiness:
+    initialDelay: 60
+    path: /internal/isready
+resources:
+  limits:
+    cpu: 4
+    memory: 4096Mi
+  requests:
+    cpu: 400m
+    memory: 1024Mi
+
+fasitResources:
+  used:
+
+  - alias: eessifagmodulservice
+    resourceType: RestService
+
+  - alias: eessi-pensjon-active-profiles
+    resourceType: ApplicationProperties
+
+  - alias: eessi-pensjon-whitelist-users
+    resourceType: ApplicationProperties
+
+  - alias: rina_host
+    resourceType: BaseUrl
+
+  - alias: s3
+    resourceType: BaseUrl
+
+  - alias: NAV_DOMAIN
+    resourceType: BaseUrl
+
+  - alias: OpenIdConnect
+    resourceType: BaseUrl
+
+  - alias: eessi-pensjon-frontend-ui
+    resourceType: BaseUrl
+
+  - alias: security-token-service-token
+    resourceType: RestService
+
+  - alias: OpenIdConnectAgent
+    resourceType: Credential
+    propertyMap:
+      password: isso.agent.password
+
+  - alias: eessi-pensjon-frontend-api-s3-creds
+    resourceType: Credential
+
+  - alias: eessi-pensjon-s3-crypto
+    resourceType: Credential
+
+  - alias: srveessipensjon
+    resourceType: Credential
+
+  - alias: eessi-pensjon-frontend-api-fss_channel
+    resourceType: Channel
+
+  - alias: VARSELPRODUKSJON.VARSLINGER
+    resourceType: Queue
+
+  - alias: kafka-brokers
+    resourceType: BaseUrl
+
+  - alias: aad_b2c_discovery
+    resourceType: BaseUrl
+    propertyMap:
+      url: loginservice.hosturl
+
+  - alias: aad_b2c_clientid
+    resourceType: Credential
+    propertyMap:
+      username: loginservice.agent.name
+      password: loginservice.agent.password
+
+  - alias: eessipen-eux-rina
+    resourceType: RestService
+
+  - alias: aktoerregister.api.v1
+    resourceType: RestService
+
+  - alias: appdynamics
+    resourceType: ApplicationProperties
+
+  exposed:
+  - alias: EessiPensjonFrontendApiLogin_v1
+    resourceType: RestService
+    path: /login
+
+  - alias: EessiPensjonFrontendApi_v1
+    resourceType: RestService
+    path: /

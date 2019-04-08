@@ -6,7 +6,6 @@ import io.micrometer.core.instrument.Counter
 import io.micrometer.core.instrument.Metrics
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.context.annotation.Profile
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -28,7 +27,6 @@ data class IdentinfoForAktoer(
         val feilmelding: String?
 )
 
-@Profile("fss")
 @Service
 class AktoerregisterService(val aktoerregisterRestTemplate: RestTemplate) {
 

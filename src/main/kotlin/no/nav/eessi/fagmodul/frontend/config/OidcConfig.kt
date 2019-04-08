@@ -26,7 +26,6 @@ private const val CALLBACK_URI = "/callback"
 
 private val logger = LoggerFactory.getLogger(OidcConfig::class.java)
 
-@Profile("fss")
 @Configuration
 @ComponentScan(basePackages = ["org.pac4j.springframework.web"])
 class OidcConfig : WebMvcConfigurer {

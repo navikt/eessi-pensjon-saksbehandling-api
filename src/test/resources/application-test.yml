@@ -6,8 +6,14 @@ app:
   name: TEST
   version: 0.1
 
-eessi.pensjon.frontend.api.fss:
-  url:  'http://localhost:8082'
+eessi.pensjon.frontend:
+  api.fss:
+    url:  'http://localhost:8082'
+    channel:
+      queuemanager: 'http://somemanager:1234'
+      name: 'somename'
+  ui:
+    url: 'someurl'
 
 aktoerregister.api.v1.url: "someurl"
 
@@ -42,8 +48,6 @@ spring.main.allow-bean-definition-overriding: true
 eessi_pensjon_frontend_api_s3_creds_username: 'dummy'
 eessi_pensjon_frontend_api_s3_creds_password: 'dummy'
 
-no.nav.sone: "x"
-
 eessi_pensjon_s3_crypto_password: "something"
 
 eessi.pensjon.frontend.api:
@@ -57,3 +61,13 @@ srveessipensjon:
       password: "somepass"
 
 eessi.pensjon.whitelist.users:
+
+APP_NAME: 'eessi-pensjon-saksbehandling-api'
+FASIT_ENVIRONMENT_NAME: 'SOMEENVIRONMENT'
+
+isso.agent.password: 'somepass'
+rina_host.url: 'someurl'
+kafka.brokers.url: 'someurl'
+NAV_DOMAIN_URL: 'somedomain'
+VARSELPRODUKSJON.VARSLINGER.queuename: 'http://someurl:1245'
+LOGINSERVICE_HOSTURL: 'http://someurl'

@@ -2,11 +2,9 @@ package no.nav.eessi.fagmodul.frontend.services.kafka
 
 import no.nav.eessi.fagmodul.frontend.utils.counter
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.context.annotation.Profile
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Service
 
-@Profile("fss")
 @Service
 class KafkaService(val kafkaTemplate: KafkaTemplate<String, String>) {
 

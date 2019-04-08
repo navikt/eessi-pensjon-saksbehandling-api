@@ -9,14 +9,11 @@ import no.nav.eessi.fagmodul.frontend.utils.getClaims
 import no.nav.security.oidc.api.Protected
 import no.nav.security.oidc.context.OIDCRequestContextHolder
 import org.slf4j.LoggerFactory
-import org.springframework.context.annotation.Profile
 import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-@Profile("fss")
 @Protected
 @RestController
 @RequestMapping("/api/submission")

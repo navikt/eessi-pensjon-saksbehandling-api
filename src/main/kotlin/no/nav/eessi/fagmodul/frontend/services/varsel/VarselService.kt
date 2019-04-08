@@ -9,7 +9,6 @@ import no.nav.melding.virksomhet.varsel.v1.varsel.*
 import no.nav.security.oidc.api.Protected
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.context.annotation.Profile
 import org.springframework.jms.core.JmsTemplate
 import org.springframework.stereotype.Component
 import java.io.StringWriter
@@ -20,7 +19,6 @@ import javax.xml.bind.JAXBElement
 
 private val logger = LoggerFactory.getLogger(VarselService::class.java)
 
-@Profile("fss")
 @Protected
 @Component
 class VarselService(val wmqJmsTemplate: JmsTemplate,

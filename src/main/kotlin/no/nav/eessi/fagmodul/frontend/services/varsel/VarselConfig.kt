@@ -6,14 +6,12 @@ import com.ibm.msg.client.wmq.WMQConstants
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Profile
 import org.springframework.jms.connection.UserCredentialsConnectionFactoryAdapter
 import org.springframework.jms.core.JmsTemplate
 import org.springframework.jms.support.destination.DynamicDestinationResolver
 import java.net.URI
 import javax.jms.ConnectionFactory
 
-@Profile("fss")
 @Configuration
 class VarselConfig {
 

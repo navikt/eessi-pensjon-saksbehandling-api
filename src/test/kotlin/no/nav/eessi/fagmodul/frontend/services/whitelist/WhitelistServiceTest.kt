@@ -25,7 +25,6 @@ class WhitelistServiceTest {
     fun setUp() {
         whitelistService = Mockito.spy(WhitelistService(storageService,
                 listOf("User1", "User2"),
-                "fss",
                 "whitelisted",
                 "___"))
     }

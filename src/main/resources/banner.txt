@@ -9,7 +9,6 @@
 
                -=<>=- Electronic Exchange of Social Security Information  -=<>=-
 
-    sone:                           : ${no.nav.sone}
     isso.agentname                  : ${isso.agentname}
     Frontend-UI                     : ${eessi-pensjon-frontend-ui.url}
     s3_bucket                       : ${s3_bucket_link_url}
@@ -19,7 +18,6 @@
     Nav Tokensupport isso           : ${no.nav.security.oidc.issuer.isso.discoveryurl}
     Nav Tokensupport accept         : ${no.nav.security.oidc.issuer.isso.accepted_audience}
 
-            *-----------* Kun gyldig i fss *-----------*
 
     Eessi Fagmodulservice           : ${eessifagmodulservice.url}
     EUXBais                         : ${eessipen-eux-rina.url}

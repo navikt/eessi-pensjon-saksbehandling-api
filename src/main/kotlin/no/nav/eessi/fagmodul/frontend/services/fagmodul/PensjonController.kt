@@ -5,7 +5,6 @@ import no.nav.eessi.fagmodul.frontend.utils.errorBody
 import no.nav.security.oidc.api.Protected
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.context.annotation.Profile
 import org.springframework.http.*
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -17,7 +16,6 @@ import java.util.*
 
 @RestController
 @Protected
-@Profile("fss")
 @RequestMapping("/pensjon/")
 class PensjonController(private val fagmodulRestTemplate: RestTemplate) {
 
@@ -52,10 +50,5 @@ class PensjonController(private val fagmodulRestTemplate: RestTemplate) {
             logger.error("Feiler med kontakt mot fagmodul, ${ex}, ${uuid}")
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorBody("ved henting av saktype fra PESYS, Melding: ${ex.message}", uuid))
         }
-
-
-
     }
-
-
 }

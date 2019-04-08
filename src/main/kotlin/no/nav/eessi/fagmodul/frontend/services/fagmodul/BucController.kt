@@ -9,7 +9,6 @@ import no.nav.eessi.fagmodul.frontend.utils.typeRefs
 import no.nav.security.oidc.api.Protected
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.context.annotation.Profile
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -23,7 +22,6 @@ import java.util.*
 
 @RestController
 @Protected
-@Profile("fss")
 @RequestMapping("/buc/")
 class BucController(private val fagmodulRestTemplate: RestTemplate) {
 

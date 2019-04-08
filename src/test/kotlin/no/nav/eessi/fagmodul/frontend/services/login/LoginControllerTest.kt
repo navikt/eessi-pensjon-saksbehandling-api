@@ -1,83 +1,62 @@
 package no.nav.eessi.fagmodul.frontend.services.login
 
-import com.nhaarman.mockito_kotlin.doReturn
-import com.nhaarman.mockito_kotlin.whenever
-import no.nav.eessi.fagmodul.frontend.services.BaseTest
-import org.junit.Assert
+import com.nhaarman.mockito_kotlin.verify
+import org.junit.Before
 import org.junit.Test
-import org.mockito.ArgumentMatchers
-import org.mockito.Mockito
-import org.springframework.boot.web.client.RestTemplateBuilder
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpMethod
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
+import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.mockito.Spy
+import org.mockito.junit.MockitoJUnitRunner
 import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.mock.web.MockHttpServletResponse
-import java.net.URLEncoder
 
+@RunWith(MockitoJUnitRunner::class)
+class LoginControllerTest {
 
-class LoginControllerTest : BaseTest() {
+    @Spy
+    lateinit var resp : MockHttpServletResponse
 
+    @Mock
+    lateinit var req : MockHttpServletRequest
 
-    var fssLoginController = FssLoginController()
-    var localLoginController = LocalLoginController()
+    lateinit var loginController: LoginController
 
-    @Test
-    fun `Calling loginController|login on FSS env returns redirect response`() {
-
-        val request = MockHttpServletRequest("GET", "/login")
-        request.serverName = "pensjon-utland-t.nav.no"
-        request.scheme = "http"
-
-        fssLoginController.fasitEnvironmentName = "t8"
-        fssLoginController.appName = "eessi-pensjon-frontend-api-fss"
-        fssLoginController.navDomain = "nais.preprod.local"
-        request.serverName = "pensjon-utland-t.nav.no"
-        request.scheme = "http"
-
-        var response = MockHttpServletResponse()
-        val redirectTo = "http://pensjon-utland-t.nav.no"
-        val context = "/_/"
-        fssLoginController.login(request, response, redirectTo, context)
-
-        val encodedContext = URLEncoder.encode(context, "UTF-8")
-        val generatedResponse = response.getHeader("Location")
-        val expectedResponse = "https://eessi-pensjon-frontend-api-fss-t8.nais.preprod.local/openamlogin?redirect=$redirectTo&context=$encodedContext"
-
-        Assert.assertEquals(response.status, 302)
-        Assert.assertEquals(expectedResponse, generatedResponse)
+    @Before
+    fun before(){
+        loginController = LoginController()
+        loginController.appName = "eessi-pensjon-frontend-api-fss"
     }
 
     @Test
-    fun `Calling loginController|login on LOCAL env returns redirect response`() {
+    fun `Given a login attempt in FSS zone When environment is q1 Then redirect to fss without namespace`() {
+        loginController.fasitEnvironmentName = "q1"
+        loginController.navDomain = "domain"
 
-        val request = MockHttpServletRequest("GET", "/locallogin")
-        request.serverName = "localhost"
-        request.scheme = "http"
+        loginController.login(req, resp, "somewhere", "somecontext")
 
-        localLoginController.port = "8888"
-        localLoginController.localRestTemplate =  Mockito.spy(
-                RestTemplateBuilder()
-                .rootUri("http://localhost:8888")
-                .build())
 
-        var response = MockHttpServletResponse()
-        val redirectTo = "http://localhost:3000"
-
-        val mockCookieResponse = ResponseEntity("{\"name\":\"localhost-idtoken\",\"value\":\"eyJraWQiOiJsb2NhbGhvc3Qtc2lnbmVyIiwidHlwIjoiSldUIiwiYWxnIjoiUlMyNTYifQ.eyJzdWIiOiIxMjM0NTY3ODkxMCIsImF1ZCI6ImF1ZC1sb2NhbGhvc3QiLCJhY3IiOiJMZXZlbDQiLCJ2ZXIiOiIxLjAiLCJuYmYiOjE1NDk2Mjg1OTksImF1dGhfdGltZSI6MTU0OTYyODU5OSwiaXNzIjoiaXNzLWxvY2FsaG9zdCIsImV4cCI6MjMyNzIyODU5OSwibm9uY2UiOiJteU5vbmNlIiwiaWF0IjoxNTQ5NjI4NTk5LCJqdGkiOiI1MjBmOTI4Ny1lZjI5LTRhMWEtOWUwZC02OTExYzdjMTY0YzQifQ.GmOIJoYsSNvoOa1OQVtNeaSts3AjW4fE6rRae3lB2xNEZMhsRJIHtJqU3QxBRDqiGidKYkIGKFjaueqyPiPf1vZFmPQnu0Ul8yXzKJz4TvtiAfqW4fwEgvPXHAgrlVji-zAwpXa_QNmTN_xXJnFzbqAqC5K2r5hP6BvxkmdAWsOmVSDrUooHIqcO6GB0BtDv1xZ1yI1AZuFb8U5WmRWRVlxuTCTdLWgK_BRpclmfF4oGILomkLQaCEY0BD2PvdOwv73UIPZR_tkNec6FAjjLsEOFbmEZR5esYN8pyT94LqV6YJsjwzyCpT0bVZe0-BHWq2d3xKcrzuCsYJemkxk9IQ\",\"version\":0,\"comment\":null,\"domain\":\"localhost\",\"maxAge\":-1,\"path\":\"/\",\"secure\":false,\"httpOnly\":false}", HttpStatus.OK)
-
-        doReturn(mockCookieResponse).whenever(localLoginController.localRestTemplate)!!.exchange(
-                ArgumentMatchers.eq("/local/cookie"),
-                ArgumentMatchers.eq(HttpMethod.GET),
-                ArgumentMatchers.any(HttpEntity::class.java),
-                ArgumentMatchers.eq(String::class.java))
-
-        localLoginController.login(request, response, redirectTo)
-
-        Assert.assertEquals(response.status, 302)
-        Assert.assertEquals("http://localhost:3000", response.getHeader("Location"))
-        Assert.assertTrue(response.getHeader("Set-Cookie")!!.startsWith("localhost-idtoken"))
-        Assert.assertNotNull(response.getCookie("localhost-idtoken"))
+        verify(resp).sendRedirect("https://eessi-pensjon-frontend-api-fss.domain/openamlogin?redirect=somewhere&context=somecontext")
     }
+
+    @Test
+    fun `Given a login attempt in FSS zone When environment is p Then redirect to adeo`() {
+        loginController.fasitEnvironmentName = "p"
+        loginController.navDomain = "nais.adeo.no"
+
+        loginController.login(req, resp, "somewhereelse", "somecontext")
+
+        verify(resp).sendRedirect("https://${loginController.appName}.nais.adeo.no/openamlogin?redirect=somewhereelse&context=somecontext")
+    }
+
+    @Test
+    fun `Given a login attempt in FSS zone When environment is preprod Then redirect to preprod`() {
+        loginController.fasitEnvironmentName = "t8"
+        loginController.navDomain = "nais.preprod.local"
+
+        loginController.login(req, resp, "somewhereelse", "somecontext")
+
+        verify(resp).sendRedirect("https://${loginController.appName}-t8.nais.preprod.local/openamlogin?redirect=somewhereelse&context=somecontext")
+    }
+
+
 }

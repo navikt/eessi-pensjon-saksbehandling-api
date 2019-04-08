@@ -56,11 +56,10 @@ class LocalLoginController {
     }
 }
 
-@Profile("fss")
 @Controller
-class FssLoginController {
+class LoginController {
 
-    val logger: Logger = LoggerFactory.getLogger(FssLoginController::class.java)
+    val logger: Logger = LoggerFactory.getLogger(LoginController::class.java)
 
     @Value("\${FASIT_ENVIRONMENT_NAME}")
     lateinit var fasitEnvironmentName: String

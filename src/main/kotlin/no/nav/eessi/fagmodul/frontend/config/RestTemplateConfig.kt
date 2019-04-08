@@ -1,13 +1,11 @@
 package no.nav.eessi.fagmodul.frontend.config
 
 import io.micrometer.core.instrument.MeterRegistry
-import no.nav.eessi.fagmodul.frontend.interceptor.ApigwHeaderRequestInterceptor
 import no.nav.eessi.fagmodul.frontend.interceptor.OidcHeaderRequestInterceptor
 import no.nav.eessi.fagmodul.frontend.interceptor.RequestResponseLoggerInterceptor
 import no.nav.eessi.fagmodul.frontend.services.sts.SecurityTokenExchangeService
 import no.nav.eessi.fagmodul.frontend.services.sts.UntToOidcInterceptor
 import no.nav.security.oidc.context.OIDCRequestContextHolder
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.actuate.metrics.web.client.DefaultRestTemplateExchangeTagsProvider
 import org.springframework.boot.actuate.metrics.web.client.MetricsRestTemplateCustomizer
@@ -30,12 +28,6 @@ class RestTemplateConfig(val restTemplateBuilder: RestTemplateBuilder,
 
     @Value("\${eessipen-eux-rina.url:http://localhost}")
     lateinit var euxrinaapi: String
-
-    @Value("\${EessiPensjonFrontendApi_v1.url:http://localhost}")
-    lateinit var apiFssUrl: String
-
-    @Value("\${EessiPensjonFrontendApi.v1.apiKey:key}")
-    lateinit var apiFssApiKey: String
 
     @Value("\${aktoerregister.api.v1.url:http://localhost}")
     lateinit var url: String
@@ -75,23 +67,6 @@ class RestTemplateConfig(val restTemplateBuilder: RestTemplateBuilder,
                 .errorHandler(DefaultResponseErrorHandler())
                 .additionalInterceptors(RequestResponseLoggerInterceptor(), UntToOidcInterceptor(securityTokenExchangeService))
                 .customizers(MetricsRestTemplateCustomizer(registry, DefaultRestTemplateExchangeTagsProvider(), "eessipensjon_frontend-api_fagmodulUntTo"))
-                .build().apply {
-                    requestFactory = BufferingClientHttpRequestFactory(SimpleClientHttpRequestFactory())
-                }
-    }
-
-
-
-    @Qualifier("apiFssRestTemplate")
-    @Bean
-    fun apiFssRestTemplate(): RestTemplate {
-        return restTemplateBuilder
-                .rootUri(apiFssUrl)
-                .errorHandler(DefaultResponseErrorHandler())
-                .additionalInterceptors(
-                        OidcHeaderRequestInterceptor(oidcRequestContextHolder),
-                        ApigwHeaderRequestInterceptor(apiFssApiKey),
-                        RequestResponseLoggerInterceptor())
                 .build().apply {
                     requestFactory = BufferingClientHttpRequestFactory(SimpleClientHttpRequestFactory())
                 }

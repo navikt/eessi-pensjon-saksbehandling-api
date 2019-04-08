@@ -15,7 +15,7 @@ class UserInfoControllerTest : S3StorageBaseTest() {
     @Before
     fun mockSetup() {
         val mockOidcContextolder = generateMockContextHolder()
-        userInfoController = Mockito.spy(UserInfoController(mockOidcContextolder,whitelistService,"fss")
+        userInfoController = Mockito.spy(UserInfoController(mockOidcContextolder,whitelistService)
         )
     }
 

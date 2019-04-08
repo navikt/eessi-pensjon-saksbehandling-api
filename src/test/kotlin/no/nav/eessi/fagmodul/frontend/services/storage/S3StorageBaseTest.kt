@@ -43,7 +43,6 @@ class S3StorageBaseTest : BaseTest() {
 
         whitelistService = Mockito.spy(WhitelistService(
                 s3storageService, listOf("someUser"),
-                "fss",
                 "whitelisted",
                 "___"))
         storageController = Mockito.spy(StorageController(s3storageService))

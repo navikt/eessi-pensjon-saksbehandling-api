@@ -6,13 +6,11 @@ import no.nav.eessi.fagmodul.frontend.utils.errorBody
 import no.nav.eessi.fagmodul.frontend.utils.mapAnyToJson
 import no.nav.security.oidc.api.Protected
 import org.slf4j.LoggerFactory
-import org.springframework.context.annotation.Profile
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
-@Profile("fss")
 @Protected
 @RestController
 class NavRegistreOppslagController(val navRegistreOppslagService: NavRegistreOppslagService,

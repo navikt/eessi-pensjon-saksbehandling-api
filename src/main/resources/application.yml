@@ -29,3 +29,16 @@ eessi.pensjon.frontend.api:
 
 #eessipen-eux-rina:
 #  url: 'http://eux-app/cpi'
+
+no.nav:
+  security.oidc:
+    issuer.isso:
+      proxyurl:
+      cookiename: 'eessipensjon-idtoken'
+      discoveryurl: '${OPENIDCONNECT_URL}/oauth2/.well-known/openid-configuration'
+      accepted_audience: 'eessi-pensjon-frontend-api-fss-${FASIT_ENVIRONMENT_NAME}'
+
+isso.agentname: '${APP_NAME}-${FASIT_ENVIRONMENT_NAME}'
+
+http.proxy.parametername: 'dontuse.proxy'
+redirectscheme: 'https'
