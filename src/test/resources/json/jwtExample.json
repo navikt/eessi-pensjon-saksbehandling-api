@@ -1,0 +1,13 @@
+{
+  "sub": "12345678910",
+  "aud": "aud-localhost",
+  "acr": "Level4",
+  "ver": "1.0",
+  "nbf": 1531144218,
+  "auth_time": 1531144218,
+  "iss": "iss-localhost",
+  "exp": 1531157178,
+  "nonce": "myNonce",
+  "iat": 1531144218,
+  "jti": "738c3268-177d-44da-8fad-08ad72580df2"
+}

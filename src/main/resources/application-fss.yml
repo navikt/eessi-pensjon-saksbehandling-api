@@ -1,0 +1,18 @@
+no.nav:
+  security.oidc:
+    issuer.isso:
+      proxyurl:
+      cookiename: 'eessipensjon-idtoken'
+      discoveryurl: '${OPENIDCONNECT_URL}/oauth2/.well-known/openid-configuration'
+      accepted_audience: 'eessi-pensjon-frontend-api-fss-${FASIT_ENVIRONMENT_NAME}'
+    issuer.loginservice:
+      proxyurl: 'http://webproxy-nais.nav.no:8088'
+      cookiename: 'selvbetjening-idtoken'
+      discoveryurl: '${LOGINSERVICE_HOSTURL}'
+      accepted_audience: '${LOGINSERVICE_AGENT_NAME}'
+  sone: 'fss'
+
+isso.agentname: '${APP_NAME}-${FASIT_ENVIRONMENT_NAME}'
+
+http.proxy.parametername: 'dontuse.proxy'
+redirectscheme: 'https'

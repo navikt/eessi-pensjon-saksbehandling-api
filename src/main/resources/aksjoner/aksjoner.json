@@ -1,0 +1,30 @@
+[
+  {
+    "dokumentType": "P2000",
+    "navn": "Create",
+    "dokumentId": null,
+    "kategori": "Documents",
+    "id": "P_BUC_01"
+  },
+  {
+    "dokumentType": "P2100",
+    "navn": "Create",
+    "dokumentId": null,
+    "kategori": "Documents",
+    "id": "P_BUC_02"
+  },
+  {
+    "dokumentType": "P2200",
+    "navn": "Create",
+    "dokumentId": null,
+    "kategori": "Documents",
+    "id": "P_BUC_03"
+  },
+  {
+    "dokumentType": "P6000",
+    "navn": "Create",
+    "dokumentId": null,
+    "kategori": "Documents",
+    "id": "P_BUC_06"
+  }
+]

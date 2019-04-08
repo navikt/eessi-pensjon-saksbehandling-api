@@ -1,0 +1,31 @@
+server:
+  port: 8080
+  tomcat:
+    remote-ip-header: 'x-forwarded-for'
+    protocol-header: 'x-forwarded-proto'
+
+spring:
+  jmx.enabled: false
+  jackson:
+    serialization:
+      write_dates_as_timestamps: false
+
+management:
+  endpoints:
+    metrics.enabled: true
+    web.exposure.include: '*'
+    export.prometheus.enabled: true
+    prometheus.enabled: true
+  metrics.web.server.auto-time-requests: false
+
+eessifagmodulservice.url: 'http://eessi-fagmodul/'
+
+eessi.pensjon.frontend.api:
+  varsel.tittel: 'Ny elektronisk løsning fra NAV'
+  s3:
+    whitelist.key.ending: 'whitelisted'
+    bucket.name: 'eessipensjon'
+    personidentifier.separator: '___'
+
+#eessipen-eux-rina:
+#  url: 'http://eux-app/cpi'

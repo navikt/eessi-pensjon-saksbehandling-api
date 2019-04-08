@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <springProfile name="prod">
+        <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>%level %logger %msg %n</pattern>
+            </encoder>
+            <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+                <includeCallerData>true</includeCallerData>
+            </encoder>
+        </appender>
+
+        <logger name="org" level="ERROR"/>
+        <logger name="com" level="ERROR"/>
+        <logger name="no.nav" level="INFO"/>
+        <logger name="no.nav.security.spring" level="ERROR"/>
+
+        <root level="info">
+            <appender-ref ref="stdout_json"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="local,test">
+        <include resource="org/springframework/boot/logging/logback/base.xml"/>
+        <logger name="no.nav" level="DEBUG"/>
+    </springProfile>
+
+</configuration>

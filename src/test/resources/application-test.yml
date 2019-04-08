@@ -1,0 +1,59 @@
+server:
+    port: 8080
+
+app.name: test2
+app:
+  name: TEST
+  version: 0.1
+
+eessi.pensjon.frontend.api.fss:
+  url:  'http://localhost:8082'
+
+aktoerregister.api.v1.url: "someurl"
+
+security-token-service-openid-configuration:
+  url: "something"
+
+euxbasis.v1:
+  apiKey: "apikey"
+  url:  'http://localhost:9090/cpi'
+
+EUXBASIS_V1_URL: "someurl"
+
+EessiPensjonFrontendApi_v1:
+  url: "someurl"
+
+eessifagmodulservice:
+  apiKey: "apikey"
+  url: 'http://localhost:8081'
+
+rina:
+   url: "'http://example.com:8087'"
+
+no.nav.security.oidc.issuer.isso:
+   discoveryurl: "http://metadata"
+   acceptedaudience: "aud-localhost"
+   cookiename: "localhost-idtoken"
+
+s3_url: 'https://s3.nais.preprod.local'
+
+spring.main.allow-bean-definition-overriding: true
+
+eessi_pensjon_frontend_api_s3_creds_username: 'dummy'
+eessi_pensjon_frontend_api_s3_creds_password: 'dummy'
+
+no.nav.sone: "x"
+
+eessi_pensjon_s3_crypto_password: "something"
+
+eessi.pensjon.frontend.api:
+  s3:
+    whitelist.key.ending: 'whitelisted'
+    bucket.name: 'eessipensjon'
+    personidentifier.separator: '___'
+
+srveessipensjon:
+      username: "someuser"
+      password: "somepass"
+
+eessi.pensjon.whitelist.users:

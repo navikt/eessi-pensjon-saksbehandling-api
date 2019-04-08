@@ -1,0 +1,127 @@
+package no.nav.eessi.fagmodul.frontend.services.eux
+
+import io.swagger.annotations.ApiOperation
+import no.nav.eessi.fagmodul.frontend.services.fagmodul.BucController
+import no.nav.eessi.fagmodul.frontend.services.fagmodul.NavRegistreOppslagService
+import no.nav.eessi.fagmodul.frontend.utils.mapAnyToJson
+import no.nav.eessi.fagmodul.frontend.utils.mapJsonToAny
+import no.nav.eessi.fagmodul.frontend.utils.typeRefs
+import no.nav.security.oidc.api.Protected
+import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.context.annotation.Profile
+import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
+import java.util.regex.Pattern.matches
+
+private val logger = LoggerFactory.getLogger(EuxController::class.java)
+
+@Profile("fss")
+@Protected
+@RestController
+@RequestMapping("/eux")
+class EuxController(private val euxService: EuxService, private val navRegistreService: NavRegistreOppslagService, private val bucController: BucController) {
+
+
+    @Value("\${rina_host.url}")
+    lateinit var rinaUrl: String
+
+    @GetMapping("/rinaurl")
+    fun getRinaURL(): ResponseEntity<Map<String, String>> {
+        return ResponseEntity.ok(mapOf("rinaUrl" to "https://$rinaUrl/portal/#/caseManagement/"))
+    }
+
+    @GetMapping("/case/{caseid}/{actorid}/{rinaid}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun validateCaseNumberWithRinaID(@PathVariable caseid: String,
+                                     @PathVariable actorid: String,
+                                     @PathVariable rinaid: String): ResponseEntity<Map<String, String>> {
+        if (matches("\\d+", caseid) && matches("\\d+", actorid) && matches("\\d+", rinaid)) {
+            return ResponseEntity.ok(mapOf("casenumber" to caseid, "pinid" to actorid, "rinaid" to rinaid))
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(mapOf("serverMessage" to "invalidCase"))
+    }
+
+    @GetMapping("/case/{caseid}/{actorid}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun validateCaseNumber(@PathVariable caseid: String,
+                           @PathVariable actorid: String): ResponseEntity<Map<String, String>> {
+        if (matches("\\d+", caseid) && matches("\\d+", actorid)) {
+            return ResponseEntity.ok(mapOf("casenumber" to caseid, "pinid" to actorid))
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(mapOf("serverMessage" to "invalidCase"))
+    }
+
+    @ApiOperation("henter liste av alle tilgjengelige BuC-typer")
+    @GetMapping("/bucs", produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun getBucs(): List<String> {
+        return listOf(
+                "P_BUC_01",
+                "P_BUC_02",
+                "P_BUC_03",
+                "P_BUC_05",
+                "P_BUC_06"
+        )
+    }
+
+    @ApiOperation("henter liste over seds, seds til valgt buc eller seds til valgt rinasak")
+    @GetMapping("/seds", "/seds/{buc}", "/sedfromrina/{rinanr}")
+    fun getSeds(@PathVariable(value = "buc", required = false) buc: String?,
+                @PathVariable(value = "rinanr", required = false) rinanr: String?): ResponseEntity<String?> {
+        if (rinanr != null) {
+            return getSedActionFromRina(rinanr)
+        }
+
+        return ResponseEntity.ok().body(mapAnyToJson(euxService.getAvailableSEDonBuc(buc)))
+
+    }
+
+    fun getSedActionFromRina(rinanr: String): ResponseEntity<String?> {
+        val response = bucController.getMuligeAksjoner(rinanr)
+        return if (response.statusCode.is2xxSuccessful) {
+            logger.debug("Parser om muligeAksjoner for å hente ut kun sedtype med action create")
+            val listOfSeds : List<RinaAksjon> = mapJsonToAny(response.body!!, typeRefs())
+            val sedAction = mutableListOf<String>()
+            listOfSeds.forEach {
+                if (it.navn == "Create" && it.dokumentType != null && it.dokumentType.startsWith("")) {
+                    sedAction.add(it.dokumentType)
+                }
+            }
+            val sedsAsjson = mapAnyToJson(sedAction)
+            ResponseEntity.ok().body("$sedsAsjson")
+        } else {
+            response
+        }
+    }
+
+
+    @ApiOperation("Henter lisgte over rina mot euxcaseId")
+    @GetMapping( "/rinasaker/{euxcaseId}")
+    fun getRinaSakerPaaEuxCaseId(@PathVariable(value = "euxcaseId", required = true) euxcaseId: String): ResponseEntity<String?>  {
+        return  euxService.getRinaSaker(euxcaseId, "")
+    }
+
+    @GetMapping("/institutions/{buctype}/{countrycode}")
+    fun getInstitutionsWithCountry(@PathVariable(value = "buctype", required = true) bucType: String,
+            @PathVariable(value = "countrycode", required = false) landkode: String = ""): ResponseEntity<String> {
+        return euxService.getInstitusjoner(bucType, landkode)
+    }
+
+    @GetMapping("/countrycode")
+    fun getCountryCode(): List<String> {
+        return try {
+            navRegistreService.landkoder().filter { s -> s == "NO" } // TODO: Using "NO" temporarily to avoid sending documents to other countries in test by accident
+        } catch (ex: Exception) {
+            logger.error(ex.message)
+            listOf("NO", "SE", "DK", "FI")
+        }
+    }
+
+    @GetMapping("/subjectarea")
+    fun getSubjectArea(): List<String> {
+        return listOf("Pensjon", "Andre")
+    }
+}
