@@ -10,11 +10,11 @@ node {
                     appToken = github.generateAppToken()
 
                     sh "git init"
-                    sh "git pull https://x-access-token:$appToken@github.com/navikt/eessi-pensjon-frontend-api.git"
+                    sh "git pull https://x-access-token:$appToken@github.com/navikt/eessi-pensjon-saksbehandling-api.git"
                     sh "make bump-version"
 
                     commitHash = sh(script: "git rev-parse HEAD", returnStdout: true).trim()
-                    github.commitStatus("pending", "navikt/eessi-pensjon-frontend-api", appToken, commitHash)
+                    github.commitStatus("pending", "navikt/eessi-pensjon-saksbehandling-api", appToken, commitHash)
                 }
 
         stage("build") {
@@ -42,7 +42,7 @@ node {
             }
 
             sh "make release"
-            sh "git push --tags https://x-access-token:$appToken@github.com/navikt/eessi-pensjon-frontend-api HEAD:master"
+            sh "git push --tags https://x-access-token:$appToken@github.com/navikt/eessi-pensjon-saksbehandling-api HEAD:master"
         }
 
         stage("upload manifest") {
@@ -60,7 +60,7 @@ node {
                         wait      : true,
                         parameters: [
                             string(name: 'APP', value: "eessi-pensjon-frontend-api-fss"),
-                            string(name: 'REPO', value: "navikt/eessi-pensjon-frontend-api"),
+                            string(name: 'REPO', value: "navikt/eessi-pensjon-saksbehandling-api"),
                             string(name: 'VERSION', value: "${version}"),
                             string(name: 'DEPLOY_REF', value: "${version}"),
                             string(name: 'DEPLOY_ENV', value: 't8'),
@@ -95,7 +95,7 @@ node {
                         wait      : true,
                         parameters: [
                             string(name: 'APP', value: "eessi-pensjon-frontend-api-fss"),
-                            string(name: 'REPO', value: "navikt/eessi-pensjon-frontend-api"),
+                            string(name: 'REPO', value: "navikt/eessi-pensjon-saksbehandling-api"),
                             string(name: 'VERSION', value: "${version}"),
                             string(name: 'DEPLOY_REF', value: "${version}"),
                             string(name: 'DEPLOY_ENV', value: 'q1'),
@@ -108,9 +108,9 @@ node {
             )
         }
 
-        github.commitStatus("success", "navikt/eessi-pensjon-frontend-api", appToken, commitHash)
+        github.commitStatus("success", "navikt/eessi-pensjon-saksbehandling-api", appToken, commitHash)
     } catch (err) {
-        github.commitStatus("failure", "navikt/eessi-pensjon-frontend-api", appToken, commitHash)
+        github.commitStatus("failure", "navikt/eessi-pensjon-saksbehandling-api", appToken, commitHash)
         throw err
     }
 }
