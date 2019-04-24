@@ -87,25 +87,26 @@ node {
         }
 
         stage("deploy Q1") {
-                    parallel (
-                        deploy: {
-                            def version = sh(script: 'git describe --abbrev=0', returnStdout: true).trim()
-                            build([
-                                job       : 'nais-deploy-pipeline',
-                                wait      : true,
-                                parameters: [
-                                    string(name: 'APP', value: "eessi-pensjon-frontend-api-fss"),
-                                    string(name: 'REPO', value: "navikt/eessi-pensjon-frontend-api"),
-                                    string(name: 'VERSION', value: "${version}"),
-                                    string(name: 'DEPLOY_REF', value: "${version}"),
-                                    string(name: 'DEPLOY_ENV', value: 'q1'),
-                                    string(name: 'NAMESPACE', value: 'default'),
-                                    string(name: 'CLUSTER', value: 'fss'),
-                                    string(name: 'CONTEXT_ROOTS', value: '/callback')
-                                ]
-                            ])
-                        }
+            parallel (
+                deploy: {
+                    def version = sh(script: 'git describe --abbrev=0', returnStdout: true).trim()
+                    build([
+                        job       : 'nais-deploy-pipeline',
+                        wait      : true,
+                        parameters: [
+                            string(name: 'APP', value: "eessi-pensjon-frontend-api-fss"),
+                            string(name: 'REPO', value: "navikt/eessi-pensjon-frontend-api"),
+                            string(name: 'VERSION', value: "${version}"),
+                            string(name: 'DEPLOY_REF', value: "${version}"),
+                            string(name: 'DEPLOY_ENV', value: 'q1'),
+                            string(name: 'NAMESPACE', value: 'default'),
+                            string(name: 'CLUSTER', value: 'fss'),
+                            string(name: 'CONTEXT_ROOTS', value: '/callback')
+                        ]
+                    ])
                 }
+            )
+        }
 
         github.commitStatus("success", "navikt/eessi-pensjon-frontend-api", appToken, commitHash)
     } catch (err) {
