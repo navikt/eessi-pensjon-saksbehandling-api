@@ -4,6 +4,7 @@ package no.nav.eessi.fagmodul.frontend.services.pdf
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.junit.Test
 import org.junit.Assert.*
+import org.springframework.core.io.DefaultResourceLoader
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.util.*
@@ -52,5 +53,15 @@ class PdfServiceTest : PdfBaseTest() {
         assertEquals(testpdf["numPages"], 1)
         assertEquals(testpdf["mimetype"], "application/pdf")
         assertTrue(testpdf.containsKey("content"))
+    }
+
+    @Test
+    fun `generateReceipt`() {
+        val mockJsonString = DefaultResourceLoader().getResource(
+            "classpath:json/submissions.json").file.readText()
+
+        val mockPerson = "testPerson"
+        val generateReceipt = pdfService.generateReceipt(mockJsonString, mockPerson)
+        assertEquals(generateReceipt?.get("name"), "kvittering.pdf")
     }
 }

@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.client.HttpClientErrorException
+import org.springframework.web.client.HttpServerErrorException
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.util.UriComponentsBuilder
 import java.util.*
@@ -32,23 +34,27 @@ class PensjonController(private val fagmodulRestTemplate: RestTemplate) {
 
         val httpEntity = HttpEntity("", HttpHeaders())
 
-        return try {
+        val response : ResponseEntity<String>
+        try {
             logger.info("Kaller fagmodulen: $path")
-            val response = fagmodulRestTemplate.exchange(builder.toUriString(),
-                    HttpMethod.GET,
-                    httpEntity,
-                    String::class.java)
-
-            if (response.statusCode.is2xxSuccessful) {
-                response
-            } else {
-                logger.error("Henting av saktype fra PESYS feilet")
-                ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorBody("Henting av saktype fra PESYS feilet"))
-            }
-        }catch (ex: Exception) {
+            response = fagmodulRestTemplate.exchange(builder.toUriString(),
+                HttpMethod.GET,
+                httpEntity,
+                String::class.java)
+        } catch (ex: HttpClientErrorException.NotFound) {
+            logger.info("Fikk ikke saktype fra fagmodul")
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorBody("Henting av saktype feilet - ikke funnet"))
+        } catch (ex: HttpClientErrorException) {
+            logger.error("Henting av saktype fra PESYS feilet", ex)
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorBody("Henting av saktype fra PESYS feilet"))
+        } catch (ex: HttpServerErrorException) {
+            logger.error("Henting av saktype fra PESYS feilet", ex)
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(errorBody("Henting av saktype fra PESYS feilet"))
+        } catch (ex: Exception) {
             val uuid = UUID.randomUUID().toString()
-            logger.error("Feiler med kontakt mot fagmodul, ${ex}, ${uuid}")
-            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorBody("ved henting av saktype fra PESYS, Melding: ${ex.message}", uuid))
+            logger.error("Feiler med kontakt mot fagmodul, ${ex}, ${uuid}", ex)
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorBody("ved henting av saktype fra PESYS, Melding: ${ex.message}", uuid))
         }
+        return response
     }
 }

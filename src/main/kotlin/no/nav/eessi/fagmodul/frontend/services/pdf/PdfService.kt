@@ -1,5 +1,6 @@
 package no.nav.eessi.fagmodul.frontend.services.pdf
 
+import com.openhtmltopdf.extend.FSSupplier
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder
 import org.apache.pdfbox.multipdf.PDFMergerUtility
 import org.apache.pdfbox.pdmodel.PDDocument
@@ -16,21 +17,32 @@ import org.jsoup.Jsoup
 import org.jsoup.helper.W3CDom
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
-import org.springframework.beans.factory.annotation.Value
+import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Description
-import org.springframework.core.io.Resource
 import org.springframework.stereotype.Service
 import org.springframework.util.Base64Utils
 import java.io.ByteArrayOutputStream
+import java.io.InputStream
+import java.net.URL
 import java.util.*
+
+private val logger = LoggerFactory.getLogger(PdfService::class.java)
 
 @Service
 @Description("Service class for PDF")
 class PdfService {
 
-    @Value("classpath:html-templates/kvittering.html")
-    lateinit var kvitteringHtml: Resource
+    private val logger = LoggerFactory.getLogger(PdfService::class.java)
 
+    val fontPath = "/fonts/LiberationSans-Regular.ttf"
+    val htmlPath = "/html-templates/kvittering.html"
+
+    val url = this.javaClass.getResource(fontPath)
+    val fontName = "LiberationSans"
+
+    private fun hentKvitteringHtmlSomStream(): InputStream {
+        return this.javaClass.getResource(htmlPath).openStream()
+    }
 
     fun generate(request: PDFRequest) : HashMap<String, Map<String, Any>> {
 
@@ -102,11 +114,11 @@ class PdfService {
                 baos.close()
 
                 response[targetPdf] = mapOf(
-                        "name" to "$targetPdf.pdf",
-                        "size" to baos.toByteArray().size,
-                        "numPages" to numPages,
-                        "mimetype" to "application/pdf",
-                        "content" to mapOf("base64" to Base64.getEncoder().encodeToString(baos.toByteArray()))
+                    "name" to "$targetPdf.pdf",
+                    "size" to baos.toByteArray().size,
+                    "numPages" to numPages,
+                    "mimetype" to "application/pdf",
+                    "content" to mapOf("base64" to Base64.getEncoder().encodeToString(baos.toByteArray()))
                 )
             }
         }
@@ -145,9 +157,9 @@ class PdfService {
         val cs = PDPageContentStream(outputPdf, page, PDPageContentStream.AppendMode.APPEND, false)
         cs.setGraphicsStateParameters(r0)
         cs.setNonStrokingColor(
-                (watermarkTextColor["r"] as Int),
-                (watermarkTextColor["g"] as Int),
-                (watermarkTextColor["b"] as Int)
+            (watermarkTextColor["r"] as Int),
+            (watermarkTextColor["g"] as Int),
+            (watermarkTextColor["b"] as Int)
         )
 
         cs.beginText()
@@ -303,29 +315,36 @@ class PdfService {
         cs.close()
     }
 
-    fun generateReceipt(rawJsonData : String, subject : String) : String {
+    private fun getFSSsupplierStream() : FSSupplier<InputStream> {
+        logger.info("url fontpath : $url")
+        return FontSupplierStream(url)
+    }
 
-        val doc = Jsoup.parse(kvitteringHtml.inputStream, "UTF-8", "")
+    fun generateReceipt(rawJsonData : String, subject : String) : Map<String, Any> {
+
+        val doc = Jsoup.parse(hentKvitteringHtmlSomStream(), "UTF-8", "")
         doc.outputSettings().syntax(org.jsoup.nodes.Document.OutputSettings.Syntax.xml)
 
         val data = ObjectMapper().readTree(rawJsonData)
         fillUpReceiptWithData(data, doc, subject)
 
         val baos = ByteArrayOutputStream()
-        val buildPdfRenderer = PdfRendererBuilder()
-            .withW3cDocument(W3CDom().fromJsoup(doc), null)
+        val builder  = PdfRendererBuilder()
+
+        builder.useFont(getFSSsupplierStream(), fontName)
+        val buildPdfRenderer = builder.withW3cDocument(W3CDom().fromJsoup(doc), null)
             .toStream(baos)
             .buildPdfRenderer()
+
         buildPdfRenderer.layout()
         buildPdfRenderer.createPDF()
         val byteArray = baos.toByteArray()
-
-        return ObjectMapper().writeValueAsString(mapOf(
+        return mapOf(
             "name" to "kvittering.pdf",
             "size" to byteArray.size,
             "mimetype" to "application/pdf",
             "content" to mapOf("base64" to Base64.getEncoder().encodeToString(byteArray))
-        ))
+        )
     }
 
     private fun getTextValue( it: JsonNode, key : String) : String {
@@ -424,4 +443,13 @@ class PdfService {
         }
         doc.select("#comment").first().text(getTextValue(data, "comment"))
     }
+
+}
+
+class FontSupplierStream(private val ttfurl: URL) : FSSupplier<InputStream> {
+    override fun supply(): InputStream {
+        logger.info("ttfurl fontpath for stream : $ttfurl")
+        return ttfurl.openStream()
+    }
+
 }

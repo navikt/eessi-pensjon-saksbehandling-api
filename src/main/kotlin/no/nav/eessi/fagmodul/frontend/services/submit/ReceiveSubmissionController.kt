@@ -5,25 +5,30 @@ import no.nav.eessi.fagmodul.frontend.services.kafka.KafkaService
 import no.nav.eessi.fagmodul.frontend.services.pdf.PdfService
 import no.nav.eessi.fagmodul.frontend.services.storage.StorageService
 import no.nav.eessi.fagmodul.frontend.utils.counter
+import no.nav.eessi.fagmodul.frontend.utils.errorBody
 import no.nav.eessi.fagmodul.frontend.utils.getClaims
+import no.nav.eessi.fagmodul.frontend.utils.successBody
 import no.nav.security.oidc.api.Protected
 import no.nav.security.oidc.context.OIDCRequestContextHolder
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.*
 
 @Protected
 @RestController
 @RequestMapping("/api/submission")
-class SubmitController(val kafkaService: KafkaService,
+class ReceiveSubmissionController(val kafkaService: KafkaService,
                                   val storageService: StorageService,
                                   val javaTimeObjectMapper: ObjectMapper,
                                   val oidcRequestContextHolder: OIDCRequestContextHolder,
                                   val pdfService: PdfService) {
 
-    private val logger = LoggerFactory.getLogger(SubmitController::class.java)
+    private val logger = LoggerFactory.getLogger(ReceiveSubmissionController::class.java)
     private final val kafkaSendtTilFssTellerNavn = "eessipensjon_frontend-api.soknad_sendt_kafka"
     private val kafkaSendtTilFssVellykkede = counter(kafkaSendtTilFssTellerNavn, "vellykkede")
     private val kafkaSendtTilFssFeilede = counter(kafkaSendtTilFssTellerNavn, "feilede")
@@ -57,17 +62,36 @@ class SubmitController(val kafkaService: KafkaService,
         return mapOf("filename" to filename)
     }
 
+    @PostMapping(value = ["/resubmit"], produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun resendSubmission(@RequestBody fileName: String) : ResponseEntity<String> {
+        logger.info("Trying to resubmit")
+
+        return try {
+            kafkaService.publishSubmissionReceivedEvent(fileName)
+            kafkaSendtTilFssVellykkede.increment()
+            logger.info("Resubmitted on kafka queue")
+            ResponseEntity.ok().body(successBody())
+        } catch (ex: Exception) {
+            val uuid = UUID.randomUUID().toString()
+            kafkaSendtTilFssFeilede.increment()
+            logger.error("Resubmit feilet. $ex.message uuid: $uuid")
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorBody("Resend av submission feilet. ",uuid))
+        }
+    }
+
     @GetMapping("/receipt")
     fun sendReceipt(): String {
         logger.info("Sender inn endelig kvittering")
         val personIdentifier = getClaims(oidcRequestContextHolder).subject
-        val receipt : String
+        val receipt : Map<String, Any>
+        val receiptJson : String
         val filename: String
         val submission = getSubmission(personIdentifier) ?: throw IllegalStateException("No submission")
 
         try {
             receipt = pdfService.generateReceipt(submission, personIdentifier)
-            filename = lagreFil(personIdentifier, PINFO_SUBMISSION_RECEIPT, receipt)
+            receiptJson = ObjectMapper().writeValueAsString(receipt)
+            filename = lagreFil(personIdentifier, PINFO_SUBMISSION_RECEIPT, receiptJson)
         } catch (ex : Exception) {
             logger.error(ex.message, ex)
             throw ex
@@ -82,7 +106,7 @@ class SubmitController(val kafkaService: KafkaService,
             kafkaKvitteringTilFssFeilede.increment()
             throw ex
         }
-        return receipt
+        return receiptJson
     }
 
     val dateTimeStrToLocalDateTime: (String) -> LocalDateTime = {

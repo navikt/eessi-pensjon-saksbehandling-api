@@ -11,7 +11,6 @@ import org.apache.kafka.common.serialization.StringSerializer
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito
-import org.springframework.core.io.DefaultResourceLoader
 import org.springframework.kafka.core.DefaultKafkaProducerFactory
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.web.client.RestTemplate
@@ -20,7 +19,7 @@ class SubmitBaseTest : S3StorageBaseTest() {
 
     var mapper = ObjectMapper()
 
-    lateinit var submitController : SubmitController
+    lateinit var receiveSubmissionController : ReceiveSubmissionController
     lateinit var mockFagmodulRestTemplate : RestTemplate
     lateinit var pdfService: PdfService
     lateinit var kafkaService : KafkaService
@@ -47,9 +46,8 @@ class SubmitBaseTest : S3StorageBaseTest() {
         mockFagmodulRestTemplate = generateMockFagmodulRestTemplate()
 
         pdfService = Mockito.spy(PdfService())
-        pdfService.kvitteringHtml = DefaultResourceLoader().getResource("classpath:html-templates/kvittering.html")
 
-        submitController = Mockito.spy(SubmitController(
+        receiveSubmissionController = Mockito.spy(ReceiveSubmissionController(
             kafkaService,
             s3storageService,
             ObjectMapper(),

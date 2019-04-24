@@ -1,5 +1,5 @@
 {
-  "comment": "Dette er en kommentar",
+  "comment": "Dette er en kommentar med UTF-8 € Б, Г, Д, ё, Ж, П, Ф, ą, ę, ł, ņ",
   "periodeInfo": {
     "ansattSelvstendigPerioder": [
       {
