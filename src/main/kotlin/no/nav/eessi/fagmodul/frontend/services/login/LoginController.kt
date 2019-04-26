@@ -76,18 +76,19 @@ class LoginController {
               httpServletResponse: HttpServletResponse,
               @RequestParam("redirect") redirectTo: String,
               @RequestParam("context", required = false) context: String) {
-        var environmentPostfix = ""
 
-        // Dette er fordi vi kjører i namespace T8 i T miljøet , og default namespace i alle andre
-        if (fasitEnvironmentName.contains("t", true)) {
-            environmentPostfix = "-$fasitEnvironmentName"
+        var environmentPostfix = "-$fasitEnvironmentName"
+
+        // Det sette nå kun dfault i prod, namespace i alle andre miljø
+        if (fasitEnvironmentName.contains("p", true)) {
+            environmentPostfix = ""
         }
 
         val encodedContext = URLEncoder.encode(context, "UTF-8")
         logger.debug("Redirecting to: https://$appName$environmentPostfix.$navDomain/openamlogin?redirect=$redirectTo&context=$encodedContext")
         httpServletResponse.sendRedirect("https://$appName$environmentPostfix.$navDomain/openamlogin?redirect=$redirectTo&context=$encodedContext")
     }
-    
+
     @Unprotected
     @GetMapping("/openamlogin")
     fun openamlogin(httpServletResponse: HttpServletResponse, @RequestParam("redirect") redirectTo: String, @RequestParam("context", required = false) context: String) {

@@ -11,7 +11,7 @@ import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.mock.web.MockHttpServletResponse
 
 @RunWith(MockitoJUnitRunner::class)
-class LoginControllerTest {
+class FssLoginControllerTest {
 
     @Spy
     lateinit var resp : MockHttpServletResponse
@@ -19,44 +19,53 @@ class LoginControllerTest {
     @Mock
     lateinit var req : MockHttpServletRequest
 
-    lateinit var loginController: LoginController
+    lateinit var fssLoginController: LoginController
 
     @Before
     fun before(){
-        loginController = LoginController()
-        loginController.appName = "eessi-pensjon-frontend-api-fss"
+        fssLoginController = LoginController()
+        fssLoginController.appName = "eessi-pensjon-frontend-api-fss"
     }
 
     @Test
     fun `Given a login attempt in FSS zone When environment is q1 Then redirect to fss without namespace`() {
-        loginController.fasitEnvironmentName = "q1"
-        loginController.navDomain = "domain"
+        fssLoginController.fasitEnvironmentName = "q1"
+        fssLoginController.navDomain = "domain"
 
-        loginController.login(req, resp, "somewhere", "somecontext")
+        fssLoginController.login(req, resp, "somewhere", "somecontext")
 
 
-        verify(resp).sendRedirect("https://eessi-pensjon-frontend-api-fss.domain/openamlogin?redirect=somewhere&context=somecontext")
+        verify(resp).sendRedirect("https://eessi-pensjon-frontend-api-fss-q1.domain/openamlogin?redirect=somewhere&context=somecontext")
     }
 
     @Test
+    fun `Given a login attempt in FSS zone When environment is q2 Then redirect to fss without namespace`() {
+        fssLoginController.fasitEnvironmentName = "q2"
+        fssLoginController.navDomain = "domain"
+
+        fssLoginController.login(req, resp, "somewhere", "somecontext")
+
+        verify(resp).sendRedirect("https://eessi-pensjon-frontend-api-fss-q2.domain/openamlogin?redirect=somewhere&context=somecontext")
+    }
+
+
+    @Test
     fun `Given a login attempt in FSS zone When environment is p Then redirect to adeo`() {
-        loginController.fasitEnvironmentName = "p"
-        loginController.navDomain = "nais.adeo.no"
+        fssLoginController.fasitEnvironmentName = "p"
+        fssLoginController.navDomain = "nais.adeo.no"
 
-        loginController.login(req, resp, "somewhereelse", "somecontext")
+        fssLoginController.login(req, resp, "somewhereelse", "somecontext")
 
-        verify(resp).sendRedirect("https://${loginController.appName}.nais.adeo.no/openamlogin?redirect=somewhereelse&context=somecontext")
+        verify(resp).sendRedirect("https://${fssLoginController.appName}.nais.adeo.no/openamlogin?redirect=somewhereelse&context=somecontext")
     }
 
     @Test
     fun `Given a login attempt in FSS zone When environment is preprod Then redirect to preprod`() {
-        loginController.fasitEnvironmentName = "t8"
-        loginController.navDomain = "nais.preprod.local"
+        fssLoginController.fasitEnvironmentName = "t8"
+        fssLoginController.navDomain = "nais.preprod.local"
 
-        loginController.login(req, resp, "somewhereelse", "somecontext")
+        fssLoginController.login(req, resp, "somewhereelse", "somecontext")
 
-        verify(resp).sendRedirect("https://${loginController.appName}-t8.nais.preprod.local/openamlogin?redirect=somewhereelse&context=somecontext")
+        verify(resp).sendRedirect("https://${fssLoginController.appName}-t8.nais.preprod.local/openamlogin?redirect=somewhereelse&context=somecontext")
     }
-
-
 }

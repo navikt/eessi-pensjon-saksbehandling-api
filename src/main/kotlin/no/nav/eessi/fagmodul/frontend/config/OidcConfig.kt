@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Profile
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import org.springframework.web.util.UriComponentsBuilder
@@ -87,9 +86,9 @@ class OidcConfig : WebMvcConfigurer {
                     if(!computed.contains("http://localhost")) {
                         if (discoveryUrl.contains("isso-t") || discoveryUrl.contains("isso-q")) {
                             // We are in a test-environment
-                            var environmentPostfix = ""
-                            if (fasitEnvironmentName == "t8") {
-                                environmentPostfix = "-$fasitEnvironmentName"
+                            var environmentPostfix = "-$fasitEnvironmentName"
+                            if (fasitEnvironmentName == "p") {
+                                environmentPostfix = ""
                             }
                             computed = "https://eessi-pensjon-frontend-api-fss$environmentPostfix.nais.preprod.local/callback"
                             cookieDomain = "nais.preprod.local"
