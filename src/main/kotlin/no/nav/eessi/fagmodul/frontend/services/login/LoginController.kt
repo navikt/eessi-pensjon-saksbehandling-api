@@ -79,7 +79,7 @@ class LoginController {
 
         var environmentPostfix = "-$fasitEnvironmentName"
 
-        // Det sette nå kun dfault i prod, namespace i alle andre miljø
+        // Det settes nå kun dfault i prod, namespace brukes i alle andre miljø
         if (fasitEnvironmentName.contains("p", true)) {
             environmentPostfix = ""
         }

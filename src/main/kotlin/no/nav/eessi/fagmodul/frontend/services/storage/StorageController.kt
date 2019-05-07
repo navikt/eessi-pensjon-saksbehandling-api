@@ -25,6 +25,7 @@ class StorageController(val storage: StorageService) {
                       @RequestBody(required = true) document: String): ResponseEntity<String>{
         return try {
             validerPath(path)
+            //path+"___T8"
             logger.info("Lagrer S3 dokument")
             storage.put(path, document)
             ResponseEntity.ok().body(successBody())
@@ -46,6 +47,7 @@ class StorageController(val storage: StorageService) {
     fun getDocument(@PathVariable(required = true) path: String): ResponseEntity<String> {
         return try {
             validerPath(path)
+            //path+"___T8"
             logger.info("Henter S3 dokument")
             ResponseEntity.ok().body(storage.get(path))
         } catch(awsEx: AmazonServiceException) {
@@ -97,6 +99,7 @@ class StorageController(val storage: StorageService) {
     fun deleteDocument(@PathVariable(required = true) path: String): ResponseEntity<String> {
         return try {
             validerPath(path)
+            //path+"___T8"
             storage.delete(path)
             ResponseEntity.ok().body(successBody())
         } catch(awsEx: AmazonServiceException) {
@@ -128,6 +131,7 @@ class StorageController(val storage: StorageService) {
 
         return try {
             validerPath(path)
+            //path+"___T8"
             val paths = storage.list(path)
             if (!paths.isEmpty()) {
                 paths.forEach {

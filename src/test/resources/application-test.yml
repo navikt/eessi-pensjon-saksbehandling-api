@@ -65,6 +65,7 @@ eessi.pensjon.whitelist.users:
 APP_NAME: 'eessi-pensjon-saksbehandling-api'
 FASIT_ENVIRONMENT_NAME: 'SOMEENVIRONMENT'
 
+
 isso.agent.password: 'somepass'
 rina_host.url: 'someurl'
 kafka.brokers.url: 'someurl'
