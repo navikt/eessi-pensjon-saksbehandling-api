@@ -247,4 +247,25 @@ class StorageServiceTest : S3StorageBaseTest() {
 
         s3storageService.put(path1, content)
     }
+
+    @Test
+    fun `Tests function getBucketName | returns namespace specific bucketname`() {
+
+        val bucket = "eessipensjon"
+
+//        Sjekker bucketname i q1
+        Assert.assertEquals( "$bucket-q1", s3storageService.getBucketName())
+
+//      Sjekker bucketname i t8
+        s3storageService.fasitEnvironmentName = "t8"
+        Assert.assertEquals( "$bucket-t8", s3storageService.getBucketName())
+
+//      Sjekker bucketname i q2
+        s3storageService.fasitEnvironmentName = "q2"
+        Assert.assertEquals( "$bucket-q2", s3storageService.getBucketName())
+
+        //Sjekker bucketname i p
+        s3storageService.fasitEnvironmentName = "p"
+        Assert.assertEquals( "$bucket", s3storageService.getBucketName())
+    }
 }
