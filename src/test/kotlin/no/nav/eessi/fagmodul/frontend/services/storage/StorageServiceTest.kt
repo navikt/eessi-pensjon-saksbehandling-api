@@ -8,15 +8,17 @@ import com.nhaarman.mockito_kotlin.doThrow
 import com.nhaarman.mockito_kotlin.whenever
 import org.junit.After
 import org.junit.Assert
+import org.junit.Assert.*
 import org.junit.Test
 import org.mockito.ArgumentMatchers
-import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito
 import java.time.LocalDateTime
 import kotlin.test.assertEquals
 
 class StorageServiceTest : S3StorageBaseTest() {
+
+    val BUCKET = "eessipensjon"
 
     @After
     fun cleanUpTest() {
@@ -80,10 +82,9 @@ class StorageServiceTest : S3StorageBaseTest() {
         assertEquals(1, fileList.size, "Expect that 1 entry is returned")
 
         val fetchedValue = s3storageService.get(fileList[0])
-        assertEquals(value, fetchedValue, "The stored and fetched values should be equal")
+        assertEquals(value , fetchedValue, "The stored and fetched values should be equal")
 
         s3storageService.delete(fileList[0])
-
         val fileListAfterDelete = s3storageService.list(aktoerId + "___" + directory)
         assertEquals(0, fileListAfterDelete.size, "Expect that 0 entries are returned")
     }
@@ -178,7 +179,7 @@ class StorageServiceTest : S3StorageBaseTest() {
         Assert.assertEquals(Unit, generatedResponse)
 
         val fileList = s3storageService.list(prefix)
-        Assert.assertFalse(fileList.contains(path1))
+        assertFalse(fileList.contains(path1))
     }
 
     @Test(expected = AmazonS3Exception::class)
@@ -249,23 +250,25 @@ class StorageServiceTest : S3StorageBaseTest() {
     }
 
     @Test
-    fun `Tests function getBucketName | returns namespace specific bucketname`() {
+    fun `When environment is q1 then postfix is set to be eessipensjon-q1 `() {
+        assertEquals("$BUCKET-q1", s3storageService.getBucketName())
+    }
 
-        val bucket = "eessipensjon"
-
-//        Sjekker bucketname i q1
-        Assert.assertEquals( "$bucket-q1", s3storageService.getBucketName())
-
-//      Sjekker bucketname i t8
-        s3storageService.fasitEnvironmentName = "t8"
-        Assert.assertEquals( "$bucket-t8", s3storageService.getBucketName())
-
-//      Sjekker bucketname i q2
+    @Test
+    fun `When environment is q2 then getBucketname returns bucket with environmentpostfix -q2`() {
         s3storageService.fasitEnvironmentName = "q2"
-        Assert.assertEquals( "$bucket-q2", s3storageService.getBucketName())
+        assertEquals("$BUCKET-q2", s3storageService.getBucketName())
+    }
 
-        //Sjekker bucketname i p
+    @Test
+    fun `When environment is t8 then getBucketname returns bucket with environmentpostfix -t8`() {
+        s3storageService.fasitEnvironmentName = "t8"
+        assertEquals("$BUCKET-t8", s3storageService.getBucketName())
+    }
+
+    @Test
+    fun `When environment is p then getBucketname returns bucket with no environmentpostfix`() {
         s3storageService.fasitEnvironmentName = "p"
-        Assert.assertEquals( "$bucket", s3storageService.getBucketName())
+        assertEquals("$BUCKET", s3storageService.getBucketName())
     }
 }

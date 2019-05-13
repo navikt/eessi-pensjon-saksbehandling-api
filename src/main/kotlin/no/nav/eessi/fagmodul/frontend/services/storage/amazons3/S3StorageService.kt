@@ -34,7 +34,7 @@ class S3Storage(val s3: AmazonS3) : StorageService {
         return bucketname+postfixFasitEnv()
     }
 
-    fun postfixFasitEnv(): String {
+    private fun postfixFasitEnv(): String {
         var environmentPostfix = "-$fasitEnvironmentName"
 
         // Det settes nå kun dfault i prod, namespace brukes i alle andre miljø
