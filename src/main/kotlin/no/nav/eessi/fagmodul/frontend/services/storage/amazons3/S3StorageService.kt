@@ -27,6 +27,23 @@ class S3Storage(val s3: AmazonS3) : StorageService {
     @Value("\${eessi.pensjon.frontend.api.s3.bucket.name}")
     lateinit var bucketname: String
 
+    @Value("\${FASIT_ENVIRONMENT_NAME}")
+    lateinit var fasitEnvironmentName: String
+
+    fun getBucketName(): String {
+        return bucketname+postfixFasitEnv()
+    }
+
+    private fun postfixFasitEnv(): String {
+        var environmentPostfix = "-$fasitEnvironmentName"
+
+        // Det settes nå kun dfault i prod, namespace brukes i alle andre miljø
+        if (fasitEnvironmentName.contains("p", true)) {
+            environmentPostfix = ""
+        }
+        return environmentPostfix
+    }
+
     private final val lists3objectsTellerNavn = "eessipensjon_frontend-api.lists3objects"
     private val lists3objectsVellykkede = counter(lists3objectsTellerNavn, "vellykkede")
     private val lists3objectsFeilede = counter(lists3objectsTellerNavn, "feilede")
@@ -45,23 +62,23 @@ class S3Storage(val s3: AmazonS3) : StorageService {
         try {
             ensureBucketExists()
             ensureVersioningIsEnabled()
-            logger.debug("S3-storage ready with bucket: $bucketname")
+            logger.debug("S3-storage ready with bucket: ${getBucketName()}")
         } catch (e: Exception) {
-            logger.warn("Failed to connect to or create bucket $bucketname", e)
+            logger.warn("Failed to connect to or create bucket ${getBucketName()}", e)
         }
     }
 
     private fun ensureVersioningIsEnabled() {
-        val versionConfig = s3.getBucketVersioningConfiguration(bucketname)
+        val versionConfig = s3.getBucketVersioningConfiguration(getBucketName())
         logger.debug("Bucket versioning configuration status: ${versionConfig.status}")
 
         if (versionConfig.status == "Enabled")
             return
 
-        logger.debug("Enabling versioning on bucket $bucketname")
+        logger.debug("Enabling versioning on bucket ${getBucketName()}")
         try {
             val versioningConfiguration = BucketVersioningConfiguration().withStatus("Enabled")
-            val setBucketVersioningConfigurationRequest = SetBucketVersioningConfigurationRequest(bucketname, versioningConfiguration)
+            val setBucketVersioningConfigurationRequest = SetBucketVersioningConfigurationRequest(getBucketName(), versioningConfiguration)
             s3.setBucketVersioningConfiguration(setBucketVersioningConfigurationRequest)
         } catch (e: Exception) {
             logger.error("Failed to create versioned S3 bucket: ${e.message}")
@@ -72,10 +89,10 @@ class S3Storage(val s3: AmazonS3) : StorageService {
     private fun ensureBucketExists() {
         logger.debug("Checking if bucket exists")
         val bucketExists = s3.listBuckets().stream()
-                .anyMatch { it.name == bucketname }
+                .anyMatch { it.name == getBucketName() }
         if (!bucketExists) {
             logger.debug("Bucket does not exist, creating new bucket")
-            s3.createBucket(CreateBucketRequest(bucketname).withCannedAcl(CannedAccessControlList.Private))
+            s3.createBucket(CreateBucketRequest(getBucketName()).withCannedAcl(CannedAccessControlList.Private))
         }
     }
 
@@ -102,7 +119,7 @@ class S3Storage(val s3: AmazonS3) : StorageService {
         return try {
             val content: String
             logger.info("Getting plaintext path")
-            val s3Object = s3.getObject(bucketname, path)
+            val s3Object = s3.getObject(getBucketName(), path)
             content = readS3Stream(s3Object)
             hents3objectVellykkede.increment()
             content
@@ -116,7 +133,7 @@ class S3Storage(val s3: AmazonS3) : StorageService {
 
     override fun delete(path: String) {
         try {
-            s3.deleteObject(bucketname, path)
+            s3.deleteObject(getBucketName(), path)
             sletts3objectVellykkede.increment()
         } catch (ex: Exception) {
             sletts3objectFeilede.increment()
@@ -132,7 +149,7 @@ class S3Storage(val s3: AmazonS3) : StorageService {
      */
     override fun put(path: String, content: String) {
         try {
-            s3.putObject(bucketname, path, content)
+            s3.putObject(getBucketName(), path, content)
             oppretts3objectVellykkede.increment()
         } catch (ex: Exception) {
             oppretts3objectFeilede.increment()
@@ -146,7 +163,7 @@ class S3Storage(val s3: AmazonS3) : StorageService {
 
     private fun populerListObjectRequest(cipherPath: String?): ListObjectsV2Request? {
         return ListObjectsV2Request()
-                .withBucketName(bucketname)
+                .withBucketName(getBucketName())
                 .withPrefix(cipherPath)
     }
 

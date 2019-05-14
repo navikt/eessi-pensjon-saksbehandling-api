@@ -38,6 +38,7 @@ class S3StorageBaseTest : BaseTest() {
 
         s3storageService =  Mockito.spy(S3Storage(s3MockClient))
         s3storageService.bucketname = "eessipensjon"
+        s3storageService.fasitEnvironmentName = "q1"
         s3storageService.passphrase = "something very vey tricky to hack"
         s3storageService.init()
 
