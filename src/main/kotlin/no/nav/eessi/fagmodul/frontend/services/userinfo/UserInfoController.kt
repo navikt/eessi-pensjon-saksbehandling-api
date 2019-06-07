@@ -35,7 +35,10 @@ class UserInfoController(val oidcRequestContextHolder: OIDCRequestContextHolder,
         val role = getRole(fnr)
         val allowed = checkWhitelist()
 
-        return ResponseEntity.ok().body(mapAnyToJson(UserInfoResponse(fnr, role, allowed)))
+        val jwtset =  getClaims(oidcRequestContextHolder).claimSet
+        val expirationTime = jwtset.expirationTime.time
+
+        return ResponseEntity.ok().body(mapAnyToJson(UserInfoResponse(fnr, role, allowed,expirationTime)))
     }
 
     /**
@@ -73,5 +76,6 @@ fun getRole(subject: String): String {
 data class UserInfoResponse(
         val subject: String,
         val role: String,
-        val allowed: Boolean
+        val allowed: Boolean,
+        val expirationTime: Long
 )
