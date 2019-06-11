@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import no.nav.eessi.fagmodul.frontend.services.kafka.KafkaService
 import no.nav.eessi.fagmodul.frontend.services.pdf.PdfService
 import no.nav.eessi.fagmodul.frontend.services.storage.S3StorageBaseTest
+import no.nav.eessi.fagmodul.frontend.services.storage.StorageService
 import org.apache.kafka.clients.CommonClientConfigs
 import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.common.config.SaslConfigs

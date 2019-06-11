@@ -18,7 +18,6 @@ class KafkaService(val kafkaTemplate: KafkaTemplate<String, String>) {
     lateinit var topicPostfix: String // = "t8"
 
     fun publishSubmissionReceivedEvent(message: String) {
-
         val topic = "$submissionReceivedTopicPrefix-$topicPostfix"
         kafkaTemplate.send(topic, message)
         kafkaSelvbetjeningsinfoMottattProdusertVellykkede.increment()
