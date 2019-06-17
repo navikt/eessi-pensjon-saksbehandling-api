@@ -30,7 +30,7 @@ class NavRegistreOppslagServiceTest: FagmodulBaseTest() {
         val mockResponse = ResponseEntity(expectedResponse, HttpStatus.OK)
 
         doReturn(mockResponse).whenever(mockFagmodulRestTemplate).exchange(
-                ArgumentMatchers.eq("/person/$aktoerId"),
+                ArgumentMatchers.eq("/personinfo/$aktoerId"),
                 ArgumentMatchers.any(HttpMethod::class.java),
                 ArgumentMatchers.any(HttpEntity::class.java),
                 ArgumentMatchers.eq(Personinformasjon::class.java))
@@ -46,7 +46,7 @@ class NavRegistreOppslagServiceTest: FagmodulBaseTest() {
         val mockResponse = ResponseEntity("", HttpStatus.BAD_REQUEST)
 
         doReturn(mockResponse).whenever(mockFagmodulRestTemplate).exchange(
-                ArgumentMatchers.eq("/person/$aktoerId"),
+                ArgumentMatchers.eq("/personinfo/$aktoerId"),
                 ArgumentMatchers.any(HttpMethod::class.java),
                 ArgumentMatchers.any(HttpEntity::class.java),
                 ArgumentMatchers.eq(Personinformasjon::class.java))
@@ -68,7 +68,7 @@ class NavRegistreOppslagServiceTest: FagmodulBaseTest() {
         val mockResponse = ResponseEntity(mockData, HttpStatus.OK)
 
         doReturn(mockResponse).whenever(mockFagmodulRestTemplate).exchange(
-                ArgumentMatchers.eq("/person/$aktoerId"),
+                ArgumentMatchers.eq("/personinfo/$aktoerId"),
                 ArgumentMatchers.any(HttpMethod::class.java),
                 ArgumentMatchers.any(HttpEntity::class.java),
                 ArgumentMatchers.eq(Personinformasjon::class.java))

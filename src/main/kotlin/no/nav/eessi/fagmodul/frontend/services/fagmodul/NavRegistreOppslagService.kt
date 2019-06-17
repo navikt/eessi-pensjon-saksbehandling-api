@@ -30,7 +30,7 @@ class NavRegistreOppslagService(private val fagmodulUntToRestTemplate: RestTempl
      * @return Personinformasjon
      */
     fun hentPersoninformasjon(aktoerId: String): Personinformasjon? {
-        val path = "/person/$aktoerId"
+        val path = "/personinfo/$aktoerId"
         val uriParams = mapOf("aktoerid" to aktoerId)
         val builder = UriComponentsBuilder.fromUriString(path).buildAndExpand(uriParams)
         val httpEntity = HttpEntity("")

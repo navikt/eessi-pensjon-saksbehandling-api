@@ -18,7 +18,7 @@ class NavRegistreOppslagController(val navRegistreOppslagService: NavRegistreOpp
 
     private val logger = LoggerFactory.getLogger(NavRegistreOppslagController::class.java)
 
-    @GetMapping(value = ["/person/{aktoerId}"], produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping(value = ["/personinfo/{aktoerId}"], produces = [MediaType.APPLICATION_JSON_VALUE])
     fun getDocument(@PathVariable(required = true) aktoerId: String): ResponseEntity<String> {
         logger.info("Henter personinformasjon for $aktoerId")
         navRegistreOppslagService.hentPersoninformasjon(aktoerId)
@@ -31,7 +31,7 @@ class NavRegistreOppslagController(val navRegistreOppslagService: NavRegistreOpp
         }
     }
 
-    @GetMapping(value = ["/person/hentgjeldendeaktoerid/{fnr}"], produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping(value = ["/personinfo/hentgjeldendeaktoerid/{fnr}"], produces = [MediaType.APPLICATION_JSON_VALUE])
     fun hentGjeldendeAktoerIdForNorskident(@PathVariable(required = true) fnr: String): ResponseEntity<String> {
         logger.info("Henter norskidenter")
         return try{
