@@ -5,6 +5,7 @@ import no.nav.eessi.fagmodul.frontend.services.fagmodul.BucController
 import no.nav.eessi.fagmodul.frontend.services.fagmodul.NavRegistreOppslagService
 import no.nav.eessi.fagmodul.frontend.utils.mapAnyToJson
 import no.nav.eessi.fagmodul.frontend.utils.mapJsonToAny
+import no.nav.eessi.fagmodul.frontend.utils.typeRef
 import no.nav.eessi.fagmodul.frontend.utils.typeRefs
 import no.nav.security.oidc.api.Protected
 import org.slf4j.LoggerFactory
@@ -71,7 +72,18 @@ class EuxController(private val euxService: EuxService, private val navRegistreS
                 @PathVariable(value = "rinanr", required = false) euxCaseId: String?): ResponseEntity<String?> {
 
         if (euxCaseId != null) {
-            return getSedActionFromRina(euxCaseId)
+            val result = getSedActionFromRina(euxCaseId)
+
+            if (result.hasBody()) {
+                val resultlist = mapJsonToAny(result.body!!, typeRefs<List<String>>())
+                if (resultlist.isEmpty()) {
+                    return ResponseEntity.ok().body(mapAnyToJson(euxService.getAvailableSEDonBuc(bucType)))
+                } else {
+                    return result
+                }
+            } else {
+                return ResponseEntity.badRequest().body("")
+            }
         }
         //seds eller bestem mulige seds på en bucType (hardkoddet liste)
         return ResponseEntity.ok().body(mapAnyToJson(euxService.getAvailableSEDonBuc(bucType)))
