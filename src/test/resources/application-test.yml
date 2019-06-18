@@ -1,5 +1,5 @@
 server:
-    port: 8080
+  port: 8080
 
 app.name: test2
 app:
@@ -34,12 +34,12 @@ eessifagmodulservice:
   url: 'http://localhost:8081'
 
 rina:
-   url: "'http://example.com:8087'"
+  url: "'http://example.com:8087'"
 
 no.nav.security.oidc.issuer.isso:
-   discoveryurl: "http://metadata"
-   acceptedaudience: "aud-localhost"
-   cookiename: "localhost-idtoken"
+  discoveryurl: "http://metadata"
+  acceptedaudience: "aud-localhost"
+  cookiename: "localhost-idtoken"
 
 s3_url: 'https://s3.nais.preprod.local'
 
@@ -57,13 +57,14 @@ eessi.pensjon.frontend.api:
     personidentifier.separator: '___'
 
 srveessipensjon:
-      username: "someuser"
-      password: "somepass"
+  username: "someuser"
+  password: "somepass"
 
 eessi.pensjon.whitelist.users:
 
 APP_NAME: 'eessi-pensjon-saksbehandling-api'
-FASIT_ENVIRONMENT_NAME: 'SOMEENVIRONMENT'
+FASIT_ENVIRONMENT_NAME: 'test'
+#FASIT_ENVIRONMENT_NAME: 'SOMEENVIRONMENT'
 
 
 isso.agent.password: 'somepass'
