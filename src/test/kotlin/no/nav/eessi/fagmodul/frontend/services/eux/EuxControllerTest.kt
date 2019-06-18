@@ -91,6 +91,7 @@ class EuxControllerTest : EuxBaseTest() {
 
         val expectedResponse = ResponseEntity.ok().body(mapAnyToJson(listOf("P2000")))
         val generatedResponse = euxController.getSeds(buc, rinanr)
+
         assertEquals(generatedResponse, expectedResponse)
     }
 
@@ -99,7 +100,7 @@ class EuxControllerTest : EuxBaseTest() {
           val buc = "P_BUC_01"
           val rinanr = "1000101"
 
-          val bucResponse =  ResponseEntity.ok().body(mapAnyToJson(getAksjonlist()))
+          val bucResponse =  ResponseEntity.ok().body(mapAnyToJson(listOf("P6000","X6000")))
           doReturn(bucResponse).whenever(bucController).getMuligeAksjoner(rinanr)
 
           val expectedResponse = ResponseEntity.ok().body(mapAnyToJson(listOf("P6000","X6000")))
