@@ -74,7 +74,7 @@ node {
         }
 
         stage("Cucumber tests") {
-                 build([
+/*                 build([
                      job       : 'Automatiske tester',
                      wait      : true,
                      parameters: [
@@ -84,6 +84,7 @@ node {
                          booleanParam(name: 'testKravAlder', value: false)
                      ]
                   ])
+*/                  
         }
 
           stage("deploy Q1") {
