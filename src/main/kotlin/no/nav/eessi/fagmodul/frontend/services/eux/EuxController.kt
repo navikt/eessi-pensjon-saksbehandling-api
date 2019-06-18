@@ -18,13 +18,13 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.util.regex.Pattern.matches
 
-private val logger = LoggerFactory.getLogger(EuxController::class.java)
 
 @Protected
 @RestController
 @RequestMapping("/eux")
 class EuxController(private val euxService: EuxService, private val navRegistreService: NavRegistreOppslagService, private val bucController: BucController) {
 
+    private val logger = LoggerFactory.getLogger(EuxController::class.java)
 
     @Value("\${rina_host.url}")
     lateinit var rinaUrl: String
@@ -66,32 +66,31 @@ class EuxController(private val euxService: EuxService, private val navRegistreS
     }
 
     @ApiOperation("henter liste over seds, seds til valgt buc eller seds til valgt rinasak")
-    @GetMapping("/seds", "/seds/{buc}", "/sedfromrina/{rinanr}")
-    fun getSeds(@PathVariable(value = "buc", required = false) buc: String?,
-                @PathVariable(value = "rinanr", required = false) rinanr: String?): ResponseEntity<String?> {
-        if (rinanr != null) {
-            return getSedActionFromRina(rinanr)
-        }
+    @GetMapping("/seds", "/seds/{buctype}", "/seds/{buctype}/{rinanr}")
+    fun getSeds(@PathVariable(value = "buctype", required = false) bucType: String?,
+                @PathVariable(value = "rinanr", required = false) euxCaseId: String?): ResponseEntity<String?> {
 
-        return ResponseEntity.ok().body(mapAnyToJson(euxService.getAvailableSEDonBuc(buc)))
+        if (euxCaseId != null) {
+            return getSedActionFromRina(euxCaseId)
+        }
+        //seds eller bestem mulige seds på en bucType (hardkoddet liste)
+        return ResponseEntity.ok().body(mapAnyToJson(euxService.getAvailableSEDonBuc(bucType)))
 
     }
 
-    fun getSedActionFromRina(rinanr: String): ResponseEntity<String?> {
-        val response = bucController.getMuligeAksjoner(rinanr)
-        return if (response.statusCode.is2xxSuccessful) {
-            logger.debug("Parser om muligeAksjoner for å hente ut kun sedtype med action create")
-            val listOfSeds : List<RinaAksjon> = mapJsonToAny(response.body!!, typeRefs())
-            val sedAction = mutableListOf<String>()
-            listOfSeds.forEach {
-                if (it.navn == "Create" && it.dokumentType != null && it.dokumentType.startsWith("")) {
-                    sedAction.add(it.dokumentType)
-                }
+    //Return liste av sedType fra fagmodul/BucController
+    fun getSedActionFromRina(euxCaseId: String): ResponseEntity<String?> {
+        try {
+            val response = bucController.getMuligeAksjoner(euxCaseId)
+            return if (response.statusCode.is2xxSuccessful) {
+                logger.debug("Return liste av tilgjenglige SED som kan opprettes på buc")
+                ResponseEntity.ok().body(response.body)
+            } else {
+                response
             }
-            val sedsAsjson = mapAnyToJson(sedAction)
-            ResponseEntity.ok().body("$sedsAsjson")
-        } else {
-            response
+        } catch(ex: Exception) {
+            logger.error("Error, hente aksjon fra Buc: ${euxCaseId}")
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("Error, hente aksjon fra Buc: ${euxCaseId}")
         }
     }
 

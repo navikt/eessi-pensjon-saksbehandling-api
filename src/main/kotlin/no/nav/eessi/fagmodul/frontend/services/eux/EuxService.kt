@@ -1,6 +1,5 @@
 package no.nav.eessi.fagmodul.frontend.services.eux
 
-import com.google.common.collect.Sets
 import no.nav.eessi.fagmodul.frontend.utils.counter
 import no.nav.eessi.fagmodul.frontend.utils.errorBody
 import no.nav.eessi.fagmodul.frontend.utils.typeRef
@@ -15,11 +14,12 @@ import org.springframework.web.client.RestTemplate
 import org.springframework.web.util.UriComponentsBuilder
 import java.io.IOException
 
-private val logger = LoggerFactory.getLogger(EuxService::class.java)
 
 @Service
 @Description("Service class for EuxBasis - EuxCpiServiceController.java")
 class EuxService(private val euxRestTemplate: RestTemplate) {
+
+    private val logger = LoggerFactory.getLogger(EuxService::class.java)
 
     private final val hentInstitusjonerTellerNavn = "eessipensjon_frontend-api.hentinstitusjoner"
     private val hentInstitusjonerVellykkede = counter(hentInstitusjonerTellerNavn, "vellykkede")
@@ -102,32 +102,32 @@ class EuxService(private val euxRestTemplate: RestTemplate) {
 
     /**
      * Own impl. no list from eux that contains list of SED to a speific BUC
-     * @param buc
+     * @param bucType
      */
-    fun getAvailableSEDonBuc(buc: String?): List<String> {
-        val list1 = listOf("P2000")
-        val list2 = listOf("P2100")
-        val list3 = listOf("P2200")
-        val list4 = listOf("")
-        val list5 = listOf("P4000", "P5000", "P6000", "P3000_NO")
+    fun getAvailableSEDonBuc(bucType: String?): List<String> {
+        val buc01 = listOf("P2000")
+        val buc02 = listOf("P2100")
+        val buc03 = listOf("P2200")
+        val buc05 = listOf("P5000","P6000","P7000","P8000","P9000")
+        val buc06 = listOf("P5000","P6000","P7000","P10000")
 
-        val map: Map<String, List<String>> =
-                mapOf(
-                        "P_BUC_01" to list1,
-                        "P_BUC_02" to list2,
-                        "P_BUC_03" to list3,
-                        "P_BUC_05" to list4,
-                        "P_BUC_06" to list5
-                )
-        if (buc.isNullOrEmpty()) {
-            val set: MutableSet<String> = Sets.newHashSet()
-            set.addAll(list1)
-            set.addAll(list2)
-            set.addAll(list3)
-            set.addAll(list4)
-            set.addAll(list5)
+        val map: Map<String, List<String>> = mapOf(
+            "P_BUC_01" to buc01,
+            "P_BUC_02" to buc02,
+            "P_BUC_03" to buc03,
+            "P_BUC_05" to buc05,
+            "P_BUC_06" to buc06
+        )
+
+        if (bucType.isNullOrEmpty()) {
+            val set = mutableSetOf<String>()
+            set.addAll(buc01)
+            set.addAll(buc02)
+            set.addAll(buc03)
+            set.addAll(buc05)
+            set.addAll(buc06)
             return set.toList()
         }
-        return map[buc].orEmpty()
+        return map[bucType].orEmpty()
     }
 }

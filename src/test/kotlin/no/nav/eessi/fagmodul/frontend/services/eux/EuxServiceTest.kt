@@ -115,7 +115,7 @@ class EuxServiceTest : EuxBaseTest() {
         Assert.assertEquals(generatedResponse, expectedResponse)
 
         buc = "P_BUC_06"
-        expectedResponse = listOf("P4000","P5000", "P6000", "P3000_NO")
+        expectedResponse = listOf("P5000", "P6000", "P7000", "P10000")
         generatedResponse = euxService.getAvailableSEDonBuc(buc)
         Assert.assertEquals(generatedResponse, expectedResponse)
     }
