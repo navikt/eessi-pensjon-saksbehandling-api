@@ -10,6 +10,7 @@ import no.nav.security.oidc.context.OIDCClaims
 import no.nav.security.oidc.context.OIDCRequestContextHolder
 import no.nav.security.oidc.context.TokenContext
 import org.springframework.core.ParameterizedTypeReference
+import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestClientException
 
 class Utils
@@ -108,4 +109,20 @@ fun maskerPersonIdentifier(paths: List<String>): String {
     return paths.map { path ->
         maskerPersonIdentifier(path)
     }.joinToString ( separator= "," )
+}
+
+
+fun filterPensionSedAndSort(sedList: List<String>): List<String> {
+    if (sedList.isNotEmpty()) {
+        return  sedList.asSequence().filter { it.startsWith("P") }.sortedBy { it }.toList()
+    }
+    return sedList
+}
+
+fun <E> List<E>.toJson(): String {
+    return mapAnyToJson(this)
+}
+
+fun <E> List<E>.toResponse(): ResponseEntity<String?> {
+    return ResponseEntity.ok().body(this.toJson())
 }

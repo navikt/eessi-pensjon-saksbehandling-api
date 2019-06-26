@@ -1,6 +1,7 @@
 package no.nav.eessi.fagmodul.frontend.utils
 
 import org.codehaus.jackson.map.ObjectMapper
+import org.jetbrains.annotations.TestOnly
 import org.junit.Test
 import java.lang.Exception
 import kotlin.test.*
@@ -83,6 +84,7 @@ class UtilsTest {
         ))
     }
 
+    @TestOnly
     fun isValidJson(json: String): Boolean {
         val mapper = ObjectMapper()
         return try{
@@ -91,5 +93,40 @@ class UtilsTest {
         } catch (ex: Exception) {
             false
         }
+    }
+
+    @Test
+    fun `Test liste med SED kun PensjonSED skal returneres`() {
+        val list  = listOf("X005","P2000","P4000","H02","X06","P9000", "")
+
+        val result = filterPensionSedAndSort(list)
+
+        println(result)
+
+        assertEquals(3, result.size)
+        assertEquals("[P2000, P4000, P9000]", result.toString())
+    }
+
+    @Test
+    fun `Test av liste med SEDer der kun PensjonSEDer skal returneres`() {
+        val list  = listOf("X005","P2000","P4000","H02","X06","P9000", "")
+
+        val result = filterPensionSedAndSort(list)
+
+        println(result.toJson())
+
+        assertEquals(3, result.size)
+        assertEquals("[P2000, P4000, P9000]", result.toJson())
+
+    }
+
+
+
+    @Test
+    fun `Test listMapToJson`() {
+        val list = listOf(mapOf("Name" to "Johnnyboy", "place" to "dummy"), mapOf("Name" to "Kjent dorull", "place" to "Q2"))
+
+        println(list.toJson())
+
     }
 }
