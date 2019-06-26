@@ -126,7 +126,17 @@ class UtilsTest {
     fun `Test listMapToJson`() {
         val list = listOf(mapOf("Name" to "Johnnyboy", "place" to "dummy"), mapOf("Name" to "Kjent dorull", "place" to "Q2"))
 
+        val actualjson = "[ {\n" +
+                "  \"Name\" : \"Johnnyboy\",\n" +
+                "  \"place\" : \"dummy\"\n" +
+                "}, {\n" +
+                "  \"Name\" : \"Kjent dorull\",\n" +
+                "  \"place\" : \"Q2\"\n" +
+                "} ]"
+
+
         println(list.toJson())
+        assertEquals(actualjson.replace("\n", "") , list.toJson().replace(System.lineSeparator(), ""))
 
     }
 }

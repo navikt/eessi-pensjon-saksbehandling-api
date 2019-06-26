@@ -126,3 +126,4 @@ fun <E> List<E>.toJson(): String {
 fun <E> List<E>.toResponse(): ResponseEntity<String?> {
     return ResponseEntity.ok().body(this.toJson())
 }
+
