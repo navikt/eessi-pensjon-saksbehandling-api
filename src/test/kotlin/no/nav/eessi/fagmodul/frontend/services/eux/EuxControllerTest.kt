@@ -5,6 +5,7 @@ import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.whenever
 import no.nav.eessi.fagmodul.frontend.utils.mapAnyToJson
 import no.nav.eessi.fagmodul.frontend.utils.mapJsonToAny
+import no.nav.eessi.fagmodul.frontend.utils.toResponse
 import no.nav.eessi.fagmodul.frontend.utils.typeRefs
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -103,15 +104,15 @@ class EuxControllerTest : EuxBaseTest() {
           val bucResponse =  ResponseEntity.ok().body(mapAnyToJson(listOf("P6000","X6000")))
           doReturn(bucResponse).whenever(bucController).getMuligeAksjoner(rinanr)
 
-          val expectedResponse = ResponseEntity.ok().body(mapAnyToJson(listOf("P6000","X6000")))
+          val expectedResponse = listOf("P6000").toResponse()
 
           val generatedResponse = euxController.getSeds(buc, rinanr)
 
           assertEquals(expectedResponse, generatedResponse)
 
           val json = generatedResponse.body!!
-          val something = mapJsonToAny(json, typeRefs<List<String>>())
-          assertEquals(2, something.size)
+          val validSedListforBuc = mapJsonToAny(json, typeRefs<List<String>>())
+          assertEquals(1, validSedListforBuc.size)
       }
 
 

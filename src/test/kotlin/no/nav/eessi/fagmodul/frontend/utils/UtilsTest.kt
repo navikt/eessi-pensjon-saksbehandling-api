@@ -101,8 +101,6 @@ class UtilsTest {
 
         val result = filterPensionSedAndSort(list)
 
-        println(result)
-
         assertEquals(3, result.size)
         assertEquals("[P2000, P4000, P9000]", result.toString())
     }
@@ -113,13 +111,9 @@ class UtilsTest {
 
         val result = filterPensionSedAndSort(list)
 
-        println(result.toJson())
-
         assertEquals(3, result.size)
-        assertEquals("[P2000, P4000, P9000]", result.toJson())
-
+        assertEquals("[ \"P2000\", \"P4000\", \"P9000\" ]", result.toJson())
     }
-
 
 
     @Test
