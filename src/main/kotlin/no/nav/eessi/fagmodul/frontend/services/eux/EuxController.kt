@@ -3,10 +3,7 @@ package no.nav.eessi.fagmodul.frontend.services.eux
 import io.swagger.annotations.ApiOperation
 import no.nav.eessi.fagmodul.frontend.services.fagmodul.BucController
 import no.nav.eessi.fagmodul.frontend.services.fagmodul.NavRegistreOppslagService
-import no.nav.eessi.fagmodul.frontend.utils.mapAnyToJson
-import no.nav.eessi.fagmodul.frontend.utils.mapJsonToAny
-import no.nav.eessi.fagmodul.frontend.utils.typeRef
-import no.nav.eessi.fagmodul.frontend.utils.typeRefs
+import no.nav.eessi.fagmodul.frontend.utils.*
 import no.nav.security.oidc.api.Protected
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -77,16 +74,16 @@ class EuxController(private val euxService: EuxService, private val navRegistreS
             if (result.hasBody()) {
                 val resultlist = mapJsonToAny(result.body!!, typeRefs<List<String>>())
                 if (resultlist.isEmpty()) {
-                    return ResponseEntity.ok().body(mapAnyToJson(euxService.getAvailableSEDonBuc(bucType)))
+                    return euxService.getAvailableSEDonBuc(bucType).toResponse()
                 } else {
-                    return result
+                    return filterPensionSedAndSort(resultlist).toResponse()
                 }
             } else {
                 return ResponseEntity.badRequest().body("")
             }
         }
         //seds eller bestem mulige seds på en bucType (hardkoddet liste)
-        return ResponseEntity.ok().body(mapAnyToJson(euxService.getAvailableSEDonBuc(bucType)))
+        return euxService.getAvailableSEDonBuc(bucType).toResponse()
 
     }
 
