@@ -147,6 +147,18 @@ class ReceiveSubmissionController(
         LocalDateTime.parse(dateString, DateTimeFormatter.ISO_DATE_TIME)
     }
 
+    @GetMapping(value = ["/get/{subject}"], produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun getSubmissionAsJson(@PathVariable subject: String): ResponseEntity<String> {
+
+        return try {
+            ResponseEntity.ok().body(mapAnyToJson(mapOf("content" to getSubmission(subject))))
+        } catch (ex: Exception) {
+            val uuid = UUID.randomUUID().toString()
+            logger.error("Get feilet. $ex.message $uuid")
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ex.message)
+        }
+    }
+
     fun getSubmission(subject: String): String? {
         val list = storageService.list("${subject}___${PINFO_SUBMISSION}___")
         if (list.isEmpty()) {

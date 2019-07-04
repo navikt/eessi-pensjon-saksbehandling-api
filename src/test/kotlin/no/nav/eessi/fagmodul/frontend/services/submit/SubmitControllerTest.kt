@@ -1,11 +1,13 @@
 package no.nav.eessi.fagmodul.frontend.services.submit
 
 import com.nhaarman.mockito_kotlin.*
+import no.nav.eessi.fagmodul.frontend.utils.mapAnyToJson
 import org.junit.After
 import org.junit.Assert
 import org.junit.Test
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito
+import org.springframework.http.ResponseEntity
 
 class SubmitControllerTest : SubmitBaseTest() {
 
@@ -182,6 +184,27 @@ class SubmitControllerTest : SubmitBaseTest() {
         doReturn(expectedResponse).whenever(s3storageService).get(expectedSelectedFile)
 
         val generatedResponse = receiveSubmissionController.getSubmission(subject)
+        Assert.assertEquals(expectedResponse, generatedResponse)
+    }
+
+    @Test fun `Calling receiveSubmissionController|getSubmissionJson gets getSubmission in JSON`() {
+        val subject = "12345678910"
+        val mockResponse = listOf(
+            "${subject}___${receiveSubmissionController.PINFO_SUBMISSION}___2018-09-01T00:00:00.json",
+            "${subject}___${receiveSubmissionController.PINFO_SUBMISSION}___2028-09-01T00:00:00.json",
+            "${subject}___${receiveSubmissionController.PINFO_SUBMISSION}___1998-09-01T00:00:00.json",
+            "${subject}___${receiveSubmissionController.PINFO_SUBMISSION}___2008-09-01T00:00:00.json"
+        )
+        val expectedSelectedFile = "${subject}___${receiveSubmissionController.PINFO_SUBMISSION}___2028-09-01T00:00:00.json"
+        val mockContent = "something"
+        val expectedResponse =  ResponseEntity.ok().body(mapAnyToJson(mapOf("content" to mockContent)))
+
+        val searchPattern = "${subject}___${receiveSubmissionController.PINFO_SUBMISSION}___"
+
+        doReturn(mockResponse).whenever(s3storageService).list(searchPattern)
+        doReturn(mockContent).whenever(s3storageService).get(expectedSelectedFile)
+
+        val generatedResponse = receiveSubmissionController.getSubmissionAsJson(subject)
         Assert.assertEquals(expectedResponse, generatedResponse)
     }
 }
