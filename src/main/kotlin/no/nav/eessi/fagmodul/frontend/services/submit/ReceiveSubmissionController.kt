@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import no.nav.eessi.fagmodul.frontend.services.kafka.KafkaService
 import no.nav.eessi.fagmodul.frontend.services.pdf.PdfService
 import no.nav.eessi.fagmodul.frontend.services.storage.StorageService
+import no.nav.eessi.fagmodul.frontend.utils.mapAnyToJson
 import no.nav.eessi.fagmodul.frontend.utils.counter
 import no.nav.eessi.fagmodul.frontend.utils.errorBody
 import no.nav.eessi.fagmodul.frontend.utils.getClaims
@@ -155,7 +156,7 @@ class ReceiveSubmissionController(
         } catch (ex: Exception) {
             val uuid = UUID.randomUUID().toString()
             logger.error("Get feilet. $ex.message $uuid")
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ex.message)
+            ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ex.message)
         }
     }
 
