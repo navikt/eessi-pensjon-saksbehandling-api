@@ -24,7 +24,6 @@ class PdfServiceTest : PdfBaseTest() {
                         base64 = Base64.getEncoder().encodeToString(baos.toByteArray())
                     ),
                     name = "e207.pdf",
-                    numPages = 2,
                     mimetype = "application/pdf",
                     size = baos.size()
                 )
