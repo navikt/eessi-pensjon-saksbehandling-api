@@ -25,6 +25,10 @@ import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.net.URL
 import java.util.*
+import kotlin.math.atan
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.math.sqrt
 
 private val logger = LoggerFactory.getLogger(PdfService::class.java)
 
@@ -34,10 +38,10 @@ class PdfService {
 
     private val logger = LoggerFactory.getLogger(PdfService::class.java)
 
-    val fontPath = "/fonts/LiberationSans-Regular.ttf"
+    private final val fontPath = "/fonts/LiberationSans-Regular.ttf"
     val htmlPath = "/html-templates/kvittering.html"
 
-    val url = this.javaClass.getResource(fontPath)
+    val url: URL = this.javaClass.getResource(fontPath)
     val fontName = "LiberationSans"
 
     private fun hentKvitteringHtmlSomStream(): InputStream {
@@ -62,7 +66,7 @@ class PdfService {
 
         request.recipe.forEach { (targetPdf, recipe) ->
 
-            if (!recipe.isEmpty()) {
+            if (recipe.isNotEmpty()) {
 
                 val outputPdf = PDDocument()
                 val baos = ByteArrayOutputStream()
@@ -149,10 +153,10 @@ class PdfService {
         val centerX = if (rotate) pageHeight / 2f else pageWidth / 2f
         val centerY = if (rotate) pageWidth  / 2f else pageHeight / 2f
         var scale = 1.0f
-        val pageDiagonal = Math.sqrt((pageHeight * pageHeight + pageWidth * pageWidth).toDouble())
-        val angle = Math.atan((pageHeight / pageWidth).toDouble())
-        val offsetX = stringWidth / 2 * Math.cos(angle)
-        val offsetY = stringWidth / 2 * Math.sin(angle)
+        val pageDiagonal = sqrt((pageHeight * pageHeight + pageWidth * pageWidth).toDouble())
+        val angle = atan((pageHeight / pageWidth).toDouble())
+        val offsetX = stringWidth / 2 * cos(angle)
+        val offsetY = stringWidth / 2 * sin(angle)
 
         val cs = PDPageContentStream(outputPdf, page, PDPageContentStream.AppendMode.APPEND, false)
         cs.setGraphicsStateParameters(r0)
@@ -323,7 +327,7 @@ class PdfService {
     fun generateReceipt(rawJsonData : String, subject : String) : Map<String, Any> {
 
         val doc = Jsoup.parse(hentKvitteringHtmlSomStream(), "UTF-8", "")
-        doc.outputSettings().syntax(org.jsoup.nodes.Document.OutputSettings.Syntax.xml)
+        doc.outputSettings().syntax(Document.OutputSettings.Syntax.xml)
 
         val data = ObjectMapper().readTree(rawJsonData)
         fillUpReceiptWithData(data, doc, subject)
