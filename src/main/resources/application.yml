@@ -4,12 +4,6 @@ server:
     remote-ip-header: 'x-forwarded-for'
     protocol-header: 'x-forwarded-proto'
 
-spring:
-  jmx.enabled: false
-  jackson:
-    serialization:
-      write_dates_as_timestamps: false
-
 management:
   endpoints:
     metrics.enabled: true
@@ -42,3 +36,36 @@ isso.agentname: '${APP_NAME}-${FASIT_ENVIRONMENT_NAME}'
 
 http.proxy.parametername: 'dontuse.proxy'
 redirectscheme: 'https'
+
+kafka:
+  sedSendt:
+    topic: eessi-basis-sedSendt-v1
+    groupid: eessi-pensjon-group
+  sedMottatt:
+    topic: eessi-basis-sedMottatt-v1
+    groupid: eessi-pensjon-group
+
+#Spring
+spring:
+  jmx.enabled: false
+  jackson:
+    serialization:
+      write_dates_as_timestamps: false
+  kafka:
+    listener:
+      ack-mode: manual
+    consumer:
+      enable-auto-commit: false
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS_URL}
+    properties:
+      security.protocol: SASL_SSL
+      value.subject.name.strategy: io.confluent.kafka.serializers.subject.TopicRecordNameStrategy
+      key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value.deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      sasl:
+        mechanism: PLAIN
+        jaas.config: org.apache.kafka.common.security.plain.PlainLoginModule required username="${srvusername}" password="${srvpassword}";
+
+
+cors:
+  allowed: 'eessi-pensjon-frontend-ui-fss-${FASIT_ENVIRONMENT_NAME}'
