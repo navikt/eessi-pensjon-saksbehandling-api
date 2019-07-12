@@ -135,7 +135,9 @@ dependencies {
     testCompile("com.nhaarman:mockito-kotlin-kt1.1:1.6.0")
     testCompile("io.findify:s3mock_2.12:0.2.5")
 
-
+    // Architecture tests
+    testImplementation 'com.tngtech.archunit:archunit:0.10.2'
+    
     // Allows for variable expiration-date of each cache-entry
     compile("net.jodah:expiringmap:0.5.9")
 
