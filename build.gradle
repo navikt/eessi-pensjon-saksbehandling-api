@@ -104,6 +104,8 @@ dependencies {
 
     // Logging
     compile("net.logstash.logback:logstash-logback-encoder:${logstashLogbackVersion}")
+    configurations { all*.exclude group: 'commons-logging', module: 'commons-logging' }
+    implementation group: 'org.slf4j', name: 'jcl-over-slf4j'
 
     // PDF box
     compile("org.apache.pdfbox:pdfbox:2.0.13")
