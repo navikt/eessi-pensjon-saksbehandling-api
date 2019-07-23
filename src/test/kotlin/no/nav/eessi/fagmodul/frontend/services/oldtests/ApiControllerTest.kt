@@ -1,4 +1,4 @@
-package no.nav.eessi.fagmodul.frontend.controllers
+package no.nav.eessi.fagmodul.frontend.services.oldtests
 
 import no.nav.eessi.fagmodul.frontend.services.eux.RinaAksjon
 
