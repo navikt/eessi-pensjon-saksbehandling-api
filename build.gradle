@@ -6,7 +6,7 @@ buildscript {
         springfoxVersion = '2.9.2'
         kafkaVersion = '2.2.7.RELEASE'
         jacksonModuleKotlinVersion = '2.9.8'
-        mockitoVersion = '2.23.4'
+        mockitoVersion = '3.0.0'
         oidcTokenSupportVersion = '0.2.15'
         logstashLogbackVersion = '5.3'
         pac4jVersion = '3.2.0'
