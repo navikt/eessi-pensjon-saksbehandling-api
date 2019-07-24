@@ -108,13 +108,13 @@ dependencies {
     implementation group: 'org.slf4j', name: 'jcl-over-slf4j'
 
     // PDF box
-    compile("org.apache.pdfbox:pdfbox:2.0.13")
-    compile('com.openhtmltopdf:openhtmltopdf-core:0.0.1-RC17')
-    compile('com.openhtmltopdf:openhtmltopdf-pdfbox:0.0.1-RC17')
-    compile('com.openhtmltopdf:openhtmltopdf-jsoup-dom-converter:0.0.1-RC17')
+    compile("org.apache.pdfbox:pdfbox:2.0.16")
+    compile('com.openhtmltopdf:openhtmltopdf-core:1.0.0')
+    compile('com.openhtmltopdf:openhtmltopdf-pdfbox:1.0.0')
+    compile('com.openhtmltopdf:openhtmltopdf-jsoup-dom-converter:1.0.0')
 
     // HTML-parser/manipulator
-    compile('org.jsoup:jsoup:1.11.3')
+    compile('org.jsoup:jsoup:1.12.1')
 
     // Amazon S3
     compile("com.amazonaws:aws-java-sdk-s3:1.11.488")
