@@ -163,6 +163,11 @@ repositories {
         url "https://repo.adeo.no/repository/maven-releases/"
     }
 }
+
+wrapper {
+    distributionType = Wrapper.DistributionType.ALL
+}
+
 //
 //bootRun {
 //    String activeProfile = System.properties['spring.profiles.active']
