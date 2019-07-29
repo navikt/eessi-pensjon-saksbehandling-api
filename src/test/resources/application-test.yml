@@ -84,22 +84,13 @@ kafka:
 
 #Spring
 spring:
-  jmx.enabled: false
-  jackson:
-    serialization:
-      write_dates_as_timestamps: false
   kafka:
     listener:
       ack-mode: manual
     consumer:
       enable-auto-commit: false
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS_URL}
+    bootstrap-servers: ${spring.embedded.kafka.brokers}
     properties:
-      security.protocol: SASL_SSL
-      value.subject.name.strategy: io.confluent.kafka.serializers.subject.TopicRecordNameStrategy
-      key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value.deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      sasl:
-        mechanism: PLAIN
-        jaas.config: org.apache.kafka.common.security.plain.PlainLoginModule required username="${srvusername}" password="${srvpassword}";
-
+      security.protocol: PLAINTEXT
+  main:
+     allow-bean-definition-overriding: true

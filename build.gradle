@@ -146,7 +146,8 @@ dependencies {
 
     // Architecture tests
     testImplementation 'com.tngtech.archunit:archunit:0.10.2'
-    
+    testImplementation 'org.springframework.kafka:spring-kafka-test'
+
     // Allows for variable expiration-date of each cache-entry
     compile("net.jodah:expiringmap:0.5.9")
 
@@ -155,7 +156,10 @@ dependencies {
     compile("org.apache.cxf:cxf-rt-ws-security:${cxfVersion}")
     compile('org.jvnet.jaxb2_commons:jaxb2-basics-runtime:1.11.1')
 
-
+    //overriding Scala version on S3Mock
+    compile ("org.scala-lang:scala-library:2.11.12") {
+        force = true
+    }
 }
 
 repositories {
