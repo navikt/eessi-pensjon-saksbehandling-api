@@ -6,7 +6,7 @@ import org.junit.Test
 import org.mockito.Mockito
 import org.springframework.web.client.RestTemplate
 
-class FagmodulBaseTest : BaseTest() {
+open class FagmodulBaseTest : BaseTest() {
 
     lateinit var mockFagmodulRestTemplate: RestTemplate
     lateinit var sedController : SedController

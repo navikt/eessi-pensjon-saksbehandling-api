@@ -15,7 +15,7 @@ import org.springframework.http.*
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.HttpServerErrorException
 
-class PensjonControllerTest: FagmodulBaseTest() {
+open class PensjonControllerTest: FagmodulBaseTest() {
 
     val SAK_ID = "12345678"
     val AKTOER_ID = "10000001231345"

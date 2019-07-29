@@ -13,7 +13,7 @@ import org.junit.After
 import org.junit.Before
 import org.mockito.Mockito
 
-class S3StorageBaseTest : BaseTest() {
+open class S3StorageBaseTest : BaseTest() {
 
     lateinit var s3storageService: S3Storage
     lateinit var s3MockClient: AmazonS3

@@ -11,7 +11,7 @@ import org.springframework.web.client.DefaultResponseErrorHandler
 import org.springframework.web.client.RestTemplate
 
 
-class EuxBaseTest : BaseTest() {
+open class EuxBaseTest : BaseTest() {
     @Value("\${EUXBASIS_V1_URL:http://localhost:9090/cpi}")
     lateinit var euxUrl: String
 

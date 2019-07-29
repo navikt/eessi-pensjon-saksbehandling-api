@@ -16,7 +16,7 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.web.client.RestTemplate
 
-class SubmitBaseTest : S3StorageBaseTest() {
+open class SubmitBaseTest : S3StorageBaseTest() {
 
     var mapper = ObjectMapper()
 

@@ -157,7 +157,7 @@ dependencies {
     compile('org.jvnet.jaxb2_commons:jaxb2-basics-runtime:1.11.1')
 
     //overriding Scala version on S3Mock
-    compile ("org.scala-lang:scala-library:2.11.12") {
+    compile ("org.scala-lang:scala-library:2.12.2") {
         force = true
     }
 }

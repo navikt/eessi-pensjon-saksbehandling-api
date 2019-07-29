@@ -22,7 +22,6 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.concurrent.TimeUnit
 
-
 private const val SED_SENDT_TOPIC = "eessi-basis-sedSendt-v1"
 
 @ActiveProfiles("test")
@@ -32,7 +31,7 @@ private const val SED_SENDT_TOPIC = "eessi-basis-sedSendt-v1"
 class SedListenerTest : BaseTest() {
 
     @Autowired
-    private lateinit var sedListener: SedListener
+    lateinit var sedListener: SedListener
 
     @Test
     fun `Når en sedSendt hendelse blir konsumert skal det opprettes journalføringsoppgave for pensjon SEDer`() {

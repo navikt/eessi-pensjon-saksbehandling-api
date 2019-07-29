@@ -13,7 +13,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.context.annotation.Import
 import org.springframework.test.annotation.DirtiesContext
@@ -27,10 +26,9 @@ import java.nio.charset.Charset
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner::class)
-@SpringBootTest
 @Import(TokenGeneratorConfiguration::class)
 @DirtiesContext
-class BaseTest {
+open class BaseTest {
 
     @Value("\${fagmodul.url:http://localhost:8081}")
     lateinit var fagmodulUrl: String

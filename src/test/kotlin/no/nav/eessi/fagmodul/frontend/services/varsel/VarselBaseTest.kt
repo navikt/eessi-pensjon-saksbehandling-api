@@ -11,7 +11,7 @@ import org.mockito.Mockito.mock
 import org.springframework.jms.core.JmsTemplate
 import org.springframework.web.client.RestTemplate
 
-class VarselBaseTest : S3StorageBaseTest() {
+open class VarselBaseTest : S3StorageBaseTest() {
 
     lateinit var varselController : VarselController
     lateinit var varselService : VarselService

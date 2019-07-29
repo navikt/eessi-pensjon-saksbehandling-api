@@ -6,7 +6,7 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito
 
-class PdfBaseTest : BaseTest() {
+open class PdfBaseTest : BaseTest() {
 
     lateinit var pdfController: PdfController
     lateinit var pdfService: PdfService

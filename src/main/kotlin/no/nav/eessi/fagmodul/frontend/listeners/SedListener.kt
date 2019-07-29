@@ -2,18 +2,22 @@ package no.nav.eessi.fagmodul.frontend.listeners
 
 import no.nav.eessi.fagmodul.frontend.utils.mapAnyToJson
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Description
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.messaging.simp.SimpMessagingTemplate
-import org.springframework.stereotype.Service
+import org.springframework.stereotype.Component
 import java.util.concurrent.CountDownLatch
 
-@Service
+@Component
 @Description("Listener on kafka messages to send websocket notifications")
-class SedListener(val brokerMessagingTemplate: SimpMessagingTemplate) {
+class SedListener {
 
     private val logger = LoggerFactory.getLogger(SedListener::class.java)
     private val latch = CountDownLatch(1)
+
+    @Autowired
+    lateinit var brokerMessagingTemplate: SimpMessagingTemplate
 
     fun getLatch(): CountDownLatch {
         return latch
