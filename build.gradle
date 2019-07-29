@@ -4,7 +4,7 @@ buildscript {
         springVersion = '5.1.6.RELEASE'
         springBootVersion = '2.1.2.RELEASE'
         springfoxVersion = '2.9.2'
-        kafkaVersion = '2.2.5.RELEASE'
+        kafkaVersion = '2.2.7.RELEASE'
         jacksonModuleKotlinVersion = '2.9.8'
         mockitoVersion = '2.23.4'
         oidcTokenSupportVersion = '0.2.15'
@@ -146,7 +146,7 @@ dependencies {
 
     // Architecture tests
     testImplementation 'com.tngtech.archunit:archunit:0.10.2'
-    testImplementation 'org.springframework.kafka:spring-kafka-test'
+    testImplementation ("org.springframework.kafka:spring-kafka-test:${kafkaVersion}")
 
     // Allows for variable expiration-date of each cache-entry
     compile("net.jodah:expiringmap:0.5.9")
@@ -157,9 +157,9 @@ dependencies {
     compile('org.jvnet.jaxb2_commons:jaxb2-basics-runtime:1.11.1')
 
     //overriding Scala version on S3Mock
-    compile ("org.scala-lang:scala-library:2.12.2") {
-        force = true
-    }
+//    compile ("org.scala-lang:scala-library:2.11.12") {
+//        force = true
+//    }
 }
 
 repositories {
