@@ -9,7 +9,6 @@ import no.nav.security.oidc.context.OIDCValidationContext
 import no.nav.security.oidc.context.TokenContext
 import no.nav.security.oidc.test.support.spring.TokenGeneratorConfiguration
 import org.apache.commons.io.FileUtils
-import org.junit.ClassRule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
@@ -17,13 +16,6 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.context.annotation.Import
-import org.springframework.kafka.core.DefaultKafkaConsumerFactory
-import org.springframework.kafka.listener.ContainerProperties
-import org.springframework.kafka.listener.KafkaMessageListenerContainer
-import org.springframework.kafka.listener.MessageListener
-import org.springframework.kafka.test.rule.EmbeddedKafkaRule
-import org.springframework.kafka.test.utils.ContainerTestUtils
-import org.springframework.kafka.test.utils.KafkaTestUtils
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit4.SpringRunner
@@ -32,7 +24,6 @@ import org.springframework.web.client.RestTemplate
 import java.io.File
 import java.nio.charset.Charset
 
-private const val SED_SENDT_TOPIC = "eessi-basis-sedSendt-v1"
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner::class)
@@ -47,39 +38,8 @@ class BaseTest {
     @Value("\${aktoerregister.api.v1.url}")
     lateinit var aktoerregisterUrl: String
 
-    private fun settOppUtitlityConsumer(topicNavn: String): KafkaMessageListenerContainer<String, String> {
-        val consumerProperties = KafkaTestUtils.consumerProps("eessi-pensjon-group2",
-            "false",
-            embeddedKafka.embeddedKafka)
-
-        val consumerFactory = DefaultKafkaConsumerFactory<String, String>(consumerProperties)
-        val containerProperties = ContainerProperties(topicNavn)
-        val container = KafkaMessageListenerContainer<String, String>(consumerFactory, containerProperties)
-        val messageListener = MessageListener<String, String> { record -> println("Konsumerer melding:  $record") }
-        container.setupMessageListener(messageListener)
-
-        return container
-    }
-
-    @Test
-    fun `xxx`() {
-
-        // Vent til kafka er klar
-        val container = settOppUtitlityConsumer(SED_SENDT_TOPIC)
-        container.start()
-        ContainerTestUtils.waitForAssignment(container, embeddedKafka.embeddedKafka.partitionsPerTopic)
-    }
-
     @Test fun dummy() {}
 
-    companion object {
-
-        @ClassRule
-        @JvmField
-        // Start kafka in memory
-        var embeddedKafka = EmbeddedKafkaRule(1, true, SED_SENDT_TOPIC)
-        var x =1
-    }
 
     fun generateMockContextHolder(): OIDCRequestContextHolder {
 

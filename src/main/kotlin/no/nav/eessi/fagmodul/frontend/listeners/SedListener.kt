@@ -6,12 +6,18 @@ import org.springframework.context.annotation.Description
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.stereotype.Service
+import java.util.concurrent.CountDownLatch
 
 @Service
 @Description("Listener on kafka messages to send websocket notifications")
 class SedListener(val brokerMessagingTemplate: SimpMessagingTemplate) {
 
     private val logger = LoggerFactory.getLogger(SedListener::class.java)
+    private val latch = CountDownLatch(1)
+
+    fun getLatch(): CountDownLatch {
+        return latch
+    }
 
     @KafkaListener(topics = ["\${kafka.sedSendt.topic}"], groupId = "\${kafka.sedSendt.groupid}")
     fun consumeSedSendt(hendelse: String) {
@@ -26,6 +32,7 @@ class SedListener(val brokerMessagingTemplate: SimpMessagingTemplate) {
                 "Noe gikk galt under behandling av SED-hendelse:\n $hendelse \n${ex.message}", ex)
             throw RuntimeException(ex.message)
         }
+        latch.countDown()
     }
 
     @KafkaListener(topics = ["\${kafka.sedMottatt.topic}"], groupId = "\${kafka.sedMottatt.groupid}")
