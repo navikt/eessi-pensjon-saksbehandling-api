@@ -8,7 +8,7 @@ buildscript {
         jacksonModuleKotlinVersion = '2.9.9'
         mockitoVersion = '3.0.0'
         oidcTokenSupportVersion = '0.2.15'
-        logstashLogbackVersion = '5.3'
+        logstashLogbackVersion = '6.1'
         pac4jVersion = '3.2.0'
         cxfVersion = '3.2.7'
         personV3Version = '3.4.1'
