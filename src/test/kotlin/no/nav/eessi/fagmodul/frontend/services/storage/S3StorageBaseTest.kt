@@ -12,6 +12,7 @@ import no.nav.eessi.fagmodul.frontend.services.whitelist.WhitelistService
 import org.junit.After
 import org.junit.Before
 import org.mockito.Mockito
+import java.net.ServerSocket
 
 open class S3StorageBaseTest : BaseTest() {
 
@@ -22,10 +23,11 @@ open class S3StorageBaseTest : BaseTest() {
     lateinit var whitelistService: WhitelistService
 
     @Before fun setup() {
-        s3api = S3Mock.Builder().withPort(8001).withInMemoryBackend().build()
+        val s3Port = randomOpenPort()
+        s3api = S3Mock.Builder().withPort(s3Port).withInMemoryBackend().build()
         s3api.start()
 
-        val endpoint = AwsClientBuilder.EndpointConfiguration("http://localhost:8001", "us-east-1")
+        val endpoint = AwsClientBuilder.EndpointConfiguration("http://localhost:$s3Port", "us-east-1")
 
         val s3Client = AmazonS3ClientBuilder.standard()
                 .withPathStyleAccessEnabled(true)
@@ -52,4 +54,7 @@ open class S3StorageBaseTest : BaseTest() {
     @After fun teardown() {
         s3api.stop()
     }
+
+    fun randomOpenPort(): Int = ServerSocket(0).use { it.localPort }
+
 }

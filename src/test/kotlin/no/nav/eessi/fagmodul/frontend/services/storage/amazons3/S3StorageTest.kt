@@ -11,6 +11,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
+import java.net.ServerSocket
 import java.time.LocalDateTime
 import kotlin.test.assertEquals
 
@@ -24,10 +25,11 @@ class S3StorageTest {
 
     @Before
     fun setup() {
-        s3api = S3Mock.Builder().withPort(8001).withInMemoryBackend().build()
-        s3api.start()
+        val s3Port = randomOpenPort()
 
-        val endpoint = AwsClientBuilder.EndpointConfiguration("http://localhost:8001", "us-east-1")
+        s3api = S3Mock.Builder().withPort(s3Port).withInMemoryBackend().build()
+        s3api.start()
+        val endpoint = AwsClientBuilder.EndpointConfiguration("http://localhost:$s3Port", "us-east-1")
 
         s3MockClient = AmazonS3ClientBuilder.standard()
                 .withPathStyleAccessEnabled(true)
@@ -136,4 +138,6 @@ class S3StorageTest {
         val fileListAktoer1 = storage.list(aktoerId2)
         assertEquals(1, fileListAktoer1.size)
     }
+
+    fun randomOpenPort(): Int = ServerSocket(0).use { it.localPort }
 }
