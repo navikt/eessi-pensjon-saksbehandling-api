@@ -103,6 +103,9 @@ fasitResources:
   - alias: eessi-pensjon-frontend-api-fss-oidc
     resourceType: OpenIdConnect
 
+  - alias: kafka_bootstrap_servers
+    resourceType: baseurl
+
   exposed:
   - alias: EessiPensjonFrontendApiLogin_v1
     resourceType: RestService
