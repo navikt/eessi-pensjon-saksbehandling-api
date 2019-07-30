@@ -18,7 +18,7 @@ class WebSocketConfig : WebSocketMessageBrokerConfigurer {
     lateinit var allowed: String
 
     override fun registerStompEndpoints(registry: StompEndpointRegistry) {
-        registry.addEndpoint("/websocket").setAllowedOrigins(allowed).withSockJS()
+        registry.addEndpoint("/websocket").setAllowedOrigins("*").withSockJS()
         logger.info("Added STOMP endpoint /websocket, for ${allowed} access only")
     }
 }
