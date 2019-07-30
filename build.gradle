@@ -97,7 +97,7 @@ dependencies {
     compile("org.apache.cxf:cxf-spring-boot-starter-jaxws:${cxfVersion}")
     compile("org.apache.cxf:cxf-rt-ws-security:${cxfVersion}")
 
-    compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.8")
+    compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.9")
     compile("commons-io:commons-io:2.6")
 
     // Kotlin
