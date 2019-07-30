@@ -19,10 +19,6 @@ class SedListener {
     @Autowired
     lateinit var brokerMessagingTemplate: SimpMessagingTemplate
 
-    fun getLatch(): CountDownLatch {
-        return latch
-    }
-
     @KafkaListener(topics = ["\${kafka.sedSendt.topic}"], groupId = "\${kafka.sedSendt.groupid}")
     fun consumeSedSendt(hendelse: String) {
         logger.info("Innkommet sedSendt hendelse")
