@@ -143,7 +143,7 @@ dependencies {
     testImplementation("io.findify:s3mock_2.12:0.2.5")
 
     // Architecture tests
-    testImplementation 'com.tngtech.archunit:archunit:0.10.2'
+    testImplementation 'com.tngtech.archunit:archunit:0.11.0'
 
     // Allows for variable expiration-date of each cache-entry
     implementation("net.jodah:expiringmap:0.5.9")
