@@ -67,92 +67,92 @@ jar {
 dependencies {
 
     //NAV
-    compile("no.nav.tjenester:nav-person-v3-tjenestespesifikasjon:${personV3Version}")
-    compile('no.nav.meldinger.virksomhet:nav-virksomhet-varsel-v1-meldingsdefinisjon:1.1.1:jaxb')
-    compile("no.nav.tjenester.fim:nav-fim-behandleJournal-v3-tjenestespesifikasjon:3.0.2:jaxws")
+    implementation("no.nav.tjenester:nav-person-v3-tjenestespesifikasjon:${personV3Version}")
+    implementation('no.nav.meldinger.virksomhet:nav-virksomhet-varsel-v1-meldingsdefinisjon:1.1.1:jaxb')
+    implementation("no.nav.tjenester.fim:nav-fim-behandleJournal-v3-tjenestespesifikasjon:3.0.2:jaxws")
 
 
     // Spring
-    compile("org.springframework.boot:spring-boot-starter-web")
-    compile("org.springframework.boot:spring-boot-starter-aop")
-    compile("org.springframework.boot:spring-boot-starter-actuator")
-    compile('org.springframework.boot:spring-boot-starter-websocket')
-    testCompile("org.springframework.boot:spring-boot-starter-test")
-    compile("org.springframework:spring-jms")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-aop")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation('org.springframework.boot:spring-boot-starter-websocket')
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    implementation("org.springframework:spring-jms")
     // MQ
-    compile("com.ibm.mq:com.ibm.mq.allclient:9.1.1.0")
+    implementation("com.ibm.mq:com.ibm.mq.allclient:9.1.1.0")
 
     // Messaging
-    compile("org.springframework:spring-websocket")
-    compile("org.springframework:spring-messaging")
+    implementation("org.springframework:spring-websocket")
+    implementation("org.springframework:spring-messaging")
 
     // Kafka
-    compile("org.springframework.kafka:spring-kafka")
-    compile("io.confluent:kafka-avro-serializer:5.1.0") {
+    implementation("org.springframework.kafka:spring-kafka")
+    implementation("io.confluent:kafka-avro-serializer:5.1.0") {
         exclude group: "org.apache.zookeeper",  module: "zookeeper"
     }
 
     // Apache CXF
-    compile("org.apache.cxf:cxf-spring-boot-starter-jaxws:${cxfVersion}")
-    compile("org.apache.cxf:cxf-rt-ws-security:${cxfVersion}")
+    implementation("org.apache.cxf:cxf-spring-boot-starter-jaxws:${cxfVersion}")
+    implementation("org.apache.cxf:cxf-rt-ws-security:${cxfVersion}")
 
-    compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.9")
-    compile("commons-io:commons-io:2.6")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.9")
+    implementation("commons-io:commons-io:2.6")
 
     // Kotlin
-    compile("com.fasterxml.jackson.module:jackson-module-kotlin:${jacksonModuleKotlinVersion}")
-    compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
-    compile("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:${jacksonModuleKotlinVersion}")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
 
     // Swagger
-    compile("io.springfox:springfox-swagger2:${springfoxVersion}")
-    compile("io.springfox:springfox-swagger-ui:${springfoxVersion}")
+    implementation("io.springfox:springfox-swagger2:${springfoxVersion}")
+    implementation("io.springfox:springfox-swagger-ui:${springfoxVersion}")
 
     // Logging
-    compile("net.logstash.logback:logstash-logback-encoder:${logstashLogbackVersion}")
+    implementation("net.logstash.logback:logstash-logback-encoder:${logstashLogbackVersion}")
     configurations { all*.exclude group: 'commons-logging', module: 'commons-logging' }
     implementation group: 'org.slf4j', name: 'jcl-over-slf4j'
 
     // PDF box
-    compile("org.apache.pdfbox:pdfbox:2.0.13")
-    compile('com.openhtmltopdf:openhtmltopdf-core:0.0.1-RC17')
-    compile('com.openhtmltopdf:openhtmltopdf-pdfbox:0.0.1-RC17')
-    compile('com.openhtmltopdf:openhtmltopdf-jsoup-dom-converter:0.0.1-RC17')
+    implementation("org.apache.pdfbox:pdfbox:2.0.13")
+    implementation('com.openhtmltopdf:openhtmltopdf-core:0.0.1-RC17')
+    implementation('com.openhtmltopdf:openhtmltopdf-pdfbox:0.0.1-RC17')
+    implementation('com.openhtmltopdf:openhtmltopdf-jsoup-dom-converter:0.0.1-RC17')
 
     // HTML-parser/manipulator
-    compile('org.jsoup:jsoup:1.11.3')
+    implementation('org.jsoup:jsoup:1.11.3')
 
     // Amazon S3
-    compile("com.amazonaws:aws-java-sdk-s3:1.11.601")
+    implementation("com.amazonaws:aws-java-sdk-s3:1.11.601")
 
     // Micrometer
-    compile("io.micrometer:micrometer-registry-prometheus")
+    implementation("io.micrometer:micrometer-registry-prometheus")
     
     // OIDC
-    compile("no.nav.security:oidc-spring-support:${oidcTokenSupportVersion}")
-    compile("no.nav.security:oidc-test-support:${oidcTokenSupportVersion}")
-    compile("org.pac4j:spring-webmvc-pac4j:${pac4jVersion}")
-    compile("org.pac4j:pac4j-oidc:${pac4jVersion}")
-    compile("org.pac4j:pac4j-core:${pac4jVersion}")
+    implementation("no.nav.security:oidc-spring-support:${oidcTokenSupportVersion}")
+    implementation("no.nav.security:oidc-test-support:${oidcTokenSupportVersion}")
+    implementation("org.pac4j:spring-webmvc-pac4j:${pac4jVersion}")
+    implementation("org.pac4j:pac4j-oidc:${pac4jVersion}")
+    implementation("org.pac4j:pac4j-core:${pac4jVersion}")
 
     //mock
-    testCompile("no.nav.security:oidc-test-support:${oidcTokenSupportVersion}")
-    testCompile("org.mockito:mockito-core:${mockitoVersion}")
-    testCompile("org.jetbrains.kotlin:kotlin-test")
-    testCompile("org.jetbrains.kotlin:kotlin-test-junit")
-    testCompile("com.nhaarman:mockito-kotlin-kt1.1:1.6.0")
-    testCompile("io.findify:s3mock_2.12:0.2.5")
+    testImplementation("no.nav.security:oidc-test-support:${oidcTokenSupportVersion}")
+    testImplementation("org.mockito:mockito-core:${mockitoVersion}")
+    testImplementation("org.jetbrains.kotlin:kotlin-test")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
+    testImplementation("com.nhaarman:mockito-kotlin-kt1.1:1.6.0")
+    testImplementation("io.findify:s3mock_2.12:0.2.5")
 
     // Architecture tests
     testImplementation 'com.tngtech.archunit:archunit:0.10.2'
 
     // Allows for variable expiration-date of each cache-entry
-    compile("net.jodah:expiringmap:0.5.9")
+    implementation("net.jodah:expiringmap:0.5.9")
 
     // Apache CXF
-    compile("org.apache.cxf:cxf-spring-boot-starter-jaxws:${cxfVersion}")
-    compile("org.apache.cxf:cxf-rt-ws-security:${cxfVersion}")
-    compile('org.jvnet.jaxb2_commons:jaxb2-basics-runtime:1.11.1')
+    implementation("org.apache.cxf:cxf-spring-boot-starter-jaxws:${cxfVersion}")
+    implementation("org.apache.cxf:cxf-rt-ws-security:${cxfVersion}")
+    implementation('org.jvnet.jaxb2_commons:jaxb2-basics-runtime:1.11.1')
 }
 
 repositories {
