@@ -1,7 +1,7 @@
 package no.nav.eessi.fagmodul.frontend.services.login
 
-import com.nhaarman.mockito_kotlin.doReturn
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.whenever
 import no.nav.eessi.fagmodul.frontend.services.BaseTest
 import org.junit.Assert
 import org.junit.Test

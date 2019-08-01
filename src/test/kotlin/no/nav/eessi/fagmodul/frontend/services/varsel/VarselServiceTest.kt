@@ -1,9 +1,9 @@
 package no.nav.eessi.fagmodul.frontend.services.varsel
 
-import com.nhaarman.mockito_kotlin.doNothing
-import com.nhaarman.mockito_kotlin.doReturn
-import com.nhaarman.mockito_kotlin.doThrow
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockitokotlin2.doNothing
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.doThrow
+import com.nhaarman.mockitokotlin2.whenever
 import org.codehaus.jackson.map.ObjectMapper
 import org.hamcrest.CoreMatchers.instanceOf
 import org.junit.After

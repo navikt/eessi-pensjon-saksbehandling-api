@@ -1,6 +1,6 @@
 package no.nav.eessi.fagmodul.frontend.services.login
 
-import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockitokotlin2.verify
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith

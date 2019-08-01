@@ -1,8 +1,8 @@
 package no.nav.eessi.fagmodul.frontend.services.eux
 
 import com.fasterxml.jackson.core.type.TypeReference
-import com.nhaarman.mockito_kotlin.doReturn
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.whenever
 import no.nav.eessi.fagmodul.frontend.utils.mapAnyToJson
 import no.nav.eessi.fagmodul.frontend.utils.mapJsonToAny
 import no.nav.eessi.fagmodul.frontend.utils.toResponse

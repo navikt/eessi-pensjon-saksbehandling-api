@@ -1,8 +1,8 @@
 package no.nav.eessi.fagmodul.frontend.services.storage
 
 import com.amazonaws.AmazonServiceException
-import com.nhaarman.mockito_kotlin.doThrow
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockitokotlin2.doThrow
+import com.nhaarman.mockitokotlin2.whenever
 import no.nav.eessi.fagmodul.frontend.utils.errorBody
 import org.codehaus.jackson.map.ObjectMapper
 import org.junit.After

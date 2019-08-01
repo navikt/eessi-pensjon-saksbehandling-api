@@ -1,9 +1,9 @@
 package no.nav.eessi.fagmodul.frontend.services.fagmodul
 
 
-import com.nhaarman.mockito_kotlin.doReturn
-import com.nhaarman.mockito_kotlin.doThrow
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.doThrow
+import com.nhaarman.mockitokotlin2.whenever
 import org.codehaus.jackson.map.ObjectMapper
 import org.junit.After
 import org.junit.Assert.assertEquals

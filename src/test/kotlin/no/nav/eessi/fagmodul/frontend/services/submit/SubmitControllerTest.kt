@@ -1,6 +1,6 @@
 package no.nav.eessi.fagmodul.frontend.services.submit
 
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockitokotlin2.*
 import no.nav.eessi.fagmodul.frontend.utils.mapAnyToJson
 import org.junit.After
 import org.junit.Assert

@@ -1,7 +1,7 @@
 package no.nav.eessi.fagmodul.frontend.listeners
 
-import com.nhaarman.mockito_kotlin.times
-import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockitokotlin2.times
+import com.nhaarman.mockitokotlin2.verify
 import no.nav.eessi.fagmodul.frontend.utils.mapAnyToJson
 import org.junit.After
 import org.junit.Before

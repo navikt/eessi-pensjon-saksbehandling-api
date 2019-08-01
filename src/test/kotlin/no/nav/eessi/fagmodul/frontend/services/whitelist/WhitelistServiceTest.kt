@@ -1,8 +1,8 @@
 package no.nav.eessi.fagmodul.frontend.services.whitelist
 
-import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.times
-import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.times
+import com.nhaarman.mockitokotlin2.verify
 import junit.framework.TestCase.*
 import no.nav.eessi.fagmodul.frontend.services.storage.StorageService
 import org.junit.Before

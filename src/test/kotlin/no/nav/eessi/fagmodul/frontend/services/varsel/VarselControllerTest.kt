@@ -1,6 +1,6 @@
 package no.nav.eessi.fagmodul.frontend.services.varsel
 
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockitokotlin2.*
 import no.nav.eessi.fagmodul.frontend.utils.successBody
 import org.codehaus.jackson.map.ObjectMapper
 import org.junit.After
