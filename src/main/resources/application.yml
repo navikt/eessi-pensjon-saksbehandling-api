@@ -10,7 +10,7 @@ management:
     web.exposure.include: '*'
     export.prometheus.enabled: true
     prometheus.enabled: true
-  metrics.web.server.auto-time-requests: false
+  metrics.web.server.auto-time-requests: true
 
 eessifagmodulservice.url: 'http://eessi-fagmodul/'
 
