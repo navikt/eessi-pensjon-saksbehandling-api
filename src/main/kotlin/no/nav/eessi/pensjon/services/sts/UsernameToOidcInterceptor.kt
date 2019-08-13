@@ -7,7 +7,7 @@ import org.springframework.http.client.ClientHttpRequestInterceptor
 import org.springframework.http.client.ClientHttpResponse
 
 
-class UntToOidcInterceptor(private val securityTokenExchangeService: SecurityTokenExchangeService): ClientHttpRequestInterceptor {
+class UsernameToOidcInterceptor(private val securityTokenExchangeService: SecurityTokenExchangeService): ClientHttpRequestInterceptor {
 
     override fun intercept(request: HttpRequest, body: ByteArray, execution: ClientHttpRequestExecution): ClientHttpResponse {
         val token = securityTokenExchangeService.getSystemOidcToken()

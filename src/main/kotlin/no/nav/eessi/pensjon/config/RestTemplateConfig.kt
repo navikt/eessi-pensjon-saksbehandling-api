@@ -4,7 +4,7 @@ import io.micrometer.core.instrument.MeterRegistry
 import no.nav.eessi.pensjon.interceptor.OidcHeaderRequestInterceptor
 import no.nav.eessi.pensjon.interceptor.RequestResponseLoggerInterceptor
 import no.nav.eessi.pensjon.services.sts.SecurityTokenExchangeService
-import no.nav.eessi.pensjon.services.sts.UntToOidcInterceptor
+import no.nav.eessi.pensjon.services.sts.UsernameToOidcInterceptor
 import no.nav.security.oidc.context.OIDCRequestContextHolder
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.actuate.metrics.web.client.DefaultRestTemplateExchangeTagsProvider
@@ -65,7 +65,7 @@ class RestTemplateConfig(val restTemplateBuilder: RestTemplateBuilder,
         return restTemplateBuilder
                 .rootUri(fagmodulUrl)
                 .errorHandler(DefaultResponseErrorHandler())
-                .additionalInterceptors(RequestResponseLoggerInterceptor(), UntToOidcInterceptor(securityTokenExchangeService))
+                .additionalInterceptors(RequestResponseLoggerInterceptor(), UsernameToOidcInterceptor(securityTokenExchangeService))
                 .customizers(MetricsRestTemplateCustomizer(registry, DefaultRestTemplateExchangeTagsProvider(), "eessipensjon_frontend-api_fagmodulUntTo"))
                 .build().apply {
                     requestFactory = BufferingClientHttpRequestFactory(SimpleClientHttpRequestFactory())
@@ -77,7 +77,7 @@ class RestTemplateConfig(val restTemplateBuilder: RestTemplateBuilder,
         return restTemplateBuilder
                 .rootUri(url)
                 .errorHandler(DefaultResponseErrorHandler())
-                .additionalInterceptors(RequestResponseLoggerInterceptor(), UntToOidcInterceptor(securityTokenExchangeService))
+                .additionalInterceptors(RequestResponseLoggerInterceptor(), UsernameToOidcInterceptor(securityTokenExchangeService))
                 .build().apply {
                     requestFactory = BufferingClientHttpRequestFactory(SimpleClientHttpRequestFactory())
                 }
