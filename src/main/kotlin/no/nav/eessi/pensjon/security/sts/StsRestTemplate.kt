@@ -1,4 +1,4 @@
-package no.nav.eessi.pensjon.services.sts
+package no.nav.eessi.pensjon.security.sts
 
 import no.nav.eessi.pensjon.interceptor.RequestResponseLoggerInterceptor
 import org.springframework.beans.factory.annotation.Qualifier

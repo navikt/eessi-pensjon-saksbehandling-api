@@ -3,8 +3,8 @@ package no.nav.eessi.pensjon.config
 import io.micrometer.core.instrument.MeterRegistry
 import no.nav.eessi.pensjon.interceptor.OidcHeaderRequestInterceptor
 import no.nav.eessi.pensjon.interceptor.RequestResponseLoggerInterceptor
-import no.nav.eessi.pensjon.services.sts.SecurityTokenExchangeService
-import no.nav.eessi.pensjon.services.sts.UsernameToOidcInterceptor
+import no.nav.eessi.pensjon.security.sts.SecurityTokenExchangeService
+import no.nav.eessi.pensjon.security.sts.UsernameToOidcInterceptor
 import no.nav.security.oidc.context.OIDCRequestContextHolder
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.actuate.metrics.web.client.DefaultRestTemplateExchangeTagsProvider

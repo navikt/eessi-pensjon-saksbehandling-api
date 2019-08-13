@@ -1,4 +1,4 @@
-package no.nav.eessi.pensjon.services.sts
+package no.nav.eessi.pensjon.security.sts
 
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpRequest

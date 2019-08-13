@@ -51,7 +51,7 @@ class ArchitectureTest {
         val PDF = "saksbehandling-api.services.pdf"
         val Storage = "saksbehandling-api.services.storage"
         val Amazons3 = "saksbehandling-api.services.storage.amazons3"
-        val STS = "saksbehandling-api.services.sts"
+        val STS = "saksbehandling-api.security.sts"
         val Submit = "saksbehandling-api.services.submit"
         val UserInfo = "saksbehandling-api.services.userinfo"
         val Varsel = "saksbehandling-api.services.varsel"
@@ -71,7 +71,7 @@ class ArchitectureTest {
             PDF to "$root.services.pdf",
             Storage to "$root.services.storage",
             Amazons3 to "$root.services.storage.amazons3",
-            STS to "$root.services.sts",
+            STS to "$root.security.sts",
             Submit to "$root.services.submit",
             UserInfo to "$root.services.userinfo",
             Varsel to "$root.services.varsel",
