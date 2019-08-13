@@ -119,7 +119,7 @@ class EuxController(private val euxService: EuxService, private val navRegistreS
     @GetMapping("/countrycode")
     fun getCountryCode(): List<String> {
         return try {
-            navRegistreService.landkoder() //.filter { s -> s == "NO" } // TODO: Using "NO" temporarily to avoid sending documents to other countries in test by accident
+            navRegistreService.landkoder()
         } catch (ex: Exception) {
             logger.error(ex.message)
             listOf("NO", "SE", "DK", "FI")
