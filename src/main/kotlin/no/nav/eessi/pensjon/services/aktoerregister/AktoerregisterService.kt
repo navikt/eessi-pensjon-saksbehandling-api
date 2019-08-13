@@ -14,8 +14,6 @@ import org.springframework.web.client.RestTemplate
 import org.springframework.web.util.UriComponentsBuilder
 import java.util.*
 
-private val logger = LoggerFactory.getLogger(AktoerregisterService::class.java)
-
 data class Identinfo(
         val ident: String,
         val identgruppe: String,
@@ -30,7 +28,9 @@ data class IdentinfoForAktoer(
 @Service
 class AktoerregisterService(val aktoerregisterRestTemplate: RestTemplate) {
 
-    private val aktoerregister_teller_navn = "eessipensjon_frontend-api.aktoerregister"
+    private val logger = LoggerFactory.getLogger(AktoerregisterService::class.java)
+
+    private val aktoerregister_teller_navn = "eessipensjon_journalforing.aktoerregister"
     private val aktoerregister_teller_type_vellykkede = counter(aktoerregister_teller_navn, "vellykkede")
     private val aktoerregister_teller_type_feilede = counter(aktoerregister_teller_navn, "feilede")
 
@@ -66,7 +66,7 @@ class AktoerregisterService(val aktoerregisterRestTemplate: RestTemplate) {
             throw AktoerregisterIkkeFunnetException("Ingen identer returnert for $aktorid")
 
         if (identInfoForAktoer.identer.size > 1) {
-            logger.info("Identer returnert fra api:")
+            logger.info("Identer returnert fra aktoerregisteret:")
             identInfoForAktoer.identer.forEach {
                 logger.info("ident: ${it.ident}, gjeldende: ${it.gjeldende}, identgruppe: ${it.identgruppe}")
             }
@@ -105,3 +105,7 @@ class AktoerregisterService(val aktoerregisterRestTemplate: RestTemplate) {
         return jacksonObjectMapper().readValue(responseEntity.body!!)
     }
 }
+
+class AktoerregisterIkkeFunnetException(message: String?) : Exception(message)
+
+class AktoerregisterException(message: String) : Exception(message)
