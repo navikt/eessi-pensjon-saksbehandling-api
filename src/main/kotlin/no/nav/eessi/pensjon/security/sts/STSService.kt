@@ -19,7 +19,7 @@ import java.time.ZoneId
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-private val logger = LoggerFactory.getLogger(SecurityTokenExchangeService::class.java)
+private val logger = LoggerFactory.getLogger(STSService::class.java)
 
 data class SecurityTokenResponse(
         @JsonProperty("access_token")
@@ -31,7 +31,7 @@ data class SecurityTokenResponse(
 )
 
 @Service
-class SecurityTokenExchangeService(@Qualifier("stsRestTemplate") val stsRestTemplate: RestTemplate) {
+class STSService(@Qualifier("stsRestTemplate") val stsRestTemplate: RestTemplate) {
 
     private val tokenCache = ExpiringMap.builder().variableExpiration().build<String, String>()
 

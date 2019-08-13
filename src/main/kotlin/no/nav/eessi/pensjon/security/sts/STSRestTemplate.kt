@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component
 import org.springframework.web.client.RestTemplate
 
 @Component
-class SecurityTokenExchangeRestTemplate {
+class STSRestTemplate {
 
     @Value("\${security-token-service-token.url:http://localhost}")
     lateinit var baseUrl: String

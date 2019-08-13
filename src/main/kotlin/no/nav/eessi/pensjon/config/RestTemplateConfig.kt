@@ -3,7 +3,7 @@ package no.nav.eessi.pensjon.config
 import io.micrometer.core.instrument.MeterRegistry
 import no.nav.eessi.pensjon.interceptor.OidcHeaderRequestInterceptor
 import no.nav.eessi.pensjon.interceptor.RequestResponseLoggerInterceptor
-import no.nav.eessi.pensjon.security.sts.SecurityTokenExchangeService
+import no.nav.eessi.pensjon.security.sts.STSService
 import no.nav.eessi.pensjon.security.sts.UsernameToOidcInterceptor
 import no.nav.security.oidc.context.OIDCRequestContextHolder
 import org.springframework.beans.factory.annotation.Value
@@ -21,7 +21,7 @@ import org.springframework.web.client.RestTemplate
 class RestTemplateConfig(val restTemplateBuilder: RestTemplateBuilder,
                          val oidcRequestContextHolder: OIDCRequestContextHolder,
                          val registry: MeterRegistry,
-                         val securityTokenExchangeService: SecurityTokenExchangeService) {
+                         val securityTokenExchangeService: STSService) {
 
     @Value("\${eessifagmodulservice.url:http://localhost}")
     lateinit var fagmodulUrl: String
