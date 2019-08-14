@@ -40,10 +40,10 @@ redirectscheme: 'https'
 kafka:
   sedSendt:
     topic: eessi-basis-sedSendt-v1
-    groupid: eessi-pensjon-group
+    groupid: eessi-pensjon-saksbehandling-group
   sedMottatt:
     topic: eessi-basis-sedMottatt-v1
-    groupid: eessi-pensjon-group
+    groupid: eessi-pensjon-saksbehandling-group
 
 #Spring
 spring:
