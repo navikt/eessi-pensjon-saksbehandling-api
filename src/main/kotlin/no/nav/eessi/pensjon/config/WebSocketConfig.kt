@@ -3,22 +3,19 @@ package no.nav.eessi.pensjon.config
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
-import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker
-import org.springframework.web.socket.config.annotation.StompEndpointRegistry
-import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer
+import org.springframework.web.socket.config.annotation.*
 
-private val logger = LoggerFactory.getLogger(WebSocketMessageBrokerConfigurer::class.java)
+private val logger = LoggerFactory.getLogger(WebSocketConfigurer::class.java)
 
 @Configuration
-@EnableWebSocketMessageBroker
-
-class WebSocketConfig : WebSocketMessageBrokerConfigurer {
+@EnableWebSocket
+class WebsocketConfiguration : WebSocketConfigurer {
 
     @Value("\${cors.allowed}")
     lateinit var allowed: String
 
-    override fun registerStompEndpoints(registry: StompEndpointRegistry) {
-        registry.addEndpoint("/websocket").setAllowedOrigins("*").withSockJS()
-        logger.info("Added STOMP endpoint /websocket, for ${allowed} access only")
+    override fun registerWebSocketHandlers(registry: WebSocketHandlerRegistry) {
+        registry.addHandler(SocketTextHandler(), "/bucUpdate").setAllowedOrigins("*")
+        logger.info("Added websocket endpoint /bucUpdate, for ${allowed} access only")
     }
 }
