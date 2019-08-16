@@ -24,6 +24,9 @@ class WebSocketHandShakeInterceptor(private val oidcRequestContextHolder: OIDCRe
             if (request is ServletServerHttpRequest && request.method == HttpMethod.GET && oidcRequestContextHolder.oidcValidationContext.hasValidToken()) {
                 logger.info("WebSocketHandShakeInterceptor >> ${getClaims(oidcRequestContextHolder).subject} VALID TOKEN")
                 attributes["subject"] = getClaims(oidcRequestContextHolder).subject
+                if(request.headers["sec-websocket-protocol"] != null){
+                    response.headers["sec-websocket-protocol"] = request.headers["sec-websocket-protocol"]
+                }
                 true
             } else {
                 logger.info("WebSocketHandShakeInterceptor handshake failed", request)
