@@ -1,6 +1,5 @@
-package no.nav.eessi.pensjon.config
+package no.nav.eessi.pensjon.websocket
 
-import no.nav.eessi.pensjon.interceptor.WebSocketHandShakeInterceptor
 import no.nav.security.oidc.context.OIDCRequestContextHolder
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -17,7 +16,11 @@ class WebsocketConfiguration(private val oidcRequestContextHolder: OIDCRequestCo
     lateinit var allowed: String
 
     override fun registerWebSocketHandlers(registry: WebSocketHandlerRegistry) {
-        registry.addHandler(SocketTextHandler(), "/bucUpdate").setAllowedOrigins("*").addInterceptors(WebSocketHandShakeInterceptor(oidcRequestContextHolder))
+        registry.addHandler(SocketTextHandler(), "/bucUpdate").setAllowedOrigins("*").addInterceptors(
+            WebSocketHandShakeInterceptor(
+                oidcRequestContextHolder
+            )
+        )
         logger.info("Added websocket endpoint /bucUpdate, for ${allowed} access only")
     }
 }
