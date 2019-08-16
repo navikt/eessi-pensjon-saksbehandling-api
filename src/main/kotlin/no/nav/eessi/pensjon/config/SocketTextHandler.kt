@@ -1,5 +1,6 @@
 package no.nav.eessi.pensjon.config
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Component
 import org.springframework.web.socket.CloseStatus
 import org.springframework.web.socket.TextMessage
@@ -15,6 +16,7 @@ import java.util.concurrent.ConcurrentHashMap
 class SocketTextHandler : TextWebSocketHandler() {
 
     private val logger = LoggerFactory.getLogger(TextWebSocketHandler::class.java)
+    private val mapper = ObjectMapper()
 
     companion object {
         private var sessions: ConcurrentHashMap<String, WebSocketSession> = ConcurrentHashMap()
@@ -22,8 +24,24 @@ class SocketTextHandler : TextWebSocketHandler() {
 
     @Throws(InterruptedException::class, IOException::class)
     public override fun handleTextMessage(session: WebSocketSession, message: TextMessage) {
-        logger.info("$session sent message")
-        sessions.forEach { (id: String, session: WebSocketSession) ->  session.sendMessage(TextMessage("$id echo >> ${message.payload} "))}
+        try {
+            logger.info("$session sent message")
+            val jsonRoot = mapper.readTree(message.payload)
+            if (jsonRoot.isObject && jsonRoot.has("subscriptions") && jsonRoot["subscriptions"].isArray) {
+                session.attributes["subscriptions"] = jsonRoot["subscriptions"].map { it.textValue() }
+                session.sendMessage(TextMessage("Subscribed to ${session.attributes["subscriptions"]}"))
+            }
+        }catch(interruptedException: InterruptedException){
+            logger.error("handleTextMessage interruptedException", interruptedException)
+            throw interruptedException
+        }catch(iOException: IOException){
+            logger.error("handleTextMessage iOException", iOException)
+            throw iOException
+        }catch(exception: Exception){
+            logger.error("handleTextMessage exception", exception)
+            throw exception
+        }
+
     }
 
     @Throws(Exception::class)
