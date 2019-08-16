@@ -8,6 +8,7 @@ import org.springframework.http.server.ServerHttpResponse
 import org.springframework.http.server.ServletServerHttpRequest
 import org.springframework.lang.Nullable
 import org.springframework.web.socket.WebSocketHandler
+import org.springframework.web.socket.server.HandshakeFailureException
 import org.springframework.web.socket.server.HandshakeInterceptor
 import java.lang.Exception
 
@@ -19,12 +20,17 @@ class WebSocketHandShakeInterceptor(private val oidcRequestContextHolder: OIDCRe
 
     override fun beforeHandshake(request: ServerHttpRequest, response: ServerHttpResponse, wsHandler: WebSocketHandler, attributes: MutableMap<String, Any>): Boolean {
 
-        return if(request is ServletServerHttpRequest && request.method == HttpMethod.GET){
-            val cookies = request.servletRequest.cookies
-            logger.info("WEBSOCKET INTERCEPTOR ${getClaims(oidcRequestContextHolder).subject} VALID TOKEN >> ${oidcRequestContextHolder.oidcValidationContext.hasValidToken()}")
-            cookies.forEach { logger.info("COOKIE: ${it.name} ${it.path} ${it.value} ${it.comment} ${it.domain} ${it.isHttpOnly} ${it.maxAge} ${it.secure} ${it.version}")}
-            true
-        } else {
+        return try {
+            if (request is ServletServerHttpRequest && request.method == HttpMethod.GET && oidcRequestContextHolder.oidcValidationContext.hasValidToken()) {
+                logger.info("WebSocketHandShakeInterceptor >> ${getClaims(oidcRequestContextHolder).subject} VALID TOKEN")
+                attributes["subject"] = getClaims(oidcRequestContextHolder).subject
+                true
+            } else {
+                logger.info("WebSocketHandShakeInterceptor handshake failed", request)
+                false
+            }
+        } catch(exception: HandshakeFailureException){
+            logger.error("HANDSHAKE FAILURE EXCEPTION", request, exception)
             false
         }
     }
