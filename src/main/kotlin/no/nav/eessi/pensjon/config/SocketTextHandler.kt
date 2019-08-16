@@ -53,4 +53,17 @@ class SocketTextHandler : TextWebSocketHandler() {
     override fun afterConnectionClosed(session: WebSocketSession, closeStatus: CloseStatus) {
         sessions.remove(session.id)
     }
+
+    fun alertSubscribers(subject: String){
+        try {
+            sessions
+                .filter { it.value.attributes["subscriptions"] != null }
+                .filter { it.value.attributes["subscriptions"] is List<*> }
+                .filter { (it.value.attributes["subscriptions"] as List<*>).contains(subject) }
+                .forEach { (_, session) -> session.sendMessage(TextMessage("{\"bucUpdated\": true}")) }
+        }catch(exception: Exception){
+            logger.error("alertSubscribers Exception", exception)
+            throw exception
+        }
+    }
 }
