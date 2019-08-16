@@ -1,4 +1,4 @@
-package no.nav.eessi.pensjon.config
+package no.nav.eessi.pensjon.websocket
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Component

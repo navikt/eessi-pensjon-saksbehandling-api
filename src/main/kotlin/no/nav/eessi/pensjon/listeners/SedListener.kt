@@ -1,7 +1,7 @@
 package no.nav.eessi.pensjon.listeners
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import no.nav.eessi.pensjon.config.SocketTextHandler
+import no.nav.eessi.pensjon.websocket.SocketTextHandler
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Description
 import org.springframework.kafka.annotation.KafkaListener

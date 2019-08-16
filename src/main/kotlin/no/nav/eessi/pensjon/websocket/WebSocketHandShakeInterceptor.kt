@@ -1,4 +1,4 @@
-package no.nav.eessi.pensjon.interceptor
+package no.nav.eessi.pensjon.websocket
 import no.nav.eessi.pensjon.utils.getClaims
 import no.nav.security.oidc.context.OIDCRequestContextHolder
 import org.slf4j.LoggerFactory
