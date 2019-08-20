@@ -51,7 +51,7 @@ class SocketTextHandler : TextWebSocketHandler() {
 
     fun alertSubscribers(caseNumber: String){
         try {
-            sessions.forEach { (_, session) -> session.sendMessage(TextMessage("{\"bucUpdated\":, \"$caseNumber\"}")) }
+            sessions.forEach { (_, session) -> session.sendMessage(TextMessage("{\"bucUpdated\": \"$caseNumber\"}")) }
         }catch(exception: Exception){
             logger.error("alertSubscribers Exception", exception)
             throw exception
