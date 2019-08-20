@@ -1,7 +1,8 @@
 package no.nav.eessi.pensjon.services.eux
 
+import no.nav.eessi.pensjon.api.eux.EuxController
 import no.nav.eessi.pensjon.services.BaseTest
-import no.nav.eessi.pensjon.services.fagmodul.BucController
+import no.nav.eessi.pensjon.api.fagmodul.BucController
 import no.nav.eessi.pensjon.services.fagmodul.NavRegistreOppslagService
 import org.junit.Before
 import org.mockito.Mockito

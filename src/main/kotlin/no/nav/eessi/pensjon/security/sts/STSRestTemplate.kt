@@ -1,6 +1,6 @@
 package no.nav.eessi.pensjon.security.sts
 
-import no.nav.eessi.pensjon.interceptor.RequestResponseLoggerInterceptor
+import no.nav.eessi.pensjon.logging.RequestResponseLoggerInterceptor
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.web.client.RestTemplateBuilder

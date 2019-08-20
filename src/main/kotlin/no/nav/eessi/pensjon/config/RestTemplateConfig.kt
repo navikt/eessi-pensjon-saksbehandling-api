@@ -2,7 +2,7 @@ package no.nav.eessi.pensjon.config
 
 import io.micrometer.core.instrument.MeterRegistry
 import no.nav.eessi.pensjon.interceptor.OidcHeaderRequestInterceptor
-import no.nav.eessi.pensjon.interceptor.RequestResponseLoggerInterceptor
+import no.nav.eessi.pensjon.logging.RequestResponseLoggerInterceptor
 import no.nav.eessi.pensjon.security.sts.STSService
 import no.nav.eessi.pensjon.security.sts.UsernameToOidcInterceptor
 import no.nav.security.oidc.context.OIDCRequestContextHolder

@@ -4,7 +4,7 @@ import no.nav.security.spring.oidc.api.EnableOIDCTokenValidation
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
-@EnableOIDCTokenValidation(ignore = ["org.springframework", "springfox.documentation", "org.pac4j.springframework.web.CallbackController", "no.nav.eessi.pensjon.services.DiagnosticsController"])
+@EnableOIDCTokenValidation(ignore = ["org.springframework", "springfox.documentation", "org.pac4j.springframework.web.CallbackController", "no.nav.eessi.pensjon.health.DiagnosticsController"])
 @SpringBootApplication
 class Application
 

@@ -1,5 +1,6 @@
 package no.nav.eessi.pensjon.services.pdf
 
+import no.nav.eessi.pensjon.api.pdf.PdfController
 import no.nav.eessi.pensjon.services.BaseTest
 
 import org.junit.Before
