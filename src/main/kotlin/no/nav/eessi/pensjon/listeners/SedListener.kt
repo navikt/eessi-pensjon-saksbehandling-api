@@ -22,8 +22,8 @@ class SedListener {
             logger.info("Innkommet sedSendt hendelse")
             logger.debug(hendelse)
             val jsonNode = mapper.readTree(hendelse)
-            if(jsonNode.has("navBruker") && jsonNode["navBruker"].isTextual){
-                SocketTextHandler().alertSubscribers(jsonNode["navBruker"].textValue())
+            if(jsonNode.has("rinaSakId") && jsonNode["rinaSakId"].isTextual){
+                SocketTextHandler().alertSubscribers(jsonNode["rinaSakId"].textValue())
             }
             latch.countDown()
         } catch(exception: Exception){
@@ -38,8 +38,8 @@ class SedListener {
         logger.info("Innkommet sedMottatt hendelse")
         logger.debug(hendelse)
             val jsonNode = mapper.readTree(hendelse)
-            if(jsonNode.has("navBruker") && jsonNode["navBruker"].isTextual){
-                SocketTextHandler().alertSubscribers(jsonNode["navBruker"].textValue())
+            if(jsonNode.has("rinaSakId") && jsonNode["rinaSakId"].isTextual){
+                SocketTextHandler().alertSubscribers(jsonNode["rinaSakId"].textValue())
             }
         } catch(exception: Exception){
             logger.error("Error when handling incoming sedMottatt event", exception)
