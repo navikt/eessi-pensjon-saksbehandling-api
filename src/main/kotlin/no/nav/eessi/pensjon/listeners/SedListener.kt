@@ -1,6 +1,5 @@
 package no.nav.eessi.pensjon.listeners
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import no.nav.eessi.pensjon.websocket.SocketTextHandler
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Description
@@ -12,7 +11,6 @@ import java.util.concurrent.CountDownLatch
 @Description("Listener on kafka messages to send websocket notifications")
 class SedListener {
 
-    private val mapper = ObjectMapper()
     private val logger = LoggerFactory.getLogger(SedListener::class.java)
     private val latch = CountDownLatch(1)
 
@@ -21,11 +19,9 @@ class SedListener {
         try {
             logger.info("Innkommet sedSendt hendelse")
             logger.debug(hendelse)
-            val jsonNode = mapper.readTree(hendelse)
-            if (jsonNode.has("sektorKode") && jsonNode["sektorKode"].isTextual && jsonNode["sektorKode"].textValue() == "P") {
-                if (jsonNode.has("rinaSakId") && jsonNode["rinaSakId"].isTextual) {
-                    SocketTextHandler().alertSubscribers(jsonNode["rinaSakId"].textValue())
-                }
+            val sedHendelse = SedHendelseModel.fromJson(hendelse)
+            if (sedHendelse.sektorKode == "P") {
+                SocketTextHandler().alertSubscribers(sedHendelse.rinaSakId)
             }
             latch.countDown()
         } catch(exception: Exception){
@@ -37,13 +33,11 @@ class SedListener {
     @KafkaListener(topics = ["\${kafka.sedMottatt.topic}"], groupId = "\${kafka.sedMottatt.groupid}")
     fun consumeSedMottatt(hendelse: String) {
         try {
-        logger.info("Innkommet sedMottatt hendelse")
-        logger.debug(hendelse)
-            val jsonNode = mapper.readTree(hendelse)
-            if (jsonNode.has("sektorKode") && jsonNode["sektorKode"].isTextual && jsonNode["sektorKode"].textValue() == "P") {
-                if (jsonNode.has("rinaSakId") && jsonNode["rinaSakId"].isTextual) {
-                    SocketTextHandler().alertSubscribers(jsonNode["rinaSakId"].textValue())
-                }
+            logger.info("Innkommet sedMottatt hendelse")
+            logger.debug(hendelse)
+            val sedHendelse = SedHendelseModel.fromJson(hendelse)
+            if (sedHendelse.sektorKode == "P") {
+                SocketTextHandler().alertSubscribers(sedHendelse.rinaSakId)
             }
         } catch(exception: Exception){
             logger.error("Error when handling incoming sedMottatt event", exception)
