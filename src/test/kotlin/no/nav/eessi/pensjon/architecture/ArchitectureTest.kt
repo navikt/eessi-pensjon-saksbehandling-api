@@ -8,7 +8,7 @@ import com.tngtech.archunit.library.dependencies.SlicesRuleDefinition.slices
 import no.nav.eessi.pensjon.Application
 import org.junit.Test
 import org.junit.BeforeClass
-import kotlin.test.assertTrue
+import org.junit.Assert.assertTrue
 
 class ArchitectureTest {
 
@@ -25,8 +25,8 @@ class ArchitectureTest {
         @JvmStatic
         fun `extract classes`() {
             classesToAnalyze = ClassFileImporter().withImportOption(ImportOption.DoNotIncludeTests()).importPackages(root)
-            assertTrue(classesToAnalyze.size > 100, "Sanity check on no. of classes to analyze")
-            assertTrue(classesToAnalyze.size < 800, "Sanity check on no. of classes to analyze")
+            assertTrue("Sanity check on no. of classes to analyze", classesToAnalyze.size > 100)
+            assertTrue("Sanity check on no. of classes to analyze", classesToAnalyze.size < 800)
         }
     }
 

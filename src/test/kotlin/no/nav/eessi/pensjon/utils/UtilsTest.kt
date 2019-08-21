@@ -2,9 +2,13 @@ package no.nav.eessi.pensjon.utils
 
 import org.codehaus.jackson.map.ObjectMapper
 import org.jetbrains.annotations.TestOnly
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
+import org.junit.Assert.fail
 import org.junit.Test
 import java.lang.Exception
-import kotlin.test.*
 
 
 class UtilsTest {

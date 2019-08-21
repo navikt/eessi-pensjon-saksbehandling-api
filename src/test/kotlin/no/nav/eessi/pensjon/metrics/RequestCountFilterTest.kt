@@ -3,9 +3,9 @@ package no.nav.eessi.pensjon.metrics
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry
-import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertNotNull
-import junit.framework.TestCase.fail
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.fail
 import org.junit.Test
 import org.mockito.Mockito.any
 import org.springframework.mock.web.MockFilterChain

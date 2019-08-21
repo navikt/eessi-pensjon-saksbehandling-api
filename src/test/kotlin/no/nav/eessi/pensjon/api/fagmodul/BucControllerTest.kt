@@ -12,7 +12,7 @@ import org.mockito.ArgumentMatchers
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import kotlin.test.assertEquals
+import org.junit.Assert.assertEquals
 
 class BucControllerTest : FagmodulBaseTest()  {
 

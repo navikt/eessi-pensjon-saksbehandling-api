@@ -4,8 +4,9 @@ import no.nav.eessi.pensjon.services.storage.Crypto
 import org.junit.Test
 import java.nio.charset.Charset
 import javax.xml.bind.DatatypeConverter.parseHexBinary
-import kotlin.test.assertEquals
-import kotlin.test.assertNotEquals
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
+
 
 class CryptoTest {
 

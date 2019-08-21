@@ -13,7 +13,7 @@ import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
 import java.net.ServerSocket
 import java.time.LocalDateTime
-import kotlin.test.assertEquals
+import org.junit.Assert.assertEquals
 
 
 @RunWith(MockitoJUnitRunner::class)
@@ -113,15 +113,15 @@ class S3StorageTest {
         storage.put(aktoerId + "___" + "$directory/testfile.txt", value)
 
         val fileList = storage.list(aktoerId + "___" + directory)
-        assertEquals(1, fileList.size, "Expect that 1 entry is returned")
+        assertEquals("Expect that 1 entry is returned", 1, fileList.size)
 
         val fetchedValue = storage.get(fileList[0])
-        assertEquals(value, fetchedValue, "The stored and fetched values should be equal")
+        assertEquals("The stored and fetched values should be equal", value, fetchedValue)
 
         storage.delete(fileList[0])
 
         val fileListAfterDelete = storage.list(aktoerId + "___" + directory)
-        assertEquals(0, fileListAfterDelete.size, "Expect that 0 entries are returned")
+        assertEquals("Expect that 0 entries are returned", 0, fileListAfterDelete.size)
     }
 
     @Test

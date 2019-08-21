@@ -3,7 +3,7 @@ package no.nav.eessi.pensjon.services.whitelist
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
-import junit.framework.TestCase.*
+import org.junit.Assert.*
 import no.nav.eessi.pensjon.services.storage.StorageService
 import org.junit.Before
 import org.junit.Test

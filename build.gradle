@@ -137,8 +137,7 @@ dependencies {
     //mock
     testImplementation("no.nav.security:oidc-test-support:${oidcTokenSupportVersion}")
     testImplementation("org.mockito:mockito-core:${mockitoVersion}")
-    testImplementation("org.jetbrains.kotlin:kotlin-test")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
+    testImplementation('junit:junit:4.12')
     testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0")
     testImplementation("io.findify:s3mock_2.12:0.2.5")
 
