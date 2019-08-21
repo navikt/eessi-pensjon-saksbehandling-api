@@ -24,6 +24,9 @@ class WebSocketHandShakeInterceptor(private val oidcRequestContextHolder: OIDCRe
             if (request is ServletServerHttpRequest && request.method == HttpMethod.GET && oidcRequestContextHolder.oidcValidationContext.hasValidToken()) {
                 logger.info("WebSocketHandShakeInterceptor >> ${getClaims(oidcRequestContextHolder).subject} VALID TOKEN")
                 attributes["subject"] = getClaims(oidcRequestContextHolder).subject
+
+                // For å støtte IE11 er vi nødt til å ha en "sec-websocket-protocol" header.
+                // Verdien av denne er nødt til å være det samme som vi mottar i requesten.
                 if(request.headers["sec-websocket-protocol"] != null){
                     response.headers["sec-websocket-protocol"] = request.headers["sec-websocket-protocol"]
                 }
