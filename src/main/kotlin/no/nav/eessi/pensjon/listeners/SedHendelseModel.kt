@@ -1,6 +1,5 @@
 package no.nav.eessi.pensjon.listeners
 
-import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 
@@ -22,7 +21,7 @@ class SedHendelseModel (
     val navBruker: String? = null
 ){
     companion object {
-        private val sedMapper: ObjectMapper = jacksonObjectMapper().configure(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL, true)
+        private val sedMapper: ObjectMapper = jacksonObjectMapper()
 
         fun fromJson(json: String): SedHendelseModel = sedMapper.readValue(json, SedHendelseModel::class.java)
     }
