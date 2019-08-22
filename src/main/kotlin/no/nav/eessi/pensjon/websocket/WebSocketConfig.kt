@@ -16,7 +16,7 @@ class WebsocketConfiguration(private val oidcRequestContextHolder: OIDCRequestCo
     lateinit var allowed: String
 
     override fun registerWebSocketHandlers(registry: WebSocketHandlerRegistry) {
-        registry.addHandler(SocketTextHandler(), "/bucUpdate").setAllowedOrigins("*").addInterceptors(
+        registry.addHandler(SocketTextHandler(), "/bucUpdate").setAllowedOrigins(allowed).addInterceptors(
             WebSocketHandShakeInterceptor(
                 oidcRequestContextHolder
             )
