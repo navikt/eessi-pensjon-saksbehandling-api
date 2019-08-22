@@ -39,6 +39,9 @@ fasitResources:
   - alias: eessi-pensjon-whitelist-users
     resourceType: ApplicationProperties
 
+  - alias: pensjon-utland-ws-allowed-origins
+    resourceType: BaseUrl
+
   - alias: rina_host
     resourceType: BaseUrl
 
