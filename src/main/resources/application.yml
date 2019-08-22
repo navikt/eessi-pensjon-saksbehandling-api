@@ -68,4 +68,4 @@ spring:
 
 
 cors:
-  allowed: 'eessi-pensjon-frontend-ui-fss-${FASIT_ENVIRONMENT_NAME}'
+  allowed: ${PENSJON_UTLAND_WS_ALLOWED_ORIGINS_URL}
