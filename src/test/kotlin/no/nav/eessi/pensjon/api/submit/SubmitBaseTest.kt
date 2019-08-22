@@ -8,8 +8,8 @@ import org.apache.kafka.clients.CommonClientConfigs
 import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.common.config.SaslConfigs
 import org.apache.kafka.common.serialization.StringSerializer
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.springframework.kafka.core.DefaultKafkaProducerFactory
 import org.springframework.kafka.core.KafkaTemplate
@@ -38,7 +38,7 @@ open class SubmitBaseTest : S3StorageBaseTest() {
         return DefaultKafkaProducerFactory(properties)
     }
 
-    @Before
+    @BeforeEach
     fun init() {
         kafkaTemplate = Mockito.spy(KafkaTemplate<String, String>(producerFactory()))
         kafkaService = Mockito.spy(KafkaService(kafkaTemplate))

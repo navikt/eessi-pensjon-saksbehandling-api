@@ -1,18 +1,19 @@
 package no.nav.eessi.pensjon.api.fagmodul
 
+import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.doThrow
+import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.whenever
 import no.nav.eessi.pensjon.services.fagmodul.FagmodulBaseTest
 import no.nav.eessi.pensjon.utils.errorBody
 import org.codehaus.jackson.map.ObjectMapper
-import org.junit.Assert
-import org.junit.Test
-import org.mockito.ArgumentMatchers
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.junit.Assert.assertEquals
 
 class BucControllerTest : FagmodulBaseTest()  {
 
@@ -23,14 +24,14 @@ class BucControllerTest : FagmodulBaseTest()  {
         val mockResponse = ResponseEntity(mockbody , HttpStatus.OK)
 
         doReturn(mockResponse).whenever(mockFagmodulRestTemplate).exchange(
-                ArgumentMatchers.eq("/buc/$mockRinaId/name"),
-                ArgumentMatchers.any(HttpMethod::class.java),
-                ArgumentMatchers.eq(null),
-                ArgumentMatchers.eq(String::class.java))
+                eq("/buc/$mockRinaId/name"),
+                any<HttpMethod>(),
+                eq(null),
+                eq(String::class.java))
 
         val generatedResponse = bucController.getProcessDefinitionName(mockRinaId)
-        Assert.assertEquals(mockResponse, generatedResponse)
-        Assert.assertEquals(mockbody, generatedResponse.body)
+        assertEquals(mockResponse, generatedResponse)
+        assertEquals(mockbody, generatedResponse.body)
 
     }
 
@@ -41,15 +42,15 @@ class BucControllerTest : FagmodulBaseTest()  {
         val mockResponse = ResponseEntity("error error" , HttpStatus.UNAUTHORIZED)
 
         doReturn(mockResponse).whenever(mockFagmodulRestTemplate).exchange(
-                ArgumentMatchers.eq("/buc/$mockRinaId/name"),
-                ArgumentMatchers.any(HttpMethod::class.java),
-                ArgumentMatchers.eq(null),
-                ArgumentMatchers.eq(String::class.java))
+                eq("/buc/$mockRinaId/name"),
+                any<HttpMethod>(),
+                eq(null),
+                eq(String::class.java))
 
         val generatedResponse = bucController.getProcessDefinitionName(mockRinaId)
-        Assert.assertEquals(true, generatedResponse.statusCode.isError)
-        Assert.assertEquals(HttpStatus.NOT_FOUND, generatedResponse.statusCode)
-        Assert.assertEquals(mockbody, generatedResponse.body)
+        assertEquals(true, generatedResponse.statusCode.isError)
+        assertEquals(HttpStatus.NOT_FOUND, generatedResponse.statusCode)
+        assertEquals(mockbody, generatedResponse.body)
 
     }
 
@@ -61,15 +62,15 @@ class BucControllerTest : FagmodulBaseTest()  {
 
 
         doReturn(mockResponse).whenever(mockFagmodulRestTemplate).exchange(
-                ArgumentMatchers.eq("/buc/$mockRinaId/name"),
-                ArgumentMatchers.any(HttpMethod::class.java),
-                ArgumentMatchers.eq(null),
-                ArgumentMatchers.eq(String::class.java))
+                eq("/buc/$mockRinaId/name"),
+                any<HttpMethod>(),
+                eq(null),
+                eq(String::class.java))
 
         val generatedResponse = bucController.getProcessDefinitionName(mockRinaId)
-        Assert.assertEquals(true, generatedResponse.statusCode.isError)
-        Assert.assertEquals(HttpStatus.NOT_FOUND, generatedResponse.statusCode)
-        Assert.assertEquals(mockbody, generatedResponse.body)
+        assertEquals(true, generatedResponse.statusCode.isError)
+        assertEquals(HttpStatus.NOT_FOUND, generatedResponse.statusCode)
+        assertEquals(mockbody, generatedResponse.body)
     }
 
 
@@ -80,10 +81,10 @@ class BucControllerTest : FagmodulBaseTest()  {
         val mockresponse = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorBody("Feil ved henting av Buc, Melding: ${mockException.message}"))
 
         doThrow(mockException).whenever(mockFagmodulRestTemplate).exchange(
-                ArgumentMatchers.eq("/buc/$mockRinaId/name"),
-                ArgumentMatchers.any(HttpMethod::class.java),
-                ArgumentMatchers.eq(null),
-                ArgumentMatchers.eq(String::class.java))
+                eq("/buc/$mockRinaId/name"),
+                any<HttpMethod>(),
+                eq(null),
+                eq(String::class.java))
 
         val response = bucController.getProcessDefinitionName(mockRinaId)
         assertEquals(mockresponse, response)
@@ -99,14 +100,14 @@ class BucControllerTest : FagmodulBaseTest()  {
         val mockResponse = ResponseEntity(mockbody , HttpStatus.OK)
 
         doReturn(mockResponse).whenever(mockFagmodulRestTemplate).exchange(
-                ArgumentMatchers.eq("/buc/$mockRinaId"),
-                ArgumentMatchers.any(HttpMethod::class.java),
-                ArgumentMatchers.eq(null),
-                ArgumentMatchers.eq(String::class.java))
+                eq("/buc/$mockRinaId"),
+                any<HttpMethod>(),
+                eq(null),
+                eq(String::class.java))
 
         val generatedResponse = bucController.getBuc(mockRinaId)
-        Assert.assertEquals(mockResponse, generatedResponse)
-        Assert.assertEquals(mockbody, generatedResponse.body)
+        assertEquals(mockResponse, generatedResponse)
+        assertEquals(mockbody, generatedResponse.body)
     }
 
     @Test
@@ -117,15 +118,15 @@ class BucControllerTest : FagmodulBaseTest()  {
 
 
         doReturn(mockResponse).whenever(mockFagmodulRestTemplate).exchange(
-                ArgumentMatchers.eq("/buc/$mockRinaId"),
-                ArgumentMatchers.any(HttpMethod::class.java),
-                ArgumentMatchers.eq(null),
-                ArgumentMatchers.eq(String::class.java))
+                eq("/buc/$mockRinaId"),
+                any<HttpMethod>(),
+                eq(null),
+                eq(String::class.java))
 
         val generatedResponse = bucController.getBuc(mockRinaId)
-        Assert.assertEquals(true, generatedResponse.statusCode.isError)
-        Assert.assertEquals(HttpStatus.NOT_FOUND, generatedResponse.statusCode)
-        Assert.assertEquals(mockbody, generatedResponse.body)
+        assertEquals(true, generatedResponse.statusCode.isError)
+        assertEquals(HttpStatus.NOT_FOUND, generatedResponse.statusCode)
+        assertEquals(mockbody, generatedResponse.body)
     }
 
 
@@ -137,18 +138,18 @@ class BucControllerTest : FagmodulBaseTest()  {
         val mockError = "Feil ved henting av Buc, Melding: ${mockException.message}"
 
         doThrow(mockException).whenever(mockFagmodulRestTemplate).exchange(
-                ArgumentMatchers.eq("/buc/$mockRinaId"),
-                ArgumentMatchers.any(HttpMethod::class.java),
-                ArgumentMatchers.eq(null),
-                ArgumentMatchers.eq(String::class.java))
+                eq("/buc/$mockRinaId"),
+                any<HttpMethod>(),
+                eq(null),
+                eq(String::class.java))
 
         val generatedResponse = bucController.getBuc(mockRinaId)
         val generatedBody = ObjectMapper().readTree(generatedResponse.body)
 
-        Assert.assertEquals(HttpStatus.NOT_FOUND, generatedResponse.statusCode)
-        Assert.assertEquals(false, generatedBody.get("success").booleanValue)
-        Assert.assertEquals(mockError, generatedBody.get("error").textValue)
-        Assert.assertTrue(generatedBody.get("uuid").textValue.matches(Regex("\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}")))
+        assertEquals(HttpStatus.NOT_FOUND, generatedResponse.statusCode)
+        assertEquals(false, generatedBody.get("success").booleanValue)
+        assertEquals(mockError, generatedBody.get("error").textValue)
+        assertTrue(generatedBody.get("uuid").textValue.matches(Regex("\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}")))
     }
 
     @Test
@@ -158,14 +159,14 @@ class BucControllerTest : FagmodulBaseTest()  {
         val mockResponse = ResponseEntity(mockbody , HttpStatus.OK)
 
         doReturn(mockResponse).whenever(mockFagmodulRestTemplate).exchange(
-                ArgumentMatchers.eq("/buc/$mockRinaId/allDocuments"),
-                ArgumentMatchers.any(HttpMethod::class.java),
-                ArgumentMatchers.eq(null),
-                ArgumentMatchers.eq(String::class.java))
+                eq("/buc/$mockRinaId/allDocuments"),
+                any<HttpMethod>(),
+                eq(null),
+                eq(String::class.java))
 
         val generatedResponse = bucController.getAllDocuments(mockRinaId)
-        Assert.assertEquals(mockResponse, generatedResponse)
-        Assert.assertEquals(mockbody, generatedResponse.body)
+        assertEquals(mockResponse, generatedResponse)
+        assertEquals(mockbody, generatedResponse.body)
 
     }
 
@@ -177,14 +178,14 @@ class BucControllerTest : FagmodulBaseTest()  {
         val mockResponse = ResponseEntity(mockbody , HttpStatus.OK)
 
         doReturn(mockResponse).whenever(mockFagmodulRestTemplate).exchange(
-                ArgumentMatchers.eq("/buc/$mockRinaId/aksjoner/$mockfilter"),
-                ArgumentMatchers.any(HttpMethod::class.java),
-                ArgumentMatchers.eq(null),
-                ArgumentMatchers.eq(String::class.java))
+                eq("/buc/$mockRinaId/aksjoner/$mockfilter"),
+                any<HttpMethod>(),
+                eq(null),
+                eq(String::class.java))
 
         val generatedResponse = bucController.getMuligeAksjonerFilter(mockRinaId, mockfilter)
-        Assert.assertEquals(mockResponse, generatedResponse)
-        Assert.assertEquals(mockbody, generatedResponse.body)
+        assertEquals(mockResponse, generatedResponse)
+        assertEquals(mockbody, generatedResponse.body)
 
     }
 
@@ -195,14 +196,14 @@ class BucControllerTest : FagmodulBaseTest()  {
             val mockResponse = ResponseEntity(mockbody , HttpStatus.OK)
 
             doReturn(mockResponse).whenever(mockFagmodulRestTemplate).exchange(
-                    ArgumentMatchers.eq("/buc/$mockRinaId/aksjoner"),
-                    ArgumentMatchers.any(HttpMethod::class.java),
-                    ArgumentMatchers.eq(null),
-                    ArgumentMatchers.eq(String::class.java))
+                    eq("/buc/$mockRinaId/aksjoner"),
+                    any<HttpMethod>(),
+                    eq(null),
+                    eq(String::class.java))
 
             val generatedResponse = bucController.getMuligeAksjoner(mockRinaId)
-            Assert.assertEquals(mockResponse, generatedResponse)
-            Assert.assertEquals(mockbody, generatedResponse.body)
+            assertEquals(mockResponse, generatedResponse)
+            assertEquals(mockbody, generatedResponse.body)
 
         }
 

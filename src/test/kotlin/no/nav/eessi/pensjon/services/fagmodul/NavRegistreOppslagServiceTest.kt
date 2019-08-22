@@ -1,13 +1,14 @@
 package no.nav.eessi.pensjon.services.fagmodul
 
+import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.whenever
 import no.nav.eessi.pensjon.utils.mapAnyToJson
-import org.hamcrest.core.IsInstanceOf
-import org.junit.After
-import org.junit.Assert
-import org.junit.Test
-import org.mockito.ArgumentMatchers
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.mockito.Mockito
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
@@ -16,7 +17,7 @@ import org.springframework.http.ResponseEntity
 
 class NavRegistreOppslagServiceTest: FagmodulBaseTest() {
 
-    @After
+    @AfterEach
     fun cleanUpTest() {
         Mockito.reset(mockFagmodulRestTemplate)
     }
@@ -30,13 +31,13 @@ class NavRegistreOppslagServiceTest: FagmodulBaseTest() {
         val mockResponse = ResponseEntity(expectedResponse, HttpStatus.OK)
 
         doReturn(mockResponse).whenever(mockFagmodulRestTemplate).exchange(
-                ArgumentMatchers.eq("/personinfo/$aktoerId"),
-                ArgumentMatchers.any(HttpMethod::class.java),
-                ArgumentMatchers.any(HttpEntity::class.java),
-                ArgumentMatchers.eq(Personinformasjon::class.java))
+                eq("/personinfo/$aktoerId"),
+                any<HttpMethod>(),
+                any<HttpEntity<*>>(),
+                eq(Personinformasjon::class.java))
 
         val generatedResponse = navRegistreOppslagService.hentPersoninformasjon(aktoerId)
-        Assert.assertEquals(generatedResponse, expectedResponse)
+        assertEquals(generatedResponse, expectedResponse)
     }
 
     @Test
@@ -46,17 +47,15 @@ class NavRegistreOppslagServiceTest: FagmodulBaseTest() {
         val mockResponse = ResponseEntity("", HttpStatus.BAD_REQUEST)
 
         doReturn(mockResponse).whenever(mockFagmodulRestTemplate).exchange(
-                ArgumentMatchers.eq("/personinfo/$aktoerId"),
-                ArgumentMatchers.any(HttpMethod::class.java),
-                ArgumentMatchers.any(HttpEntity::class.java),
-                ArgumentMatchers.eq(Personinformasjon::class.java))
+                eq("/personinfo/$aktoerId"),
+                any<HttpMethod>(),
+                any<HttpEntity<*>>(),
+                eq(Personinformasjon::class.java))
 
-        try {
+        val exception = assertThrows<PersonInformasjonException> {
             navRegistreOppslagService.hentPersoninformasjon(aktoerId)
-        } catch (e : Exception) {
-            Assert.assertThat(e, IsInstanceOf.instanceOf(PersonInformasjonException::class.java))
-            Assert.assertEquals(e.message, "Feil ved henting av Personinformasjon")
         }
+        assertEquals(exception.message, "Feil ved henting av Personinformasjon")
     }
 
     @Test
@@ -68,13 +67,13 @@ class NavRegistreOppslagServiceTest: FagmodulBaseTest() {
         val mockResponse = ResponseEntity(mockData, HttpStatus.OK)
 
         doReturn(mockResponse).whenever(mockFagmodulRestTemplate).exchange(
-                ArgumentMatchers.eq("/personinfo/$aktoerId"),
-                ArgumentMatchers.any(HttpMethod::class.java),
-                ArgumentMatchers.any(HttpEntity::class.java),
-                ArgumentMatchers.eq(Personinformasjon::class.java))
+                eq("/personinfo/$aktoerId"),
+                any<HttpMethod>(),
+                any<HttpEntity<*>>(),
+                eq(Personinformasjon::class.java))
 
         val generatedResponse = navRegistreOppslagService.hentPersoninformasjonNavn(aktoerId)
-        Assert.assertEquals(generatedResponse, expectedResponse)
+        assertEquals(generatedResponse, expectedResponse)
     }
 
     @Test
@@ -84,13 +83,13 @@ class NavRegistreOppslagServiceTest: FagmodulBaseTest() {
         val mockResponse = ResponseEntity( mapAnyToJson(expectedResponse), HttpStatus.OK)
 
         doReturn(mockResponse).whenever(mockFagmodulRestTemplate).exchange(
-                ArgumentMatchers.eq("/landkoder/landkoder2"),
-                ArgumentMatchers.any(HttpMethod::class.java),
-                ArgumentMatchers.any(HttpEntity::class.java),
-                ArgumentMatchers.eq(String::class.java))
+                eq("/landkoder/landkoder2"),
+                any<HttpMethod>(),
+                any<HttpEntity<*>>(),
+                eq(String::class.java))
 
         val generatedResponse: List<String> = navRegistreOppslagService.landkoder()
-        Assert.assertEquals(generatedResponse, expectedResponse)
+        assertEquals(generatedResponse, expectedResponse)
     }
 
     @Test
@@ -99,18 +98,14 @@ class NavRegistreOppslagServiceTest: FagmodulBaseTest() {
         val mockResponse = ResponseEntity("", HttpStatus.BAD_REQUEST)
 
         doReturn(mockResponse).whenever(mockFagmodulRestTemplate).exchange(
-                ArgumentMatchers.eq("/landkoder/landkoder2"),
-                ArgumentMatchers.any(HttpMethod::class.java),
-                ArgumentMatchers.any(HttpEntity::class.java),
-                ArgumentMatchers.eq(String::class.java))
+                eq("/landkoder/landkoder2"),
+                any<HttpMethod>(),
+                any<HttpEntity<*>>(),
+                eq(String::class.java))
 
-        try {
+        val exception = assertThrows<LandkodeException> {
             navRegistreOppslagService.landkoder()
-        } catch (e : Exception) {
-            Assert.assertThat(e, IsInstanceOf.instanceOf(LandkodeException::class.java))
-            Assert.assertEquals(e.message, "Feil under listing av landkoder")
         }
+        assertEquals(exception.message, "Feil under listing av landkoder")
     }
-
-
 }

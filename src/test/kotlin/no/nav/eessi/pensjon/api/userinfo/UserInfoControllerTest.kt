@@ -4,17 +4,17 @@ import no.nav.eessi.pensjon.services.storage.S3StorageBaseTest
 import no.nav.eessi.pensjon.utils.mapAnyToJson
 import no.nav.eessi.pensjon.utils.mapJsonToAny
 import no.nav.eessi.pensjon.utils.typeRefs
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.springframework.http.ResponseEntity
 
 class UserInfoControllerTest : S3StorageBaseTest() {
     lateinit var userInfoController: UserInfoController
 
-    @Before
+    @BeforeEach
     fun mockSetup() {
         val mockOidcContextolder = generateMockContextHolder()
         userInfoController = Mockito.spy(UserInfoController(mockOidcContextolder,whitelistService)

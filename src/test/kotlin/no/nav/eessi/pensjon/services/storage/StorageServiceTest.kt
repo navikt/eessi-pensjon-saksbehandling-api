@@ -4,23 +4,22 @@ import com.amazonaws.AmazonClientException
 import com.amazonaws.AmazonServiceException
 import com.amazonaws.services.s3.model.AmazonS3Exception
 import com.amazonaws.services.s3.model.ListObjectsV2Request
+import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doThrow
 import com.nhaarman.mockitokotlin2.whenever
-import org.junit.After
-import org.junit.Assert
-import org.junit.Assert.*
-import org.junit.Test
-import org.mockito.ArgumentMatchers
-import org.mockito.ArgumentMatchers.anyString
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.mockito.Mockito
 import java.time.LocalDateTime
-import org.junit.Assert.assertEquals
 
 class StorageServiceTest : S3StorageBaseTest() {
 
     val BUCKET = "eessipensjon"
 
-    @After
+    @AfterEach
     fun cleanUpTest() {
         Mockito.reset(s3storageService)
     }
@@ -79,14 +78,14 @@ class StorageServiceTest : S3StorageBaseTest() {
         s3storageService.put(aktoerId + "___" + "$directory/testfile.txt", value)
 
         val fileList = s3storageService.list(aktoerId + "___" + directory)
-        assertEquals("Expect that 1 entry is returned", 1, fileList.size)
+        assertEquals(1, fileList.size, "Expect that 1 entry is returned")
 
         val fetchedValue = s3storageService.get(fileList[0])
-        assertEquals("The stored and fetched values should be equal", value , fetchedValue)
+        assertEquals(value, fetchedValue, "The stored and fetched values should be equal")
 
         s3storageService.delete(fileList[0])
         val fileListAfterDelete = s3storageService.list(aktoerId + "___" + directory)
-        assertEquals("Expect that 0 entries are returned", 0, fileListAfterDelete.size)
+        assertEquals(0, fileListAfterDelete.size, "Expect that 0 entries are returned")
     }
 
     @Test
@@ -102,7 +101,7 @@ class StorageServiceTest : S3StorageBaseTest() {
         s3storageService.put(path2, content)
 
         val generatedResponse = s3storageService.list(prefix)
-        Assert.assertEquals(listOf(path1), generatedResponse)
+        assertEquals(listOf(path1), generatedResponse)
     }
 
     @Test
@@ -111,10 +110,10 @@ class StorageServiceTest : S3StorageBaseTest() {
         val prefix = "12345678910___path"
 
         val generatedResponse = s3storageService.list(prefix)
-        Assert.assertEquals(listOf<String>(), generatedResponse)
+        assertEquals(listOf<String>(), generatedResponse)
     }
 
-    @Test(expected = AmazonClientException::class)
+    @Test
     fun `Calling valid S3StorageService|list with storage error rethrows error`() {
 
         val prefix = "12345678910___path"
@@ -122,9 +121,11 @@ class StorageServiceTest : S3StorageBaseTest() {
         val expectedError = AmazonServiceException("errorMessage")
         expectedError.statusCode = 500
 
-        doThrow(expectedError).whenever(s3MockClient).listObjectsV2(ArgumentMatchers.any<ListObjectsV2Request>())
+        doThrow(expectedError).whenever(s3MockClient).listObjectsV2(any<ListObjectsV2Request>())
 
-        s3storageService.list(prefix)
+        assertThrows<AmazonClientException> {
+            s3storageService.list(prefix)
+        }
     }
 
     @Test
@@ -137,19 +138,19 @@ class StorageServiceTest : S3StorageBaseTest() {
         s3storageService.put(path1, content)
 
         val generatedResponse = s3storageService.get(path1)
-        Assert.assertEquals(content, generatedResponse)
+        assertEquals(content, generatedResponse)
     }
 
-    @Test(expected = AmazonS3Exception::class)
+    @Test
     fun `Calling valid S3StorageService|get with empty storage throwes AmazonS3Exception`() {
-
         val path1 = "12345678910___path___123"
 
-        val generatedResponse = s3storageService.get(path1)
-        Assert.assertEquals(null, generatedResponse)
+        assertThrows<AmazonS3Exception> {
+            s3storageService.get(path1)
+        }
     }
 
-    @Test(expected = AmazonClientException::class)
+    @Test
     fun `Calling valid S3StorageService|get with storage error rethrows error`() {
 
         val path1 = "12345678910___path___123"
@@ -161,8 +162,10 @@ class StorageServiceTest : S3StorageBaseTest() {
         val expectedError = AmazonServiceException("errorMessage")
         expectedError.statusCode = 500
 
-        doThrow(expectedError).whenever(s3MockClient).getObject(anyString(), anyString())
-        s3storageService.get(path1)
+        doThrow(expectedError).whenever(s3MockClient).getObject(any<String>(), any<String>())
+        assertThrows<AmazonClientException> {
+            s3storageService.get(path1)
+        }
     }
 
     @Test
@@ -176,21 +179,23 @@ class StorageServiceTest : S3StorageBaseTest() {
         s3storageService.put(path1, content)
 
         val generatedResponse = s3storageService.delete(path1)
-        Assert.assertEquals(Unit, generatedResponse)
+        assertEquals(Unit, generatedResponse)
 
         val fileList = s3storageService.list(prefix)
         assertFalse(fileList.contains(path1))
     }
 
-    @Test(expected = AmazonS3Exception::class)
+    @Test
     fun `Calling valid S3StorageService|delete with empty storage throws error`() {
 
         val path1 = "12345678910___path___123"
 
-        s3storageService.delete(path1)
+        assertThrows<AmazonS3Exception> {
+            s3storageService.delete(path1)
+        }
     }
 
-    @Test(expected = AmazonClientException::class)
+    @Test
     fun `Calling valid S3StorageService|delete with storage error rethrows error`() {
 
         val path1 = "12345678910___path___123"
@@ -202,8 +207,11 @@ class StorageServiceTest : S3StorageBaseTest() {
         val expectedError = AmazonServiceException("errorMessage")
         expectedError.statusCode = 500
 
-        doThrow(expectedError).whenever(s3MockClient).deleteObject(anyString(), anyString())
-        s3storageService.delete(path1)
+        doThrow(expectedError).whenever(s3MockClient).deleteObject(any<String>(), any<String>())
+
+        assertThrows<AmazonClientException> {
+            s3storageService.delete(path1)
+        }
     }
 
     @Test
@@ -216,7 +224,7 @@ class StorageServiceTest : S3StorageBaseTest() {
         s3storageService.put(path1, content)
 
         val generatedResponse = s3storageService.get(path1)
-        Assert.assertEquals(content, generatedResponse)
+        assertEquals(content, generatedResponse)
     }
 
     @Test
@@ -231,10 +239,10 @@ class StorageServiceTest : S3StorageBaseTest() {
         s3storageService.put(path1, content2)
 
         val generatedResponse = s3storageService.get(path1)
-        Assert.assertEquals(content2, generatedResponse)
+        assertEquals(content2, generatedResponse)
     }
 
-    @Test(expected = AmazonClientException::class)
+    @Test
     fun `Calling valid S3StorageService|put with storage error rethrows error`() {
 
         val path1 = "12345678910___path___123"
@@ -243,10 +251,11 @@ class StorageServiceTest : S3StorageBaseTest() {
         val expectedError = AmazonServiceException("errorMessage")
         expectedError.statusCode = 500
 
+        doThrow(expectedError).whenever(s3MockClient).putObject(any<String>(), any<String>(), any<String>())
 
-        doThrow(expectedError).whenever(s3MockClient).putObject(anyString(), anyString(), anyString())
-
-        s3storageService.put(path1, content)
+        assertThrows<AmazonClientException> {
+            s3storageService.put(path1, content)
+        }
     }
 
     @Test

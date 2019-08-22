@@ -3,16 +3,18 @@ package no.nav.eessi.pensjon.services.whitelist
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
-import org.junit.Assert.*
 import no.nav.eessi.pensjon.services.storage.StorageService
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
 import org.mockito.Mockito
-import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.junit.jupiter.MockitoExtension
 
-@RunWith(MockitoJUnitRunner::class)
+@ExtendWith(MockitoExtension::class)
 class WhitelistServiceTest {
 
     @Mock
@@ -21,7 +23,7 @@ class WhitelistServiceTest {
     lateinit var whitelistService: WhitelistService
 
 
-    @Before
+    @BeforeEach
     fun setUp() {
         whitelistService = Mockito.spy(WhitelistService(storageService,
                 listOf("User1", "User2"),

@@ -3,10 +3,10 @@ package no.nav.eessi.pensjon.metrics
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.fail
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.mockito.Mockito.any
 import org.springframework.mock.web.MockFilterChain
 import org.springframework.mock.web.MockHttpServletRequest
@@ -76,11 +76,8 @@ class RequestCountFilterTest {
         val mockFilterChain = mock<FilterChain>()
         whenever(mockFilterChain.doFilter(any(), any())).thenThrow(ServletException())
 
-        try {
+        assertThrows<ServletException> {
             filter.doFilter(request, response, mockFilterChain)
-            fail("an exception should have been thrown!")
-        } catch (e: ServletException) {
-            // expected
         }
 
         assertCount(1, httpGet, someUri, FAILURE_VALUE, serverError, "ServletException")

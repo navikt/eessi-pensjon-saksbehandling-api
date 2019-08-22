@@ -10,8 +10,8 @@ import no.nav.eessi.pensjon.api.storage.StorageController
 import no.nav.eessi.pensjon.services.BaseTest
 import no.nav.eessi.pensjon.services.storage.amazons3.S3Storage
 import no.nav.eessi.pensjon.services.whitelist.WhitelistService
-import org.junit.After
-import org.junit.Before
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
 import org.mockito.Mockito
 import java.net.ServerSocket
 
@@ -23,7 +23,7 @@ open class S3StorageBaseTest : BaseTest() {
     lateinit var storageController : StorageController
     lateinit var whitelistService: WhitelistService
 
-    @Before fun setup() {
+    @BeforeEach fun setup() {
         val s3Port = randomOpenPort()
         s3api = S3Mock.Builder().withPort(s3Port).withInMemoryBackend().build()
         s3api.start()
@@ -52,7 +52,7 @@ open class S3StorageBaseTest : BaseTest() {
         storageController = Mockito.spy(StorageController(s3storageService))
     }
 
-    @After fun teardown() {
+    @AfterEach fun teardown() {
         s3api.stop()
     }
 

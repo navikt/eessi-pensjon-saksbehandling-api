@@ -9,10 +9,10 @@ import no.nav.eessi.pensjon.utils.mapAnyToJson
 import no.nav.eessi.pensjon.utils.mapJsonToAny
 import no.nav.eessi.pensjon.utils.toResponse
 import no.nav.eessi.pensjon.utils.typeRefs
-import org.junit.After
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
-import org.junit.Test
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -21,7 +21,7 @@ class EuxControllerTest : EuxBaseTest() {
 
     val rinaAksjonTypeRef = object : TypeReference<List<RinaAksjon>>() {}
 
-    @After fun cleanUpTest() {
+    @AfterEach fun cleanUpTest() {
         Mockito.reset(euxService);
     }
 

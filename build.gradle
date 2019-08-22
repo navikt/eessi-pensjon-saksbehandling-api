@@ -41,7 +41,9 @@ tasks.withType(JavaCompile) {
 
 test {
     systemProperty "file.encoding", "utf-8"
+    useJUnitPlatform()
 }
+
 
 group = 'no.nav.eessi'
 version = '0.0.1'
@@ -76,7 +78,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-aop")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation('org.springframework.boot:spring-boot-starter-websocket')
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude module: 'junit'
+        exclude module: "mockito-core"
+    }
     implementation("org.springframework:spring-jms")
     // MQ
     implementation("com.ibm.mq:com.ibm.mq.allclient:9.1.1.0")
@@ -137,7 +142,8 @@ dependencies {
     //mock
     testImplementation("no.nav.security:oidc-test-support:${oidcTokenSupportVersion}")
     testImplementation("org.mockito:mockito-core:${mockitoVersion}")
-    testImplementation('junit:junit:4.12')
+    testImplementation("org.junit.jupiter:junit-jupiter:5.5.1")
+    testImplementation('org.mockito:mockito-junit-jupiter:2.23.0')
     testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0")
     testImplementation("io.findify:s3mock_2.12:0.2.5")
 

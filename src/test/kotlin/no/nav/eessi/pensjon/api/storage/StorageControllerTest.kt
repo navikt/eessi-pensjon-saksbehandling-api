@@ -6,9 +6,10 @@ import com.nhaarman.mockitokotlin2.whenever
 import no.nav.eessi.pensjon.services.storage.S3StorageBaseTest
 import no.nav.eessi.pensjon.utils.errorBody
 import org.codehaus.jackson.map.ObjectMapper
-import org.junit.After
-import org.junit.Assert
-import org.junit.Test
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.springframework.http.HttpStatus
 
@@ -16,7 +17,7 @@ class StorageControllerTest : S3StorageBaseTest() {
 
     val mapper = ObjectMapper()
 
-    @After
+    @AfterEach
     fun cleanUpTest() {
         Mockito.reset(s3storageService)
     }
@@ -30,8 +31,8 @@ class StorageControllerTest : S3StorageBaseTest() {
 
         val generatedResponse = storageController.storeDocument(path, document)
 
-        Assert.assertTrue(generatedResponse.statusCode.is2xxSuccessful)
-        Assert.assertEquals(expectedResponse, generatedResponse.body!!)
+        assertTrue(generatedResponse.statusCode.is2xxSuccessful)
+        assertEquals(expectedResponse, generatedResponse.body!!)
     }
 
     @Test
@@ -48,10 +49,10 @@ class StorageControllerTest : S3StorageBaseTest() {
         val generatedResponse = storageController.storeDocument(path, document)
         val generatedBody = mapper.readTree(generatedResponse.body)
 
-        Assert.assertTrue(generatedResponse.statusCode.is5xxServerError)
-        Assert.assertEquals(false, generatedBody.get("success").booleanValue)
-        Assert.assertEquals(mockError, generatedBody.get("error").textValue)
-        Assert.assertTrue(generatedBody.get("uuid").textValue.matches(Regex("\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}")))
+        assertTrue(generatedResponse.statusCode.is5xxServerError)
+        assertEquals(false, generatedBody.get("success").booleanValue)
+        assertEquals(mockError, generatedBody.get("error").textValue)
+        assertTrue(generatedBody.get("uuid").textValue.matches(Regex("\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}")))
     }
 
     @Test
@@ -65,8 +66,8 @@ class StorageControllerTest : S3StorageBaseTest() {
 
         val generatedResponse = storageController.getDocument(path)
 
-        Assert.assertTrue(generatedResponse.statusCode.is2xxSuccessful)
-        Assert.assertEquals(document, generatedResponse.body!!)
+        assertTrue(generatedResponse.statusCode.is2xxSuccessful)
+        assertEquals(document, generatedResponse.body!!)
     }
 
     @Test
@@ -77,8 +78,8 @@ class StorageControllerTest : S3StorageBaseTest() {
         val generatedResponse = storageController.getDocument(path)
         val generatedBody = mapper.readTree(generatedResponse.body)
 
-        Assert.assertTrue(generatedResponse.statusCode == HttpStatus.NOT_FOUND)
-        Assert.assertEquals(generatedResponse.body, errorBody("S3 dokumentet eksisterer ikke", generatedBody.get("uuid").textValue))
+        assertTrue(generatedResponse.statusCode == HttpStatus.NOT_FOUND)
+        assertEquals(generatedResponse.body, errorBody("S3 dokumentet eksisterer ikke", generatedBody.get("uuid").textValue))
     }
 
     @Test
@@ -93,10 +94,10 @@ class StorageControllerTest : S3StorageBaseTest() {
         val generatedResponse = storageController.getDocument(path)
         val generatedBody = mapper.readTree(generatedResponse.body)
 
-        Assert.assertTrue(generatedResponse.statusCode.is5xxServerError)
-        Assert.assertEquals(false, generatedBody.get("success").booleanValue)
-        Assert.assertEquals(mockError, generatedBody.get("error").textValue)
-        Assert.assertTrue(generatedBody.get("uuid").textValue.matches(Regex("\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}")))
+        assertTrue(generatedResponse.statusCode.is5xxServerError)
+        assertEquals(false, generatedBody.get("success").booleanValue)
+        assertEquals(mockError, generatedBody.get("error").textValue)
+        assertTrue(generatedBody.get("uuid").textValue.matches(Regex("\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}")))
 
     }
 
@@ -114,8 +115,8 @@ class StorageControllerTest : S3StorageBaseTest() {
 
         val generatedResponse = storageController.listDocuments(prefix)
 
-        Assert.assertTrue(generatedResponse.statusCode.is2xxSuccessful)
-        Assert.assertEquals(listOf(path1), generatedResponse.body!!)
+        assertTrue(generatedResponse.statusCode.is2xxSuccessful)
+        assertEquals(listOf(path1), generatedResponse.body!!)
     }
 
     @Test
@@ -126,8 +127,8 @@ class StorageControllerTest : S3StorageBaseTest() {
         // stage
         val generatedResponse = storageController.listDocuments(prefix)
 
-        Assert.assertTrue(generatedResponse.statusCode.is2xxSuccessful)
-        Assert.assertEquals(listOf<String>(), generatedResponse.body!!)
+        assertTrue(generatedResponse.statusCode.is2xxSuccessful)
+        assertEquals(listOf<String>(), generatedResponse.body!!)
     }
 
     @Test
@@ -142,10 +143,10 @@ class StorageControllerTest : S3StorageBaseTest() {
         val generatedResponse = storageController.listDocuments(path)
         val generatedBody = mapper.readTree(generatedResponse.body!!.get(0))
 
-        Assert.assertTrue(generatedResponse.statusCode.is5xxServerError)
-        Assert.assertEquals(false, generatedBody.get("success").booleanValue)
-        Assert.assertEquals(mockError, generatedBody.get("error").textValue)
-        Assert.assertTrue(generatedBody.get("uuid").textValue.matches(Regex("\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}")))
+        assertTrue(generatedResponse.statusCode.is5xxServerError)
+        assertEquals(false, generatedBody.get("success").booleanValue)
+        assertEquals(mockError, generatedBody.get("error").textValue)
+        assertTrue(generatedBody.get("uuid").textValue.matches(Regex("\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}")))
     }
 
     @Test
@@ -160,11 +161,11 @@ class StorageControllerTest : S3StorageBaseTest() {
 
         val generatedResponse = storageController.deleteDocument(path1)
 
-        Assert.assertTrue(generatedResponse.statusCode.is2xxSuccessful)
-        Assert.assertEquals(expectedResponse,  mapper.readTree(generatedResponse.body))
+        assertTrue(generatedResponse.statusCode.is2xxSuccessful)
+        assertEquals(expectedResponse,  mapper.readTree(generatedResponse.body))
 
         val generatedResponse2 = storageController.listDocuments("12345678910___path")
-        Assert.assertEquals(listOf<String>(), generatedResponse2.body!!)
+        assertEquals(listOf<String>(), generatedResponse2.body!!)
     }
 
     @Test
@@ -177,13 +178,13 @@ class StorageControllerTest : S3StorageBaseTest() {
         val generatedResponse = storageController.deleteDocument(path1)
         val generatedBody = ObjectMapper().readTree(generatedResponse.body)
 
-        Assert.assertTrue(generatedResponse.statusCode.is4xxClientError)
-        Assert.assertEquals(false, generatedBody.get("success").booleanValue)
-        Assert.assertEquals(mockError, generatedBody.get("error").textValue)
-        Assert.assertTrue(generatedBody.get("uuid").textValue.matches(Regex("\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}")))
+        assertTrue(generatedResponse.statusCode.is4xxClientError)
+        assertEquals(false, generatedBody.get("success").booleanValue)
+        assertEquals(mockError, generatedBody.get("error").textValue)
+        assertTrue(generatedBody.get("uuid").textValue.matches(Regex("\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}")))
 
         val generatedResponse2 = storageController.listDocuments("12345678910___path")
-        Assert.assertEquals(listOf<String>(), generatedResponse2.body!!)
+        assertEquals(listOf<String>(), generatedResponse2.body!!)
     }
 
     @Test
@@ -199,9 +200,9 @@ class StorageControllerTest : S3StorageBaseTest() {
         val generatedResponse = storageController.deleteDocument(path1)
         val generatedBody = ObjectMapper().readTree(generatedResponse.body)
 
-        Assert.assertTrue(generatedResponse.statusCode.is5xxServerError)
-        Assert.assertEquals(false, generatedBody.get("success").booleanValue)
-        Assert.assertEquals(mockError, generatedBody.get("error").textValue)
-        Assert.assertTrue(generatedBody.get("uuid").textValue.matches(Regex("\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}")))
+        assertTrue(generatedResponse.statusCode.is5xxServerError)
+        assertEquals(false, generatedBody.get("success").booleanValue)
+        assertEquals(mockError, generatedBody.get("error").textValue)
+        assertTrue(generatedBody.get("uuid").textValue.matches(Regex("\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}")))
     }
 }
