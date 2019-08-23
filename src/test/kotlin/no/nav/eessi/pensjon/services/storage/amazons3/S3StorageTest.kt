@@ -6,24 +6,24 @@ import com.amazonaws.client.builder.AwsClientBuilder
 import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.AmazonS3ClientBuilder
 import io.findify.s3mock.S3Mock
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.junit.MockitoJUnitRunner
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.junit.jupiter.MockitoExtension
 import java.net.ServerSocket
 import java.time.LocalDateTime
-import kotlin.test.assertEquals
 
 
-@RunWith(MockitoJUnitRunner::class)
+@ExtendWith(MockitoExtension::class)
 class S3StorageTest {
 
     private lateinit var storage: S3Storage
     private lateinit var s3MockClient: AmazonS3
     private lateinit var s3api: S3Mock
 
-    @Before
+    @BeforeEach
     fun setup() {
         val s3Port = randomOpenPort()
 
@@ -45,7 +45,7 @@ class S3StorageTest {
         storage.init()
     }
 
-    @After
+    @AfterEach
     fun teardown() {
         s3api.stop()
     }

@@ -6,9 +6,9 @@ import com.tngtech.archunit.core.importer.ImportOption
 import com.tngtech.archunit.library.Architectures
 import com.tngtech.archunit.library.dependencies.SlicesRuleDefinition.slices
 import no.nav.eessi.pensjon.Application
-import org.junit.Test
-import org.junit.BeforeClass
-import kotlin.test.assertTrue
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 
 class ArchitectureTest {
 
@@ -21,7 +21,7 @@ class ArchitectureTest {
         @JvmStatic
         lateinit var classesToAnalyze: JavaClasses
 
-        @BeforeClass
+        @BeforeAll
         @JvmStatic
         fun `extract classes`() {
             classesToAnalyze = ClassFileImporter().withImportOption(ImportOption.DoNotIncludeTests()).importPackages(root)

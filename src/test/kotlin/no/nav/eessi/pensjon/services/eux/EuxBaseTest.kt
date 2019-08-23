@@ -1,10 +1,10 @@
 package no.nav.eessi.pensjon.services.eux
 
 import no.nav.eessi.pensjon.api.eux.EuxController
-import no.nav.eessi.pensjon.services.BaseTest
 import no.nav.eessi.pensjon.api.fagmodul.BucController
+import no.nav.eessi.pensjon.services.BaseTest
 import no.nav.eessi.pensjon.services.fagmodul.NavRegistreOppslagService
-import org.junit.Before
+import org.junit.jupiter.api.BeforeEach
 import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.web.client.RestTemplateBuilder
@@ -23,7 +23,7 @@ open class EuxBaseTest : BaseTest() {
     lateinit var navRegistreService: NavRegistreOppslagService
     lateinit var bucController: BucController
 
-    @Before
+    @BeforeEach
     fun _init() {
 
         fun generateMockEuxRestTemplate(): RestTemplate {

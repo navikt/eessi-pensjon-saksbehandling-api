@@ -1,16 +1,16 @@
 package no.nav.eessi.pensjon.api.login
 
 import com.nhaarman.mockitokotlin2.verify
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
 import org.mockito.Spy
-import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.mock.web.MockHttpServletResponse
 
-@RunWith(MockitoJUnitRunner::class)
+@ExtendWith(MockitoExtension::class)
 class FssLoginControllerTest {
 
     @Spy
@@ -21,7 +21,7 @@ class FssLoginControllerTest {
 
     lateinit var fssLoginController: LoginController
 
-    @Before
+    @BeforeEach
     fun before(){
         fssLoginController = LoginController()
         fssLoginController.appName = "eessi-pensjon-frontend-api-fss"

@@ -2,10 +2,10 @@ package no.nav.eessi.pensjon.services.fagmodul
 
 import no.nav.eessi.pensjon.api.fagmodul.BucController
 import no.nav.eessi.pensjon.api.fagmodul.SedController
-import no.nav.eessi.pensjon.services.BaseTest
 import no.nav.eessi.pensjon.api.pensjon.PensjonController
-import org.junit.Before
-import org.junit.Test
+import no.nav.eessi.pensjon.services.BaseTest
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.springframework.web.client.RestTemplate
 
@@ -18,7 +18,7 @@ open class FagmodulBaseTest : BaseTest() {
     lateinit var pensjonController: PensjonController
 
 
-    @Before
+    @BeforeEach
     fun _init() {
 
         mockFagmodulRestTemplate = generateMockFagmodulRestTemplate()

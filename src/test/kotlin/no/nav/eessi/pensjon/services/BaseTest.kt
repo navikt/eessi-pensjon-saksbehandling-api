@@ -9,15 +9,15 @@ import no.nav.security.oidc.context.OIDCValidationContext
 import no.nav.security.oidc.context.TokenContext
 import no.nav.security.oidc.test.support.spring.TokenGeneratorConfiguration
 import org.apache.commons.io.FileUtils
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.context.annotation.Import
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.junit4.SpringRunner
+import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.web.client.DefaultResponseErrorHandler
 import org.springframework.web.client.RestTemplate
 import java.io.File
@@ -25,9 +25,9 @@ import java.nio.charset.Charset
 
 
 @ActiveProfiles("test")
-@RunWith(SpringRunner::class)
 @Import(TokenGeneratorConfiguration::class)
 @DirtiesContext
+@ExtendWith(SpringExtension::class)
 open class BaseTest {
 
     @Value("\${fagmodul.url:http://localhost:8081}")

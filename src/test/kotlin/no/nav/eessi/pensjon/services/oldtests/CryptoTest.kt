@@ -1,11 +1,13 @@
 package no.nav.eessi.pensjon.services.oldtests
 
 import no.nav.eessi.pensjon.services.storage.Crypto
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotEquals
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import java.nio.charset.Charset
 import javax.xml.bind.DatatypeConverter.parseHexBinary
-import kotlin.test.assertEquals
-import kotlin.test.assertNotEquals
+
 
 class CryptoTest {
 
@@ -48,7 +50,7 @@ class CryptoTest {
         assertEquals(plaintext, decrypted)
     }
 
-    @Test(expected = RuntimeException::class)
+    @Test
     fun `encryption and decryption with different salts should fail`() {
 
         val passphrase = "A secret passphrase"
@@ -60,10 +62,12 @@ class CryptoTest {
         assertNotEquals(plaintext, encrypted)
 
         val decrypto = Crypto(passphrase, salt.reversed())
-        decrypto.decrypt(encrypted)
+        assertThrows<RuntimeException> {
+            decrypto.decrypt(encrypted)
+        }
     }
 
-    @Test(expected = RuntimeException::class)
+    @Test
     fun `encryption and decryption with different passwords should fail`() {
 
         val passphrase = "A secret passphrase"
@@ -75,16 +79,23 @@ class CryptoTest {
         assertNotEquals(plaintext, encrypted)
 
         val decrypto = Crypto(passphrase.reversed(), salt)
-        decrypto.decrypt(encrypted)
+
+        assertThrows<RuntimeException> {
+            decrypto.decrypt(encrypted)
+        }
     }
 
-    @Test(expected = IllegalArgumentException::class)
+    @Test
     fun `passphrase must be proveded`() {
-        Crypto("", "1234")
+        assertThrows<IllegalArgumentException> {
+            Crypto("", "1234")
+        }
     }
 
-    @Test(expected = IllegalArgumentException::class)
+    @Test
     fun `salt must be proveded`() {
-        Crypto("1234", "")
+        assertThrows<IllegalArgumentException> {
+            Crypto("1234", "")
+        }
     }
 }

@@ -1,17 +1,22 @@
 package no.nav.eessi.pensjon.api.submit
 
-import com.nhaarman.mockitokotlin2.*
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.doNothing
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.doThrow
+import com.nhaarman.mockitokotlin2.whenever
 import no.nav.eessi.pensjon.utils.mapAnyToJson
-import org.junit.After
-import org.junit.Assert
-import org.junit.Test
-import org.mockito.ArgumentMatchers
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.mockito.Mockito
 import org.springframework.http.ResponseEntity
 
 class SubmitControllerTest : SubmitBaseTest() {
 
-    @After fun cleanUpTest() {
+    @AfterEach fun cleanUpTest() {
         Mockito.reset(mockFagmodulRestTemplate)
         Mockito.reset(kafkaService)
         Mockito.reset(s3storageService)
@@ -25,21 +30,21 @@ class SubmitControllerTest : SubmitBaseTest() {
                 comment = "comment"
         )
 
-        doNothing().whenever(kafkaService).publishSubmissionReceivedEvent(ArgumentMatchers.anyString())
+        doNothing().whenever(kafkaService).publishSubmissionReceivedEvent(any())
 
         val generatedResponse = receiveSubmissionController.receiveSubmission(mockRequest)
         val filename = generatedResponse.get("filename")!!
 
-        Assert.assertTrue(filename.startsWith("12345678910___PinfoSubmission___"))
-        Assert.assertTrue(filename.endsWith(".json"))
+        assertTrue(filename.startsWith("12345678910___PinfoSubmission___"))
+        assertTrue(filename.endsWith(".json"))
 
         val content = storageController.getDocument(filename)
 
         val json = mapper.readTree(content.body!!)
-        Assert.assertTrue(json.has("periodeInfo"))
-        Assert.assertTrue(json.has("personInfo"))
-        Assert.assertTrue(json.has("bankinfo"))
-        Assert.assertTrue(json.has("comment"))
+        assertTrue(json.has("periodeInfo"))
+        assertTrue(json.has("personInfo"))
+        assertTrue(json.has("bankinfo"))
+        assertTrue(json.has("comment"))
     }
 
     @Test fun `Calling receiveSubmissionController|receiveSubmission fail on s3`() {
@@ -50,14 +55,11 @@ class SubmitControllerTest : SubmitBaseTest() {
                 comment = "comment"
         )
 
-        doNothing().whenever(kafkaService).publishSubmissionReceivedEvent(ArgumentMatchers.anyString())
+        doNothing().whenever(kafkaService).publishSubmissionReceivedEvent(any())
         doThrow(RuntimeException("Feiler her ved s3")).whenever(s3storageService).put(any(),any())
 
-        try {
+        assertThrows<Exception> {
             receiveSubmissionController.receiveSubmission(mockRequest)
-            Assert.fail("skal ikke komme hit!")
-        } catch (ex: Exception) {
-            Assert.assertTrue("Skal komme hit!", true)
         }
     }
 
@@ -75,9 +77,9 @@ class SubmitControllerTest : SubmitBaseTest() {
         val latestSubmission = "${subject}___${receiveSubmissionController.PINFO_SUBMISSION}___2028-09-01T00:00:00.json"
         val inputFileName = "${subject}___${receiveSubmissionController.PINFO_SUBMISSION}___2028-09-01T00:00:00.json"
 
-        doReturn(mockResponse).whenever(s3storageService).list(ArgumentMatchers.anyString())
-        doReturn(latestSubmission).whenever(s3storageService).get(ArgumentMatchers.anyString())
-        doNothing().whenever(kafkaService).publishSubmissionReceivedEvent(ArgumentMatchers.anyString())
+        doReturn(mockResponse).whenever(s3storageService).list(any())
+        doReturn(latestSubmission).whenever(s3storageService).get(any())
+        doNothing().whenever(kafkaService).publishSubmissionReceivedEvent(any())
 
         val generatedResponse = receiveSubmissionController.resendSubmission(inputFileName)
         //Assert.assertEquals(HttpStatus.OK, generatedResponse.statusCode)
@@ -94,9 +96,9 @@ class SubmitControllerTest : SubmitBaseTest() {
         val latestSubmission = "${subject}___${receiveSubmissionController.PINFO_SUBMISSION}___2028-09-01T00:00:00.json"
         val inputFileName = "${subject}___${receiveSubmissionController.PINFO_SUBMISSION}___2028-09-01T00:00:00.json"
 
-        doReturn(mockResponse).whenever(s3storageService).list(ArgumentMatchers.anyString())
-        doReturn(latestSubmission).whenever(s3storageService).get(ArgumentMatchers.anyString())
-        doThrow(RuntimeException("This did not work")).whenever(kafkaService).publishSubmissionReceivedEvent(ArgumentMatchers.anyString())
+        doReturn(mockResponse).whenever(s3storageService).list(any())
+        doReturn(latestSubmission).whenever(s3storageService).get(any())
+        doThrow(RuntimeException("This did not work")).whenever(kafkaService).publishSubmissionReceivedEvent(any())
 
         val generatedResponse = receiveSubmissionController.resendSubmission(inputFileName)
         //Assert.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, generatedResponse.statusCode)
@@ -112,17 +114,14 @@ class SubmitControllerTest : SubmitBaseTest() {
         val latestSubmission = "${subject}___${receiveSubmissionController.PINFO_SUBMISSION}___2028-09-01T00:00:00.json"
         val inputFileName = "${subject}___${receiveSubmissionController.PINFO_SUBMISSION}___2028-09-01T00:00:00.json"
 
-        doNothing().whenever(kafkaService).publishSubmissionReceivedEvent(ArgumentMatchers.anyString())
+        doNothing().whenever(kafkaService).publishSubmissionReceivedEvent(any())
 
-        doReturn(mockResponse).whenever(s3storageService).list(ArgumentMatchers.anyString())
-        doReturn(latestSubmission).whenever(s3storageService).get(ArgumentMatchers.anyString())
+        doReturn(mockResponse).whenever(s3storageService).list(any())
+        doReturn(latestSubmission).whenever(s3storageService).get(any())
 
-        whenever(kafkaService.publishSubmissionReceivedEvent(ArgumentMatchers.anyString())).thenThrow(RuntimeException("This did not work"))
-        try {
+        doThrow(RuntimeException("This did not work")).whenever(kafkaService).publishSubmissionReceivedEvent(any())
+        assertThrows<Exception> {
             receiveSubmissionController.putOnKafka(inputFileName, uuid)
-            Assert.fail()
-        } catch (ex: Exception) {
-            Assert.assertTrue("Hit skal man komme i denne testen!!",true)
         }
     }
 
@@ -138,14 +137,14 @@ class SubmitControllerTest : SubmitBaseTest() {
         doThrow(RuntimeException("This did not work"))
             .doThrow(RuntimeException("This did not work"))
             .doNothing()
-            .whenever(kafkaService).publishSubmissionReceivedEvent(ArgumentMatchers.anyString())
+            .whenever(kafkaService).publishSubmissionReceivedEvent(any())
 
-        doReturn(mockResponse).whenever(s3storageService).list(ArgumentMatchers.anyString())
-        doReturn(latestSubmission).whenever(s3storageService).get(ArgumentMatchers.anyString())
+        doReturn(mockResponse).whenever(s3storageService).list(any())
+        doReturn(latestSubmission).whenever(s3storageService).get(any())
 
         val response = receiveSubmissionController.putOnKafka(inputFileName, uuid)
 
-        Assert.assertEquals(uuid, response)
+        assertEquals(uuid, response)
     }
 
     @Test fun `receiveSubmissionController| putOnKafka successful`() {
@@ -158,14 +157,14 @@ class SubmitControllerTest : SubmitBaseTest() {
         val inputFileName = "${subject}___${receiveSubmissionController.PINFO_SUBMISSION}___2028-09-01T00:00:00.json"
 
             doNothing()
-            .whenever(kafkaService).publishSubmissionReceivedEvent(ArgumentMatchers.anyString())
+            .whenever(kafkaService).publishSubmissionReceivedEvent(any())
 
-        doReturn(mockResponse).whenever(s3storageService).list(ArgumentMatchers.anyString())
-        doReturn(latestSubmission).whenever(s3storageService).get(ArgumentMatchers.anyString())
+        doReturn(mockResponse).whenever(s3storageService).list(any())
+        doReturn(latestSubmission).whenever(s3storageService).get(any())
 
         val response = receiveSubmissionController.putOnKafka(inputFileName, uuid)
 
-        Assert.assertEquals(uuid, response)
+        assertEquals(uuid, response)
     }
 
     @Test fun `Calling receiveSubmissionController|getSubmission does sort and returns most recent item`() {
@@ -184,7 +183,7 @@ class SubmitControllerTest : SubmitBaseTest() {
         doReturn(expectedResponse).whenever(s3storageService).get(expectedSelectedFile)
 
         val generatedResponse = receiveSubmissionController.getSubmission(subject)
-        Assert.assertEquals(expectedResponse, generatedResponse)
+        assertEquals(expectedResponse, generatedResponse)
     }
 
     @Test fun `Calling receiveSubmissionController|getSubmissionJson gets getSubmission in JSON`() {
@@ -205,6 +204,6 @@ class SubmitControllerTest : SubmitBaseTest() {
         doReturn(mockContent).whenever(s3storageService).get(expectedSelectedFile)
 
         val generatedResponse = receiveSubmissionController.getSubmissionAsJson(subject)
-        Assert.assertEquals(expectedResponse, generatedResponse)
+        assertEquals(expectedResponse, generatedResponse)
     }
 }

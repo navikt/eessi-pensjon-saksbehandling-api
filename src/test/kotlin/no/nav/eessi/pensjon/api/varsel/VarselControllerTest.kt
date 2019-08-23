@@ -1,20 +1,26 @@
 package no.nav.eessi.pensjon.api.varsel
 
-import com.nhaarman.mockitokotlin2.*
+import com.nhaarman.mockitokotlin2.doNothing
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.doThrow
+import com.nhaarman.mockitokotlin2.times
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.whenever
 import no.nav.eessi.pensjon.services.varsel.VarselBaseTest
 import no.nav.eessi.pensjon.services.varsel.VarselServiceException
 import no.nav.eessi.pensjon.utils.successBody
 import org.codehaus.jackson.map.ObjectMapper
-import org.junit.After
-import org.junit.Assert
-import org.junit.Test
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 
 class VarselControllerTest : VarselBaseTest() {
 
-    @After
+    @AfterEach
     fun cleanUpTest() {
         Mockito.reset(varselService)
     }
@@ -28,7 +34,7 @@ class VarselControllerTest : VarselBaseTest() {
         doNothing().whenever(varselService).sendVarsel(aktoerId, saksId, "EessiPenVarsleBrukerUfore")
         val expectedResponse = ResponseEntity(successBody(), HttpStatus.OK)
         val generatedResponse = varselController.sendVarsel(aktoerId, saksId)
-        Assert.assertEquals(expectedResponse, generatedResponse)
+        assertEquals(expectedResponse, generatedResponse)
     }
 
     @Test
@@ -43,10 +49,10 @@ class VarselControllerTest : VarselBaseTest() {
         val generatedResponse = varselController.sendVarsel(aktoerId, saksId)
         val generatedBody = ObjectMapper().readTree(generatedResponse.body)
 
-        Assert.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, generatedResponse.statusCode)
-        Assert.assertEquals(false, generatedBody.get("success").booleanValue)
-        Assert.assertEquals(e.message, generatedBody.get("error").textValue)
-        Assert.assertTrue(generatedBody.get("uuid").textValue.matches(Regex("\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}")))
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, generatedResponse.statusCode)
+        assertEquals(false, generatedBody.get("success").booleanValue)
+        assertEquals(e.message, generatedBody.get("error").textValue)
+        assertTrue(generatedBody.get("uuid").textValue.matches(Regex("\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}")))
     }
 
     @Test

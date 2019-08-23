@@ -1,21 +1,18 @@
 package no.nav.eessi.pensjon.api.fagmodul
 
+import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.doThrow
+import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.whenever
-import no.nav.eessi.pensjon.services.fagmodul.BucOpprettelseException
 import no.nav.eessi.pensjon.services.fagmodul.FagmodulBaseTest
-import no.nav.eessi.pensjon.services.fagmodul.SedDokumentHentingException
-import no.nav.eessi.pensjon.services.fagmodul.SedDokumentLeggeTilException
-import no.nav.eessi.pensjon.services.fagmodul.SedDokumentOpprettelseException
-import no.nav.eessi.pensjon.services.fagmodul.SedDokumentSlettingException
 import no.nav.eessi.pensjon.services.fagmodul.SedRequest
 import no.nav.eessi.pensjon.utils.successBody
 import org.codehaus.jackson.map.ObjectMapper
-import org.hamcrest.core.IsInstanceOf
-import org.junit.After
-import org.junit.Assert
-import org.junit.Test
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito
 import org.springframework.core.ParameterizedTypeReference
@@ -26,7 +23,7 @@ import org.springframework.http.ResponseEntity
 
 class SedControllerTest : FagmodulBaseTest() {
 
-    @After
+    @AfterEach
     fun cleanUpTest() {
         Mockito.reset(mockFagmodulRestTemplate)
     }
@@ -41,14 +38,14 @@ class SedControllerTest : FagmodulBaseTest() {
         val mockRequest = SedRequest()
         val mockResponse = ResponseEntity(expectedResponse, HttpStatus.OK)
         doReturn(mockResponse).whenever(mockFagmodulRestTemplate).exchange(
-                ArgumentMatchers.eq("/sed/buc/create"),
-                ArgumentMatchers.any(HttpMethod::class.java),
-                ArgumentMatchers.any(HttpEntity::class.java),
-                ArgumentMatchers.eq(String::class.java))
+                eq("/sed/buc/create"),
+                any<HttpMethod>(),
+                any<HttpEntity<*>>(),
+                eq(String::class.java))
 
         val generatedResponse = sedController.createDocument(mockRequest)
-        Assert.assertTrue(generatedResponse.statusCode.is2xxSuccessful)
-        Assert.assertEquals(generatedResponse.body, expectedResponse)
+        assertTrue(generatedResponse.statusCode.is2xxSuccessful)
+        assertEquals(generatedResponse.body, expectedResponse)
     }
 
     @Test
@@ -58,17 +55,18 @@ class SedControllerTest : FagmodulBaseTest() {
         val mockRequest = SedRequest()
 
         doReturn(mockResponse).whenever(mockFagmodulRestTemplate).exchange(
-                ArgumentMatchers.eq("/sed/buc/create"),
-                ArgumentMatchers.any(HttpMethod::class.java),
-                ArgumentMatchers.any(HttpEntity::class.java),
+                eq("/sed/buc/create"),
+                any(),
+                any(),
                 ArgumentMatchers.eq(String::class.java))
 
-        try {
-            sedController.createDocument(mockRequest)
-        } catch (e : Exception) {
-            Assert.assertThat(e, IsInstanceOf.instanceOf(BucOpprettelseException::class.java))
-            Assert.assertEquals(e.message, "Feil ved opprettelse av BUC (eux basis), Ingen EUXcaseid mottatt.")
-        }
+        val generatedResponse = sedController.createDocument(mockRequest)
+        val generatedBody = ObjectMapper().readTree(generatedResponse.body)
+
+        assertEquals(HttpStatus.NOT_FOUND, generatedResponse.statusCode) // TODO consider if the code is correct
+        assertEquals(false, generatedBody.get("success").booleanValue)
+        assertEquals("Opprettelse av BUC og SED på RINA feilet", generatedBody.get("error").textValue)
+        assertEquals("no-uuid", generatedBody.get("uuid").textValue)
     }
 
     @Test
@@ -80,18 +78,18 @@ class SedControllerTest : FagmodulBaseTest() {
         val mockError ="Opprettelse av BUC og SED på RINA feilet, Melding: ${mockException.message}"
 
         doThrow(mockException).whenever(mockFagmodulRestTemplate).exchange(
-                ArgumentMatchers.eq("/sed/buc/create"),
-                ArgumentMatchers.any(HttpMethod::class.java),
-                ArgumentMatchers.any(HttpEntity::class.java),
-                ArgumentMatchers.eq(String::class.java))
+                eq("/sed/buc/create"),
+                any<HttpMethod>(),
+                any<HttpEntity<*>>(),
+                eq(String::class.java))
 
         val generatedResponse = sedController.createDocument(mockRequest)
         val generatedBody = ObjectMapper().readTree(generatedResponse.body)
 
-        Assert.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, generatedResponse.statusCode)
-        Assert.assertEquals(false, generatedBody.get("success").booleanValue)
-        Assert.assertEquals(mockError, generatedBody.get("error").textValue)
-        Assert.assertTrue(generatedBody.get("uuid").textValue.matches(Regex("\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}")))
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, generatedResponse.statusCode)
+        assertEquals(false, generatedBody.get("success").booleanValue)
+        assertEquals(mockError, generatedBody.get("error").textValue)
+        assertTrue(generatedBody.get("uuid").textValue.matches(Regex("\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}")))
     }
 
     @Test
@@ -101,14 +99,14 @@ class SedControllerTest : FagmodulBaseTest() {
         val mockResponse = ResponseEntity(expectedResponse, HttpStatus.OK)
 
         doReturn(mockResponse).whenever(mockFagmodulRestTemplate).exchange(
-                ArgumentMatchers.eq("/sed/preview"),
-                ArgumentMatchers.any(HttpMethod::class.java),
-                ArgumentMatchers.any(HttpEntity::class.java),
-                ArgumentMatchers.eq(String::class.java))
+                eq("/sed/preview"),
+                any<HttpMethod>(),
+                any<HttpEntity<*>>(),
+                eq(String::class.java))
 
         val generatedResponse = sedController.confirmDocument(mockRequest)
-        Assert.assertTrue(generatedResponse.statusCode.is2xxSuccessful)
-        Assert.assertEquals(generatedResponse.body, expectedResponse)
+        assertTrue(generatedResponse.statusCode.is2xxSuccessful)
+        assertEquals(generatedResponse.body, expectedResponse)
     }
 
     @Test
@@ -118,17 +116,18 @@ class SedControllerTest : FagmodulBaseTest() {
         val mockResponse = ResponseEntity("", HttpStatus.BAD_REQUEST)
 
         doReturn(mockResponse).whenever(mockFagmodulRestTemplate).exchange(
-                ArgumentMatchers.eq("/sed/preview"),
-                ArgumentMatchers.any(HttpMethod::class.java),
-                ArgumentMatchers.any(HttpEntity::class.java),
+                eq("/sed/preview"),
+                any(),
+                any(),
                 ArgumentMatchers.eq(String::class.java))
 
-        try {
-            sedController.confirmDocument(mockRequest)
-        } catch (e : Exception) {
-            Assert.assertThat(e, IsInstanceOf.instanceOf(SedDokumentOpprettelseException::class.java))
-            Assert.assertEquals(e.message, "Ingen RINANR mottatt. feil ved opprett ny SED")
-        }
+        val generatedResponse = sedController.confirmDocument(mockRequest)
+        val generatedBody = ObjectMapper().readTree(generatedResponse.body)
+
+        assertEquals(HttpStatus.NOT_FOUND, generatedResponse.statusCode) // TODO consider if the code is correct
+        assertEquals(false, generatedBody.get("success").booleanValue)
+        assertEquals("Forhåndsvisning og preutfylling av SED", generatedBody.get("error").textValue)
+        assertEquals("no-uuid", generatedBody.get("uuid").textValue)
     }
 
     @Test
@@ -140,18 +139,18 @@ class SedControllerTest : FagmodulBaseTest() {
         val mockError = "Forhåndsvisning og preutfylling SED, Melding: ${mockException.message}"
 
         doThrow(mockException).whenever(mockFagmodulRestTemplate).exchange(
-                ArgumentMatchers.eq("/sed/preview"),
-                ArgumentMatchers.any(HttpMethod::class.java),
-                ArgumentMatchers.any(HttpEntity::class.java),
-                ArgumentMatchers.eq(String::class.java))
+                eq("/sed/preview"),
+                any<HttpMethod>(),
+                any<HttpEntity<*>>(),
+                eq(String::class.java))
 
         val generatedResponse = sedController.confirmDocument(mockRequest)
         val generatedBody = ObjectMapper().readTree(generatedResponse.body)
 
-        Assert.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, generatedResponse.statusCode)
-        Assert.assertEquals(false, generatedBody.get("success").booleanValue)
-        Assert.assertEquals(mockError, generatedBody.get("error").textValue)
-        Assert.assertTrue(generatedBody.get("uuid").textValue.matches(Regex("\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}")))
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, generatedResponse.statusCode)
+        assertEquals(false, generatedBody.get("success").booleanValue)
+        assertEquals(mockError, generatedBody.get("error").textValue)
+        assertTrue(generatedBody.get("uuid").textValue.matches(Regex("\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}")))
     }
 
     @Test
@@ -162,14 +161,14 @@ class SedControllerTest : FagmodulBaseTest() {
         val mockResponse = ResponseEntity.ok().body(expectedResponse)
 
         doReturn(mockResponse).whenever(mockFagmodulRestTemplate).exchange(
-                ArgumentMatchers.eq("/sed/add"),
-                ArgumentMatchers.any(HttpMethod::class.java),
-                ArgumentMatchers.any(HttpEntity::class.java),
-                ArgumentMatchers.any(ParameterizedTypeReference::class.java))
+                eq("/sed/add"),
+                any(),
+                any(),
+                any<ParameterizedTypeReference<*>>())
 
         val generatedResponse = sedController.addDocument(mockRequest)
-        Assert.assertTrue(generatedResponse.statusCode.is2xxSuccessful)
-        Assert.assertEquals(generatedResponse.body, expectedResponse)
+        assertTrue(generatedResponse.statusCode.is2xxSuccessful)
+        assertEquals(generatedResponse.body, expectedResponse)
     }
 
     @Test
@@ -179,17 +178,18 @@ class SedControllerTest : FagmodulBaseTest() {
         val mockResponse = ResponseEntity("", HttpStatus.BAD_REQUEST)
 
         doReturn(mockResponse).whenever(mockFagmodulRestTemplate).exchange(
-                ArgumentMatchers.eq("/sed/add"),
-                ArgumentMatchers.any(HttpMethod::class.java),
-                ArgumentMatchers.any(HttpEntity::class.java),
+                eq("/sed/add"),
+                any(),
+                any(),
                 ArgumentMatchers.any(ParameterizedTypeReference::class.java))
 
-        try {
-            sedController.addDocument(mockRequest)
-        } catch (e : Exception) {
-            Assert.assertThat(e, IsInstanceOf.instanceOf(SedDokumentLeggeTilException::class.java))
-            Assert.assertEquals(e.message, "Ingen EUXcaseid mottatt. feil ved leggetil av SED (eux basis)")
-        }
+        val generatedResponse = sedController.addDocument(mockRequest)
+        val generatedBody = ObjectMapper().readTree(generatedResponse.body)
+
+        assertEquals(HttpStatus.NOT_FOUND, generatedResponse.statusCode) // TODO consider if the code is correct
+        assertEquals(false, generatedBody.get("success").booleanValue)
+        assertEquals("ved leggetil SED på BUC", generatedBody.get("error").textValue)
+        assertTrue(generatedBody.get("uuid").textValue.matches(Regex("\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}")))
     }
 
     @Test
@@ -201,18 +201,18 @@ class SedControllerTest : FagmodulBaseTest() {
 
         val mockRequest = SedRequest()
         doThrow(mockException).whenever(mockFagmodulRestTemplate).exchange(
-                ArgumentMatchers.eq("/sed/add"),
-                ArgumentMatchers.any(HttpMethod::class.java),
-                ArgumentMatchers.any(HttpEntity::class.java),
+                eq("/sed/add"),
+                any(),
+                any(),
                 ArgumentMatchers.any(ParameterizedTypeReference::class.java))
 
         val generatedResponse = sedController.addDocument(mockRequest)
         val generatedBody = ObjectMapper().readTree(generatedResponse.body)
 
-        Assert.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, generatedResponse.statusCode)
-        Assert.assertEquals(false, generatedBody.get("success").booleanValue)
-        Assert.assertEquals(mockError, generatedBody.get("error").textValue)
-        Assert.assertTrue(generatedBody.get("uuid").textValue.matches(Regex("\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}")))
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, generatedResponse.statusCode)
+        assertEquals(false, generatedBody.get("success").booleanValue)
+        assertEquals(mockError, generatedBody.get("error").textValue)
+        assertTrue(generatedBody.get("uuid").textValue.matches(Regex("\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}")))
 
     }
 
@@ -226,14 +226,14 @@ class SedControllerTest : FagmodulBaseTest() {
         val mockResponse = ResponseEntity(expectedResponse, HttpStatus.OK)
 
         doReturn(mockResponse).whenever(mockFagmodulRestTemplate).exchange(
-                ArgumentMatchers.eq("/sed/$euxcaseid/$documentid"),
-                ArgumentMatchers.eq(HttpMethod.GET),
-                ArgumentMatchers.any(HttpEntity::class.java),
-                ArgumentMatchers.eq(String::class.java))
+                eq("/sed/$euxcaseid/$documentid"),
+                eq(HttpMethod.GET),
+                any<HttpEntity<*>>(),
+                eq(String::class.java))
 
         val generatedResponse = sedController.getDocument(euxcaseid, documentid)
-        Assert.assertEquals(generatedResponse, mockResponse)
-        Assert.assertEquals(expectedResponse, generatedResponse.body)
+        assertEquals(generatedResponse, mockResponse)
+        assertEquals(expectedResponse, generatedResponse.body)
     }
 
     @Test
@@ -244,17 +244,18 @@ class SedControllerTest : FagmodulBaseTest() {
         val mockResponse = ResponseEntity("", HttpStatus.BAD_REQUEST)
 
         doReturn(mockResponse).whenever(mockFagmodulRestTemplate).exchange(
-                ArgumentMatchers.eq("/sed/$euxCaseId/$documentid"),
-                ArgumentMatchers.eq(HttpMethod.GET),
-                ArgumentMatchers.any(HttpEntity::class.java),
+                eq("/sed/$euxCaseId/$documentid"),
+                eq(HttpMethod.GET),
+                any(),
                 ArgumentMatchers.eq(String::class.java))
 
-        try {
-            sedController.getDocument(euxCaseId, documentid)
-        } catch (e : Exception) {
-            Assert.assertThat(e, IsInstanceOf.instanceOf(SedDokumentHentingException::class.java))
-            Assert.assertEquals(e.message, "Feil ved henting av SED")
-        }
+        val generatedResponse = sedController.getDocument(euxCaseId, documentid)
+        val generatedBody = ObjectMapper().readTree(generatedResponse.body)
+
+        assertEquals(HttpStatus.NOT_FOUND, generatedResponse.statusCode) // TODO consider if the code is correct
+        assertEquals(false, generatedBody.get("success").booleanValue)
+        assertEquals("", generatedBody.get("error").textValue)
+        assertEquals("no-uuid", generatedBody.get("uuid").textValue)
     }
 
     @Test
@@ -266,13 +267,13 @@ class SedControllerTest : FagmodulBaseTest() {
         val mockResponse = ResponseEntity(expectedResponse, HttpStatus.OK)
 
         doReturn(mockResponse).whenever(mockFagmodulRestTemplate).exchange(
-                ArgumentMatchers.eq("/sed/$euxCaseId/$documentid"),
-                ArgumentMatchers.eq(HttpMethod.DELETE),
-                ArgumentMatchers.any(HttpEntity::class.java),
-                ArgumentMatchers.eq(Unit::class.java))
+                eq("/sed/$euxCaseId/$documentid"),
+                eq(HttpMethod.DELETE),
+                any<HttpEntity<*>>(),
+                eq(Unit::class.java))
 
         val generatedResponse = sedController.deleteDocument(euxCaseId, documentid)
-        Assert.assertEquals(generatedResponse, expectedResponse)
+        assertEquals(generatedResponse, expectedResponse)
     }
 
     @Test
@@ -283,17 +284,18 @@ class SedControllerTest : FagmodulBaseTest() {
         val mockResponse = ResponseEntity("", HttpStatus.BAD_REQUEST)
 
         doReturn(mockResponse).whenever(mockFagmodulRestTemplate).exchange(
-                ArgumentMatchers.eq("/sed/$euxCaseId/$documentid"),
-                ArgumentMatchers.eq(HttpMethod.DELETE),
-                ArgumentMatchers.any(HttpEntity::class.java),
+                eq("/sed/$euxCaseId/$documentid"),
+                eq(HttpMethod.DELETE),
+                any(),
                 ArgumentMatchers.eq(Unit::class.java))
 
-        try {
-            sedController.deleteDocument(euxCaseId, documentid)
-        } catch (e : Exception) {
-            Assert.assertThat(e, IsInstanceOf.instanceOf(SedDokumentSlettingException::class.java))
-            Assert.assertEquals(e.message, "Feil under sletting av SED")
-        }
+        val generatedResponse = sedController.deleteDocument(euxCaseId, documentid)
+        val generatedBody = ObjectMapper().readTree(generatedResponse.body)
+
+        assertEquals(HttpStatus.NOT_FOUND, generatedResponse.statusCode) // TODO consider if the code is correct
+        assertEquals(false, generatedBody.get("success").booleanValue)
+        assertEquals("Sletting av SED fra Rina dokument feilet", generatedBody.get("error").textValue)
+        assertEquals("no-uuid", generatedBody.get("uuid").textValue)
     }
 
 
@@ -303,10 +305,10 @@ class SedControllerTest : FagmodulBaseTest() {
         val documentid = "123456"
 
         doThrow(RuntimeException("error")).whenever(mockFagmodulRestTemplate).exchange(
-                ArgumentMatchers.eq("/sed/$euxCaseId/$documentid"),
-                ArgumentMatchers.eq(HttpMethod.DELETE),
-                ArgumentMatchers.any(HttpEntity::class.java),
-                ArgumentMatchers.eq(Unit::class.java))
+                eq("/sed/$euxCaseId/$documentid"),
+                eq(HttpMethod.DELETE),
+                any(),
+                eq(Unit::class.java))
 
         sedController.deleteDocument(euxCaseId, documentid)
     }
@@ -322,13 +324,13 @@ class SedControllerTest : FagmodulBaseTest() {
 
         ///buc/{euxcaseid}/sed/{documentid}/send
         doReturn(mockResponse).whenever(mockFagmodulRestTemplate).exchange(
-                ArgumentMatchers.eq("/sed/send/$euxcaseid/$documentid"),
-                ArgumentMatchers.any(HttpMethod::class.java),
-                ArgumentMatchers.any(HttpEntity::class.java),
-                ArgumentMatchers.eq(String::class.java))
+                eq("/sed/send/$euxcaseid/$documentid"),
+                any<HttpMethod>(),
+                any<HttpEntity<*>>(),
+                eq(String::class.java))
 
         val generatedResponse = sedController.sendSed(euxcaseid,documentid)
-        Assert.assertEquals(generatedResponse, expectedResponse)
+        assertEquals(generatedResponse, expectedResponse)
     }
 
     @Test
@@ -339,13 +341,13 @@ class SedControllerTest : FagmodulBaseTest() {
         val documentid = "123123sdas"
 
         doReturn(mockResponse).whenever(mockFagmodulRestTemplate).exchange(
-                ArgumentMatchers.eq("/sed/send/$euxcaseid/$documentid"),
-                ArgumentMatchers.any(HttpMethod::class.java),
-                ArgumentMatchers.any(HttpEntity::class.java),
-                ArgumentMatchers.eq(String::class.java))
+                eq("/sed/send/$euxcaseid/$documentid"),
+                any<HttpMethod>(),
+                any<HttpEntity<*>>(),
+                eq(String::class.java))
 
         val generatedresponse = sedController.sendSed(euxcaseid, documentid)
-        Assert.assertEquals(HttpStatus.NOT_FOUND, generatedresponse.statusCode)
+        assertEquals(HttpStatus.NOT_FOUND, generatedresponse.statusCode) // TODO consider if the code is correct
     }
 
     @Test
@@ -367,9 +369,9 @@ class SedControllerTest : FagmodulBaseTest() {
         val generatedResponse = sedController.sendSed(euxcaseid, documentid)
         val generatedBody = ObjectMapper().readTree(generatedResponse.body)
 
-        Assert.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, generatedResponse.statusCode)
-        Assert.assertEquals(false, generatedBody.get("success").booleanValue)
-        Assert.assertEquals(mockError, generatedBody.get("error").textValue)
-        Assert.assertTrue(generatedBody.get("uuid").textValue.matches(Regex("\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}")))
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, generatedResponse.statusCode)
+        assertEquals(false, generatedBody.get("success").booleanValue)
+        assertEquals(mockError, generatedBody.get("error").textValue)
+        assertTrue(generatedBody.get("uuid").textValue.matches(Regex("\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}")))
     }
 }

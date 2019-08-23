@@ -2,8 +2,10 @@ package no.nav.eessi.pensjon.services.pdf
 
 
 import org.apache.pdfbox.pdmodel.PDDocument
-import org.junit.Test
-import org.junit.Assert.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 import org.springframework.core.io.DefaultResourceLoader
 import java.io.ByteArrayOutputStream
 import java.io.File

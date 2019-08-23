@@ -2,9 +2,11 @@ package no.nav.eessi.pensjon.utils
 
 import org.codehaus.jackson.map.ObjectMapper
 import org.jetbrains.annotations.TestOnly
-import org.junit.Test
-import java.lang.Exception
-import kotlin.test.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 
 
 class UtilsTest {
@@ -25,13 +27,10 @@ class UtilsTest {
         val body = errorBody(feilmelding)
 
         val mapper = ObjectMapper()
-        try{
-            val tree = mapper.readTree(body)
-            assertEquals("En feilmelding" , tree.get("error").textValue)
-            assertEquals(false , tree.get("success").booleanValue)
-        } catch (ex: Exception) {
-            fail("Klarte ikke å parse json")
-        }
+
+        val tree = mapper.readTree(body)
+        assertEquals("En feilmelding" , tree.get("error").textValue)
+        assertEquals(false , tree.get("success").booleanValue)
     }
 
     @Test
@@ -40,13 +39,10 @@ class UtilsTest {
         val body = errorBody(feilmelding)
 
         val mapper = ObjectMapper()
-        try{
-            val tree = mapper.readTree(body)
-            assertEquals("" , tree.get("error").textValue)
-            assertEquals(false , tree.get("success").booleanValue)
-        } catch (ex: Exception) {
-            fail("Klarte ikke å parse json")
-        }
+
+        val tree = mapper.readTree(body)
+        assertEquals("" , tree.get("error").textValue)
+        assertEquals(false , tree.get("success").booleanValue)
     }
 
     @Test
@@ -63,12 +59,9 @@ class UtilsTest {
         val body = successBody()
 
         val mapper = ObjectMapper()
-        try{
-            val tree = mapper.readTree(body)
-            assertEquals(true , tree.get("success").booleanValue)
-        } catch (ex: Exception) {
-            fail("Klarte ikke å parse json")
-        }
+
+        val tree = mapper.readTree(body)
+        assertEquals(true , tree.get("success").booleanValue)
     }
 
     @Test

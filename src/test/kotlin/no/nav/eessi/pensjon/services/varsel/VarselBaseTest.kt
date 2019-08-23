@@ -1,12 +1,12 @@
 package no.nav.eessi.pensjon.services.varsel
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import no.nav.eessi.pensjon.api.varsel.VarselController
 import no.nav.eessi.pensjon.services.aktoerregister.AktoerregisterService
 import no.nav.eessi.pensjon.services.fagmodul.NavRegistreOppslagService
-import no.nav.eessi.pensjon.api.varsel.VarselController
 import no.nav.eessi.pensjon.services.storage.S3StorageBaseTest
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.mockito.Mockito.mock
 import org.springframework.jms.core.JmsTemplate
@@ -21,7 +21,7 @@ open class VarselBaseTest : S3StorageBaseTest() {
     lateinit var mockFagmodulRestTemplate : RestTemplate
     lateinit var aktoerregisterService: AktoerregisterService
 
-    @Before
+    @BeforeEach
     fun _setup() {
 
         mockFagmodulRestTemplate = generateMockFagmodulRestTemplate()

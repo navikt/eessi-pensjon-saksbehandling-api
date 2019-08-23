@@ -1,18 +1,23 @@
 package no.nav.eessi.pensjon.api.pensjon
 
 
+import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.doThrow
+import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.whenever
 import no.nav.eessi.pensjon.services.fagmodul.FagmodulBaseTest
 import org.codehaus.jackson.map.ObjectMapper
-import org.junit.After
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
-import org.junit.Test
-import org.mockito.ArgumentMatchers.*
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 import org.mockito.Mockito
-import org.springframework.http.*
+import org.springframework.http.HttpEntity
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpMethod
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.HttpServerErrorException
 
@@ -21,7 +26,7 @@ open class PensjonControllerTest: FagmodulBaseTest() {
     val SAK_ID = "12345678"
     val AKTOER_ID = "10000001231345"
 
-    @After
+    @AfterEach
     fun cleanUpTest() {
         Mockito.reset(mockFagmodulRestTemplate)
     }
@@ -39,8 +44,8 @@ open class PensjonControllerTest: FagmodulBaseTest() {
             ResponseEntity(responseFromFagmodul, HttpStatus.OK))
             .`when`(mockFagmodulRestTemplate).exchange(
                 eq("/pensjon/saktype/$SAK_ID/$AKTOER_ID"),
-                any(HttpMethod::class.java),
-                any(HttpEntity::class.java),
+                any<HttpMethod>(),
+                any<HttpEntity<*>>(),
                 eq(String::class.java))
 
         val generatedResponse = pensjonController.hentPensjonSakType(SAK_ID, AKTOER_ID)
@@ -62,8 +67,8 @@ open class PensjonControllerTest: FagmodulBaseTest() {
                 null))
             .`when`(mockFagmodulRestTemplate).exchange(
                 eq("/pensjon/saktype/$SAK_ID/$AKTOER_ID"),
-                any(HttpMethod::class.java),
-                any(HttpEntity::class.java),
+                any<HttpMethod>(),
+                any<HttpEntity<*>>(),
                 eq(String::class.java))
 
         val response = pensjonController.hentPensjonSakType(SAK_ID, AKTOER_ID)
@@ -81,8 +86,8 @@ open class PensjonControllerTest: FagmodulBaseTest() {
                 null))
             .`when`(mockFagmodulRestTemplate).exchange(
                 eq("/pensjon/saktype/$SAK_ID/$AKTOER_ID"),
-                any(HttpMethod::class.java),
-                any(HttpEntity::class.java),
+                any<HttpMethod>(),
+                any<HttpEntity<*>>(),
                 eq(String::class.java))
 
         val response = pensjonController.hentPensjonSakType(SAK_ID, AKTOER_ID)
@@ -100,8 +105,8 @@ open class PensjonControllerTest: FagmodulBaseTest() {
                 null))
             .`when`(mockFagmodulRestTemplate).exchange(
                 eq("/pensjon/saktype/$SAK_ID/$AKTOER_ID"),
-                any(HttpMethod::class.java),
-                any(HttpEntity::class.java),
+                any<HttpMethod>(),
+                any<HttpEntity<*>>(),
                 eq(String::class.java))
 
         val response = pensjonController.hentPensjonSakType(SAK_ID, AKTOER_ID)
@@ -117,8 +122,8 @@ open class PensjonControllerTest: FagmodulBaseTest() {
 
         doThrow(mockException).whenever(mockFagmodulRestTemplate).exchange(
             eq("/pensjon/saktype/$SAK_ID/$AKTOER_ID"),
-            any(HttpMethod::class.java),
-            any(HttpEntity::class.java),
+            any<HttpMethod>(),
+            any<HttpEntity<*>>(),
             eq(String::class.java))
 
         val generatedResponse = pensjonController.hentPensjonSakType(SAK_ID, AKTOER_ID)
