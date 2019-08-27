@@ -1,5 +1,6 @@
 package no.nav.eessi.pensjon.websocket
 
+import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Component
 import org.springframework.web.socket.CloseStatus
@@ -24,7 +25,7 @@ class SocketTextHandler : TextWebSocketHandler() {
         private var sessions: ConcurrentHashMap<String, WebSocketSession> = ConcurrentHashMap()
     }
 
-    @Throws(InterruptedException::class, IOException::class)
+    @Throws(JsonParseException::class, InterruptedException::class, IOException::class)
     public override fun handleTextMessage(session: WebSocketSession, message: TextMessage) {
         try {
             logger.info("$session sent message")
@@ -33,6 +34,9 @@ class SocketTextHandler : TextWebSocketHandler() {
                 session.attributes["subscriptions"] = jsonRoot["subscriptions"].map { it.textValue() }
                 session.sendMessage(TextMessage("{ \"subscriptions\" : true }" ))
             }
+        }catch(jsonParseException: JsonParseException) {
+            logger.error("handleTextMessage JsonParseException", jsonParseException)
+            throw jsonParseException
         }catch(interruptedException: InterruptedException){
             logger.error("handleTextMessage interruptedException", interruptedException)
             throw interruptedException
