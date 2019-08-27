@@ -11,9 +11,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import java.util.concurrent.ConcurrentHashMap
 
-
 @Component
-
 class SocketTextHandler : TextWebSocketHandler() {
 
     @Value("\${FASIT_ENVIRONMENT_NAME}")
