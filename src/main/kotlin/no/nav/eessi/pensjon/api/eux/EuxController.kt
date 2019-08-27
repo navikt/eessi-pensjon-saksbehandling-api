@@ -33,25 +33,6 @@ class EuxController(private val euxService: EuxService, private val navRegistreS
         return ResponseEntity.ok(mapOf("rinaUrl" to "https://$rinaUrl/portal/#/caseManagement/"))
     }
 
-    @GetMapping("/case/{caseid}/{actorid}/{rinaid}", produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun validateCaseNumberWithRinaID(@PathVariable caseid: String,
-                                     @PathVariable actorid: String,
-                                     @PathVariable rinaid: String): ResponseEntity<Map<String, String>> {
-        if (matches("\\d+", caseid) && matches("\\d+", actorid) && matches("\\d+", rinaid)) {
-            return ResponseEntity.ok(mapOf("casenumber" to caseid, "pinid" to actorid, "rinaid" to rinaid))
-        }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(mapOf("serverMessage" to "invalidCase"))
-    }
-
-    @GetMapping("/case/{caseid}/{actorid}", produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun validateCaseNumber(@PathVariable caseid: String,
-                           @PathVariable actorid: String): ResponseEntity<Map<String, String>> {
-        if (matches("\\d+", caseid) && matches("\\d+", actorid)) {
-            return ResponseEntity.ok(mapOf("casenumber" to caseid, "pinid" to actorid))
-        }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(mapOf("serverMessage" to "invalidCase"))
-    }
-
     @ApiOperation("henter liste av alle tilgjengelige BuC-typer")
     @GetMapping("/bucs", produces = [MediaType.APPLICATION_JSON_VALUE])
     fun getBucs(): List<String> {
