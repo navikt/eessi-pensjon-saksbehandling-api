@@ -3,7 +3,6 @@ package no.nav.eessi.pensjon.websocket
 import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
-import no.nav.eessi.pensjon.listeners.SedHendelseModel
 import org.springframework.stereotype.Component
 import org.springframework.web.socket.CloseStatus
 import org.springframework.web.socket.TextMessage
@@ -75,15 +74,15 @@ class SocketTextHandler : TextWebSocketHandler() {
         sessions.remove(session.id)
     }
 
-    fun alertSubscribers(sedHendelse: SedHendelseModel) {
+    fun alertSubscribers(caseId: String, subject: String? = null) {
         try {
             if(fasitEnvironmentName == "q2") { // TODO Remove after CT test
                 sessions.forEach { (id, session) ->
-                    session.sendMessage(TextMessage("{\"bucUpdated\": {\"caseId\": \"${sedHendelse.rinaSakId}\"}}"))
+                    session.sendMessage(TextMessage("{\"bucUpdated\": {\"caseId\": \"$caseId\"}}"))
                 }
-            } else if(sedHendelse.navBruker != null){
-                filterSessionsByBruker(sedHendelse.navBruker).map { session ->
-                    session.sendMessage(TextMessage("{\"bucUpdated\": {\"caseId\": \"${sedHendelse.rinaSakId}\"}}"))
+            } else if(subject != null){
+                filterSessionsByBruker(subject).map { session ->
+                    session.sendMessage(TextMessage("{\"bucUpdated\": {\"caseId\": \"$caseId\"}}"))
                 }
             }
         } catch(exception: Exception) {

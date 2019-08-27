@@ -33,52 +33,6 @@ class EuxControllerTest : EuxBaseTest() {
     }
 
     @Test
-    fun `Calling euxController|validateCaseNumberWithRinaID handler with valid params returns 2XX response`() {
-
-        val caseid = "123"
-        val aktorid = "456"
-        val rinaid = "789"
-
-        var generatedResponse = euxController.validateCaseNumberWithRinaID(caseid, aktorid, rinaid)
-        assertTrue(generatedResponse.statusCode.is2xxSuccessful)
-        assertEquals(generatedResponse.body!!.get("casenumber"), caseid)
-        assertEquals(generatedResponse.body!!.get("pinid"), aktorid)
-        assertEquals(generatedResponse.body!!.get("rinaid"), rinaid)
-    }
-
-    @Test
-    fun `Calling euxController|validateCaseNumberWithRinaID handler with invalid params returns 4XX response`() {
-        val caseid = "not"
-        val aktorid = "valid"
-        val rinaid = "values"
-
-        var generatedResponse = euxController.validateCaseNumberWithRinaID(caseid, aktorid, rinaid)
-        assertTrue(generatedResponse.statusCode.is4xxClientError)
-        assertEquals(generatedResponse.body?.get("serverMessage") as String, "invalidCase")
-    }
-
-    @Test
-    fun `Calling euxController|validateCaseNumber handler with valid params returns 2XX response`() {
-        val caseid = "123"
-        val aktorid = "456"
-
-        val generatedResponse = euxController.validateCaseNumber(caseid, aktorid)
-        assertTrue(generatedResponse.statusCode.is2xxSuccessful)
-        assertEquals(generatedResponse.body!!.get("casenumber"), caseid)
-        assertEquals(generatedResponse.body!!.get("pinid"), aktorid)
-    }
-
-    @Test
-    fun `Calling euxController|validateCaseNumber handler with invalid params returns 4XX response`() {
-        val caseid = "not"
-        val aktorid = "valid"
-
-        val generatedResponse = euxController.validateCaseNumber(caseid, aktorid)
-        assertTrue(generatedResponse.statusCode.is4xxClientError)
-        assertEquals(generatedResponse.body?.get("serverMessage") as String, "invalidCase")
-    }
-
-    @Test
     fun `Calling euxController|getBucs returns list of BUCs`() {
 
         val expectedResponse = listOf("P_BUC_01", "P_BUC_02", "P_BUC_03", "P_BUC_05", "P_BUC_06")
