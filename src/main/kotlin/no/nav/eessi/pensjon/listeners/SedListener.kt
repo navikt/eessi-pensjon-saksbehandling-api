@@ -20,9 +20,7 @@ class SedListener {
             logger.info("Innkommet sedSendt hendelse")
             logger.debug(hendelse)
             val sedHendelse = SedHendelseModel.fromJson(hendelse)
-            if (sedHendelse.sektorKode == "P") {
-                SocketTextHandler().alertSubscribers(sedHendelse.rinaSakId, sedHendelse.navBruker)
-            }
+            SocketTextHandler().alertSubscribers(sedHendelse.rinaSakId, sedHendelse.navBruker)
             latch.countDown()
         } catch(exception: Exception){
             logger.error("Error when handling outgoing sedSendt event", exception)
@@ -36,9 +34,7 @@ class SedListener {
             logger.info("Innkommet sedMottatt hendelse")
             logger.debug(hendelse)
             val sedHendelse = SedHendelseModel.fromJson(hendelse)
-            if (sedHendelse.sektorKode == "P") {
-                SocketTextHandler().alertSubscribers(sedHendelse.rinaSakId, sedHendelse.navBruker)
-            }
+            SocketTextHandler().alertSubscribers(sedHendelse.rinaSakId, sedHendelse.navBruker)
         } catch(exception: Exception){
             logger.error("Error when handling incoming sedMottatt event", exception)
             throw exception
