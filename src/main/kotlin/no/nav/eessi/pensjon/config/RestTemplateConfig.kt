@@ -2,6 +2,7 @@ package no.nav.eessi.pensjon.config
 
 import io.micrometer.core.instrument.MeterRegistry
 import no.nav.eessi.pensjon.interceptor.OidcHeaderRequestInterceptor
+import no.nav.eessi.pensjon.logging.RequestIdHeaderInterceptor
 import no.nav.eessi.pensjon.logging.RequestResponseLoggerInterceptor
 import no.nav.eessi.pensjon.security.sts.STSService
 import no.nav.eessi.pensjon.security.sts.UsernameToOidcInterceptor
@@ -39,6 +40,7 @@ class RestTemplateConfig(val restTemplateBuilder: RestTemplateBuilder,
                 .rootUri(euxrinaapi)
                 .errorHandler(DefaultResponseErrorHandler())
                 .additionalInterceptors(
+                        RequestIdHeaderInterceptor(),
                         OidcHeaderRequestInterceptor(oidcRequestContextHolder),
                         RequestResponseLoggerInterceptor())
                 .build().apply {
@@ -52,7 +54,10 @@ class RestTemplateConfig(val restTemplateBuilder: RestTemplateBuilder,
         return restTemplateBuilder
                 .rootUri(fagmodulUrl)
                 .errorHandler(DefaultResponseErrorHandler())
-                .additionalInterceptors(RequestResponseLoggerInterceptor(), OidcHeaderRequestInterceptor(oidcRequestContextHolder))
+                .additionalInterceptors(
+                        RequestIdHeaderInterceptor(),
+                        RequestResponseLoggerInterceptor(),
+                        OidcHeaderRequestInterceptor(oidcRequestContextHolder))
                 .customizers(MetricsRestTemplateCustomizer(registry, DefaultRestTemplateExchangeTagsProvider(), "eessipensjon_frontend-api_fagmodul"))
                 .build().apply {
                     requestFactory = BufferingClientHttpRequestFactory(SimpleClientHttpRequestFactory())
@@ -65,7 +70,10 @@ class RestTemplateConfig(val restTemplateBuilder: RestTemplateBuilder,
         return restTemplateBuilder
                 .rootUri(fagmodulUrl)
                 .errorHandler(DefaultResponseErrorHandler())
-                .additionalInterceptors(RequestResponseLoggerInterceptor(), UsernameToOidcInterceptor(securityTokenExchangeService))
+                .additionalInterceptors(
+                        RequestIdHeaderInterceptor(),
+                        RequestResponseLoggerInterceptor(),
+                        UsernameToOidcInterceptor(securityTokenExchangeService))
                 .customizers(MetricsRestTemplateCustomizer(registry, DefaultRestTemplateExchangeTagsProvider(), "eessipensjon_frontend-api_fagmodulUntTo"))
                 .build().apply {
                     requestFactory = BufferingClientHttpRequestFactory(SimpleClientHttpRequestFactory())
@@ -77,7 +85,10 @@ class RestTemplateConfig(val restTemplateBuilder: RestTemplateBuilder,
         return restTemplateBuilder
                 .rootUri(url)
                 .errorHandler(DefaultResponseErrorHandler())
-                .additionalInterceptors(RequestResponseLoggerInterceptor(), UsernameToOidcInterceptor(securityTokenExchangeService))
+                .additionalInterceptors(
+                        RequestIdHeaderInterceptor(),
+                        RequestResponseLoggerInterceptor(),
+                        UsernameToOidcInterceptor(securityTokenExchangeService))
                 .build().apply {
                     requestFactory = BufferingClientHttpRequestFactory(SimpleClientHttpRequestFactory())
                 }

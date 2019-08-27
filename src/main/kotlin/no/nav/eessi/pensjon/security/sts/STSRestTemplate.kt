@@ -1,5 +1,6 @@
 package no.nav.eessi.pensjon.security.sts
 
+import no.nav.eessi.pensjon.logging.RequestIdHeaderInterceptor
 import no.nav.eessi.pensjon.logging.RequestResponseLoggerInterceptor
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
@@ -29,6 +30,7 @@ class STSRestTemplate {
         return templateBuilder
                 .rootUri(baseUrl)
                 .additionalInterceptors(
+                        RequestIdHeaderInterceptor(),
                         RequestResponseLoggerInterceptor(),
                         BasicAuthenticationInterceptor(username, password)
                 )
