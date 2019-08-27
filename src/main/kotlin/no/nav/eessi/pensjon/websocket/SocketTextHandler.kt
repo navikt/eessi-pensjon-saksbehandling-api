@@ -1,7 +1,9 @@
 package no.nav.eessi.pensjon.websocket
 
 import com.fasterxml.jackson.core.JsonParseException
+import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
+import no.nav.eessi.pensjon.listeners.SedHendelseModel
 import org.springframework.stereotype.Component
 import org.springframework.web.socket.CloseStatus
 import org.springframework.web.socket.TextMessage
@@ -25,14 +27,20 @@ class SocketTextHandler : TextWebSocketHandler() {
         private var sessions: ConcurrentHashMap<String, WebSocketSession> = ConcurrentHashMap()
     }
 
-    @Throws(JsonParseException::class, InterruptedException::class, IOException::class)
+    fun handleSubscription (session: WebSocketSession, message: JsonNode) {
+        if (message.isArray) {
+            session.attributes["subscriptions"] = message.map { it.textValue() }
+            session.sendMessage(TextMessage("{ \"subscriptions\" : true }" ))
+        }
+    }
+
+    @Throws(InterruptedException::class, IOException::class)
     public override fun handleTextMessage(session: WebSocketSession, message: TextMessage) {
         try {
-            logger.info("$session sent message")
+            logger.info("Received a message from session $session")
             val jsonRoot = mapper.readTree(message.payload)
-            if (jsonRoot.isObject && jsonRoot.has("subscriptions") && jsonRoot["subscriptions"].isArray) {
-                session.attributes["subscriptions"] = jsonRoot["subscriptions"].map { it.textValue() }
-                session.sendMessage(TextMessage("{ \"subscriptions\" : true }" ))
+            if (jsonRoot.isObject && jsonRoot.has("subscriptions")) {
+                handleSubscription(session, jsonRoot["subscriptions"])
             }
         }catch(jsonParseException: JsonParseException) {
             logger.error("handleTextMessage JsonParseException", jsonParseException)
@@ -47,7 +55,14 @@ class SocketTextHandler : TextWebSocketHandler() {
             logger.error("handleTextMessage exception", exception)
             throw exception
         }
+    }
 
+    fun filterSessionsByBruker (navBruker: String): MutableList<WebSocketSession> {
+        return sessions
+            .filter { it.value.attributes["subscriptions"] != null }
+            .filter { it.value.attributes["subscriptions"] is List<*> }
+            .filter { (it.value.attributes["subscriptions"] as List<*>).contains(navBruker) }
+            .values.toMutableList()
     }
 
     @Throws(Exception::class)
@@ -60,18 +75,18 @@ class SocketTextHandler : TextWebSocketHandler() {
         sessions.remove(session.id)
     }
 
-    fun alertSubscribers(caseNumber: String, subject: String? = null){
+    fun alertSubscribers(sedHendelse: SedHendelseModel) {
         try {
             if(fasitEnvironmentName == "q2") { // TODO Remove after CT test
-                sessions.forEach { (_, session) -> session.sendMessage(TextMessage("{\"bucUpdated\": \"$caseNumber\"}")) }
-            } else if(subject != null){
-                sessions
-                    .filter { it.value.attributes["subscriptions"] != null }
-                    .filter { it.value.attributes["subscriptions"] is List<*> }
-                    .filter { (it.value.attributes["subscriptions"] as List<*>).contains(subject) }
-                    .forEach { (_, session) -> session.sendMessage(TextMessage("{\"bucUpdated\": \"$caseNumber\"}")) }
+                sessions.forEach { (id, session) ->
+                    session.sendMessage(TextMessage("{\"bucUpdated\": {\"caseId\": \"${sedHendelse.rinaSakId}\"}}"))
+                }
+            } else if(sedHendelse.navBruker != null){
+                filterSessionsByBruker(sedHendelse.navBruker).map { session ->
+                    session.sendMessage(TextMessage("{\"bucUpdated\": {\"caseId\": \"${sedHendelse.rinaSakId}\"}}"))
+                }
             }
-        }catch(exception: Exception){
+        } catch(exception: Exception) {
             logger.error("alertSubscribers Exception", exception)
             throw exception
         }
