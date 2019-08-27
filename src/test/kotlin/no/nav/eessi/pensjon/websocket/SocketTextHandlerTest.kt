@@ -128,16 +128,16 @@ class SocketTextHandlerTest {
         socketTextHandler.alertSubscribers("mockCaseNumber2", "SecondSubject")
 
         verify(firstSession).sendMessage(TextMessage("{ \"subscriptions\" : true }" ))
-        verify(firstSession).sendMessage(TextMessage("{\"bucUpdated\": \"mockCaseNumber1\"}"))
-        verify(firstSession).sendMessage(TextMessage("{\"bucUpdated\": \"mockCaseNumber2\"}"))
+        verify(firstSession).sendMessage(TextMessage("{\"bucUpdated\": {\"caseId\": \"mockCaseNumber1\"}}"))
+        verify(firstSession).sendMessage(TextMessage("{\"bucUpdated\": {\"caseId\": \"mockCaseNumber2\"}}"))
 
         verify(secondSession).sendMessage(TextMessage("{ \"subscriptions\" : true }" ))
-        verify(secondSession).sendMessage(TextMessage("{\"bucUpdated\": \"mockCaseNumber1\"}"))
-        verify(secondSession, times(0)).sendMessage(TextMessage("{\"bucUpdated\": \"mockCaseNumber2\"}"))
+        verify(secondSession).sendMessage(TextMessage("{\"bucUpdated\": {\"caseId\": \"mockCaseNumber1\"}}"))
+        verify(secondSession, times(0)).sendMessage(TextMessage("{\"bucUpdated\": {\"caseId\": \"mockCaseNumber2\"}}"))
 
         verify(thirdSession).sendMessage(TextMessage("{ \"subscriptions\" : true }" ))
-        verify(thirdSession, times(0)).sendMessage(TextMessage("{\"bucUpdated\": \"mockCaseNumber1\"}"))
-        verify(thirdSession).sendMessage(TextMessage("{\"bucUpdated\": \"mockCaseNumber2\"}"))
+        verify(thirdSession, times(0)).sendMessage(TextMessage("{\"bucUpdated\": {\"caseId\": \"mockCaseNumber1\"}}"))
+        verify(thirdSession).sendMessage(TextMessage("{\"bucUpdated\": {\"caseId\": \"mockCaseNumber2\"}}"))
     }
 
     @Test
@@ -168,8 +168,8 @@ class SocketTextHandlerTest {
         socketTextHandler.alertSubscribers("mockCaseNumber2", "SecondSubject")
 
         verify(session).sendMessage(TextMessage("{ \"subscriptions\" : true }" ))
-        verify(session, times(0)).sendMessage(TextMessage("{\"bucUpdated\": \"mockCaseNumber1\"}"))
-        verify(session, times(0)).sendMessage(TextMessage("{\"bucUpdated\": \"mockCaseNumber2\"}"))
+        verify(session, times(0)).sendMessage(TextMessage("{\"bucUpdated\": {\"caseId\": \"mockCaseNumber1\"}}"))
+        verify(session, times(0)).sendMessage(TextMessage("{\"bucUpdated\": {\"caseId\": \"mockCaseNumber2\"}}"))
     }
 
 }
