@@ -9,7 +9,7 @@ import java.util.concurrent.CountDownLatch
 
 @Component
 @Description("Listener on kafka messages to send websocket notifications")
-class SedListener {
+class SedListener (private val socketTextHandler: SocketTextHandler) {
 
     private val logger = LoggerFactory.getLogger(SedListener::class.java)
     private val latch = CountDownLatch(1)
@@ -20,7 +20,9 @@ class SedListener {
             logger.info("Innkommet sedSendt hendelse")
             logger.debug(hendelse)
             val sedHendelse = SedHendelseModel.fromJson(hendelse)
-            SocketTextHandler().alertSubscribers(sedHendelse.rinaSakId, sedHendelse.navBruker)
+            if (sedHendelse.sektorKode == "P") {
+                socketTextHandler.alertSubscribers(sedHendelse.rinaSakId, sedHendelse.navBruker)
+            }
             latch.countDown()
         } catch(exception: Exception){
             logger.error("Error when handling outgoing sedSendt event", exception)
@@ -34,7 +36,9 @@ class SedListener {
             logger.info("Innkommet sedMottatt hendelse")
             logger.debug(hendelse)
             val sedHendelse = SedHendelseModel.fromJson(hendelse)
-            SocketTextHandler().alertSubscribers(sedHendelse.rinaSakId, sedHendelse.navBruker)
+            if (sedHendelse.sektorKode == "P") {
+                socketTextHandler.alertSubscribers(sedHendelse.rinaSakId, sedHendelse.navBruker)
+            }
         } catch(exception: Exception){
             logger.error("Error when handling incoming sedMottatt event", exception)
             throw exception
