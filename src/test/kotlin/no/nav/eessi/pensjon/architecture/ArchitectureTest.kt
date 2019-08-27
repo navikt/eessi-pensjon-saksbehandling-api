@@ -56,11 +56,11 @@ class ArchitectureTest {
                 .whereLayer("Websockets").mayNotBeAccessedByAnyLayer()
                 .whereLayer("Listeners").mayNotBeAccessedByAnyLayer()
                 .whereLayer("Health").mayNotBeAccessedByAnyLayer()
-                .whereLayer("Metrics").mayNotBeAccessedByAnyLayer()
                 .whereLayer("Services").mayOnlyBeAccessedByLayers("API")
                 .whereLayer("Config").mayNotBeAccessedByAnyLayer()
                 .whereLayer("Security").mayOnlyBeAccessedByLayers("Config")
                 .whereLayer("Interceptor").mayOnlyBeAccessedByLayers("Config")
+                .whereLayer("Metrics").mayOnlyBeAccessedByLayers("Config", "Security")
                 .whereLayer("Logging").mayOnlyBeAccessedByLayers("Config", "Security")
                 //Verify rules
                 .check(classesToAnalyze)
