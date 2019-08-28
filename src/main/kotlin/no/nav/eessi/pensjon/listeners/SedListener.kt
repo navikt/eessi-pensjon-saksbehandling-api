@@ -1,5 +1,6 @@
 package no.nav.eessi.pensjon.listeners
 
+import com.fasterxml.jackson.core.JsonParseException
 import no.nav.eessi.pensjon.websocket.SocketTextHandler
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Description
@@ -22,6 +23,9 @@ class SedListener (private val socketTextHandler: SocketTextHandler) {
             val sedHendelse = SedHendelseModel.fromJson(hendelse)
             socketTextHandler.alertSubscribers(sedHendelse.rinaSakId, sedHendelse.navBruker)
             latch.countDown()
+        } catch (jsonParseException: JsonParseException) {
+            logger.error("Error when parsing outgoing sedSendt Json", jsonParseException)
+            throw jsonParseException
         } catch(exception: Exception){
             logger.error("Error when handling outgoing sedSendt event", exception)
             throw exception
@@ -35,6 +39,9 @@ class SedListener (private val socketTextHandler: SocketTextHandler) {
             logger.debug(hendelse)
             val sedHendelse = SedHendelseModel.fromJson(hendelse)
             socketTextHandler.alertSubscribers(sedHendelse.rinaSakId, sedHendelse.navBruker)
+        } catch (jsonParseException: JsonParseException) {
+            logger.error("Error when parsing outgoing sedMottatt Json", jsonParseException)
+            throw jsonParseException
         } catch(exception: Exception){
             logger.error("Error when handling incoming sedMottatt event", exception)
             throw exception
