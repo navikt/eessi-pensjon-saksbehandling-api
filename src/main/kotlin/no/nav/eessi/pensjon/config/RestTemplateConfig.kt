@@ -2,10 +2,13 @@ package no.nav.eessi.pensjon.config
 
 import io.micrometer.core.instrument.MeterRegistry
 import no.nav.eessi.pensjon.interceptor.OidcHeaderRequestInterceptor
+import no.nav.eessi.pensjon.logging.RequestIdHeaderInterceptor
 import no.nav.eessi.pensjon.logging.RequestResponseLoggerInterceptor
+import no.nav.eessi.pensjon.metrics.RequestCountInterceptor
 import no.nav.eessi.pensjon.security.sts.STSService
 import no.nav.eessi.pensjon.security.sts.UsernameToOidcInterceptor
 import no.nav.security.oidc.context.OIDCRequestContextHolder
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.actuate.metrics.web.client.DefaultRestTemplateExchangeTagsProvider
 import org.springframework.boot.actuate.metrics.web.client.MetricsRestTemplateCustomizer
@@ -32,6 +35,8 @@ class RestTemplateConfig(val restTemplateBuilder: RestTemplateBuilder,
     @Value("\${aktoerregister.api.v1.url:http://localhost}")
     lateinit var url: String
 
+    @Autowired
+    lateinit var meterRegistry: MeterRegistry
 
     @Bean
     fun euxRestTemplate(): RestTemplate {
@@ -39,6 +44,8 @@ class RestTemplateConfig(val restTemplateBuilder: RestTemplateBuilder,
                 .rootUri(euxrinaapi)
                 .errorHandler(DefaultResponseErrorHandler())
                 .additionalInterceptors(
+                        RequestIdHeaderInterceptor(),
+                        RequestCountInterceptor(meterRegistry),
                         OidcHeaderRequestInterceptor(oidcRequestContextHolder),
                         RequestResponseLoggerInterceptor())
                 .build().apply {
@@ -52,7 +59,11 @@ class RestTemplateConfig(val restTemplateBuilder: RestTemplateBuilder,
         return restTemplateBuilder
                 .rootUri(fagmodulUrl)
                 .errorHandler(DefaultResponseErrorHandler())
-                .additionalInterceptors(RequestResponseLoggerInterceptor(), OidcHeaderRequestInterceptor(oidcRequestContextHolder))
+                .additionalInterceptors(
+                        RequestIdHeaderInterceptor(),
+                        RequestCountInterceptor(meterRegistry),
+                        RequestResponseLoggerInterceptor(),
+                        OidcHeaderRequestInterceptor(oidcRequestContextHolder))
                 .customizers(MetricsRestTemplateCustomizer(registry, DefaultRestTemplateExchangeTagsProvider(), "eessipensjon_frontend-api_fagmodul"))
                 .build().apply {
                     requestFactory = BufferingClientHttpRequestFactory(SimpleClientHttpRequestFactory())
@@ -65,7 +76,11 @@ class RestTemplateConfig(val restTemplateBuilder: RestTemplateBuilder,
         return restTemplateBuilder
                 .rootUri(fagmodulUrl)
                 .errorHandler(DefaultResponseErrorHandler())
-                .additionalInterceptors(RequestResponseLoggerInterceptor(), UsernameToOidcInterceptor(securityTokenExchangeService))
+                .additionalInterceptors(
+                        RequestIdHeaderInterceptor(),
+                        RequestCountInterceptor(meterRegistry),
+                        RequestResponseLoggerInterceptor(),
+                        UsernameToOidcInterceptor(securityTokenExchangeService))
                 .customizers(MetricsRestTemplateCustomizer(registry, DefaultRestTemplateExchangeTagsProvider(), "eessipensjon_frontend-api_fagmodulUntTo"))
                 .build().apply {
                     requestFactory = BufferingClientHttpRequestFactory(SimpleClientHttpRequestFactory())
@@ -77,7 +92,11 @@ class RestTemplateConfig(val restTemplateBuilder: RestTemplateBuilder,
         return restTemplateBuilder
                 .rootUri(url)
                 .errorHandler(DefaultResponseErrorHandler())
-                .additionalInterceptors(RequestResponseLoggerInterceptor(), UsernameToOidcInterceptor(securityTokenExchangeService))
+                .additionalInterceptors(
+                        RequestIdHeaderInterceptor(),
+                        RequestCountInterceptor(meterRegistry),
+                        RequestResponseLoggerInterceptor(),
+                        UsernameToOidcInterceptor(securityTokenExchangeService))
                 .build().apply {
                     requestFactory = BufferingClientHttpRequestFactory(SimpleClientHttpRequestFactory())
                 }
