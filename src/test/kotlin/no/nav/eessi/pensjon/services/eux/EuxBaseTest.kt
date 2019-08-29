@@ -1,7 +1,6 @@
 package no.nav.eessi.pensjon.services.eux
 
 import no.nav.eessi.pensjon.api.eux.EuxController
-import no.nav.eessi.pensjon.api.fagmodul.BucController
 import no.nav.eessi.pensjon.services.BaseTest
 import no.nav.eessi.pensjon.services.fagmodul.NavRegistreOppslagService
 import org.junit.jupiter.api.BeforeEach
@@ -21,7 +20,6 @@ open class EuxBaseTest : BaseTest() {
     lateinit var euxController : EuxController
     lateinit var euxService: EuxService
     lateinit var navRegistreService: NavRegistreOppslagService
-    lateinit var bucController: BucController
 
     @BeforeEach
     fun _init() {
@@ -38,9 +36,8 @@ open class EuxBaseTest : BaseTest() {
         mockEuxRestTemplate = generateMockEuxRestTemplate()
 
         mockFagmodulRestTemplate = generateMockFagmodulRestTemplate()
-        bucController = Mockito.spy(BucController(mockFagmodulRestTemplate))
         navRegistreService = Mockito.spy(NavRegistreOppslagService(mockFagmodulRestTemplate))
         euxService = Mockito.spy(EuxService(mockEuxRestTemplate))
-        euxController = Mockito.spy(EuxController(euxService, navRegistreService, bucController))
+        euxController = Mockito.spy(EuxController(euxService, navRegistreService))
     }
 }
