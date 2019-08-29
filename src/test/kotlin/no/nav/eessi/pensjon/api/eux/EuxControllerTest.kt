@@ -22,56 +22,15 @@ class EuxControllerTest : EuxBaseTest() {
     val rinaAksjonTypeRef = object : TypeReference<List<RinaAksjon>>() {}
 
     @AfterEach fun cleanUpTest() {
-        Mockito.reset(euxService);
+        Mockito.reset(euxService)
     }
 
     @Test
     fun `Calling euxController|getRinaURL handler returns correct URL`() {
         euxController.rinaUrl = "localhost"
-        var generatedResponse = euxController.getRinaURL()
+        val generatedResponse = euxController.getRinaURL()
         assertEquals(generatedResponse.body?.get("rinaUrl") as String, "https://localhost/portal/#/caseManagement/")
     }
-
-    @Test
-    fun `Calling euxController|getBucs returns list of BUCs`() {
-
-        val expectedResponse = listOf("P_BUC_01", "P_BUC_02", "P_BUC_03", "P_BUC_05", "P_BUC_06")
-        val generatedResponse = euxController.getBucs()
-        assertEquals(generatedResponse, expectedResponse)
-    }
-
-    @Test
-    fun `Calling euxController|getSeds returns SEDs for a given BUC`() {
-
-        val buc = "P_BUC_01"
-        val rinanr = null
-
-        val expectedResponse = ResponseEntity.ok().body(mapAnyToJson(listOf("P2000")))
-        val generatedResponse = euxController.getSeds(buc, rinanr)
-
-        assertEquals(generatedResponse, expectedResponse)
-    }
-
-      @Test
-      fun euxController_getSeds_returnsSEDsgivenBUC() {
-          val buc = "P_BUC_01"
-          val rinanr = "1000101"
-
-          val bucResponse =  ResponseEntity.ok().body(mapAnyToJson(listOf("P6000","X6000")))
-          doReturn(bucResponse).whenever(bucController).getMuligeAksjoner(rinanr)
-
-          val expectedResponse = listOf("P6000").toResponse()
-
-          val generatedResponse = euxController.getSeds(buc, rinanr)
-
-          assertEquals(expectedResponse, generatedResponse)
-
-          val json = generatedResponse.body!!
-          val validSedListforBuc = mapJsonToAny(json, typeRefs<List<String>>())
-          assertEquals(1, validSedListforBuc.size)
-      }
-
-
 
     @Test
     fun `Calling euxController|getInstitutions returns institution list`() {
