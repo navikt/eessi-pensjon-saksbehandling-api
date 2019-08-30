@@ -24,7 +24,7 @@ class PdfController(private val pdfService: PdfService) {
             val response = pdfService.generate(request)
             ResponseEntity.ok(response)
         } catch (e : Exception) {
-            ResponseEntity.badRequest().body(mapOf("serverMessage" to "invalidPDFRecipe"))
+            ResponseEntity.badRequest().body(mapOf("message" to "invalidPDFRecipe"))
         }
     }
 }
