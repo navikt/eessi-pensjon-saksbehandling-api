@@ -25,8 +25,7 @@ class VarselController(val varselService: VarselService,
     fun sendVarsel(@RequestParam("aktoerId") aktoerId: String,
                    @RequestParam("saksId") saksId: String): ResponseEntity<String> {
         try {
-            // FIXME This is a hack because Pesys uses the wrong identifier in some cases
-            val fnr = if (isProbablyAFnrSentAsAktoerId(aktoerId)) aktoerId else hentFnrForAktoerId(aktoerId)
+            val fnr = aktoerregisterService.hentGjeldendeNorskIdentForAktorId(aktoerId)
             varselService.sendVarsel(fnr, saksId, "EessiPenVarsleBrukerUfore")
         } catch( pie: PersonInformasjonException) {
             val uuid = UUID.randomUUID().toString()
@@ -38,11 +37,5 @@ class VarselController(val varselService: VarselService,
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorBody(vse.message!!, uuid))
         }
         return ResponseEntity.ok().body(successBody())
-    }
-
-    private fun isProbablyAFnrSentAsAktoerId(aktorid: String) = aktorid.length == 11
-
-    fun hentFnrForAktoerId(aktoerId: String): String{
-        return aktoerregisterService.hentGjeldendeNorskIdentForAktorId(aktoerId)
     }
 }
