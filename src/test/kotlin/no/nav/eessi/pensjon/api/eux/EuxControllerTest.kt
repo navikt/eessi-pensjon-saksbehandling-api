@@ -1,25 +1,17 @@
 package no.nav.eessi.pensjon.api.eux
 
-import com.fasterxml.jackson.core.type.TypeReference
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.whenever
 import no.nav.eessi.pensjon.services.eux.EuxBaseTest
-import no.nav.eessi.pensjon.services.eux.RinaAksjon
 import no.nav.eessi.pensjon.utils.mapAnyToJson
-import no.nav.eessi.pensjon.utils.mapJsonToAny
-import no.nav.eessi.pensjon.utils.toResponse
-import no.nav.eessi.pensjon.utils.typeRefs
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 
 class EuxControllerTest : EuxBaseTest() {
-
-    val rinaAksjonTypeRef = object : TypeReference<List<RinaAksjon>>() {}
 
     @AfterEach fun cleanUpTest() {
         Mockito.reset(euxService)
@@ -62,7 +54,6 @@ class EuxControllerTest : EuxBaseTest() {
     fun `Calling euxController|getCountryCode returns country codes`() {
 
         val expectedResponse = listOf("NO", "SE", "DK", "FI")
-        //val expectedResponse = listOf("NO")
         val generatedResponse = euxController.getCountryCode()
         assertEquals(generatedResponse, expectedResponse)
     }
@@ -74,33 +65,4 @@ class EuxControllerTest : EuxBaseTest() {
         val generatedResponse = euxController.getSubjectArea()
         assertEquals(generatedResponse, expectedResponse)
     }
-
-
-    private fun getAksjonlist(): List<RinaAksjon> {
-        return listOf(
-                RinaAksjon(
-                        navn = "Create",
-                        id = "123123343123",
-                        kategori = "Documents",
-                        dokumentType = "P6000",
-                        dokumentId = "213123123"
-                ),
-                RinaAksjon(
-                        navn = "Create",
-                        id = "123123343123",
-                        kategori = "Documents",
-                        dokumentType = "X6000",
-                        dokumentId = "213123123"
-                ),
-                RinaAksjon(
-                        navn = "Update",
-                        id = "123123343123",
-                        kategori = "Documents",
-                        dokumentType = "X200",
-                        dokumentId = "213123123"
-                )
-        )
-    }
-
-
 }

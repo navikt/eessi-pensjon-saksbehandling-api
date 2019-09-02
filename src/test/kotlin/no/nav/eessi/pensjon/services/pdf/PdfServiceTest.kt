@@ -57,12 +57,12 @@ class PdfServiceTest : PdfBaseTest() {
     }
 
     @Test
-    fun `generateReceipt`() {
+    fun `given valid submission when generating receipt then generate kvittering pdf`() {
         val mockJsonString = DefaultResourceLoader().getResource(
             "classpath:json/submissions.json").file.readText()
 
         val mockPerson = "testPerson"
         val generateReceipt = pdfService.generateReceipt(mockJsonString, mockPerson)
-        assertEquals(generateReceipt?.get("name"), "kvittering.pdf")
+        assertEquals(generateReceipt["name"], "kvittering.pdf")
     }
 }
