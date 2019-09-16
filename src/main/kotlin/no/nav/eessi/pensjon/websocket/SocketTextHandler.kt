@@ -76,11 +76,7 @@ class SocketTextHandler : TextWebSocketHandler() {
 
     fun alertSubscribers(caseId: String, subject: String? = null) {
         try {
-            if(fasitEnvironmentName == "q2") { // TODO Remove after CT test
-                sessions.forEach { (id, session) ->
-                    session.sendMessage(TextMessage("{\"bucUpdated\": {\"caseId\": \"$caseId\"}}"))
-                }
-            } else if(subject != null){
+            if(subject != null){
                 filterSessionsByBruker(subject).map { session ->
                     session.sendMessage(TextMessage("{\"bucUpdated\": {\"caseId\": \"$caseId\"}}"))
                 }
