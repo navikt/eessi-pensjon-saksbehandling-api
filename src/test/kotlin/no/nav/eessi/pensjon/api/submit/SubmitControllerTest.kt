@@ -32,7 +32,7 @@ class SubmitControllerTest : SubmitBaseTest() {
 
         doNothing().whenever(kafkaService).publishSubmissionReceivedEvent(any())
 
-        val generatedResponse = receiveSubmissionController.receiveSubmission(mockRequest)
+        val generatedResponse = receiveSubmissionController.receiveSubmission("p4000", mockRequest)
         val filename = generatedResponse.getValue("filename")
 
         assertTrue(filename.startsWith("12345678910___PinfoSubmission___"))
@@ -59,7 +59,7 @@ class SubmitControllerTest : SubmitBaseTest() {
         doThrow(RuntimeException("Feiler her ved s3")).whenever(s3storageService).put(any(),any())
 
         assertThrows<Exception> {
-            receiveSubmissionController.receiveSubmission(mockRequest)
+            receiveSubmissionController.receiveSubmission("p4000", mockRequest)
         }
     }
 

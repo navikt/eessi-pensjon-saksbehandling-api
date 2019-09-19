@@ -324,7 +324,7 @@ class PdfService {
         return FontSupplierStream(url)
     }
 
-    fun generateReceipt(rawJsonData : String, subject : String) : Map<String, Any> {
+    fun generateReceipt(rawJsonData : String, subject : String, page: String) : Map<String, Any> {
 
         val doc = Jsoup.parse(hentKvitteringHtmlSomStream(), "UTF-8", "")
         doc.outputSettings().syntax(Document.OutputSettings.Syntax.xml)
