@@ -44,8 +44,9 @@ class ReceiveSubmissionController(
     val PINFO_SUBMISSION = "PinfoSubmission"
     val PINFO_SUBMISSION_RECEIPT = "PinfoSubmissionReceipt"
 
-    @PostMapping(value = ["/submit"], produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun receiveSubmission(@RequestBody requestBody: SubmissionRequest): Map<String, String> {
+    @PostMapping(value = ["/submit/{page}"], produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun receiveSubmission(@PathVariable(required = true) page: String,
+                          @RequestBody requestBody: SubmissionRequest): Map<String, String> {
 
         val personIdentifier = getClaims(oidcRequestContextHolder).subject
         val uuid = UUID.randomUUID().toString()
@@ -110,8 +111,8 @@ class ReceiveSubmissionController(
 
     }
 
-    @GetMapping("/receipt")
-    fun sendReceipt(): String {
+    @GetMapping("/receipt/{page}")
+    fun sendReceipt(@PathVariable(required = true) page: String): String {
         logger.info("Sender inn endelig kvittering")
         val personIdentifier = getClaims(oidcRequestContextHolder).subject
         val receipt: Map<String, Any>
@@ -122,7 +123,7 @@ class ReceiveSubmissionController(
 
 
         try {
-            receipt = pdfService.generateReceipt(submission, personIdentifier)
+            receipt = pdfService.generateReceipt(submission, personIdentifier, page)
             receiptJson = ObjectMapper().writeValueAsString(receipt)
             filename = lagreFil(personIdentifier, PINFO_SUBMISSION_RECEIPT, receiptJson)
         } catch (ex: Exception) {
