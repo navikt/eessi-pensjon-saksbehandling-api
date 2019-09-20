@@ -30,8 +30,6 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
 
-private val logger = LoggerFactory.getLogger(PdfService::class.java)
-
 @Service
 @Description("Service class for PDF")
 class PdfService {
@@ -39,16 +37,11 @@ class PdfService {
     private val logger = LoggerFactory.getLogger(PdfService::class.java)
 
     private final val fontPath = "/fonts/LiberationSans-Regular.ttf"
-    val htmlPath = "/html-templates/kvittering.html"
-
+    val htmlPath = "/html-templates"
     val url: URL = this.javaClass.getResource(fontPath)
     val fontName = "LiberationSans"
 
-    private fun hentKvitteringHtmlSomStream(): InputStream {
-        return this.javaClass.getResource(htmlPath).openStream()
-    }
-
-    fun generate(request: PDFRequest) : HashMap<String, Map<String, Any>> {
+    fun generate(request: PDFRequest): HashMap<String, Map<String, Any>> {
 
         val workingPdfs = HashMap<String, PDDocument>()
         val workingImages = HashMap<String, PDImageXObject>()
@@ -82,7 +75,12 @@ class PdfService {
                         outputPdf.addPage(page)
 
                         if (request.watermark.watermarkText != null && page != null) {
-                            addWatermark(outputPdf, page, request.watermark.watermarkText, request.watermark.watermarkTextColor!!)
+                            addWatermark(
+                                outputPdf,
+                                page,
+                                request.watermark.watermarkText,
+                                request.watermark.watermarkTextColor!!
+                            )
                         }
                         numPages++
                     }
@@ -94,7 +92,12 @@ class PdfService {
                         addImage(outputPdf, page, sourceImage!!)
 
                         if (request.watermark.watermarkText != null) {
-                            addWatermark(outputPdf, page, request.watermark.watermarkText, request.watermark.watermarkTextColor!!)
+                            addWatermark(
+                                outputPdf,
+                                page,
+                                request.watermark.watermarkText,
+                                request.watermark.watermarkTextColor!!
+                            )
                         }
                         numPages++
                     }
@@ -130,13 +133,18 @@ class PdfService {
         return response
     }
 
-    private fun addWatermark(outputPdf : PDDocument, page : PDPage, watermarkText : String, watermarkTextColor : Map<String, Any>) {
+    private fun addWatermark(
+        outputPdf: PDDocument,
+        page: PDPage,
+        watermarkText: String,
+        watermarkTextColor: Map<String, Any>
+    ) {
         val font = PDType1Font.HELVETICA_BOLD
         val fontSize = 100f
         val r0 = PDExtendedGraphicsState()
         var alpha = 0.0f
         if (watermarkTextColor["a"] is Int) {
-            alpha = (watermarkTextColor["a"] as Int)* 1.0f
+            alpha = (watermarkTextColor["a"] as Int) * 1.0f
         }
         if (watermarkTextColor["a"] is Double) {
             alpha = (watermarkTextColor["a"] as Double).toFloat()
@@ -151,7 +159,7 @@ class PdfService {
         val pageWidth = if (rotate) pageSize.height else pageSize.width
         val pageHeight = if (rotate) pageSize.width else pageSize.height
         val centerX = if (rotate) pageHeight / 2f else pageWidth / 2f
-        val centerY = if (rotate) pageWidth  / 2f else pageHeight / 2f
+        val centerY = if (rotate) pageWidth / 2f else pageHeight / 2f
         var scale = 1.0f
         val pageDiagonal = sqrt((pageHeight * pageHeight + pageWidth * pageWidth).toDouble())
         val angle = atan((pageHeight / pageWidth).toDouble())
@@ -181,13 +189,19 @@ class PdfService {
         }
 
         cs.setFont(font, fontSize * scale * 0.95f) // 0,95 for edges
-        cs.setTextMatrix(Matrix.getRotateInstance(angle, (centerX - offsetX * scale).toFloat(), (centerY - offsetY * scale).toFloat()))
+        cs.setTextMatrix(
+            Matrix.getRotateInstance(
+                angle,
+                (centerX - offsetX * scale).toFloat(),
+                (centerY - offsetY * scale).toFloat()
+            )
+        )
         cs.showText(watermarkText)
         cs.endText()
         cs.close()
     }
 
-    private fun addSpecialPage(outputPdf : PDDocument, _text : String, separatorTextColor: Map<String, Any>) {
+    private fun addSpecialPage(outputPdf: PDDocument, _text: String, separatorTextColor: Map<String, Any>) {
         val page = PDPage()
         outputPdf.addPage(page)
 
@@ -204,10 +218,10 @@ class PdfService {
         val pageWidth = if (rotate) pageSize.height else pageSize.width
         val pageHeight = if (rotate) pageSize.width else pageSize.height
 
-        val contentWidth = pageWidth - 2 *margin
+        val contentWidth = pageWidth - 2 * margin
 
         val centerX = if (rotate) pageHeight / 2f else pageWidth / 2f
-        val centerY = if (rotate) pageWidth  / 2f else pageHeight / 2f
+        val centerY = if (rotate) pageWidth / 2f else pageHeight / 2f
 
         val lines = ArrayList<String>()
         var biggestLineWidth = 0f
@@ -254,7 +268,7 @@ class PdfService {
         val r0 = PDExtendedGraphicsState()
         var alpha = 0.0f
         if (separatorTextColor["a"] is Int) {
-            alpha = (separatorTextColor["a"] as Int)* 1.0f
+            alpha = (separatorTextColor["a"] as Int) * 1.0f
         }
         if (separatorTextColor["a"] is Double) {
             alpha = (separatorTextColor["a"] as Double).toFloat()
@@ -288,7 +302,7 @@ class PdfService {
         cs.close()
     }
 
-    private fun addImage(outputPdf : PDDocument, page: PDPage, image : PDImageXObject) {
+    private fun addImage(outputPdf: PDDocument, page: PDPage, image: PDImageXObject) {
 
         outputPdf.addPage(page)
 
@@ -306,7 +320,7 @@ class PdfService {
         val imageHeight = image.height
         var scale = 1.0f
         val centerX = if (rotate) pageHeight / 2f else pageWidth / 2f
-        val centerY = if (rotate) pageWidth  / 2f else pageHeight / 2f
+        val centerY = if (rotate) pageWidth / 2f else pageHeight / 2f
         val offsetX = imageWidth / 2
         val offsetY = imageHeight / 2
 
@@ -315,145 +329,14 @@ class PdfService {
         }
 
         val cs = PDPageContentStream(outputPdf, page)
-        cs.drawImage(image, (centerX - offsetX * scale),(centerY - offsetY * scale), imageWidth * scale, imageHeight * scale)
-        cs.close()
-    }
-
-    private fun getFSSsupplierStream() : FSSupplier<InputStream> {
-        logger.info("url fontpath : $url")
-        return FontSupplierStream(url)
-    }
-
-    fun generateReceipt(rawJsonData : String, subject : String, page: String) : Map<String, Any> {
-
-        val doc = Jsoup.parse(hentKvitteringHtmlSomStream(), "UTF-8", "")
-        doc.outputSettings().syntax(Document.OutputSettings.Syntax.xml)
-
-        val data = ObjectMapper().readTree(rawJsonData)
-        fillUpReceiptWithData(data, doc, subject)
-
-        val baos = ByteArrayOutputStream()
-        val builder  = PdfRendererBuilder()
-
-        builder.useFont(getFSSsupplierStream(), fontName)
-        val buildPdfRenderer = builder.withW3cDocument(W3CDom().fromJsoup(doc), null)
-            .toStream(baos)
-            .buildPdfRenderer()
-
-        buildPdfRenderer.layout()
-        buildPdfRenderer.createPDF()
-        val byteArray = baos.toByteArray()
-        return mapOf(
-            "name" to "kvittering.pdf",
-            "size" to byteArray.size,
-            "mimetype" to "application/pdf",
-            "content" to mapOf("base64" to Base64.getEncoder().encodeToString(byteArray))
+        cs.drawImage(
+            image,
+            (centerX - offsetX * scale),
+            (centerY - offsetY * scale),
+            imageWidth * scale,
+            imageHeight * scale
         )
-    }
-
-    private fun getTextValue( it: JsonNode, key : String) : String {
-        if (it.has(key)) {
-            val node = it.get(key)
-            if (node !is NullNode) {
-                return node.textValue
-            }
-        }
-        return "-"
-    }
-
-    private fun fillUpPeriod(it : JsonNode, type : String ) : String {
-
-        val div = Element("div")
-        div.append(Element("dt").addClass("grey").text("Periode").toString())
-        div.append(Element("dd").addClass("grey").text(type + " - " + getTextValue(it.get("periode"), "fom") + " - " +  getTextValue(it.get("periode"), "tom")).toString())
-
-        div.append(Element("dt").addClass("col-4").text("Land").toString())
-        div.append(Element("dd").text(getTextValue(it, "land")).toString())
-
-        div.append(Element("dt").addClass("grey").text("Trygdeordning navn").toString())
-        div.append(Element("dd").addClass("grey").text(getTextValue(it, "trygdeordningnavn")).toString())
-
-        div.append(Element("dt").text("Trygdenummer/ID-nummer").toString())
-        div.append(Element("dd").text(getTextValue(it, "forsikringId")).toString())
-
-        div.append(Element("dt").addClass("grey").text("Medlemskap i trygdeordning").toString())
-        div.append(Element("dd").addClass("grey").text(getTextValue(it, "medlemskap")).toString())
-
-        div.append(Element("dt").text("Sted").toString())
-        div.append(Element("dd").text(getTextValue(it, "sted")).toString())
-
-        div.append(Element("dt").addClass("grey").text("Land").toString())
-        div.append(Element("dd").addClass("grey").text(getTextValue(it, "firmaLand")).toString())
-
-        if (type == "Arbeid") {
-
-            div.append(Element("dt").text("Arbeidsgivers sted").toString())
-            div.append(Element("dd").text(getTextValue(it, "firmaSted")).toString())
-
-            div.append(Element("dt").addClass("grey").text("Arbeidsgivers navn").toString())
-            div.append(Element("dd").addClass("grey").text(getTextValue(it, "navnFirma")).toString())
-
-            div.append(Element("dt").text("Trkesaktivitet").toString())
-            div.append(Element("dd").text(getTextValue(it, "jobbUnderAnsattEllerSelvstendig")).toString())
-        }
-
-        if (type == "Utdanning") {
-            div.append(Element("dt").text("Navn på utdanningsinstitusjon").toString())
-            div.append(Element("dd").text(getTextValue(it, "navnPaaInstitusjon")).toString())
-        }
-
-        div.append(Element("p").toString())
-        return div.toString()
-    }
-
-    private fun fillUpReceiptWithData(data : JsonNode, doc : Document, subject : String) {
-
-        val personInfo = data.get("personInfo")
-        doc.select("#person-id").first().text(subject)
-        doc.select("#person-nameAtBirth").first().text(getTextValue(personInfo, "etternavnVedFodsel"))
-        doc.select("#person-previousName").first().text(getTextValue(personInfo, "tidligereNavn"))
-        doc.select("#person-country").first().text(getTextValue(personInfo, "fodestedLand"))
-        doc.select("#person-place").first().text(getTextValue(personInfo, "fodestedBy"))
-        doc.select("#person-region").first().text(getTextValue(personInfo, "provinsEllerDepartement"))
-        doc.select("#person-phone").first().text(getTextValue(personInfo, "telefonnummer"))
-        doc.select("#person-email").first().text(getTextValue(personInfo, "epost"))
-        doc.select("#person-fatherName").first().text(getTextValue(personInfo, "farsNavn"))
-        doc.select("#person-motherName").first().text(getTextValue(personInfo, "morsNavn"))
-
-        val bankInfo = data.get("bankinfo")
-        doc.select("#bank-name").first().text(getTextValue(bankInfo, "navn"))
-        doc.select("#bank-address").first().text(getTextValue(bankInfo, "adresse"))
-        doc.select("#bank-country").first().text(getTextValue(bankInfo, "land"))
-        doc.select("#bank-swift").first().text(getTextValue(bankInfo, "bicEllerSwift"))
-        doc.select("#bank-iban").first().text(getTextValue(bankInfo, "kontonummerEllerIban"))
-
-        val stayAbroadInfo = data.get("periodeInfo")
-        val stayAbroadDiv = doc.select("#stayAbroad")
-
-        stayAbroadInfo.get("ansattSelvstendigPerioder").forEach {
-            stayAbroadDiv.append(fillUpPeriod(it, "Arbeid"))
-        }
-
-        stayAbroadInfo.get("opplaeringPerioder").forEach {
-            stayAbroadDiv.append(fillUpPeriod(it, "Utdanning"))
-        }
-
-        stayAbroadInfo.get("forsvartjenestePerioder").forEach {
-            stayAbroadDiv.append(fillUpPeriod(it, "Militær eller siviltjeneste"))
-        }
-
-        stayAbroadInfo.get("boPerioder").forEach {
-            stayAbroadDiv.append(fillUpPeriod(it, "Boperiode"))
-        }
-        doc.select("#comment").first().text(getTextValue(data, "comment"))
-    }
-
-}
-
-class FontSupplierStream(private val ttfurl: URL) : FSSupplier<InputStream> {
-    override fun supply(): InputStream {
-        logger.info("ttfurl fontpath for stream : $ttfurl")
-        return ttfurl.openStream()
+        cs.close()
     }
 
 }
