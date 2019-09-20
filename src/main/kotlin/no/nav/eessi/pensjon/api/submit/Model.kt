@@ -3,7 +3,7 @@ package no.nav.eessi.pensjon.api.submit
 data class SubmissionRequest(
         val periodeInfo: PeriodeInfo,
         val personInfo: Personinfo,
-        val bankinfo: Bankinfo,
+        val bankInfo: Bankinfo,
         val comment: String? = null
 )
 

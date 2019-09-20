@@ -26,7 +26,7 @@ class SubmitControllerTest : SubmitBaseTest() {
         val mockRequest = SubmissionRequest(
                 periodeInfo = PeriodeInfo(),
                 personInfo = Personinfo(),
-                bankinfo = Bankinfo(),
+                bankInfo = Bankinfo(),
                 comment = "comment"
         )
 
@@ -43,7 +43,7 @@ class SubmitControllerTest : SubmitBaseTest() {
         val json = mapper.readTree(content.body!!)
         assertTrue(json.has("periodeInfo"))
         assertTrue(json.has("personInfo"))
-        assertTrue(json.has("bankinfo"))
+        assertTrue(json.has("bankInfo"))
         assertTrue(json.has("comment"))
     }
 
@@ -51,7 +51,7 @@ class SubmitControllerTest : SubmitBaseTest() {
         val mockRequest = SubmissionRequest(
                 periodeInfo = PeriodeInfo(),
                 personInfo = Personinfo(),
-                bankinfo = Bankinfo(),
+                bankInfo = Bankinfo(),
                 comment = "comment"
         )
 
@@ -96,7 +96,7 @@ class SubmitControllerTest : SubmitBaseTest() {
         doThrow(RuntimeException("This did not work")).whenever(kafkaService).publishSubmissionReceivedEvent(any())
     }
 
-    @Test fun `receiveSubmissionController| putOnKafka failed after maxtries kafka Service fails`() {
+    @Test fun `receiveSubmissionController|putOnKafka failed after maxtries kafka Service fails`() {
         val uuid = "1234-1234-1234"
         val subject = "12345678910"
         val mockResponse = listOf(
@@ -116,7 +116,7 @@ class SubmitControllerTest : SubmitBaseTest() {
         }
     }
 
-    @Test fun `receiveSubmissionController| putOnKafka successful after 2 kafka Service fails`() {
+    @Test fun `receiveSubmissionController|putOnKafka successful after 2 kafka Service fails`() {
         val uuid = "1234-1234-1234"
         val subject = "12345678910"
         val mockResponse = listOf(
@@ -138,7 +138,7 @@ class SubmitControllerTest : SubmitBaseTest() {
         assertEquals(uuid, response)
     }
 
-    @Test fun `receiveSubmissionController| putOnKafka successful`() {
+    @Test fun `receiveSubmissionController|putOnKafka successful`() {
         val uuid = "1234-1234-1234"
         val subject = "12345678910"
         val mockResponse = listOf(

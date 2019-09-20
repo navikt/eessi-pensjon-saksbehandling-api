@@ -3,6 +3,7 @@ package no.nav.eessi.pensjon.api.submit
 import com.fasterxml.jackson.databind.ObjectMapper
 import no.nav.eessi.pensjon.services.kafka.KafkaService
 import no.nav.eessi.pensjon.services.pdf.PdfService
+import no.nav.eessi.pensjon.services.pdf.TemplateService
 import no.nav.eessi.pensjon.services.storage.StorageService
 import no.nav.eessi.pensjon.utils.mapAnyToJson
 import no.nav.eessi.pensjon.utils.counter
@@ -29,7 +30,8 @@ class ReceiveSubmissionController(
     val storageService: StorageService,
     val javaTimeObjectMapper: ObjectMapper,
     val oidcRequestContextHolder: OIDCRequestContextHolder,
-    val pdfService: PdfService
+    val pdfService: PdfService,
+    val templateService: TemplateService
 ) {
 
     private val logger = LoggerFactory.getLogger(ReceiveSubmissionController::class.java)
@@ -123,7 +125,7 @@ class ReceiveSubmissionController(
 
 
         try {
-            receipt = pdfService.generateReceipt(submission, personIdentifier, page)
+            receipt = templateService.generateReceipt(submission, personIdentifier, page)
             receiptJson = ObjectMapper().writeValueAsString(receipt)
             filename = lagreFil(personIdentifier, PINFO_SUBMISSION_RECEIPT, receiptJson)
         } catch (ex: Exception) {

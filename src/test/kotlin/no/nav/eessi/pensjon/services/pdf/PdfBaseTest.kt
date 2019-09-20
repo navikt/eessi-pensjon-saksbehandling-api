@@ -11,10 +11,12 @@ open class PdfBaseTest : BaseTest() {
 
     lateinit var pdfController: PdfController
     lateinit var pdfService: PdfService
+    lateinit var templateService: TemplateService
 
     @BeforeEach
     fun _init() {
         pdfService = Mockito.spy(PdfService())
+        templateService = Mockito.spy(TemplateService())
         pdfController = Mockito.spy(PdfController(pdfService))
     }
 
