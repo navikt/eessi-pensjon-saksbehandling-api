@@ -60,12 +60,13 @@ srveessipensjon:
   username: "someuser"
   password: "somepass"
 
+#srvusername: "someuser"
+#srvpassword: "somepass"
+
 eessi.pensjon.whitelist.users:
 
 APP_NAME: 'eessi-pensjon-saksbehandling-api'
 FASIT_ENVIRONMENT_NAME: 'test'
-#FASIT_ENVIRONMENT_NAME: 'SOMEENVIRONMENT'
-
 
 isso.agent.password: 'somepass'
 rina_host.url: 'someurl'
@@ -73,3 +74,29 @@ kafka.brokers.url: 'someurl'
 NAV_DOMAIN_URL: 'somedomain'
 VARSELPRODUKSJON.VARSLINGER.queuename: 'http://someurl:1245'
 LOGINSERVICE_HOSTURL: 'http://someurl'
+
+ldap.provider:
+  serviceuser-dn-pattern: "CN={0},OU=ApplAccounts,OU=ServiceAccounts"
+  user-search-filter: "(&(objectClass=user)(|(sAMAccountName={0})(userPrincipalName={0})))"
+  user-search-base=: "OU=NAV,OU=BusinessUnits"
+  group-search-base=OU: "NAV,OU=BusinessUnits"
+
+# Embedded LDAP server config:
+spring:
+  ldap:
+    embedded:
+      base-dn: "dc=test,dc=local"
+      port: 9389
+      validation.enabled: false
+      credential:
+        username: "CN=srvapp,OU=ApplAccounts,OU=ServiceAccounts,DC=test,DC=local"
+        password: "serviceuserpassword"
+    username: "user"
+    password: "pass"
+
+# LDAP client config:
+ldap:
+  url: "ldap://localhost:9389"
+  basedn: "dc=test,dc=local"
+  domain: "TEST.LOCAL"
+  provider.user-dn-pattern: "CN={0},OU=Users"
