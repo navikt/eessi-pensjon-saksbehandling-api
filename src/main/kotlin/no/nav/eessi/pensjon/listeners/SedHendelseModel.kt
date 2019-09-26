@@ -13,7 +13,7 @@ class SedHendelseModel (
     val avsenderNavn: String,
     val avsenderLand: String? = null,
     val mottakerId: String?,
-    val mottakerNavn: String,
+    val mottakerNavn: String?,
     val mottakerLand: String? = null,
     val rinaDokumentId: String,
     val rinaDokumentVersjon: String? = null,
