@@ -81,7 +81,7 @@ class LdapProviderAutoConfiguration(
         }
 
         if (credentialsSpecified()) {
-       //     authenticator.setUserSearch(newFilterBasedLdapUserSearch(ldapContextSource))
+            authenticator.setUserSearch(newFilterBasedLdapUserSearch(ldapContextSource))
         }
 
         return authenticator
