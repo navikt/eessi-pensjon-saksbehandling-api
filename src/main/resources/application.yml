@@ -53,7 +53,7 @@ spring:
       write_dates_as_timestamps: false
   kafka:
     listener:
-      ack-mode: manual
+      ack-mode: record
     consumer:
       enable-auto-commit: false
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS_URL}
