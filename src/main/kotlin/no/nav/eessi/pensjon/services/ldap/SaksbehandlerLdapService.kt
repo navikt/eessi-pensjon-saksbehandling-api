@@ -1,8 +1,10 @@
 package no.nav.eessi.pensjon.services.ldap
 
 import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Service
 
-class SaksbehandlerLdapConsumer(private val ldapBrukeroppslag: LdapBrukeroppslag) {
+@Service
+class SaksbehandlerLdapService(private val ldapBrukeroppslag: LdapBrukeroppslag) {
 
     private val logger = LoggerFactory.getLogger(LdapInnlogging::class.java)
 

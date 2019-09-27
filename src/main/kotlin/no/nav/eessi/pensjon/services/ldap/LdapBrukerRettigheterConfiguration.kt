@@ -27,8 +27,8 @@ class LdapBrukerRettigheterConfiguration {
     private val logger = LoggerFactory.getLogger(LdapBrukerRettigheterConfiguration::class.java)
 
     @Bean
-    fun saksbehandlerConsumer(ldapBrukerOppslag: LdapBrukeroppslag): SaksbehandlerLdapConsumer {
-        return SaksbehandlerLdapConsumer(ldapBrukerOppslag)
+    fun saksbehandlerConsumer(ldapBrukerOppslag: LdapBrukeroppslag): SaksbehandlerLdapService {
+        return SaksbehandlerLdapService(ldapBrukerOppslag)
     }
 
     @Bean
