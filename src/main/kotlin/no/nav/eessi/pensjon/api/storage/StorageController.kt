@@ -3,7 +3,7 @@ package no.nav.eessi.pensjon.api.storage
 import com.amazonaws.AmazonServiceException
 import com.amazonaws.SdkClientException
 import io.micrometer.core.annotation.Timed
-import no.nav.eessi.pensjon.services.ldap.SaksbehandlerLdapService
+import no.nav.eessi.pensjon.services.ldap.LdapService
 import no.nav.eessi.pensjon.services.storage.StorageService
 import no.nav.eessi.pensjon.utils.*
 import no.nav.security.oidc.api.Protected
@@ -19,7 +19,7 @@ import java.util.*
 @RestController
 @RequestMapping("/api/storage")
 class StorageController(private val storage: StorageService,
-                        private val saksbehandlerLdapService: SaksbehandlerLdapService,
+                        private val ldapService: LdapService,
                         private val oidcRequestContextHolder: OIDCRequestContextHolder) {
 
     private val logger = LoggerFactory.getLogger(StorageController::class.java)
@@ -51,7 +51,7 @@ class StorageController(private val storage: StorageService,
     fun getDocument(@PathVariable(required = true) path: String): ResponseEntity<String> {
         return try {
             // Tester LDAP integrasjonen
-            logger.debug(saksbehandlerLdapService.hentSaksbehandler(getClaims(oidcRequestContextHolder).subject).toString())
+            logger.debug(ldapService.hentBrukerInformasjon(getClaims(oidcRequestContextHolder).subject).toString())
 
             validerPath(path)
             logger.info("Henter S3 dokument")

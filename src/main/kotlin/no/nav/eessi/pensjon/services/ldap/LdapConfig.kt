@@ -11,7 +11,9 @@ import javax.naming.ldap.LdapContext
 import java.util.Hashtable
 
 @Configuration
-class LdapBrukerRettigheterConfiguration {
+class LdapConfig {
+
+    private val logger = LoggerFactory.getLogger(LdapConfig::class.java)
 
     @Value("\${ldap.url}")
     private val ldapUrl: String? = null
@@ -24,17 +26,10 @@ class LdapBrukerRettigheterConfiguration {
     @Value("\${ldap.basedn}")
     private val ldapBasedn: String? = null
 
-    private val logger = LoggerFactory.getLogger(LdapBrukerRettigheterConfiguration::class.java)
-
     @Bean
-    fun saksbehandlerConsumer(ldapBrukerOppslag: LdapBrukeroppslag): SaksbehandlerLdapService {
-        return SaksbehandlerLdapService(ldapBrukerOppslag)
-    }
-
-    @Bean
-    fun ldapBrukeroppslag(ldapInnlogging: LdapInnlogging): LdapBrukeroppslag {
-        logger.info("Setter opp LDAP config for brukeroppslag")
-        val environment = Hashtable<String, Any>() // NOSONAR //metodeparameter krever Hashtable
+    fun ldapKlient(ldapInnlogging: LdapInnlogging): LdapKlient {
+        logger.info("Setter opp LDAP klient")
+        val environment = Hashtable<String, Any>()
         environment[Context.INITIAL_CONTEXT_FACTORY] = "com.sun.jndi.ldap.LdapCtxFactory"
         environment[Context.PROVIDER_URL] = ldapUrl!!
         environment[Context.SECURITY_AUTHENTICATION] = "simple"
@@ -48,17 +43,7 @@ class LdapBrukerRettigheterConfiguration {
         } catch (e: NamingException) {
         }
 
-        return LdapBrukeroppslag(environment, ldapInnlogging, context, searchBase)
-    }
-
-    @Bean
-    fun ldapInnlogging(): LdapInnlogging {
-        return LdapInnlogging()
-    }
-
-    companion object {
-
-        private val logger = LoggerFactory.getLogger(LdapBrukerRettigheterConfiguration::class.java)
+        return LdapKlient(environment, ldapInnlogging, context, searchBase)
     }
 }
 

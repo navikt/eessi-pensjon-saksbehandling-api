@@ -1,11 +1,13 @@
 package no.nav.eessi.pensjon.services.ldap
 
 import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Component
 import javax.naming.NamingException
 import javax.naming.ldap.InitialLdapContext
 import javax.naming.ldap.LdapContext
 import java.util.Hashtable
 
+@Component
 class LdapInnlogging {
 
     private val logger = LoggerFactory.getLogger(LdapInnlogging::class.java)
@@ -14,7 +16,7 @@ class LdapInnlogging {
         return try {
             InitialLdapContext(environment, null)
         } catch (e: NamingException) {
-            logger.warn("Navn på saksbehandler ikke funnet (NamingException)")
+            logger.error("Klarte ikke å initiere LDAP context", e)
             null
         }
     }

@@ -6,9 +6,9 @@ import com.nimbusds.jwt.PlainJWT
 import com.sun.jndi.ldap.LdapCtx
 import com.unboundid.ldap.listener.InMemoryDirectoryServer
 import com.unboundid.ldap.listener.InMemoryDirectoryServerConfig
-import no.nav.eessi.pensjon.services.ldap.LdapBrukeroppslag
+import no.nav.eessi.pensjon.services.ldap.LdapKlient
 import no.nav.eessi.pensjon.services.ldap.LdapInnlogging
-import no.nav.eessi.pensjon.services.ldap.SaksbehandlerLdapService
+import no.nav.eessi.pensjon.services.ldap.LdapService
 import no.nav.security.oidc.context.OIDCClaims
 import no.nav.security.oidc.context.OIDCRequestContextHolder
 import no.nav.security.oidc.context.OIDCValidationContext
@@ -101,12 +101,21 @@ open class BaseTest {
         return Mockito.spy(aktoerregisterRestTemplate)
     }
 
-    fun generateMockSaksbehandlerLdapService(): SaksbehandlerLdapService {
-        val ldapContext = LdapCtx("dc=test,dc=local", "localhost", ldapServerPort.toInt(), Hashtable<String, String>(), false )
+    fun generateMockSaksbehandlerLdapService(): LdapService {
+        val ldapContext = LdapCtx("dc=test,dc=local",
+            "localhost",
+            ldapServerPort.toInt(),
+            Hashtable<String, String>(),
+            false)
         val ldapInnlogging = LdapInnlogging()
-        val ldapBrukeroppslag = LdapBrukeroppslag(Hashtable(), ldapInnlogging, ldapContext, "OU=Users,OU=NAV,OU=BusinessUnits,")
+        val ldapBrukeroppslag = LdapKlient(
+            Hashtable(),
+            ldapInnlogging,
+            ldapContext,
+            "OU=Users,OU=NAV,OU=BusinessUnits,"
+        )
 
-        return SaksbehandlerLdapService(ldapBrukeroppslag)
+        return LdapService(ldapBrukeroppslag)
     }
 }
 

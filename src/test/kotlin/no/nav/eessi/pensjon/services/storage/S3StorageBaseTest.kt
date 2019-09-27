@@ -10,7 +10,7 @@ import io.mockk.mockk
 import io.mockk.spyk
 import no.nav.eessi.pensjon.api.storage.StorageController
 import no.nav.eessi.pensjon.services.BaseTest
-import no.nav.eessi.pensjon.services.ldap.SaksbehandlerLdapService
+import no.nav.eessi.pensjon.services.ldap.LdapService
 import no.nav.eessi.pensjon.services.person.tps.PersonV3Service
 import no.nav.eessi.pensjon.services.storage.amazons3.S3Storage
 import no.nav.eessi.pensjon.services.whitelist.WhitelistService
@@ -28,7 +28,7 @@ open class S3StorageBaseTest : BaseTest() {
     lateinit var storageController : StorageController
     lateinit var whitelistService: WhitelistService
     lateinit var personV3Service: PersonV3Service
-    lateinit var saksbehandlerLdapService: SaksbehandlerLdapService
+    lateinit var ldapService: LdapService
 
     fun personV3(): PersonV3 = mockk()
 
