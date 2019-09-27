@@ -44,8 +44,8 @@ open class BaseTest {
     @Value("\${aktoerregister.api.v1.url}")
     lateinit var aktoerregisterUrl: String
 
-    @Value("\${ldapServerport}")
-    lateinit var ldapserverPort: String
+    @Value("\${ldapServerPort}")
+    lateinit var ldapServerPort: String
 
     @Test fun dummy() {}
 
@@ -59,7 +59,7 @@ open class BaseTest {
             server.startListening()
 
             server.connection.use { connection ->
-                System.setProperty("ldapServerport", connection.connectedPort.toString())
+                System.setProperty("ldapServerPort", connection.connectedPort.toString())
             }
         }
     }
@@ -102,7 +102,7 @@ open class BaseTest {
     }
 
     fun generateMockSaksbehandlerLdapService(): SaksbehandlerLdapService {
-        val ldapContext = LdapCtx("dc=test,dc=local", "localhost", ldapserverPort.toInt(), Hashtable<String, String>(), false )
+        val ldapContext = LdapCtx("dc=test,dc=local", "localhost", ldapServerPort.toInt(), Hashtable<String, String>(), false )
         val ldapInnlogging = LdapInnlogging()
         val ldapBrukeroppslag = LdapBrukeroppslag(Hashtable(), ldapInnlogging, ldapContext, "OU=Users,OU=NAV,OU=BusinessUnits,")
 
