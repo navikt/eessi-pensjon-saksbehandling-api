@@ -14,7 +14,7 @@ class LdapInnlogging {
         return try {
             InitialLdapContext(environment, null)
         } catch (e: NamingException) {
-            logger.warn("Navn på saksbehandler ikke funnet (NamingException)")
+            logger.error("Klarte ikke å initiere LDAP context", e)
             null
         }
     }

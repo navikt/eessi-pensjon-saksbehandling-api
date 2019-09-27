@@ -11,7 +11,7 @@ import javax.naming.ldap.LdapContext
 import java.util.Hashtable
 
 @Configuration
-class LdapBrukerRettigheterConfiguration {
+class LdapConfiguration {
 
     @Value("\${ldap.url}")
     private val ldapUrl: String? = null
@@ -24,17 +24,17 @@ class LdapBrukerRettigheterConfiguration {
     @Value("\${ldap.basedn}")
     private val ldapBasedn: String? = null
 
-    private val logger = LoggerFactory.getLogger(LdapBrukerRettigheterConfiguration::class.java)
+    private val logger = LoggerFactory.getLogger(LdapConfiguration::class.java)
 
     @Bean
-    fun saksbehandlerConsumer(ldapBrukerOppslag: LdapBrukeroppslag): SaksbehandlerLdapConsumer {
-        return SaksbehandlerLdapConsumer(ldapBrukerOppslag)
+    fun saksbehandlerConsumer(ldapBrukerOppslag: LdapKlient): LdapService {
+        return LdapService(ldapBrukerOppslag)
     }
 
     @Bean
-    fun ldapBrukeroppslag(ldapInnlogging: LdapInnlogging): LdapBrukeroppslag {
-        logger.info("Setter opp LDAP config for brukeroppslag")
-        val environment = Hashtable<String, Any>() // NOSONAR //metodeparameter krever Hashtable
+    fun ldapKlient(ldapInnlogging: LdapInnlogging): LdapKlient {
+        logger.info("Setter opp LDAP klient")
+        val environment = Hashtable<String, Any>()
         environment[Context.INITIAL_CONTEXT_FACTORY] = "com.sun.jndi.ldap.LdapCtxFactory"
         environment[Context.PROVIDER_URL] = ldapUrl!!
         environment[Context.SECURITY_AUTHENTICATION] = "simple"
@@ -48,7 +48,7 @@ class LdapBrukerRettigheterConfiguration {
         } catch (e: NamingException) {
         }
 
-        return LdapBrukeroppslag(environment, ldapInnlogging, context, searchBase)
+        return LdapKlient(environment, ldapInnlogging, context, searchBase)
     }
 
     @Bean
@@ -58,7 +58,7 @@ class LdapBrukerRettigheterConfiguration {
 
     companion object {
 
-        private val logger = LoggerFactory.getLogger(LdapBrukerRettigheterConfiguration::class.java)
+        private val logger = LoggerFactory.getLogger(LdapConfiguration::class.java)
     }
 }
 
