@@ -11,7 +11,9 @@ import javax.naming.ldap.LdapContext
 import java.util.Hashtable
 
 @Configuration
-class LdapConfiguration {
+class LdapConfig {
+
+    private val logger = LoggerFactory.getLogger(LdapConfig::class.java)
 
     @Value("\${ldap.url}")
     private val ldapUrl: String? = null
@@ -23,13 +25,6 @@ class LdapConfiguration {
     private val ldapPassword: String? = null
     @Value("\${ldap.basedn}")
     private val ldapBasedn: String? = null
-
-    private val logger = LoggerFactory.getLogger(LdapConfiguration::class.java)
-
-    @Bean
-    fun saksbehandlerConsumer(ldapBrukerOppslag: LdapKlient): LdapService {
-        return LdapService(ldapBrukerOppslag)
-    }
 
     @Bean
     fun ldapKlient(ldapInnlogging: LdapInnlogging): LdapKlient {
@@ -49,16 +44,6 @@ class LdapConfiguration {
         }
 
         return LdapKlient(environment, ldapInnlogging, context, searchBase)
-    }
-
-    @Bean
-    fun ldapInnlogging(): LdapInnlogging {
-        return LdapInnlogging()
-    }
-
-    companion object {
-
-        private val logger = LoggerFactory.getLogger(LdapConfiguration::class.java)
     }
 }
 

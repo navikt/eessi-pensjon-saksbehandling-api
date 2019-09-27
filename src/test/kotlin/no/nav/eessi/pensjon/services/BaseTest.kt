@@ -102,9 +102,18 @@ open class BaseTest {
     }
 
     fun generateMockSaksbehandlerLdapService(): LdapService {
-        val ldapContext = LdapCtx("dc=test,dc=local", "localhost", ldapServerPort.toInt(), Hashtable<String, String>(), false )
+        val ldapContext = LdapCtx("dc=test,dc=local",
+            "localhost",
+            ldapServerPort.toInt(),
+            Hashtable<String, String>(),
+            false)
         val ldapInnlogging = LdapInnlogging()
-        val ldapBrukeroppslag = LdapKlient(Hashtable(), ldapInnlogging, ldapContext, "OU=Users,OU=NAV,OU=BusinessUnits,")
+        val ldapBrukeroppslag = LdapKlient(
+            Hashtable(),
+            ldapInnlogging,
+            ldapContext,
+            "OU=Users,OU=NAV,OU=BusinessUnits,"
+        )
 
         return LdapService(ldapBrukeroppslag)
     }
