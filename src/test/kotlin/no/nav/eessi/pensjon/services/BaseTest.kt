@@ -3,12 +3,19 @@ package no.nav.eessi.pensjon.services
 
 import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.PlainJWT
+import com.sun.jndi.ldap.LdapCtx
+import com.unboundid.ldap.listener.InMemoryDirectoryServer
+import com.unboundid.ldap.listener.InMemoryDirectoryServerConfig
+import no.nav.eessi.pensjon.services.ldap.LdapBrukeroppslag
+import no.nav.eessi.pensjon.services.ldap.LdapInnlogging
+import no.nav.eessi.pensjon.services.ldap.SaksbehandlerLdapService
 import no.nav.security.oidc.context.OIDCClaims
 import no.nav.security.oidc.context.OIDCRequestContextHolder
 import no.nav.security.oidc.context.OIDCValidationContext
 import no.nav.security.oidc.context.TokenContext
 import no.nav.security.oidc.test.support.spring.TokenGeneratorConfiguration
 import org.apache.commons.io.FileUtils
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito
@@ -22,6 +29,7 @@ import org.springframework.web.client.DefaultResponseErrorHandler
 import org.springframework.web.client.RestTemplate
 import java.io.File
 import java.nio.charset.Charset
+import java.util.*
 
 
 @ActiveProfiles("test")
@@ -36,8 +44,25 @@ open class BaseTest {
     @Value("\${aktoerregister.api.v1.url}")
     lateinit var aktoerregisterUrl: String
 
+    @Value("\${ldapServerPort}")
+    lateinit var ldapServerPort: String
+
     @Test fun dummy() {}
 
+    companion object {
+        @BeforeAll
+        @JvmStatic
+        fun before() {
+            val config = InMemoryDirectoryServerConfig("dc=test,dc=local")
+            config.schema = null
+            val server = InMemoryDirectoryServer(config)
+            server.startListening()
+
+            server.connection.use { connection ->
+                System.setProperty("ldapServerPort", connection.connectedPort.toString())
+            }
+        }
+    }
 
     fun generateMockContextHolder(): OIDCRequestContextHolder {
 
@@ -74,6 +99,14 @@ open class BaseTest {
                 .additionalInterceptors()
                 .build()
         return Mockito.spy(aktoerregisterRestTemplate)
+    }
+
+    fun generateMockSaksbehandlerLdapService(): SaksbehandlerLdapService {
+        val ldapContext = LdapCtx("dc=test,dc=local", "localhost", ldapServerPort.toInt(), Hashtable<String, String>(), false )
+        val ldapInnlogging = LdapInnlogging()
+        val ldapBrukeroppslag = LdapBrukeroppslag(Hashtable(), ldapInnlogging, ldapContext, "OU=Users,OU=NAV,OU=BusinessUnits,")
+
+        return SaksbehandlerLdapService(ldapBrukeroppslag)
     }
 }
 
