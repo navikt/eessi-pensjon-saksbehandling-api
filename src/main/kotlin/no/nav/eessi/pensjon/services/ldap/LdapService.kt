@@ -43,7 +43,7 @@ class LdapService(private val ldapKlient: LdapKlient) {
     private fun getMemberOf(result: SearchResult): String? {
         val attributeName = "memberOf"
         val memberOf = find(result, attributeName) ?: return null
-        memberOf.all.iterator().forEach { println("entry $it") }
+        memberOf.all.iterator().forEach { logger.debug("entry $it") }
 
         return try {
             memberOf.all.toList().toString()
