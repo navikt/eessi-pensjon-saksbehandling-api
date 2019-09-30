@@ -43,6 +43,8 @@ class LdapService(private val ldapKlient: LdapKlient) {
     private fun getMemberOf(result: SearchResult): String? {
         val attributeName = "memberOf"
         val memberOf = find(result, attributeName) ?: return null
+        memberOf.all.iterator().forEach { println("entry $it") }
+
         return try {
             memberOf.all.toList().toString()
         } catch (e: NamingException) {
