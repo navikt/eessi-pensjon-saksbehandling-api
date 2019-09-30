@@ -44,7 +44,7 @@ class LdapService(private val ldapKlient: LdapKlient) {
         val attributeName = "memberOf"
         val memberOf = find(result, attributeName) ?: return null
         return try {
-            memberOf.get().toString()
+            memberOf.all.toList().toString()
         } catch (e: NamingException) {
             logger.error("En feil oppstod under henting av memberOf feltet i LDAP", e)
             null
