@@ -5,8 +5,10 @@
       {
         "land": "DK",
         "periode": {
-          "fom": "01.01.2007",
-          "tom": "31.01.2011"
+          "lukketPeriode": {
+            "fom": "01.01.2007",
+            "tom": "31.01.2011"
+          }
         },
         "sted": "Köbenhavn ",
         "trygdeordningnavn": "Udbetaling Danmark ",
@@ -30,8 +32,10 @@
       {
         "land": "BG",
         "periode": {
-          "fom": "11.09.2018",
-          "tom": "10.12.2018"
+          "lukketPeriode": {
+            "fom": "11.09.2018",
+            "tom": "10.12.2018"
+          }
         },
         "sted": "fff",
         "trygdeordningnavn": "ff",
@@ -46,8 +50,10 @@
       {
         "land": "DK",
         "periode": {
-          "fom": "26.11.2018",
-          "tom": "28.11.2018"
+          "lukketPeriode": {
+            "fom": "26.11.2018",
+            "tom": "28.11.2018"
+          }
         },
         "sted": "45445",
         "trygdeordningnavn": "dd",
@@ -61,8 +67,10 @@
       {
         "land": "FO",
         "periode": {
-          "fom": "01.01.2019",
-          "tom": "03.01.2019"
+          "lukketPeriode": {
+            "fom": "01.01.2019",
+            "tom": "03.01.2019",
+          }
         },
         "sted": "dwsdd",
         "trygdeordningnavn": "tey",
