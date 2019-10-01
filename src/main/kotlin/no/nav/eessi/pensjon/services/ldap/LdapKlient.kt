@@ -1,6 +1,7 @@
 package no.nav.eessi.pensjon.services.ldap
 
 import org.slf4j.LoggerFactory
+import java.lang.IllegalArgumentException
 
 import javax.naming.LimitExceededException
 import javax.naming.NamingException
@@ -8,7 +9,6 @@ import javax.naming.directory.SearchControls
 import javax.naming.directory.SearchResult
 import javax.naming.ldap.LdapContext
 import java.util.Hashtable
-import java.util.regex.Pattern
 
 open class LdapKlient(
     private val environment: Hashtable<String, Any>,
@@ -18,20 +18,13 @@ open class LdapKlient(
 ) {
 
     private val logger = LoggerFactory.getLogger(LdapKlient::class.java)
-    private val IDENT_PATTERN = Pattern.compile("[a-zA-Z][0-9]*")
 
    open fun ldapSearch(ident: String): SearchResult? {
         context = ldapInnlogging.lagLdapContext(environment)
 
         if (context == null || searchBase == null) {
-            logger.error("Context eller searchbase må settes")
-            return null
-        }
-
-        val matcher = IDENT_PATTERN.matcher(ident)
-        if (!matcher.matches()) {
-            logger.error("Ident: $ident er ikke i et format vi kan søke etter")
-            return null
+            logger.error("Context eller searchbase må angis")
+            throw IllegalArgumentException("Context eller searchbase må angis")
         }
 
         val controls = SearchControls()
@@ -39,7 +32,7 @@ open class LdapKlient(
         controls.countLimit = 1
         val soekestreng = String.format("(cn=%s)", ident)
         try {
-            val result = context!!.search(searchBase, soekestreng, controls) // NOSONAR
+            val result = context!!.search(searchBase, soekestreng, controls)
             if (result.hasMoreElements()) {
                 return result.nextElement()
             }
@@ -47,11 +40,10 @@ open class LdapKlient(
             return null
         } catch (lee: LimitExceededException) {
             logger.error("En teknisk feil oppstod ved søk etter: $ident i LDAP", lee)
-            return null
+            throw lee
         } catch (ne: NamingException) {
             logger.error("En teknisk feil oppstod ved søk etter: $ident i LDAP", ne)
-            return null
+            throw ne
         }
-
     }
 }
