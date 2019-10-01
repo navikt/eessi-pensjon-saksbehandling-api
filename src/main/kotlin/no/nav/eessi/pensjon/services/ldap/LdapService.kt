@@ -40,17 +40,20 @@ class LdapService(private val ldapKlient: LdapKlient) {
         }
     }
 
-    private fun getMemberOf(result: SearchResult): String? {
+    private fun getMemberOf(result: SearchResult): List<String> {
         val attributeName = "memberOf"
-        val memberOf = find(result, attributeName) ?: return null
-        memberOf.all.iterator().forEach { logger.debug("entry $it") }
+        val memberOf = find(result, attributeName) ?: return listOf()
+        val groups = mutableListOf<String>()
 
-        return try {
-            memberOf.all.toList().toString()
-        } catch (e: NamingException) {
-            logger.error("En feil oppstod under henting av memberOf feltet i LDAP", e)
-            null
+        memberOf.all.iterator().forEach {
+                groupEntry -> (groupEntry as String).split(",").forEach {
+                    attributePart -> if(attributePart.startsWith("CN")) {
+                        groups.add(attributePart.substringAfter("="))
+                }
+            }
         }
+        logger.debug("brukeren er medlem av grupper: $groups")
+        return groups
     }
 
     private fun find(element: SearchResult, attributeName: String): Attribute? {

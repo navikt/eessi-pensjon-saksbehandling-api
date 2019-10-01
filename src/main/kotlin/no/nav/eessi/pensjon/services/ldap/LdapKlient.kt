@@ -10,7 +10,7 @@ import javax.naming.ldap.LdapContext
 import java.util.Hashtable
 import java.util.regex.Pattern
 
-class LdapKlient(
+open class LdapKlient(
     private val environment: Hashtable<String, Any>,
     private val ldapInnlogging: LdapInnlogging,
     private var context: LdapContext?,
@@ -18,9 +18,9 @@ class LdapKlient(
 ) {
 
     private val logger = LoggerFactory.getLogger(LdapKlient::class.java)
-    private val IDENT_PATTERN = Pattern.compile("^\\p{LD}+$")
+    private val IDENT_PATTERN = Pattern.compile("[a-zA-Z][0-9]*")
 
-    fun ldapSearch(ident: String): SearchResult? {
+   open fun ldapSearch(ident: String): SearchResult? {
         context = ldapInnlogging.lagLdapContext(environment)
 
         if (context == null || searchBase == null) {
@@ -30,7 +30,7 @@ class LdapKlient(
 
         val matcher = IDENT_PATTERN.matcher(ident)
         if (!matcher.matches()) {
-            logger.error("Ident: $ident er ikke i et format vi kan søke på i LDAP")
+            logger.error("Ident: $ident er ikke i et format vi kan søke etter")
             return null
         }
 
