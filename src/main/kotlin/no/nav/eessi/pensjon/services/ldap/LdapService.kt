@@ -34,11 +34,11 @@ class LdapService(private val ldapKlient: LdapKlient) {
             return BrukerInformasjon(ident, emptyList())
         }
 
-        val medlemAv = getMemberOf(result)
+        val medlemAv = getMemberOf(result, ident)
         return BrukerInformasjon(ident, medlemAv)
     }
 
-    private fun getMemberOf(result: SearchResult): List<String> {
+    private fun getMemberOf(result: SearchResult, ident: String): List<String> {
         val attributeName = "memberOf"
         val memberOf = find(result, attributeName) ?: return listOf()
         val groups = mutableListOf<String>()
