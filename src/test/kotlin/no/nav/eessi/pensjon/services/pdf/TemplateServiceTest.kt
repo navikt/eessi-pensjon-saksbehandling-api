@@ -1,6 +1,7 @@
 package no.nav.eessi.pensjon.services.pdf
 
 import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.core.io.DefaultResourceLoader
 import org.springframework.util.ResourceUtils
@@ -8,6 +9,7 @@ import java.util.*
 
 
 class TemplateServiceTest : PdfBaseTest() {
+    @Disabled
     @Suppress("UNCHECKED_CAST")
     @Test
     fun `given valid e207 submission when generating receipt then generate kvittering pdf`() {
