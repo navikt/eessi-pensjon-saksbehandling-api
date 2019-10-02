@@ -2,8 +2,27 @@ package no.nav.eessi.pensjon.services.auth
 
 class AuthorisationService {
 
-    fun isUserEessiPensjonSaksbehandler(gruppemedlemskap: List<String>): Boolean {
-        return false
+    fun harTilgangTilEessiPensjon(gruppemedlemskap: List<Gruppe>): Boolean {
+
+        return gruppemedlemskap.containsAll(Tilgang.EESSI_PENSJON.grupper)
+    }
+
+    fun harTilgangTilPESYS_Sak(gruppemedlemskap: List<Gruppe>, sakType: SakType): Boolean {
+
+        /* if (sakType == SakType.ALDERSPENSJON){
+            if(gruppemedlemskap.containsAll(Gruppe.PENSJON_UFORE)){
+                return false
+            }
+            return true
+        }
+        if(sakType == SakType.UFORETRYGD){
+            if(gruppemedlemskap.containsAll(Gruppe.PENSJON_UFORE)){
+                return true
+            }
+            return false
+        }
+             */
+        return true
     }
 }
 
@@ -19,6 +38,14 @@ enum class Gruppe (val gruppeNavn: String) {
     PENSJON_KODE7("0000-GA-PENSJON_KODE7")
 }
 
+enum class SakType (sakType: String){
+    ALDERSPENSJON("ALDER"),
+    UFORETRYGD("UFØRE"),
+    BARNEPENSJON("BARNEPENSJON"),
+    GJENLEVENDE("GJENLEVENDE")
+}
+
 enum class Tilgang(var grupper : List<Gruppe>) {
     EESSI_PENSJON(listOf(Gruppe.PENSJON_UTLAND, Gruppe.PENSJON_SAKSBEHANDLER))
 }
+
