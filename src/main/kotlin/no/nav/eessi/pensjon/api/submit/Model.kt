@@ -3,7 +3,7 @@ package no.nav.eessi.pensjon.api.submit
 data class SubmissionRequest(
         val periodeInfo: PeriodeInfo,
         val personInfo: Personinfo,
-        val bankinfo: Bankinfo,
+        val bankInfo: Bankinfo,
         val comment: String? = null
 )
 
@@ -36,7 +36,7 @@ data class PeriodeInfo(
 
 data class StandardItem(
         val land: String? = null,
-        val periode: Periode? = null,
+        val periode: LukketPeriode? = null,
         val sted: String? = null,
         val trygdeordningnavn: String? = null,
         val medlemskap: String? = null,
@@ -60,6 +60,10 @@ data class Vedlegg(
 
 data class EncodedContent(
         val base64: String
+)
+
+data class LukketPeriode (
+        var lukketPeriode: Periode? = null
 )
 
 data class Periode(

@@ -28,9 +28,9 @@ class VarselControllerTest : VarselBaseTest() {
     @Test
     fun `Calling VarselController|sendVarsel returns OK`() {
 
-        val aktoerId = "12345678910"
+        val aktoerId = "1234567891012"
         val saksId = "123"
-
+        doReturn(aktoerId).`when`(aktoerregisterService).hentGjeldendeNorskIdentForAktorId(aktoerId)
         doNothing().whenever(varselService).sendVarsel(aktoerId, saksId, "EessiPenVarsleBrukerUfore")
         val expectedResponse = ResponseEntity(successBody(), HttpStatus.OK)
         val generatedResponse = varselController.sendVarsel(aktoerId, saksId)
@@ -40,11 +40,13 @@ class VarselControllerTest : VarselBaseTest() {
     @Test
     fun `Calling VarselController|sendVarsel returns error`() {
 
-        val aktoerId = "12345678910"
+        val aktoerId = "1234567891012"
+        val fnr = "12345678912"
         val saksId = "123"
         val e = VarselServiceException("Kunne ikke sende varselet til varseltjenesten: message")
 
-        doThrow(e).whenever(varselService).sendVarsel(aktoerId, saksId, "EessiPenVarsleBrukerUfore")
+        doReturn(fnr).`when`(aktoerregisterService).hentGjeldendeNorskIdentForAktorId(aktoerId)
+        doThrow(e).whenever(varselService).sendVarsel(fnr, saksId, "EessiPenVarsleBrukerUfore")
 
         val generatedResponse = varselController.sendVarsel(aktoerId, saksId)
         val generatedBody = ObjectMapper().readTree(generatedResponse.body)
@@ -53,17 +55,6 @@ class VarselControllerTest : VarselBaseTest() {
         assertEquals(false, generatedBody.get("success").booleanValue)
         assertEquals(e.message, generatedBody.get("error").textValue)
         assertTrue(generatedBody.get("uuid").textValue.matches(Regex("\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}")))
-    }
-
-    @Test
-    fun `Gitt et fnr i aktoerId feltet saa send varsel direkte`() {
-        val fnr = "12345678912"
-        val sakId = "123"
-
-        varselController.sendVarsel(fnr, sakId)
-
-        verify(varselService).sendVarsel(fnr, sakId,"EessiPenVarsleBrukerUfore")
-        verify(aktoerregisterService, times(0)).hentGjeldendeNorskIdentForAktorId(fnr)
     }
 
     @Test

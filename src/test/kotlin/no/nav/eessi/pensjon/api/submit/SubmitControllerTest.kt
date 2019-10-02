@@ -26,14 +26,14 @@ class SubmitControllerTest : SubmitBaseTest() {
         val mockRequest = SubmissionRequest(
                 periodeInfo = PeriodeInfo(),
                 personInfo = Personinfo(),
-                bankinfo = Bankinfo(),
+                bankInfo = Bankinfo(),
                 comment = "comment"
         )
 
         doNothing().whenever(kafkaService).publishSubmissionReceivedEvent(any())
 
-        val generatedResponse = receiveSubmissionController.receiveSubmission(mockRequest)
-        val filename = generatedResponse.get("filename")!!
+        val generatedResponse = receiveSubmissionController.receiveSubmission("p4000", mockRequest)
+        val filename = generatedResponse.getValue("filename")
 
         assertTrue(filename.startsWith("12345678910___PinfoSubmission___"))
         assertTrue(filename.endsWith(".json"))
@@ -43,7 +43,7 @@ class SubmitControllerTest : SubmitBaseTest() {
         val json = mapper.readTree(content.body!!)
         assertTrue(json.has("periodeInfo"))
         assertTrue(json.has("personInfo"))
-        assertTrue(json.has("bankinfo"))
+        assertTrue(json.has("bankInfo"))
         assertTrue(json.has("comment"))
     }
 
@@ -51,7 +51,7 @@ class SubmitControllerTest : SubmitBaseTest() {
         val mockRequest = SubmissionRequest(
                 periodeInfo = PeriodeInfo(),
                 personInfo = Personinfo(),
-                bankinfo = Bankinfo(),
+                bankInfo = Bankinfo(),
                 comment = "comment"
         )
 
@@ -59,7 +59,7 @@ class SubmitControllerTest : SubmitBaseTest() {
         doThrow(RuntimeException("Feiler her ved s3")).whenever(s3storageService).put(any(),any())
 
         assertThrows<Exception> {
-            receiveSubmissionController.receiveSubmission(mockRequest)
+            receiveSubmissionController.receiveSubmission("p4000", mockRequest)
         }
     }
 
@@ -75,14 +75,10 @@ class SubmitControllerTest : SubmitBaseTest() {
         )
 
         val latestSubmission = "${subject}___${receiveSubmissionController.PINFO_SUBMISSION}___2028-09-01T00:00:00.json"
-        val inputFileName = "${subject}___${receiveSubmissionController.PINFO_SUBMISSION}___2028-09-01T00:00:00.json"
 
         doReturn(mockResponse).whenever(s3storageService).list(any())
         doReturn(latestSubmission).whenever(s3storageService).get(any())
         doNothing().whenever(kafkaService).publishSubmissionReceivedEvent(any())
-
-        val generatedResponse = receiveSubmissionController.resendSubmission(inputFileName)
-        //Assert.assertEquals(HttpStatus.OK, generatedResponse.statusCode)
     }
 
     @Test fun `Calling receiveSubmissionController|resendSubmission returns Error because kafka Service fails`() {
@@ -94,18 +90,13 @@ class SubmitControllerTest : SubmitBaseTest() {
             "${subject}___${receiveSubmissionController.PINFO_SUBMISSION}___2008-09-01T00:00:00.json"
         )
         val latestSubmission = "${subject}___${receiveSubmissionController.PINFO_SUBMISSION}___2028-09-01T00:00:00.json"
-        val inputFileName = "${subject}___${receiveSubmissionController.PINFO_SUBMISSION}___2028-09-01T00:00:00.json"
 
         doReturn(mockResponse).whenever(s3storageService).list(any())
         doReturn(latestSubmission).whenever(s3storageService).get(any())
         doThrow(RuntimeException("This did not work")).whenever(kafkaService).publishSubmissionReceivedEvent(any())
-
-        val generatedResponse = receiveSubmissionController.resendSubmission(inputFileName)
-        //Assert.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, generatedResponse.statusCode)
-        //Assert.assertTrue(generatedResponse.body!!.contains("Resend av submission feilet. "))
     }
 
-    @Test fun `receiveSubmissionController| putOnKafka failed after maxtries kafka Service fails`() {
+    @Test fun `receiveSubmissionController|putOnKafka failed after maxtries kafka Service fails`() {
         val uuid = "1234-1234-1234"
         val subject = "12345678910"
         val mockResponse = listOf(
@@ -125,7 +116,7 @@ class SubmitControllerTest : SubmitBaseTest() {
         }
     }
 
-    @Test fun `receiveSubmissionController| putOnKafka successful after 2 kafka Service fails`() {
+    @Test fun `receiveSubmissionController|putOnKafka successful after 2 kafka Service fails`() {
         val uuid = "1234-1234-1234"
         val subject = "12345678910"
         val mockResponse = listOf(
@@ -147,7 +138,7 @@ class SubmitControllerTest : SubmitBaseTest() {
         assertEquals(uuid, response)
     }
 
-    @Test fun `receiveSubmissionController| putOnKafka successful`() {
+    @Test fun `receiveSubmissionController|putOnKafka successful`() {
         val uuid = "1234-1234-1234"
         val subject = "12345678910"
         val mockResponse = listOf(

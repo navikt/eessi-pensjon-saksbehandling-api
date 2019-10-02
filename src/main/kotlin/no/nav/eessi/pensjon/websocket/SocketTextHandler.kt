@@ -1,5 +1,7 @@
 package no.nav.eessi.pensjon.websocket
 
+import com.fasterxml.jackson.core.JsonParseException
+import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Component
 import org.springframework.web.socket.CloseStatus
@@ -24,15 +26,24 @@ class SocketTextHandler : TextWebSocketHandler() {
         private var sessions: ConcurrentHashMap<String, WebSocketSession> = ConcurrentHashMap()
     }
 
+    fun handleSubscription (session: WebSocketSession, message: JsonNode) {
+        if (message.isArray) {
+            session.attributes["subscriptions"] = message.map { it.textValue() }
+            session.sendMessage(TextMessage("{ \"subscriptions\" : true }" ))
+        }
+    }
+
     @Throws(InterruptedException::class, IOException::class)
     public override fun handleTextMessage(session: WebSocketSession, message: TextMessage) {
         try {
-            logger.info("$session sent message")
+            logger.info("Received a message from session $session")
             val jsonRoot = mapper.readTree(message.payload)
-            if (jsonRoot.isObject && jsonRoot.has("subscriptions") && jsonRoot["subscriptions"].isArray) {
-                session.attributes["subscriptions"] = jsonRoot["subscriptions"].map { it.textValue() }
-                session.sendMessage(TextMessage("{ \"subscriptions\" : true }" ))
+            if (jsonRoot.isObject && jsonRoot.has("subscriptions")) {
+                handleSubscription(session, jsonRoot["subscriptions"])
             }
+        }catch(jsonParseException: JsonParseException) {
+            logger.error("handleTextMessage JsonParseException", jsonParseException)
+            throw jsonParseException
         }catch(interruptedException: InterruptedException){
             logger.error("handleTextMessage interruptedException", interruptedException)
             throw interruptedException
@@ -43,7 +54,14 @@ class SocketTextHandler : TextWebSocketHandler() {
             logger.error("handleTextMessage exception", exception)
             throw exception
         }
+    }
 
+    fun filterSessionsByBruker (navBruker: String): MutableList<WebSocketSession> {
+        return sessions
+            .filter { it.value.attributes["subscriptions"] != null }
+            .filter { it.value.attributes["subscriptions"] is List<*> }
+            .filter { (it.value.attributes["subscriptions"] as List<*>).contains(navBruker) }
+            .values.toMutableList()
     }
 
     @Throws(Exception::class)
@@ -56,18 +74,14 @@ class SocketTextHandler : TextWebSocketHandler() {
         sessions.remove(session.id)
     }
 
-    fun alertSubscribers(caseNumber: String, subject: String? = null){
+    fun alertSubscribers(caseId: String, subject: String? = null) {
         try {
-            if(fasitEnvironmentName == "q2") { // TODO Remove after CT test
-                sessions.forEach { (_, session) -> session.sendMessage(TextMessage("{\"bucUpdated\": \"$caseNumber\"}")) }
-            } else if(subject != null){
-                sessions
-                    .filter { it.value.attributes["subscriptions"] != null }
-                    .filter { it.value.attributes["subscriptions"] is List<*> }
-                    .filter { (it.value.attributes["subscriptions"] as List<*>).contains(subject) }
-                    .forEach { (_, session) -> session.sendMessage(TextMessage("{\"bucUpdated\": \"$caseNumber\"}")) }
+            if(subject != null){
+                filterSessionsByBruker(subject).map { session ->
+                    session.sendMessage(TextMessage("{\"bucUpdated\": {\"caseId\": \"$caseId\"}}"))
+                }
             }
-        }catch(exception: Exception){
+        } catch(exception: Exception) {
             logger.error("alertSubscribers Exception", exception)
             throw exception
         }

@@ -7,9 +7,11 @@ import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.springframework.core.io.DefaultResourceLoader
+import org.springframework.util.ResourceUtils
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.util.*
+import kotlin.collections.HashMap
 
 class PdfServiceTest : PdfBaseTest() {
 
@@ -55,14 +57,6 @@ class PdfServiceTest : PdfBaseTest() {
         assertEquals(testpdf["mimetype"], "application/pdf")
         assertTrue(testpdf.containsKey("content"))
     }
-
-    @Test
-    fun `generateReceipt`() {
-        val mockJsonString = DefaultResourceLoader().getResource(
-            "classpath:json/submissions.json").file.readText()
-
-        val mockPerson = "testPerson"
-        val generateReceipt = pdfService.generateReceipt(mockJsonString, mockPerson)
-        assertEquals(generateReceipt?.get("name"), "kvittering.pdf")
-    }
 }
+
+

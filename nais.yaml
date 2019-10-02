@@ -115,6 +115,12 @@ fasitResources:
   - alias: kafka_bootstrap_servers
     resourceType: baseurl
 
+  - alias: virksomhet:Person_v3
+    resourceType: WebserviceEndpoint
+
+  - alias: ldap
+    resourceType: ldap
+
   exposed:
   - alias: EessiPensjonFrontendApiLogin_v1
     resourceType: RestService

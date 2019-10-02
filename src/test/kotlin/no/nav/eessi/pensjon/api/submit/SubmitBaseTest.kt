@@ -3,6 +3,7 @@ package no.nav.eessi.pensjon.api.submit
 import com.fasterxml.jackson.databind.ObjectMapper
 import no.nav.eessi.pensjon.services.kafka.KafkaService
 import no.nav.eessi.pensjon.services.pdf.PdfService
+import no.nav.eessi.pensjon.services.pdf.TemplateService
 import no.nav.eessi.pensjon.services.storage.S3StorageBaseTest
 import org.apache.kafka.clients.CommonClientConfigs
 import org.apache.kafka.clients.producer.ProducerConfig
@@ -22,6 +23,7 @@ open class SubmitBaseTest : S3StorageBaseTest() {
     lateinit var receiveSubmissionController : ReceiveSubmissionController
     lateinit var mockFagmodulRestTemplate : RestTemplate
     lateinit var pdfService: PdfService
+    lateinit var templateService: TemplateService
     lateinit var kafkaService : KafkaService
     lateinit var kafkaTemplate : KafkaTemplate<String, String>
 
@@ -46,13 +48,15 @@ open class SubmitBaseTest : S3StorageBaseTest() {
         mockFagmodulRestTemplate = generateMockFagmodulRestTemplate()
 
         pdfService = Mockito.spy(PdfService())
+        templateService = Mockito.spy(TemplateService())
 
         receiveSubmissionController = Mockito.spy(ReceiveSubmissionController(
                 kafkaService,
                 s3storageService,
                 ObjectMapper(),
                 generateMockContextHolder(),
-                pdfService
+                pdfService,
+                templateService
         ))
     }
 

@@ -143,9 +143,10 @@ dependencies {
     testImplementation("no.nav.security:oidc-test-support:${oidcTokenSupportVersion}")
     testImplementation("org.mockito:mockito-core:${mockitoVersion}")
     testImplementation("org.junit.jupiter:junit-jupiter:5.5.1")
-    testImplementation('org.mockito:mockito-junit-jupiter:2.23.0')
+    testImplementation('org.mockito:mockito-junit-jupiter:3.0.0')
     testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0")
     testImplementation("io.findify:s3mock_2.12:0.2.5")
+    testImplementation "io.mockk:mockk:1.9.2"
 
     // Architecture tests
     testImplementation 'com.tngtech.archunit:archunit:0.11.0'
@@ -157,6 +158,11 @@ dependencies {
     implementation("org.apache.cxf:cxf-spring-boot-starter-jaxws:${cxfVersion}")
     implementation("org.apache.cxf:cxf-rt-ws-security:${cxfVersion}")
     implementation('org.jvnet.jaxb2_commons:jaxb2-basics-runtime:1.11.1')
+
+    // LDAP
+    implementation("org.springframework.ldap:spring-ldap-core")
+    implementation("org.springframework.security:spring-security-ldap")
+    implementation("com.unboundid:unboundid-ldapsdk")
 }
 
 repositories {

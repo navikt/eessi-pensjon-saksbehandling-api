@@ -53,7 +53,7 @@ spring:
       write_dates_as_timestamps: false
   kafka:
     listener:
-      ack-mode: manual
+      ack-mode: record
     consumer:
       enable-auto-commit: false
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS_URL}
@@ -69,3 +69,10 @@ spring:
 
 cors:
   allowed: ${PENSJON_UTLAND_WS_ALLOWED_ORIGINS_URL}
+
+ldap.provider:
+  serviceuser-dn-pattern: "CN={0},OU=ApplAccounts,OU=ServiceAccounts"
+  user-search-filter: "(&(objectClass=user)(|(sAMAccountName={0})(userPrincipalName={0})))"
+  user-search-base=: "OU=NAV,OU=BusinessUnits"
+  group-search-base=OU: "NAV,OU=BusinessUnits"
+#PENSJON_UTLAND_WS_ALLOWED_ORIGINS_URL: "http://someorigin"

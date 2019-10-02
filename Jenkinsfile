@@ -85,7 +85,7 @@ node {
                      ]
                   ])                  
         }
-
+          /*
           stage("deploy Q1") {
                    parallel(
                        deploy_to_fss: {
@@ -107,6 +107,7 @@ node {
                        }
                    )
                }
+               */
                stage("deploy Q2") {
                    parallel(
                        deploy_to_fss: {
