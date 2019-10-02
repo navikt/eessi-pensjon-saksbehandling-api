@@ -15,7 +15,7 @@ class LdapService(private val ldapKlient: LdapKlient) {
     private val logger = LoggerFactory.getLogger(LdapInnlogging::class.java)
 
     fun hentBrukerInformasjon(ident: String): BrukerInformasjon {
-        logger.info("Henter bruker informasjon fra LDAP")
+        logger.info("Henter bruker-informasjon fra LDAP")
         if (ident.isEmpty()) {
             logger.warn("Brukerident mangler")
             throw IllegalArgumentException("Brukerident mangler")
@@ -24,7 +24,7 @@ class LdapService(private val ldapKlient: LdapKlient) {
         // Unngår å søke etter fødselsnummer i AD
         val matcher = IDENT_PATTERN.matcher(ident)
         if (!matcher.matches()) {
-            logger.error("Identen er ikke i et format vi kan søke etter")
+            logger.error("Identen: $ident er ikke i et format vi kan søke etter")
             return BrukerInformasjon(ident, emptyList())
         }
 
@@ -34,13 +34,13 @@ class LdapService(private val ldapKlient: LdapKlient) {
             return BrukerInformasjon(ident, emptyList())
         }
 
-        val medlemAv = getMemberOf(result)
+        val medlemAv = getMemberOf(result, ident)
         return BrukerInformasjon(ident, medlemAv)
     }
 
-    private fun getMemberOf(result: SearchResult): List<String> {
+    private fun getMemberOf(result: SearchResult, ident: String): List<String> {
         val attributeName = "memberOf"
-        val memberOf = find(result, attributeName) ?: return listOf()
+        val memberOf = find(result, attributeName, ident) ?: return listOf()
         val groups = mutableListOf<String>()
 
         try {
@@ -52,17 +52,17 @@ class LdapService(private val ldapKlient: LdapKlient) {
                 }
             }
         } catch (e: Exception) {
-            logger.error("En feil oppstod under henting av medlemskap i AD grupper", e)
+            logger.error("En feil oppstod under henting av medlemskap for bruker: $ident i AD grupper", e)
             return emptyList()
         }
-        logger.debug("Brukeren er medlem av grupper: $groups")
+        logger.debug("Brukeren: $ident er medlem av grupper: $groups")
         return groups
     }
 
-    private fun find(element: SearchResult, attributeName: String): Attribute? {
+    private fun find(element: SearchResult, attributeName: String, ident: String): Attribute? {
         val attribute = element.attributes.get(attributeName)
         if (attribute == null) {
-            logger.warn("Atributtet: $attributeName finnes ikke på brukeren i AD")
+            logger.warn("Attributtet: $attributeName finnes ikke på brukeren: $ident i AD")
             return null
         }
         return attribute
