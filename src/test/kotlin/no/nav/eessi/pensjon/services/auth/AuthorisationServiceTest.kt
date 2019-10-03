@@ -50,7 +50,7 @@ class AuthorisationServiceTest {
     // Tilgang til PESYS-sak
 
     @Test
-    fun `Gitt en saksbehandler med tilgang til EP OG har tilleggsrollen Uføre OG sakstypen er alderspensjon SÅ returner FALSE`(){
+    fun `Gitt en saksbehandler har tilleggsrollen Uføre OG sakstypen er alderspensjon SÅ returner FALSE`(){
         val autorisasjonsservice = AuthorisationService()
         val roller = listOf(AD_Rolle.PENSJON_UTLAND,
             AD_Rolle.PENSJON_SAKSBEHANDLER,
@@ -64,7 +64,7 @@ class AuthorisationServiceTest {
     }
 
     @Test
-    fun `Gitt en saksbehandler med tilgang til EP OG har tilleggsrollen Uføre OG sakstypen er uføretrygd SÅ returner TRUE`(){
+    fun `Gitt en saksbehandler har tilleggsrollen Uføre OG sakstypen er uføretrygd SÅ returner TRUE`(){
         val autorisasjonsservice = AuthorisationService()
         val roller = listOf(AD_Rolle.PENSJON_UTLAND,
             AD_Rolle.PENSJON_SAKSBEHANDLER,
@@ -79,7 +79,7 @@ class AuthorisationServiceTest {
 
 
     @Test
-    fun `Gitt en saksbehandler med tilgang til EP OG har ikke tilleggsrollen Uføre OG sakstypen er uføretrygd SÅ returner FALSE`(){
+    fun `Gitt en saksbehandler har ikke tilleggsrollen Uføre OG sakstypen er uføretrygd SÅ returner FALSE`(){
         val autorisasjonsservice = AuthorisationService()
         val roller = listOf(AD_Rolle.PENSJON_UTLAND,
             AD_Rolle.PENSJON_SAKSBEHANDLER,
@@ -93,7 +93,7 @@ class AuthorisationServiceTest {
 
 
     @Test
-    fun `Gitt en saksbehandler med tilgang til EP OG har tilleggsrollen Uføre OG sakstypen er barnepensjon SÅ returner FALSE`(){
+    fun `Gitt en saksbehandler har tilleggsrollen Uføre OG sakstypen er barnepensjon SÅ returner FALSE`(){
         val autorisasjonsservice = AuthorisationService()
         val roller = listOf(AD_Rolle.PENSJON_UTLAND,
             AD_Rolle.PENSJON_SAKSBEHANDLER,
@@ -106,7 +106,7 @@ class AuthorisationServiceTest {
     }
 
     @Test
-    fun `Gitt saksbehandler med tilgang til EP OG ikke rollen Uføre OG sakstypen er barnepensjon SÅ returner TRUE`(){
+    fun `Gitt saksbehandler ikke rollen Uføre OG sakstypen er barnepensjon SÅ returner TRUE`(){
         val autorisasjonsservice = AuthorisationService()
         val roller = listOf(AD_Rolle.PENSJON_UTLAND,
             AD_Rolle.PENSJON_SAKSBEHANDLER,
@@ -119,7 +119,7 @@ class AuthorisationServiceTest {
     }
 
     @Test
-    fun `Gitt saksbehandler med tilgang til EP OG rollen Uføre OG sakstypen er gjenlevendepensjon SÅ returner FALSE`(){
+    fun `Gitt saksbehandler rollen Uføre OG sakstypen er gjenlevendepensjon SÅ returner FALSE`(){
         val autorisasjonsservice = AuthorisationService()
         val roller = listOf(AD_Rolle.PENSJON_UTLAND,
             AD_Rolle.PENSJON_SAKSBEHANDLER,
@@ -132,7 +132,7 @@ class AuthorisationServiceTest {
     }
 
     @Test
-    fun `Gitt saksbehandler med tilgang til EP OG rollen Uføre OG sakstypen er gjenlevendepensjon SÅ returner TRUE`(){
+    fun `Gitt saksbehandler rollen Uføre OG sakstypen er gjenlevendepensjon SÅ returner TRUE`(){
         val autorisasjonsservice = AuthorisationService()
         val roller = listOf(AD_Rolle.PENSJON_UTLAND,
             AD_Rolle.PENSJON_SAKSBEHANDLER,
@@ -462,85 +462,135 @@ class AuthorisationServiceTest {
 
         assertFalse(harTilgangTilBruker)
     }
-/*
-ELLERS HVIS bruker er merket med kode 6 SÅ
-HVIS PLB ikke har tilleggsrollen Kode 6 SÅ
-Ikke tilgang - "Må ha tilleggsrollen 0000-GA-GOSYS_KODE6 eller 0000-GA-Pensjon_KODE6 i PESYS for å få tilgang til bruker merket med kode 6"
-SLUTT HVIS
-ELLERS HVIS bruker er merket med kode 7 SÅ
-HVIS PLB ikke har tilleggsrollen Kode 7 SÅ
-Ikke tilgang - "Må ha tilleggsrollen 0000-GA-GOSYS_KODE7 eller 0000-GA-Pensjon_KODE7 i PESYS for å få tilgang til bruker merket med kode 6"
-SLUTT HVIS
-ELLERS
-Tilgang til bruker
-SLUTT HVIS
- */
+
+    @Test
+    fun `Gitt saksbehandler har ikke har tilgang kode 6 og 7 OG bruker er merket fortrolig SÅ returner FALSE`(){
+        val autorisasjonsservice = AuthorisationService()
+        val roller = listOf(AD_Rolle.GOSYS_NAV_ANSATT)
+
+        val brukerFNR = "12345678901"
+        val saksbehandlerFNR = "123456123451"
+        val brukerAnsattI_NAV = false
+        val skjerming = Skjerming.FORTROLIG
+        val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBrukere_I_Saken(
+            roller,
+            brukerFNR,
+            saksbehandlerFNR,
+            brukerAnsattI_NAV,
+            skjerming)
+
+        assertFalse(harTilgangTilBruker)
+    }
+
+    @Test
+    fun `Gitt saksbehandler har ikke har tilgang kode 6 og 7 OG bruker er merket strengt fortrolig SÅ returner FALSE`(){
+        val autorisasjonsservice = AuthorisationService()
+        val roller = listOf(AD_Rolle.GOSYS_NAV_ANSATT)
+
+        val brukerFNR = "12345678901"
+        val saksbehandlerFNR = "123456123451"
+        val brukerAnsattI_NAV = false
+        val skjerming = Skjerming.STRENGT_FORTROLIG
+        val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBrukere_I_Saken(
+            roller,
+            brukerFNR,
+            saksbehandlerFNR,
+            brukerAnsattI_NAV,
+            skjerming)
+
+        assertFalse(harTilgangTilBruker)
+    }
 
 
     // Tilgang til BUC
 
     @Test
-    fun `Gitt saksbehandler med tilgang til EP OG BUC er søknad om alder SÅ returner TRUE`(){
+    fun `Gitt saksbehandler BUC er søknad om alder SÅ returner TRUE`(){
         val autorisasjonsservice = AuthorisationService()
         val roller = listOf(AD_Rolle.PENSJON_UTLAND,
             AD_Rolle.PENSJON_SAKSBEHANDLER,
             AD_Rolle.GOSYS_NAV_ANSATT,
             AD_Rolle.PENSJON_NAV_ANSATT)
+        val sedPensjonstype = SED_Pensjonstype.ALDERSPENSJON
+        val bucType = BUC_Type.PBUC01_KRAV_OM_ALDER
 
-        val tilgangBUC= autorisasjonsservice.harTilgangTil_BUC(roller, "PBUC01")
+        val tilgangBUC= autorisasjonsservice.harTilgangTil_BUC(roller, bucType, sedPensjonstype)
 
         assertTrue(tilgangBUC)
     }
 
     @Test
-    fun `Gitt saksbehandler med tilgang til EP OG rollen UFØRE OG BUC er søknad om etterlattepensjon SÅ returner FALSE`(){
+    fun `Gitt saksbehandler har rollen UFØRE OG BUC er søknad om etterlattepensjon OG sed-ytelse er barnepensjon SÅ returner FALSE`(){
         val autorisasjonsservice = AuthorisationService()
         val roller = listOf(AD_Rolle.PENSJON_UTLAND,
             AD_Rolle.PENSJON_SAKSBEHANDLER,
             AD_Rolle.GOSYS_NAV_ANSATT,
             AD_Rolle.PENSJON_UFORE)
+        val sedPensjonstype = SED_Pensjonstype.BARNEPENSJON
+        val bucType = BUC_Type.PBUC02_KRAV_OM_ETTERLATTEPENSJON
 
-        val tilgangBUC = autorisasjonsservice.harTilgangTil_BUC(roller, "PBUC02")
+        val tilgangBUC = autorisasjonsservice.harTilgangTil_BUC(roller, bucType, sedPensjonstype)
 
         assertFalse(tilgangBUC)
     }
 
     @Test
-    fun `Gitt saksbehandler med tilgang til EP OG ikke rollen UFØRE OG BUC er søknad om etterlattepensjon SÅ returner TRUE`(){
+    fun `Gitt saksbehandler ikke rollen UFØRE OG BUC er søknad om etterlattepensjon OG sed-ytelse er ikke barnepensjon SÅ returner TRUE`(){
         val autorisasjonsservice = AuthorisationService()
         val roller = listOf(AD_Rolle.PENSJON_UTLAND,
             AD_Rolle.PENSJON_SAKSBEHANDLER,
             AD_Rolle.GOSYS_NAV_ANSATT,
             AD_Rolle.PENSJON_STRENGT_FORTROLIG)
+        val sedPensjonstype = SED_Pensjonstype.ETTERLATTEPENSJON
+        val bucType = BUC_Type.PBUC02_KRAV_OM_ETTERLATTEPENSJON
 
-        val tilgangBUC = autorisasjonsservice.harTilgangTil_BUC(roller, "PBUC02")
+        val tilgangBUC = autorisasjonsservice.harTilgangTil_BUC(roller, bucType, sedPensjonstype)
 
         assertTrue(tilgangBUC)
     }
 
     @Test
-    fun `Gitt saksbehandler med tilgang til EP OG rollen uføre OG BUC er søknad om uføre SÅ returner TRUE`(){
+    fun `Gitt saksbehandler  BUC er etterlattepensjon OG sed-ytelse er ukjent SÅ returner TRUE`(){
+        val autorisasjonsservice = AuthorisationService()
+        val roller = listOf(AD_Rolle.PENSJON_UTLAND,
+            AD_Rolle.PENSJON_SAKSBEHANDLER,
+            AD_Rolle.GOSYS_NAV_ANSATT,
+            AD_Rolle.PENSJON_STRENGT_FORTROLIG)
+        val sedPensjonstype = SED_Pensjonstype.UKJENT
+        val bucType = BUC_Type.PBUC02_KRAV_OM_ETTERLATTEPENSJON
+
+        val tilgangBUC = autorisasjonsservice.harTilgangTil_BUC(roller, bucType, sedPensjonstype)
+
+        assertTrue(tilgangBUC)
+    }
+
+    @Test
+    fun `Gitt saksbehandler rollen uføre OG BUC er søknad om uføre SÅ returner TRUE`(){
         val autorisasjonsservice = AuthorisationService()
         val roller = listOf(AD_Rolle.PENSJON_UTLAND,
             AD_Rolle.PENSJON_SAKSBEHANDLER,
             AD_Rolle.GOSYS_NAV_ANSATT,
             AD_Rolle.PENSJON_UFORE)
+        val sedPensjonstype = SED_Pensjonstype.UKJENT
+        val bucType = BUC_Type.PBUC03_KRAV_OM_UFORETRYGD
 
-        val tilgangBUC = autorisasjonsservice.harTilgangTil_BUC(roller, "PBUC03")
+        val tilgangBUC = autorisasjonsservice.harTilgangTil_BUC(roller, bucType, sedPensjonstype)
 
         assertTrue(tilgangBUC)
     }
 
     @Test
-    fun `Gitt saksbehandler med tilgang til EP OG ikke rollen uføre OG BUC er søknad om uføre SÅ returner TRUE`(){
+    fun `Gitt saksbehandler ikke rollen uføre OG BUC er søknad om uføre SÅ returner FALSE`(){
         val autorisasjonsservice = AuthorisationService()
         val roller = listOf(AD_Rolle.PENSJON_UTLAND,
             AD_Rolle.PENSJON_SAKSBEHANDLER,
             AD_Rolle.GOSYS_NAV_ANSATT,
             AD_Rolle.GOSYS_STRENGT_FORTROLIG)
+        val sedPensjonstype = SED_Pensjonstype.UKJENT
+        val bucType = BUC_Type.PBUC03_KRAV_OM_UFORETRYGD
 
-        val tilgangBUC = autorisasjonsservice.harTilgangTil_BUC(roller,"PBUC03")
+        val tilgangBUC = autorisasjonsservice.harTilgangTil_BUC(roller,bucType, sedPensjonstype)
 
-        assertTrue(tilgangBUC)
+        assertFalse(tilgangBUC)
     }
 }

@@ -3,35 +3,35 @@ package no.nav.eessi.pensjon.services.auth
 class AuthorisationService {
 
     fun
-            harTilgangTilEessiPensjon(gruppemedlemskap: List<AD_Rolle>): Boolean {
+            harTilgangTilEessiPensjon(roller: List<AD_Rolle>): Boolean {
 
-        return gruppemedlemskap.containsAll(Tilgang.EESSI_PENSJON.grupper)
+        return roller.containsAll(Tilgang.EESSI_PENSJON.grupper)
     }
 
-    fun harTilgangTilPESYS_Sak(gruppemedlemskap: List<AD_Rolle>, sakType: SakType): Boolean {
+    fun harTilgangTilPESYS_Sak(roller: List<AD_Rolle>, sakType: SakType): Boolean {
 
         if (sakType == SakType.ALDERSPENSJON) {
-            if (gruppemedlemskap.containsAll(listOf(AD_Rolle.PENSJON_UFORE))) {
+            if (roller.containsAll(listOf(AD_Rolle.PENSJON_UFORE))) {
                 return false
             }
             return true
         }
         if (sakType == SakType.UFORETRYGD) {
-            if (gruppemedlemskap.containsAll(listOf(AD_Rolle.PENSJON_UFORE))) {
+            if (roller.containsAll(listOf(AD_Rolle.PENSJON_UFORE))) {
                 return true
             }
             return false
         }
 
         if (sakType == SakType.BARNEPENSJON){
-            if (gruppemedlemskap.containsAll(listOf(AD_Rolle.PENSJON_UFORE))){
+            if (roller.containsAll(listOf(AD_Rolle.PENSJON_UFORE))){
                 return false
             }
             return true
         }
 
         if (sakType == SakType.GJENLEVENDE){
-            if (gruppemedlemskap.containsAll(listOf(AD_Rolle.PENSJON_UFORE))){
+            if (roller.containsAll(listOf(AD_Rolle.PENSJON_UFORE))){
                 return false
             }
             return true
@@ -40,62 +40,57 @@ class AuthorisationService {
     }
 
     fun harTilgangTilBrukere_I_Saken(
-        gruppemedlemskap: List<AD_Rolle>,
+        roller: List<AD_Rolle>,
         brukerFNR: String,
         saksbehandlerFNR: String,
         brukerAnsattI_NAV: Boolean,
-        skjerming: Skjerming
-    ): Boolean {
+        skjerming: Skjerming): Boolean {
 
-/*
-HVIS PLB er samme person som bruker SÅ
-Ikke tilgang - "Saksbehandler har ikke lov å jobbe på seg selv"
-ELLERS HVIS bruker er ansatt i NAV SÅ
-HVIS PLB ikke har tilleggsrollen Utvidet SÅ
-Ikke tilgang - "Må ha tilleggsrollen 0000-GA-GOSYS_UTVIDET eller 0000-GA-Pensjon_UTVIDET i PESYS for å få tilgang til bruker som er ansatt i NAV"
-SLUTT HVIS
-ELLERS HVIS bruker er merket med kode 6 SÅ
-HVIS PLB ikke har tilleggsrollen Kode 6 SÅ
-Ikke tilgang - "Må ha tilleggsrollen 0000-GA-GOSYS_KODE6 eller 0000-GA-Pensjon_KODE6 i PESYS for å få tilgang til bruker merket med kode 6"
-SLUTT HVIS
-ELLERS HVIS bruker er merket med kode 7 SÅ
-HVIS PLB ikke har tilleggsrollen Kode 7 SÅ
-Ikke tilgang - "Må ha tilleggsrollen 0000-GA-GOSYS_KODE7 eller 0000-GA-Pensjon_KODE7 i PESYS for å få tilgang til bruker merket med kode 6"
-SLUTT HVIS
-ELLERS
-Tilgang til bruker
-SLUTT HVIS
- */
-        return false
+        if (brukerFNR.equals(saksbehandlerFNR)){
+            return false
+        }
+        if (brukerAnsattI_NAV){
+            if (roller.containsAll(listOf(AD_Rolle.PENSJON_NAV_ANSATT, AD_Rolle.GOSYS_NAV_ANSATT))){
+                return true
+            }
+            return false
+        }
+        if (skjerming == Skjerming.STRENGT_FORTROLIG){
+            if (roller.containsAll(listOf(AD_Rolle.PENSJON_STRENGT_FORTROLIG, AD_Rolle.GOSYS_STRENGT_FORTROLIG))){
+                return true
+            }
+            return false
+        }
+        if (skjerming == Skjerming.FORTROLIG){
+            if (roller.containsAll(listOf(AD_Rolle.PENSJON_FORTROLIG, AD_Rolle.GOSYS_FORTROLIG))){
+                return true
+            }
+            return false
+        }
+        return true
     }
 
-    fun harTilgangTil_BUC(gruppemedlemskap: List<AD_Rolle>, bucType: String): Boolean{
-        /*
-        HVIS BUC01 - Krav om alder SÅ
-// Ingen begrensning. Det viser seg at uføresaksbehandler jobber med alderspensjon for rene utenlandssaker.
-
-
-ELLERS HVIS BUC02 - Krav om gjenlevendepensjon/ etterlattepensjon SÅ
-Hent ut feltet P2100→3.2.1.pensjonstype
-NB! Det var feilt felt over. Vi har ikke funnet det riktige feltet ennå så denne sjekken faller ut hvis vi ikke finner opplysningen i SEDen.
-HVIS pensjonstype er barnepensjon SÅ
-HVIS PLB har tilleggsrollen Uføre SÅ
-Ikke tilgang - "Saksbehandler tilleggsrollen 0000-GA-pensjon_ufore har ikke tilgang til behandle en barnepensjon"
-ELLERS
-Tilgang til BUC
-SLUTT HVIS
-ELLERS HVIS BUC03 - Krav uføretrygd SÅ
-HVIS PLB har tilleggsrollen Uføre SÅ
-Tilgang til BUC
-ELLERS
-Ikke tilgang - "Saksbehandler uten tilleggsrollen 0000-GA-pensjon_ufore har ikke tilgang til behandle en uføretrygd"
-SLUTT HVIS
-ELLERS
-Tilgang til BUC - "Resten av BUCene kan brukes av alle saksbehandlere"
-SLUTT HVIS
-
-         */
-        return false
+    fun harTilgangTil_BUC(roller: List<AD_Rolle>, bucType: BUC_Type, sedPensjonstype: SED_Pensjonstype): Boolean{
+        if (bucType.equals(BUC_Type.PBUC02_KRAV_OM_ETTERLATTEPENSJON)){
+            if (sedPensjonstype.equals(SED_Pensjonstype.UKJENT)){
+                // Når pensjonstypen ikke er kjent må saksbehandler få tilgang
+                return true
+            }
+            if (sedPensjonstype.equals(SED_Pensjonstype.BARNEPENSJON)){
+                if (roller.containsAll(listOf(AD_Rolle.PENSJON_UFORE))){
+                    return false
+                }
+                return true
+            }
+            return true
+        }
+        if (bucType.equals(BUC_Type.PBUC03_KRAV_OM_UFORETRYGD)){
+            if (roller.containsAll(listOf(AD_Rolle.PENSJON_UFORE))){
+                return true
+            }
+            return false
+        }
+        return true
     }
 }
 
@@ -117,15 +112,15 @@ enum class Skjerming(val skjerming: String){
     STRENGT_FORTROLIG("KODE6")
 }
 
-enum class SakType(sakType: String) {
+enum class SakType(val sakType: String) {
     ALDERSPENSJON("ALDER"),
     UFORETRYGD("UFØRE"),
     BARNEPENSJON("BARNEPENSJON"),
     GJENLEVENDE("GJENLEVENDE")
 }
 
-enum class BUC_Type(bucType: String){
-    PBUC01("PBUC01"),
+enum class BUC_Type(val bucType: String){
+    PBUC01_KRAV_OM_ALDER("PBUC01"),
     PBUC02_KRAV_OM_ETTERLATTEPENSJON("PBUC02"),
     PBUC03_KRAV_OM_UFORETRYGD("PBUC03"),
     PBUC04("PBUC04"),
@@ -137,6 +132,14 @@ enum class BUC_Type(bucType: String){
     // Mangler mange BUC-er. Skal vi heller bruke String i stedet for ENUM?
     // Kan da lettere legge til nye BUC-er uten å endre på koden
     // NB! Da vil det bli tilgang til alle nye BUCer hvis det ikke legges inn en sperre for den nye BUCen
+}
+
+enum class SED_Pensjonstype(val pensjonstype: String){
+    ALDERSPENSJON("ALDER"),
+    UFORETRYGD("UFØRE"),
+    ETTERLATTEPENSJON("ETTERLATTE"),
+    BARNEPENSJON("BARNEPENSJON"),
+    UKJENT("UKJENT")
 }
 
 enum class Tilgang(var grupper: List<AD_Rolle>) {
