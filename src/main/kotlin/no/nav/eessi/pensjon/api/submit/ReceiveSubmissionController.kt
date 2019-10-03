@@ -61,7 +61,7 @@ class ReceiveSubmissionController(
             filename = lagreFil(personIdentifier, PINFO_SUBMISSION, content)
             putOnKafka(filename, uuid)
             kafkaSendtTilFssVellykkede.increment()
-            logger.info("put submission on kafka queue")
+            logger.info("put submission " + page + " on kafka queue: " + content)
         } catch (ex: Exception) {
             logger.error(ex.message + " uuid: $uuid", ex)
             kafkaSendtTilFssFeilede.increment()
