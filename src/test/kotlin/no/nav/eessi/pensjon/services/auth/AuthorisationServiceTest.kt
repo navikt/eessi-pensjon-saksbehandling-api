@@ -10,9 +10,9 @@ class AuthorisationServiceTest {
 
          val autorisasjonsservice = AuthorisationService()
          val gruppemedlemskap =
-             listOf(Gruppe.PENSJON_UTLAND,
-                 Gruppe.PENSJON_SAKSBEHANDLER,
-                 Gruppe.PENSJON_STRENGT_FORTROLIG)
+             listOf(AD_Rolle.PENSJON_UTLAND,
+                 AD_Rolle.PENSJON_SAKSBEHANDLER,
+                 AD_Rolle.PENSJON_STRENGT_FORTROLIG)
 
          val tilgangEessipensjon =  autorisasjonsservice.harTilgangTilEessiPensjon(gruppemedlemskap)
 
@@ -25,8 +25,8 @@ class AuthorisationServiceTest {
 
         val autorisasjonsservice = AuthorisationService()
         val gruppemedlemskap =
-            listOf( Gruppe.PENSJON_SAKSBEHANDLER,
-                Gruppe.PENSJON_STRENGT_FORTROLIG)
+            listOf( AD_Rolle.PENSJON_SAKSBEHANDLER,
+                AD_Rolle.PENSJON_STRENGT_FORTROLIG)
 
         val tilgangEessipensjon =  autorisasjonsservice.harTilgangTilEessiPensjon(gruppemedlemskap)
 
@@ -38,9 +38,9 @@ class AuthorisationServiceTest {
 
         val autorisasjonsservice = AuthorisationService()
         val gruppemedlemskap =
-            listOf(Gruppe.PENSJON_UTLAND,
-                Gruppe.GOSYS_NAV_ANSATT,
-                Gruppe.GOSYS_STRENGT_FORTROLIG)
+            listOf(AD_Rolle.PENSJON_UTLAND,
+                AD_Rolle.GOSYS_NAV_ANSATT,
+                AD_Rolle.GOSYS_STRENGT_FORTROLIG)
 
         val tilgangEessipensjon =  autorisasjonsservice.harTilgangTilEessiPensjon(gruppemedlemskap)
 
@@ -52,10 +52,10 @@ class AuthorisationServiceTest {
     fun `Gitt en saksbehandler med tilgang til EP OG har tilleggsrollen Uføre OG sakstypen er alderspensjon SÅ returner FALSE`(){
         val autorisasjonsservice = AuthorisationService()
         val gruppemedlemskap =
-            listOf(Gruppe.PENSJON_UTLAND,
-                Gruppe.PENSJON_SAKSBEHANDLER,
-                Gruppe.PENSJON_STRENGT_FORTROLIG,
-                Gruppe.PENSJON_UFORE)
+            listOf(AD_Rolle.PENSJON_UTLAND,
+                AD_Rolle.PENSJON_SAKSBEHANDLER,
+                AD_Rolle.PENSJON_STRENGT_FORTROLIG,
+                AD_Rolle.PENSJON_UFORE)
 
         val tilgangPESYS_Sak =
             autorisasjonsservice.harTilgangTilPESYS_Sak(gruppemedlemskap, SakType.ALDERSPENSJON)
@@ -67,10 +67,10 @@ class AuthorisationServiceTest {
     fun `Gitt en saksbehandler med tilgang til EP OG har tilleggsrollen Uføre OG sakstypen er uføretrygd SÅ returner TRUE`(){
         val autorisasjonsservice = AuthorisationService()
         val gruppemedlemskap =
-            listOf(Gruppe.PENSJON_UTLAND,
-                Gruppe.PENSJON_SAKSBEHANDLER,
-                Gruppe.PENSJON_STRENGT_FORTROLIG,
-                Gruppe.PENSJON_UFORE)
+            listOf(AD_Rolle.PENSJON_UTLAND,
+                AD_Rolle.PENSJON_SAKSBEHANDLER,
+                AD_Rolle.PENSJON_STRENGT_FORTROLIG,
+                AD_Rolle.PENSJON_UFORE)
 
         val tilgangPESYS_Sak =
             autorisasjonsservice.harTilgangTilPESYS_Sak(gruppemedlemskap,
@@ -84,10 +84,10 @@ class AuthorisationServiceTest {
     fun `Gitt en saksbehandler med tilgang til EP OG har ikke tilleggsrollen Uføre OG sakstypen er uføretrygd SÅ returner FALSE`(){
         val autorisasjonsservice = AuthorisationService()
         val gruppemedlemskap =
-            listOf(Gruppe.PENSJON_UTLAND,
-                Gruppe.PENSJON_SAKSBEHANDLER,
-                Gruppe.GOSYS_STRENGT_FORTROLIG,
-                Gruppe.GOSYS_NAV_ANSATT)
+            listOf(AD_Rolle.PENSJON_UTLAND,
+                AD_Rolle.PENSJON_SAKSBEHANDLER,
+                AD_Rolle.GOSYS_STRENGT_FORTROLIG,
+                AD_Rolle.GOSYS_NAV_ANSATT)
 
         val tilgangPESYS_Sak = autorisasjonsservice.harTilgangTilPESYS_Sak(gruppemedlemskap, SakType.UFORETRYGD)
 
@@ -99,10 +99,10 @@ class AuthorisationServiceTest {
     fun `Gitt en saksbehandler med tilgang til EP OG har tilleggsrollen Uføre OG sakstypen er barnepensjon SÅ returner FALSE`(){
         val autorisasjonsservice = AuthorisationService()
         val gruppemedlemskap =
-            listOf(Gruppe.PENSJON_UTLAND,
-                Gruppe.PENSJON_SAKSBEHANDLER,
-                Gruppe.PENSJON_FORTROLIG,
-                Gruppe.PENSJON_UFORE)
+            listOf(AD_Rolle.PENSJON_UTLAND,
+                AD_Rolle.PENSJON_SAKSBEHANDLER,
+                AD_Rolle.PENSJON_FORTROLIG,
+                AD_Rolle.PENSJON_UFORE)
 
         val tilgangPESYS_Sak = autorisasjonsservice.harTilgangTilPESYS_Sak(gruppemedlemskap, SakType.BARNEPENSJON)
 
@@ -113,10 +113,10 @@ class AuthorisationServiceTest {
     fun `Gitt saksbehandler med tilgang til EP OG ikke rollen Uføre OG sakstypen er barnepensjon SÅ returner TRUE`(){
         val autorisasjonsservice = AuthorisationService()
         val gruppemedlemskap =
-            listOf(Gruppe.PENSJON_UTLAND,
-                Gruppe.PENSJON_SAKSBEHANDLER,
-                Gruppe.GOSYS_FORTROLIG,
-                Gruppe.GOSYS_NAV_ANSATT)
+            listOf(AD_Rolle.PENSJON_UTLAND,
+                AD_Rolle.PENSJON_SAKSBEHANDLER,
+                AD_Rolle.GOSYS_FORTROLIG,
+                AD_Rolle.GOSYS_NAV_ANSATT)
 
         val tilgangPESYS_Sak = autorisasjonsservice.harTilgangTilPESYS_Sak(gruppemedlemskap, SakType.BARNEPENSJON)
 
@@ -127,10 +127,10 @@ class AuthorisationServiceTest {
     fun `Gitt saksbehandler med tilgang til EP OG rollen Uføre OG sakstypen er gjenlevendepensjon SÅ returner FALSE`(){
         val autorisasjonsservice = AuthorisationService()
         val gruppemedlemskap =
-            listOf(Gruppe.PENSJON_UTLAND,
-                Gruppe.PENSJON_SAKSBEHANDLER,
-                Gruppe.PENSJON_STRENGT_FORTROLIG,
-                Gruppe.PENSJON_UFORE)
+            listOf(AD_Rolle.PENSJON_UTLAND,
+                AD_Rolle.PENSJON_SAKSBEHANDLER,
+                AD_Rolle.PENSJON_STRENGT_FORTROLIG,
+                AD_Rolle.PENSJON_UFORE)
 
         val tilgangPESYS_Sak = autorisasjonsservice.harTilgangTilPESYS_Sak(gruppemedlemskap, SakType.GJENLEVENDE)
 
@@ -141,10 +141,10 @@ class AuthorisationServiceTest {
     fun `Gitt saksbehandler med tilgang til EP OG rollen Uføre OG sakstypen er gjenlevendepensjon SÅ returner TRUE`(){
         val autorisasjonsservice = AuthorisationService()
         val gruppemedlemskap =
-            listOf(Gruppe.PENSJON_UTLAND,
-                Gruppe.PENSJON_SAKSBEHANDLER,
-                Gruppe.GOSYS_NAV_ANSATT,
-                Gruppe.PENSJON_NAV_ANSATT)
+            listOf(AD_Rolle.PENSJON_UTLAND,
+                AD_Rolle.PENSJON_SAKSBEHANDLER,
+                AD_Rolle.GOSYS_NAV_ANSATT,
+                AD_Rolle.PENSJON_NAV_ANSATT)
 
         val tilgangPESYS_Sak = autorisasjonsservice.harTilgangTilPESYS_Sak(gruppemedlemskap, SakType.GJENLEVENDE)
 
@@ -152,17 +152,74 @@ class AuthorisationServiceTest {
     }
 
     @Test
-    fun `Gitt saksbehandler med tilgang til EP OG BUC er søknad om alder`(){
+    fun `Gitt saksbehandler med tilgang til EP OG BUC er søknad om alder SÅ returner TRUE`(){
         val autorisasjonsservice = AuthorisationService()
         val gruppemedlemskap =
-            listOf(Gruppe.PENSJON_UTLAND,
-                Gruppe.PENSJON_SAKSBEHANDLER,
-                Gruppe.GOSYS_NAV_ANSATT,
-                Gruppe.PENSJON_NAV_ANSATT)
+            listOf(AD_Rolle.PENSJON_UTLAND,
+                AD_Rolle.PENSJON_SAKSBEHANDLER,
+                AD_Rolle.GOSYS_NAV_ANSATT,
+                AD_Rolle.PENSJON_NAV_ANSATT)
 
         val tilgangBUC = autorisasjonsservice.harTilgangTil_BUC(gruppemedlemskap, "PBUC01")
 
         assertTrue(tilgangBUC)
+    }
 
+    @Test
+    fun `Gitt saksbehandler med tilgang til EP OG rollen UFØRE OG BUC er søknad om etterlattepensjon SÅ returner FALSE`(){
+        val autorisasjonsservice = AuthorisationService()
+        val gruppemedlemskap =
+            listOf(AD_Rolle.PENSJON_UTLAND,
+                AD_Rolle.PENSJON_SAKSBEHANDLER,
+                AD_Rolle.GOSYS_NAV_ANSATT,
+                AD_Rolle.PENSJON_UFORE)
+
+        val tilgangBUC = autorisasjonsservice.harTilgangTil_BUC(gruppemedlemskap, "PBUC02")
+
+        assertFalse(tilgangBUC)
+
+    }
+
+    @Test
+    fun `Gitt saksbehandler med tilgang til EP OG ikke rollen UFØRE OG BUC er søknad om etterlattepensjon SÅ returner TRUE`(){
+        val autorisasjonsservice = AuthorisationService()
+        val gruppemedlemskap =
+            listOf(AD_Rolle.PENSJON_UTLAND,
+                AD_Rolle.PENSJON_SAKSBEHANDLER,
+                AD_Rolle.GOSYS_NAV_ANSATT,
+                AD_Rolle.PENSJON_STRENGT_FORTROLIG)
+
+        val tilgangBUC = autorisasjonsservice.harTilgangTil_BUC(gruppemedlemskap, "PBUC02")
+
+        assertTrue(tilgangBUC)
+
+    }
+
+    @Test
+    fun `Gitt saksbehandler med tilgang til EP OG rollen uføre OG BUC er søknad om uføre SÅ returner TRUE`(){
+        val autorisasjonsservice = AuthorisationService()
+        val gruppemedlemskap =
+            listOf(AD_Rolle.PENSJON_UTLAND,
+                AD_Rolle.PENSJON_SAKSBEHANDLER,
+                AD_Rolle.GOSYS_NAV_ANSATT,
+                AD_Rolle.PENSJON_UFORE)
+
+        val tilgangBUC = autorisasjonsservice.harTilgangTil_BUC(gruppemedlemskap, "PBUC03")
+
+        assertTrue(tilgangBUC)
+    }
+
+    @Test
+    fun `Gitt saksbehandler med tilgang til EP OG ikke rollen uføre OG BUC er søknad om uføre SÅ returner TRUE`(){
+        val autorisasjonsservice = AuthorisationService()
+        val gruppemedlemskap =
+            listOf(AD_Rolle.PENSJON_UTLAND,
+                AD_Rolle.PENSJON_SAKSBEHANDLER,
+                AD_Rolle.GOSYS_NAV_ANSATT,
+                AD_Rolle.GOSYS_STRENGT_FORTROLIG)
+
+        val tilgangBUC = autorisasjonsservice.harTilgangTil_BUC(gruppemedlemskap, "PBUC03")
+
+        assertTrue(tilgangBUC)
     }
 }

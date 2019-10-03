@@ -3,21 +3,21 @@ package no.nav.eessi.pensjon.services.auth
 class AuthorisationService {
 
     fun
-            harTilgangTilEessiPensjon(gruppemedlemskap: List<Gruppe>): Boolean {
+            harTilgangTilEessiPensjon(gruppemedlemskap: List<AD_Rolle>): Boolean {
 
         return gruppemedlemskap.containsAll(Tilgang.EESSI_PENSJON.grupper)
     }
 
-    fun harTilgangTilPESYS_Sak(gruppemedlemskap: List<Gruppe>, sakType: SakType): Boolean {
+    fun harTilgangTilPESYS_Sak(gruppemedlemskap: List<AD_Rolle>, sakType: SakType): Boolean {
 
         if (sakType == SakType.ALDERSPENSJON) {
-            if (gruppemedlemskap.containsAll(listOf(Gruppe.PENSJON_UFORE))) {
+            if (gruppemedlemskap.containsAll(listOf(AD_Rolle.PENSJON_UFORE))) {
                 return false
             }
             return true
         }
         if (sakType == SakType.UFORETRYGD) {
-            if (gruppemedlemskap.containsAll(listOf(Gruppe.PENSJON_UFORE))) {
+            if (gruppemedlemskap.containsAll(listOf(AD_Rolle.PENSJON_UFORE))) {
                 return true
             }
             return false
@@ -43,7 +43,7 @@ SLUTT HVIS
     }
 
     fun harTilgangTilBrukere_I_Saken(
-        gruppemedlemskap: List<Gruppe>
+        gruppemedlemskap: List<AD_Rolle>
         , ansatt_I_NAV: Boolean
         , fortrolig: Boolean
         , strengtFortrolig: Boolean
@@ -70,7 +70,7 @@ SLUTT HVIS
         return false
     }
 
-    fun harTilgangTil_BUC(gruppemedlemskap: List<Gruppe>, bucType: String): Boolean{
+    fun harTilgangTil_BUC(gruppemedlemskap: List<AD_Rolle>, bucType: String): Boolean{
         /*
         HVIS BUC01 - Krav om alder SÅ
 // Ingen begrensning. Det viser seg at uføresaksbehandler jobber med alderspensjon for rene utenlandssaker.
@@ -100,7 +100,7 @@ SLUTT HVIS
     }
 }
 
-enum class Gruppe(val gruppeNavn: String) {
+enum class AD_Rolle(val gruppeNavn: String) {
     PENSJON_UTLAND("0000-GA-Pensjon_Utland"),
     PENSJON_SAKSBEHANDLER("0000-GA-PENSJON_SAKSBEHANDLER"),
     PENSJON_UFORE("0000-GA-pensjon_ufore"),
@@ -134,7 +134,7 @@ enum class BUC_Type(bucType: String){
     // NB! Da vil det bli tilgang til alle nye BUCer hvis det ikke legges inn en sperre for den nye BUCen
 }
 
-enum class Tilgang(var grupper: List<Gruppe>) {
-    EESSI_PENSJON(listOf(Gruppe.PENSJON_UTLAND, Gruppe.PENSJON_SAKSBEHANDLER))
+enum class Tilgang(var grupper: List<AD_Rolle>) {
+    EESSI_PENSJON(listOf(AD_Rolle.PENSJON_UTLAND, AD_Rolle.PENSJON_SAKSBEHANDLER))
 }
 
