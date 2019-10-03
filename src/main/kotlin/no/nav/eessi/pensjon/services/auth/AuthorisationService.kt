@@ -2,8 +2,7 @@ package no.nav.eessi.pensjon.services.auth
 
 class AuthorisationService {
 
-    fun
-            harTilgangTilEessiPensjon(roller: List<AD_Rolle>): Boolean {
+    fun harTilgangTilEessiPensjon(roller: List<AD_Rolle>): Boolean {
 
         return roller.containsAll(Tilgang.EESSI_PENSJON.grupper)
     }
@@ -39,7 +38,7 @@ class AuthorisationService {
         throw AuthorisationUkjentSakstypeException("Ukjent sakstype fra PESYS: ${sakType}")
     }
 
-    fun harTilgangTilBrukere_I_Saken(
+    fun harTilgangTilBruker_I_Saken(
         roller: List<AD_Rolle>,
         brukerFNR: String,
         saksbehandlerFNR: String,
@@ -70,7 +69,7 @@ class AuthorisationService {
         return true
     }
 
-    fun harTilgangTil_BUC(roller: List<AD_Rolle>, bucType: BUC_Type, sedPensjonstype: SED_Pensjonstype): Boolean{
+    fun harTilgangTilBUC(roller: List<AD_Rolle>, bucType: BUC_Type, sedPensjonstype: SED_Pensjonstype): Boolean{
         if (bucType.equals(BUC_Type.PBUC02_KRAV_OM_ETTERLATTEPENSJON)){
             if (sedPensjonstype.equals(SED_Pensjonstype.UKJENT)){
                 // Når pensjonstypen ikke er kjent må saksbehandler få tilgang
@@ -122,16 +121,7 @@ enum class SakType(val sakType: String) {
 enum class BUC_Type(val bucType: String){
     PBUC01_KRAV_OM_ALDER("PBUC01"),
     PBUC02_KRAV_OM_ETTERLATTEPENSJON("PBUC02"),
-    PBUC03_KRAV_OM_UFORETRYGD("PBUC03"),
-    PBUC04("PBUC04"),
-    PBUC05("PBUC05"),
-    PBUC06("PBUC06"),
-    PBUC07("PBUC07"),
-    PBUC08("PBUC08"),
-    PBUC09("PBUC09")
-    // Mangler mange BUC-er. Skal vi heller bruke String i stedet for ENUM?
-    // Kan da lettere legge til nye BUC-er uten å endre på koden
-    // NB! Da vil det bli tilgang til alle nye BUCer hvis det ikke legges inn en sperre for den nye BUCen
+    PBUC03_KRAV_OM_UFORETRYGD("PBUC03")
 }
 
 enum class SED_Pensjonstype(val pensjonstype: String){

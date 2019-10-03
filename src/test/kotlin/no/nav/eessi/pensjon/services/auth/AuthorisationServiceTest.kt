@@ -158,7 +158,7 @@ class AuthorisationServiceTest {
         val saksbehandlerFNR = "12345678901"
         val brukerAnsattI_NAV = false
         val skjerming = Skjerming.INGEN_SKJERMING
-        val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBrukere_I_Saken(
+        val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBruker_I_Saken(
             roller,
             brukerFNR,
             saksbehandlerFNR,
@@ -177,7 +177,7 @@ class AuthorisationServiceTest {
         val saksbehandlerFNR = "123456123451"
         val brukerAnsattI_NAV = true
         val skjerming = Skjerming.INGEN_SKJERMING
-        val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBrukere_I_Saken(
+        val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBruker_I_Saken(
             roller,
             brukerFNR,
             saksbehandlerFNR,
@@ -196,7 +196,7 @@ class AuthorisationServiceTest {
         val saksbehandlerFNR = "123456123451"
         val brukerAnsattI_NAV = true
         val skjerming = Skjerming.INGEN_SKJERMING
-        val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBrukere_I_Saken(
+        val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBruker_I_Saken(
             roller,
             brukerFNR,
             saksbehandlerFNR,
@@ -215,7 +215,7 @@ class AuthorisationServiceTest {
         val saksbehandlerFNR = "123456123451"
         val brukerAnsattI_NAV = true
         val skjerming = Skjerming.INGEN_SKJERMING
-        val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBrukere_I_Saken(
+        val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBruker_I_Saken(
             roller,
             brukerFNR,
             saksbehandlerFNR,
@@ -234,7 +234,7 @@ class AuthorisationServiceTest {
         val saksbehandlerFNR = "123456123451"
         val brukerAnsattI_NAV = true
         val skjerming = Skjerming.INGEN_SKJERMING
-        val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBrukere_I_Saken(
+        val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBruker_I_Saken(
             roller,
             brukerFNR,
             saksbehandlerFNR,
@@ -258,7 +258,7 @@ class AuthorisationServiceTest {
         val saksbehandlerFNR = "123456123451"
         val brukerAnsattI_NAV = false
         val skjerming = Skjerming.FORTROLIG
-        val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBrukere_I_Saken(
+        val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBruker_I_Saken(
             roller,
             brukerFNR,
             saksbehandlerFNR,
@@ -281,7 +281,7 @@ class AuthorisationServiceTest {
             val saksbehandlerFNR = "123456123451"
             val brukerAnsattI_NAV = false
             val skjerming = Skjerming.STRENGT_FORTROLIG
-            val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBrukere_I_Saken(
+            val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBruker_I_Saken(
                 roller,
                 brukerFNR,
                 saksbehandlerFNR,
@@ -300,7 +300,7 @@ class AuthorisationServiceTest {
         val saksbehandlerFNR = "123456123451"
         val brukerAnsattI_NAV = false
         val skjerming = Skjerming.STRENGT_FORTROLIG
-        val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBrukere_I_Saken(
+        val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBruker_I_Saken(
             roller,
             brukerFNR,
             saksbehandlerFNR,
@@ -319,7 +319,7 @@ class AuthorisationServiceTest {
         val saksbehandlerFNR = "123456123451"
         val brukerAnsattI_NAV = false
         val skjerming = Skjerming.STRENGT_FORTROLIG
-        val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBrukere_I_Saken(
+        val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBruker_I_Saken(
             roller,
             brukerFNR,
             saksbehandlerFNR,
@@ -338,7 +338,7 @@ class AuthorisationServiceTest {
         val saksbehandlerFNR = "123456123451"
         val brukerAnsattI_NAV = false
         val skjerming = Skjerming.STRENGT_FORTROLIG
-        val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBrukere_I_Saken(
+        val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBruker_I_Saken(
             roller,
             brukerFNR,
             saksbehandlerFNR,
@@ -357,7 +357,7 @@ class AuthorisationServiceTest {
         val saksbehandlerFNR = "123456123451"
         val brukerAnsattI_NAV = false
         val skjerming = Skjerming.STRENGT_FORTROLIG
-        val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBrukere_I_Saken(
+        val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBruker_I_Saken(
             roller,
             brukerFNR,
             saksbehandlerFNR,
@@ -376,7 +376,7 @@ class AuthorisationServiceTest {
         val saksbehandlerFNR = "123456123451"
         val brukerAnsattI_NAV = false
         val skjerming = Skjerming.FORTROLIG
-        val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBrukere_I_Saken(
+        val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBruker_I_Saken(
             roller,
             brukerFNR,
             saksbehandlerFNR,
@@ -395,7 +395,7 @@ class AuthorisationServiceTest {
         val saksbehandlerFNR = "123456123451"
         val brukerAnsattI_NAV = false
         val skjerming = Skjerming.FORTROLIG
-        val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBrukere_I_Saken(
+        val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBruker_I_Saken(
             roller,
             brukerFNR,
             saksbehandlerFNR,
@@ -414,7 +414,7 @@ class AuthorisationServiceTest {
         val saksbehandlerFNR = "123456123451"
         val brukerAnsattI_NAV = false
         val skjerming = Skjerming.FORTROLIG
-        val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBrukere_I_Saken(
+        val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBruker_I_Saken(
             roller,
             brukerFNR,
             saksbehandlerFNR,
@@ -434,7 +434,7 @@ class AuthorisationServiceTest {
         val saksbehandlerFNR = "123456123451"
         val brukerAnsattI_NAV = false
         val skjerming = Skjerming.INGEN_SKJERMING
-        val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBrukere_I_Saken(
+        val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBruker_I_Saken(
             roller,
             brukerFNR,
             saksbehandlerFNR,
@@ -453,7 +453,7 @@ class AuthorisationServiceTest {
         val saksbehandlerFNR = "123456123451"
         val brukerAnsattI_NAV = false
         val skjerming = Skjerming.FORTROLIG
-        val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBrukere_I_Saken(
+        val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBruker_I_Saken(
             roller,
             brukerFNR,
             saksbehandlerFNR,
@@ -472,7 +472,7 @@ class AuthorisationServiceTest {
         val saksbehandlerFNR = "123456123451"
         val brukerAnsattI_NAV = false
         val skjerming = Skjerming.FORTROLIG
-        val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBrukere_I_Saken(
+        val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBruker_I_Saken(
             roller,
             brukerFNR,
             saksbehandlerFNR,
@@ -491,7 +491,7 @@ class AuthorisationServiceTest {
         val saksbehandlerFNR = "123456123451"
         val brukerAnsattI_NAV = false
         val skjerming = Skjerming.STRENGT_FORTROLIG
-        val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBrukere_I_Saken(
+        val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBruker_I_Saken(
             roller,
             brukerFNR,
             saksbehandlerFNR,
@@ -514,7 +514,7 @@ class AuthorisationServiceTest {
         val sedPensjonstype = SED_Pensjonstype.ALDERSPENSJON
         val bucType = BUC_Type.PBUC01_KRAV_OM_ALDER
 
-        val tilgangBUC= autorisasjonsservice.harTilgangTil_BUC(roller, bucType, sedPensjonstype)
+        val tilgangBUC= autorisasjonsservice.harTilgangTilBUC(roller, bucType, sedPensjonstype)
 
         assertTrue(tilgangBUC)
     }
@@ -529,7 +529,7 @@ class AuthorisationServiceTest {
         val sedPensjonstype = SED_Pensjonstype.BARNEPENSJON
         val bucType = BUC_Type.PBUC02_KRAV_OM_ETTERLATTEPENSJON
 
-        val tilgangBUC = autorisasjonsservice.harTilgangTil_BUC(roller, bucType, sedPensjonstype)
+        val tilgangBUC = autorisasjonsservice.harTilgangTilBUC(roller, bucType, sedPensjonstype)
 
         assertFalse(tilgangBUC)
     }
@@ -544,7 +544,7 @@ class AuthorisationServiceTest {
         val sedPensjonstype = SED_Pensjonstype.ETTERLATTEPENSJON
         val bucType = BUC_Type.PBUC02_KRAV_OM_ETTERLATTEPENSJON
 
-        val tilgangBUC = autorisasjonsservice.harTilgangTil_BUC(roller, bucType, sedPensjonstype)
+        val tilgangBUC = autorisasjonsservice.harTilgangTilBUC(roller, bucType, sedPensjonstype)
 
         assertTrue(tilgangBUC)
     }
@@ -559,7 +559,7 @@ class AuthorisationServiceTest {
         val sedPensjonstype = SED_Pensjonstype.UKJENT
         val bucType = BUC_Type.PBUC02_KRAV_OM_ETTERLATTEPENSJON
 
-        val tilgangBUC = autorisasjonsservice.harTilgangTil_BUC(roller, bucType, sedPensjonstype)
+        val tilgangBUC = autorisasjonsservice.harTilgangTilBUC(roller, bucType, sedPensjonstype)
 
         assertTrue(tilgangBUC)
     }
@@ -574,7 +574,7 @@ class AuthorisationServiceTest {
         val sedPensjonstype = SED_Pensjonstype.UKJENT
         val bucType = BUC_Type.PBUC03_KRAV_OM_UFORETRYGD
 
-        val tilgangBUC = autorisasjonsservice.harTilgangTil_BUC(roller, bucType, sedPensjonstype)
+        val tilgangBUC = autorisasjonsservice.harTilgangTilBUC(roller, bucType, sedPensjonstype)
 
         assertTrue(tilgangBUC)
     }
@@ -589,7 +589,7 @@ class AuthorisationServiceTest {
         val sedPensjonstype = SED_Pensjonstype.UKJENT
         val bucType = BUC_Type.PBUC03_KRAV_OM_UFORETRYGD
 
-        val tilgangBUC = autorisasjonsservice.harTilgangTil_BUC(roller,bucType, sedPensjonstype)
+        val tilgangBUC = autorisasjonsservice.harTilgangTilBUC(roller,bucType, sedPensjonstype)
 
         assertFalse(tilgangBUC)
     }
