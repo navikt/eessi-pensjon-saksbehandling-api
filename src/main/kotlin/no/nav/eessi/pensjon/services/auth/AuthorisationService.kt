@@ -22,32 +22,31 @@ class AuthorisationService {
             }
             return false
         }
-/*
-        ELLERS HVIS PESYS-saken er Barnepensjon SÅ
-HVIS PLB har tilleggsrollen Uføre SÅ
-Ikke tilgang - "Saksbehandler med tilleggsrollen 0000-GA-pensjon_ufore har ikke tilgang til behandle en barnepensjon"
-ELLERS
-Tilgang til saken
-SLUTT HVIS
-ELLERS HVIS PESYS-saken er Gjenlevendepensjon SÅ
-HVIS PLB har tilleggsrollen Uføre SÅ
-Ikke tilgang - "Saksbehandler med tilleggsrollen 0000-GA-pensjon_ufore har ikke tilgang til behandle en gjenlevendepensjon"
-ELLERS
-Tilgang til saken
-SLUTT HVIS
-SLUTT HVIS
-         */
 
-        /* midlertidig return*/
-        return true
+        if (sakType == SakType.BARNEPENSJON){
+            if (gruppemedlemskap.containsAll(listOf(AD_Rolle.PENSJON_UFORE))){
+                return false
+            }
+            return true
+        }
+
+        if (sakType == SakType.GJENLEVENDE){
+            if (gruppemedlemskap.containsAll(listOf(AD_Rolle.PENSJON_UFORE))){
+                return false
+            }
+            return true
+        }
+        throw AuthorisationUkjentSakstypeException("Ukjent sakstype fra PESYS: ${sakType}")
     }
 
     fun harTilgangTilBrukere_I_Saken(
-        gruppemedlemskap: List<AD_Rolle>
-        , ansatt_I_NAV: Boolean
-        , fortrolig: Boolean
-        , strengtFortrolig: Boolean
+        gruppemedlemskap: List<AD_Rolle>,
+        brukerFNR: String,
+        saksbehandlerFNR: String,
+        brukerAnsattI_NAV: Boolean,
+        skjerming: Skjerming
     ): Boolean {
+
 /*
 HVIS PLB er samme person som bruker SÅ
 Ikke tilgang - "Saksbehandler har ikke lov å jobbe på seg selv"
@@ -100,7 +99,7 @@ SLUTT HVIS
     }
 }
 
-enum class AD_Rolle(val gruppeNavn: String) {
+enum class AD_Rolle(val rollenavn: String) {
     PENSJON_UTLAND("0000-GA-Pensjon_Utland"),
     PENSJON_SAKSBEHANDLER("0000-GA-PENSJON_SAKSBEHANDLER"),
     PENSJON_UFORE("0000-GA-pensjon_ufore"),
@@ -110,6 +109,12 @@ enum class AD_Rolle(val gruppeNavn: String) {
     PENSJON_STRENGT_FORTROLIG("0000-GA-Pensjon_KODE6"),
     GOSYS_FORTROLIG("0000-GA-GOSYS_KODE7"),
     PENSJON_FORTROLIG("0000-GA-PENSJON_KODE7")
+}
+
+enum class Skjerming(val skjerming: String){
+    INGEN_SKJERMING(""),
+    FORTROLIG("KODE7"),
+    STRENGT_FORTROLIG("KODE6")
 }
 
 enum class SakType(sakType: String) {
@@ -138,3 +143,4 @@ enum class Tilgang(var grupper: List<AD_Rolle>) {
     EESSI_PENSJON(listOf(AD_Rolle.PENSJON_UTLAND, AD_Rolle.PENSJON_SAKSBEHANDLER))
 }
 
+class AuthorisationUkjentSakstypeException(message: String?) : Exception(message)
