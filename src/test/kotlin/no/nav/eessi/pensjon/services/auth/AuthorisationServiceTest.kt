@@ -157,13 +157,13 @@ class AuthorisationServiceTest {
         val brukerFNR = "12345678901"
         val saksbehandlerFNR = "12345678901"
         val brukerAnsattI_NAV = false
-        val skjerming = Skjerming.INGEN_SKJERMING
+        val adressesperre = Adressesperre.INGEN_ADRESSESPERRE
         val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBruker_I_Saken(
             roller,
             brukerFNR,
             saksbehandlerFNR,
             brukerAnsattI_NAV,
-            skjerming)
+            adressesperre)
 
         assertFalse(harTilgangTilBruker)
     }
@@ -176,13 +176,13 @@ class AuthorisationServiceTest {
         val brukerFNR = "12345678901"
         val saksbehandlerFNR = "123456123451"
         val brukerAnsattI_NAV = true
-        val skjerming = Skjerming.INGEN_SKJERMING
+        val adressesperre = Adressesperre.INGEN_ADRESSESPERRE
         val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBruker_I_Saken(
             roller,
             brukerFNR,
             saksbehandlerFNR,
             brukerAnsattI_NAV,
-            skjerming)
+            adressesperre)
 
         assertTrue(harTilgangTilBruker)
     }
@@ -195,13 +195,13 @@ class AuthorisationServiceTest {
         val brukerFNR = "12345678901"
         val saksbehandlerFNR = "123456123451"
         val brukerAnsattI_NAV = true
-        val skjerming = Skjerming.INGEN_SKJERMING
+        val adressesperre = Adressesperre.INGEN_ADRESSESPERRE
         val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBruker_I_Saken(
             roller,
             brukerFNR,
             saksbehandlerFNR,
             brukerAnsattI_NAV,
-            skjerming)
+            adressesperre)
 
         assertFalse(harTilgangTilBruker)
     }
@@ -214,13 +214,13 @@ class AuthorisationServiceTest {
         val brukerFNR = "12345678901"
         val saksbehandlerFNR = "123456123451"
         val brukerAnsattI_NAV = true
-        val skjerming = Skjerming.INGEN_SKJERMING
+        val adressesperre = Adressesperre.INGEN_ADRESSESPERRE
         val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBruker_I_Saken(
             roller,
             brukerFNR,
             saksbehandlerFNR,
             brukerAnsattI_NAV,
-            skjerming)
+            adressesperre)
 
         assertFalse(harTilgangTilBruker)
     }
@@ -233,13 +233,13 @@ class AuthorisationServiceTest {
         val brukerFNR = "12345678901"
         val saksbehandlerFNR = "123456123451"
         val brukerAnsattI_NAV = true
-        val skjerming = Skjerming.INGEN_SKJERMING
+        val adressesperre = Adressesperre.INGEN_ADRESSESPERRE
         val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBruker_I_Saken(
             roller,
             brukerFNR,
             saksbehandlerFNR,
             brukerAnsattI_NAV,
-            skjerming)
+            adressesperre)
 
         assertFalse(harTilgangTilBruker)
     }
@@ -257,13 +257,13 @@ class AuthorisationServiceTest {
         val brukerFNR = "12345678901"
         val saksbehandlerFNR = "123456123451"
         val brukerAnsattI_NAV = false
-        val skjerming = Skjerming.FORTROLIG
+        val adressesperre = Adressesperre.FORTROLIG_ADRESSE
         val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBruker_I_Saken(
             roller,
             brukerFNR,
             saksbehandlerFNR,
             brukerAnsattI_NAV,
-            skjerming
+            adressesperre
         )
 
         assertTrue(harTilgangTilBruker)
@@ -280,13 +280,13 @@ class AuthorisationServiceTest {
             val brukerFNR = "12345678901"
             val saksbehandlerFNR = "123456123451"
             val brukerAnsattI_NAV = false
-            val skjerming = Skjerming.STRENGT_FORTROLIG
+            val adressesperre = Adressesperre.STRENGT_FORTROLIG_ADRESSE
             val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBruker_I_Saken(
                 roller,
                 brukerFNR,
                 saksbehandlerFNR,
                 brukerAnsattI_NAV,
-                skjerming)
+                adressesperre)
 
             assertTrue(harTilgangTilBruker)
     }
@@ -299,13 +299,13 @@ class AuthorisationServiceTest {
         val brukerFNR = "12345678901"
         val saksbehandlerFNR = "123456123451"
         val brukerAnsattI_NAV = false
-        val skjerming = Skjerming.STRENGT_FORTROLIG
+        val adressesperre = Adressesperre.STRENGT_FORTROLIG_ADRESSE
         val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBruker_I_Saken(
             roller,
             brukerFNR,
             saksbehandlerFNR,
             brukerAnsattI_NAV,
-            skjerming)
+            adressesperre)
 
         assertFalse(harTilgangTilBruker)
     }
@@ -318,13 +318,13 @@ class AuthorisationServiceTest {
         val brukerFNR = "12345678901"
         val saksbehandlerFNR = "123456123451"
         val brukerAnsattI_NAV = false
-        val skjerming = Skjerming.STRENGT_FORTROLIG
+        val adressesperre = Adressesperre.STRENGT_FORTROLIG_ADRESSE
         val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBruker_I_Saken(
             roller,
             brukerFNR,
             saksbehandlerFNR,
             brukerAnsattI_NAV,
-            skjerming)
+            adressesperre)
 
         assertTrue(harTilgangTilBruker)
     }
@@ -337,13 +337,13 @@ class AuthorisationServiceTest {
         val brukerFNR = "12345678901"
         val saksbehandlerFNR = "123456123451"
         val brukerAnsattI_NAV = false
-        val skjerming = Skjerming.STRENGT_FORTROLIG
+        val adressesperre = Adressesperre.STRENGT_FORTROLIG_ADRESSE
         val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBruker_I_Saken(
             roller,
             brukerFNR,
             saksbehandlerFNR,
             brukerAnsattI_NAV,
-            skjerming)
+            adressesperre)
 
         assertFalse(harTilgangTilBruker)
     }
@@ -356,13 +356,13 @@ class AuthorisationServiceTest {
         val brukerFNR = "12345678901"
         val saksbehandlerFNR = "123456123451"
         val brukerAnsattI_NAV = false
-        val skjerming = Skjerming.STRENGT_FORTROLIG
+        val adressesperre = Adressesperre.STRENGT_FORTROLIG_ADRESSE
         val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBruker_I_Saken(
             roller,
             brukerFNR,
             saksbehandlerFNR,
             brukerAnsattI_NAV,
-            skjerming)
+            adressesperre)
 
         assertFalse(harTilgangTilBruker)
     }
@@ -375,13 +375,13 @@ class AuthorisationServiceTest {
         val brukerFNR = "12345678901"
         val saksbehandlerFNR = "123456123451"
         val brukerAnsattI_NAV = false
-        val skjerming = Skjerming.FORTROLIG
+        val adressesperre = Adressesperre.FORTROLIG_ADRESSE
         val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBruker_I_Saken(
             roller,
             brukerFNR,
             saksbehandlerFNR,
             brukerAnsattI_NAV,
-            skjerming)
+            adressesperre)
 
         assertTrue(harTilgangTilBruker)
     }
@@ -394,13 +394,13 @@ class AuthorisationServiceTest {
         val brukerFNR = "12345678901"
         val saksbehandlerFNR = "123456123451"
         val brukerAnsattI_NAV = false
-        val skjerming = Skjerming.FORTROLIG
+        val adressesperre = Adressesperre.FORTROLIG_ADRESSE
         val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBruker_I_Saken(
             roller,
             brukerFNR,
             saksbehandlerFNR,
             brukerAnsattI_NAV,
-            skjerming)
+            adressesperre)
 
         assertFalse(harTilgangTilBruker)
     }
@@ -413,13 +413,13 @@ class AuthorisationServiceTest {
         val brukerFNR = "12345678901"
         val saksbehandlerFNR = "123456123451"
         val brukerAnsattI_NAV = false
-        val skjerming = Skjerming.FORTROLIG
+        val adressesperre = Adressesperre.FORTROLIG_ADRESSE
         val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBruker_I_Saken(
             roller,
             brukerFNR,
             saksbehandlerFNR,
             brukerAnsattI_NAV,
-            skjerming)
+            adressesperre)
 
         assertFalse(harTilgangTilBruker)
     }
@@ -433,13 +433,13 @@ class AuthorisationServiceTest {
         val brukerFNR = "12345678901"
         val saksbehandlerFNR = "123456123451"
         val brukerAnsattI_NAV = false
-        val skjerming = Skjerming.INGEN_SKJERMING
+        val adressesperre = Adressesperre.INGEN_ADRESSESPERRE
         val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBruker_I_Saken(
             roller,
             brukerFNR,
             saksbehandlerFNR,
             brukerAnsattI_NAV,
-            skjerming)
+            adressesperre)
 
         assertTrue(harTilgangTilBruker)
     }
@@ -452,13 +452,13 @@ class AuthorisationServiceTest {
         val brukerFNR = "12345678901"
         val saksbehandlerFNR = "123456123451"
         val brukerAnsattI_NAV = false
-        val skjerming = Skjerming.FORTROLIG
+        val adressesperre = Adressesperre.FORTROLIG_ADRESSE
         val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBruker_I_Saken(
             roller,
             brukerFNR,
             saksbehandlerFNR,
             brukerAnsattI_NAV,
-            skjerming)
+            adressesperre)
 
         assertFalse(harTilgangTilBruker)
     }
@@ -471,13 +471,13 @@ class AuthorisationServiceTest {
         val brukerFNR = "12345678901"
         val saksbehandlerFNR = "123456123451"
         val brukerAnsattI_NAV = false
-        val skjerming = Skjerming.FORTROLIG
+        val adressesperre = Adressesperre.FORTROLIG_ADRESSE
         val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBruker_I_Saken(
             roller,
             brukerFNR,
             saksbehandlerFNR,
             brukerAnsattI_NAV,
-            skjerming)
+            adressesperre)
 
         assertFalse(harTilgangTilBruker)
     }
@@ -490,13 +490,13 @@ class AuthorisationServiceTest {
         val brukerFNR = "12345678901"
         val saksbehandlerFNR = "123456123451"
         val brukerAnsattI_NAV = false
-        val skjerming = Skjerming.STRENGT_FORTROLIG
+        val adressesperre = Adressesperre.STRENGT_FORTROLIG_ADRESSE
         val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBruker_I_Saken(
             roller,
             brukerFNR,
             saksbehandlerFNR,
             brukerAnsattI_NAV,
-            skjerming)
+            adressesperre)
 
         assertFalse(harTilgangTilBruker)
     }

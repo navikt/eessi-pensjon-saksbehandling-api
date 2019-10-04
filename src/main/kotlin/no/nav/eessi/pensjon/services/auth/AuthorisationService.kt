@@ -43,7 +43,7 @@ class AuthorisationService {
         brukerFNR: String,
         saksbehandlerFNR: String,
         brukerAnsattI_NAV: Boolean,
-        skjerming: Skjerming): Boolean {
+        adressesperre: Adressesperre): Boolean {
 
         if (brukerFNR.equals(saksbehandlerFNR)){
             return false
@@ -54,13 +54,13 @@ class AuthorisationService {
             }
             return false
         }
-        if (skjerming == Skjerming.STRENGT_FORTROLIG){
+        if (adressesperre == Adressesperre.STRENGT_FORTROLIG_ADRESSE){
             if (roller.containsAll(listOf(AD_Rolle.PENSJON_STRENGT_FORTROLIG, AD_Rolle.GOSYS_STRENGT_FORTROLIG))){
                 return true
             }
             return false
         }
-        if (skjerming == Skjerming.FORTROLIG){
+        if (adressesperre == Adressesperre.FORTROLIG_ADRESSE){
             if (roller.containsAll(listOf(AD_Rolle.PENSJON_FORTROLIG, AD_Rolle.GOSYS_FORTROLIG))){
                 return true
             }
@@ -105,10 +105,10 @@ enum class AD_Rolle(val rollenavn: String) {
     PENSJON_FORTROLIG("0000-GA-PENSJON_KODE7")
 }
 
-enum class Skjerming(val skjerming: String){
-    INGEN_SKJERMING(""),
-    FORTROLIG("KODE7"),
-    STRENGT_FORTROLIG("KODE6")
+enum class Adressesperre(val adressesperre: String){
+    INGEN_ADRESSESPERRE(""),
+    FORTROLIG_ADRESSE("KODE7"),
+    STRENGT_FORTROLIG_ADRESSE("KODE6")
 }
 
 enum class SakType(val sakType: String) {
