@@ -1,5 +1,7 @@
 package no.nav.eessi.pensjon.services.auth
 
+import javax.validation.constraints.Null
+
 class AuthorisationService {
 
     fun harTilgangTilEessiPensjon(roller: List<AD_Rolle>): Boolean {
@@ -7,7 +9,11 @@ class AuthorisationService {
         return roller.containsAll(Tilgang.EESSI_PENSJON.grupper)
     }
 
-    fun harTilgangTilPESYS_Sak(roller: List<AD_Rolle>, sakType: SakType): Boolean {
+    fun harTilgangTilPESYS_Sak(roller: List<AD_Rolle>, sakType: SakType?): Boolean {
+
+        if (sakType == null){
+            throw AuthorisationUkjentSakstypeException("Ukjent sakstype fra PESYS: ${sakType}")
+        }
 
         if (sakType == SakType.ALDERSPENSJON) {
             if (roller.containsAll(listOf(AD_Rolle.PENSJON_UFORE))) {
@@ -15,6 +21,7 @@ class AuthorisationService {
             }
             return true
         }
+
         if (sakType == SakType.UFORETRYGD) {
             if (roller.containsAll(listOf(AD_Rolle.PENSJON_UFORE))) {
                 return true
@@ -35,7 +42,7 @@ class AuthorisationService {
             }
             return true
         }
-        throw AuthorisationUkjentSakstypeException("Ukjent sakstype fra PESYS: ${sakType}")
+        return false
     }
 
     fun harTilgangTilBruker_I_Saken(

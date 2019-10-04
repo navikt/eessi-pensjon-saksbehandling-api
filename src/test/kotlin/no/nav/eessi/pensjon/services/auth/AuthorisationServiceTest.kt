@@ -144,6 +144,25 @@ class AuthorisationServiceTest {
         assertTrue(tilgangPESYS_Sak)
     }
 
+
+    @Test
+    fun `Gitt sakstypen er ukjent SÅ kast feil`(){
+        val autorisasjonsservice = AuthorisationService()
+        val roller = listOf(AD_Rolle.PENSJON_UTLAND,
+            AD_Rolle.PENSJON_SAKSBEHANDLER,
+            AD_Rolle.GOSYS_NAV_ANSATT,
+            AD_Rolle.PENSJON_NAV_ANSATT)
+        var feilFanget = false
+
+        try {
+            val tilgangPESYS_Sak = autorisasjonsservice.harTilgangTilPESYS_Sak(roller, null)
+        }
+        catch (e: AuthorisationUkjentSakstypeException) {
+            feilFanget = true
+        }
+        assertTrue(feilFanget)
+    }
+
     // Tilgang til bruker
 
     @Test
