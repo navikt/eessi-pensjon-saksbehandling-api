@@ -1,74 +1,74 @@
 package no.nav.eessi.pensjon.services.auth
 
-import javax.validation.constraints.Null
-
 class AuthorisationService {
 
-    fun harTilgangTilEessiPensjon(roller: List<AD_Rolle>): Boolean {
+    fun harTilgangTilEessiPensjon(roller: List<AdRolle>): Boolean {
 
         return roller.containsAll(Tilgang.EESSI_PENSJON.grupper)
     }
 
-    fun harTilgangTilPESYS_Sak(roller: List<AD_Rolle>, sakType: SakType?): Boolean {
+    fun harTilgangTilPesysSak(roller: List<AdRolle>, pesysSakstype: PesysSakstype?): Boolean {
 
-        if (sakType == null){
-            throw AuthorisationUkjentSakstypeException("Ukjent sakstype fra PESYS: ${sakType}")
+        if (pesysSakstype == null){
+            throw AuthorisationUkjentSakstypeException("Ukjent sakstype fra PESYS: $pesysSakstype")
         }
 
-        if (sakType == SakType.ALDERSPENSJON) {
-            if (roller.containsAll(listOf(AD_Rolle.PENSJON_UFORE))) {
+        if (pesysSakstype == PesysSakstype.ALDERSPENSJON) {
+            if (roller.containsAll(listOf(AdRolle.PENSJON_UFORE))) {
                 return false
             }
             return true
         }
 
-        if (sakType == SakType.UFORETRYGD) {
-            if (roller.containsAll(listOf(AD_Rolle.PENSJON_UFORE))) {
+        if (pesysSakstype == PesysSakstype.UFORETRYGD) {
+            if (roller.containsAll(listOf(AdRolle.PENSJON_UFORE))) {
                 return true
             }
             return false
         }
 
-        if (sakType == SakType.BARNEPENSJON){
-            if (roller.containsAll(listOf(AD_Rolle.PENSJON_UFORE))){
+        if (pesysSakstype == PesysSakstype.BARNEPENSJON){
+            if (roller.containsAll(listOf(AdRolle.PENSJON_UFORE))){
                 return false
             }
             return true
         }
 
-        if (sakType == SakType.GJENLEVENDE){
-            if (roller.containsAll(listOf(AD_Rolle.PENSJON_UFORE))){
+        if (pesysSakstype == PesysSakstype.GJENLEVENDE){
+            if (roller.containsAll(listOf(AdRolle.PENSJON_UFORE))){
                 return false
             }
             return true
         }
+        // Vil aldri havne her
         return false
     }
 
-    fun harTilgangTilBruker_I_Saken(
-        roller: List<AD_Rolle>,
+    fun harTilgangTilBrukerISaken(
+        roller: List<AdRolle>,
+        saksbehandlerFnr: String,
         brukerFNR: String,
-        saksbehandlerFNR: String,
-        brukerAnsattI_NAV: Boolean,
-        adressesperre: Adressesperre): Boolean {
+        brukerAnsattINav: Boolean,
+        adressesperre: Adressesperre
+    ): Boolean {
 
-        if (brukerFNR.equals(saksbehandlerFNR)){
+        if (brukerFNR == saksbehandlerFnr){
             return false
         }
-        if (brukerAnsattI_NAV){
-            if (roller.containsAll(listOf(AD_Rolle.PENSJON_NAV_ANSATT, AD_Rolle.GOSYS_NAV_ANSATT))){
+        if (brukerAnsattINav){
+            if (roller.containsAll(listOf(AdRolle.PENSJON_NAV_ANSATT, AdRolle.GOSYS_NAV_ANSATT))){
                 return true
             }
             return false
         }
         if (adressesperre == Adressesperre.STRENGT_FORTROLIG_ADRESSE){
-            if (roller.containsAll(listOf(AD_Rolle.PENSJON_STRENGT_FORTROLIG, AD_Rolle.GOSYS_STRENGT_FORTROLIG))){
+            if (roller.containsAll(listOf(AdRolle.PENSJON_STRENGT_FORTROLIG, AdRolle.GOSYS_STRENGT_FORTROLIG))){
                 return true
             }
             return false
         }
         if (adressesperre == Adressesperre.FORTROLIG_ADRESSE){
-            if (roller.containsAll(listOf(AD_Rolle.PENSJON_FORTROLIG, AD_Rolle.GOSYS_FORTROLIG))){
+            if (roller.containsAll(listOf(AdRolle.PENSJON_FORTROLIG, AdRolle.GOSYS_FORTROLIG))){
                 return true
             }
             return false
@@ -76,22 +76,22 @@ class AuthorisationService {
         return true
     }
 
-    fun harTilgangTilBUC(roller: List<AD_Rolle>, bucType: BUC_Type, sedPensjonstype: SED_Pensjonstype): Boolean{
-        if (bucType.equals(BUC_Type.PBUC02_KRAV_OM_ETTERLATTEPENSJON)){
-            if (sedPensjonstype.equals(SED_Pensjonstype.UKJENT)){
+    fun harTilgangTilBuc(roller: List<AdRolle>, buctype: Buctype, sedPensjonstype: SedPensjonstype): Boolean{
+        if (buctype == Buctype.PBUC02_KRAV_OM_ETTERLATTEPENSJON){
+            if (sedPensjonstype == SedPensjonstype.UKJENT){
                 // Når pensjonstypen ikke er kjent må saksbehandler få tilgang
                 return true
             }
-            if (sedPensjonstype.equals(SED_Pensjonstype.BARNEPENSJON)){
-                if (roller.containsAll(listOf(AD_Rolle.PENSJON_UFORE))){
+            if (sedPensjonstype == SedPensjonstype.BARNEPENSJON){
+                if (roller.containsAll(listOf(AdRolle.PENSJON_UFORE))){
                     return false
                 }
                 return true
             }
             return true
         }
-        if (bucType.equals(BUC_Type.PBUC03_KRAV_OM_UFORETRYGD)){
-            if (roller.containsAll(listOf(AD_Rolle.PENSJON_UFORE))){
+        if (buctype == Buctype.PBUC03_KRAV_OM_UFORETRYGD){
+            if (roller.containsAll(listOf(AdRolle.PENSJON_UFORE))){
                 return true
             }
             return false
@@ -100,7 +100,7 @@ class AuthorisationService {
     }
 }
 
-enum class AD_Rolle(val rollenavn: String) {
+enum class AdRolle(val rollenavn: String) {
     PENSJON_UTLAND("0000-GA-Pensjon_Utland"),
     PENSJON_SAKSBEHANDLER("0000-GA-PENSJON_SAKSBEHANDLER"),
     PENSJON_UFORE("0000-GA-pensjon_ufore"),
@@ -118,20 +118,20 @@ enum class Adressesperre(val adressesperre: String){
     STRENGT_FORTROLIG_ADRESSE("KODE6")
 }
 
-enum class SakType(val sakType: String) {
+enum class PesysSakstype(val pesysSakstype: String) {
     ALDERSPENSJON("ALDER"),
     UFORETRYGD("UFØRE"),
     BARNEPENSJON("BARNEPENSJON"),
     GJENLEVENDE("GJENLEVENDE")
 }
 
-enum class BUC_Type(val bucType: String){
+enum class Buctype(val buctype: String){
     PBUC01_KRAV_OM_ALDER("PBUC01"),
     PBUC02_KRAV_OM_ETTERLATTEPENSJON("PBUC02"),
     PBUC03_KRAV_OM_UFORETRYGD("PBUC03")
 }
 
-enum class SED_Pensjonstype(val pensjonstype: String){
+enum class SedPensjonstype(val pensjonstype: String){
     ALDERSPENSJON("ALDER"),
     UFORETRYGD("UFØRE"),
     ETTERLATTEPENSJON("ETTERLATTE"),
@@ -139,8 +139,8 @@ enum class SED_Pensjonstype(val pensjonstype: String){
     UKJENT("UKJENT")
 }
 
-enum class Tilgang(var grupper: List<AD_Rolle>) {
-    EESSI_PENSJON(listOf(AD_Rolle.PENSJON_UTLAND, AD_Rolle.PENSJON_SAKSBEHANDLER))
+enum class Tilgang(var grupper: List<AdRolle>) {
+    EESSI_PENSJON(listOf(AdRolle.PENSJON_UTLAND, AdRolle.PENSJON_SAKSBEHANDLER))
 }
 
 class AuthorisationUkjentSakstypeException(message: String?) : Exception(message)
