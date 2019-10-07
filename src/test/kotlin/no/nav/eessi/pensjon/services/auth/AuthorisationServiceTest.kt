@@ -134,7 +134,7 @@ class AuthorisationServiceTest {
     }
 
     @Test
-    fun `Gitt saksbehandler rollen Uføre OG sakstypen er gjenlevendepensjon SÅ returner FALSE`(){
+    fun `Gitt saksbehandler rollen Uføre OG sakstypen er gjenlevendepensjon SÅ returner TRUE`(){
         val autorisasjonsservice = AuthorisationService()
         val roller = listOf(AdRolle.PENSJON_UTLAND,
             AdRolle.PENSJON_SAKSBEHANDLER,
@@ -143,11 +143,11 @@ class AuthorisationServiceTest {
 
         val tilgangPesysSak = autorisasjonsservice.harTilgangTilPesysSak(roller, PesysSakstype.GJENLEVENDE)
 
-        assertFalse(tilgangPesysSak)
+        assertTrue(tilgangPesysSak)
     }
 
     @Test
-    fun `Gitt saksbehandler rollen Uføre OG sakstypen er gjenlevendepensjon SÅ returner TRUE`(){
+    fun `Gitt saksbehandler ikke har rollen Uføre OG sakstypen er gjenlevendepensjon SÅ returner TRUE`(){
         val autorisasjonsservice = AuthorisationService()
         val roller = listOf(AdRolle.PENSJON_UTLAND,
             AdRolle.PENSJON_SAKSBEHANDLER,
