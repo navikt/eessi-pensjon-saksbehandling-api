@@ -76,6 +76,11 @@ class AuthorisationService {
         return true
     }
 
+    /* Saksbehandlere som jobber med uføretrygd kan håndtere etterlattepensjon for gjenlevende ektefelle.
+    *  De kan ikke håndtere barnepensjon. Nå viser det seg at det kan være vanskelig å finne i SEDen
+    *  et felt som sier om det gjelder barnepensjon eller etterlattepensjon for ektefelle. Koden under tar
+    *  derfor høyde for at denne informasjonen ikke er kjent. Da skal saksbehandler få tilgang.
+    */
     fun harTilgangTilBuc(roller: List<AdRolle>, buctype: Buctype, sedPensjonstype: SedPensjonstype): Boolean{
         if (buctype == Buctype.PBUC02_KRAV_OM_ETTERLATTEPENSJON){
             if (sedPensjonstype == SedPensjonstype.UKJENT){
