@@ -47,7 +47,7 @@ class AuthorisationService {
         return when (pesysSakstype) {
             PesysSakstype.ALDERSPENSJON, PesysSakstype.BARNEPENSJON -> !erMedlemAvUfore(roller)
             PesysSakstype.UFORETRYGD -> erMedlemAvUfore(roller)
-            PesysSakstype.GJENLEVENDE -> return true
+            PesysSakstype.GJENLEVENDE -> true
         }
     }
 
@@ -70,20 +70,15 @@ class AuthorisationService {
      *                      NB! "Adresse" er alt som kan brukes til identifisere en bruker og brukes til
      *                      å finne ut hvor vedkommende bor.
      */
-    fun harTilgangTilBrukerISaken(
-        roller: List<AdRolle>,
-        brukerAnsattINav: Boolean,
-        adressesperre: Adressesperre): Boolean {
+    fun harTilgangTilBrukerISaken(roller: List<AdRolle>, brukerAnsattINav: Boolean, adressesperre: Adressesperre): Boolean {
         if (brukerAnsattINav){
             return erMedlemAvNavAnsatt(roller)
         }
-        if (adressesperre == Adressesperre.STRENGT_FORTROLIG_ADRESSE){
-            return erMedlemAvStrengtFortrolig(roller)
+        return when (adressesperre) {
+            Adressesperre.STRENGT_FORTROLIG_ADRESSE -> erMedlemAvStrengtFortrolig(roller)
+            Adressesperre.FORTROLIG_ADRESSE -> erMedlemAvFortrolig(roller)
+            Adressesperre.INGEN_ADRESSESPERRE -> true
         }
-        if (adressesperre == Adressesperre.FORTROLIG_ADRESSE){
-            return erMedlemAvFortrolig(roller)
-        }
-        return true
     }
 
     /**
@@ -102,20 +97,21 @@ class AuthorisationService {
      *                ha tilgang til en bucType.
      */
     fun harTilgangTilBuc(roller: List<AdRolle>, buctype: Buctype, sedPensjonstype: SedPensjonstype): Boolean{
-        if (buctype == Buctype.PBUC02_KRAV_OM_ETTERLATTEPENSJON){
-            if (sedPensjonstype == SedPensjonstype.UKJENT){
-                // Når pensjonstypen ikke er kjent må saksbehandler få tilgang
+        when (buctype) {
+            Buctype.PBUC02_KRAV_OM_ETTERLATTEPENSJON -> {
+                when (sedPensjonstype) {
+                    // Når pensjonstypen ikke er kjent må saksbehandler få tilgang
+                    SedPensjonstype.UKJENT -> return true
+                    SedPensjonstype.BARNEPENSJON -> return !erMedlemAvUfore(roller)
+                    SedPensjonstype.ALDERSPENSJON, SedPensjonstype.ETTERLATTEPENSJON, SedPensjonstype.UFORETRYGD -> return true
+                }
+            }
+            Buctype.PBUC03_KRAV_OM_UFORETRYGD -> return erMedlemAvUfore(roller)
+            else -> {
+                // Alle andre BUC-er er det tilgang til
                 return true
             }
-            if (sedPensjonstype == SedPensjonstype.BARNEPENSJON){
-                return !erMedlemAvUfore(roller)
-            }
-            return true
         }
-        if (buctype == Buctype.PBUC03_KRAV_OM_UFORETRYGD){
-            return erMedlemAvUfore(roller)
-        }
-        return true
     }
 
     private fun erMedlemAvUfore(roller: List<AdRolle>): Boolean {
