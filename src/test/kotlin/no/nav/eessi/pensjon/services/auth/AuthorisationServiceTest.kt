@@ -176,40 +176,13 @@ class AuthorisationServiceTest {
     // Tilgang til bruker
 
     @Test
-    fun `Gitt saksbehandler sitt FNR er det samme som bruker sitt FNR SÅ returner FALSE`(){
-        val autorisasjonsservice = AuthorisationService()
-        val roller = listOf(AdRolle.PENSJON_UTLAND,
-            AdRolle.PENSJON_SAKSBEHANDLER,
-            AdRolle.GOSYS_NAV_ANSATT,
-            AdRolle.PENSJON_NAV_ANSATT)
-
-        val brukerFNR = "12345678901"
-        val saksbehandlerFNR = "12345678901"
-        val brukerAnsattINav = false
-        val adressesperre = Adressesperre.INGEN_ADRESSESPERRE
-        val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBrukerISaken(
-            roller,
-            brukerFNR,
-            saksbehandlerFNR,
-            brukerAnsattINav,
-            adressesperre)
-
-        assertFalse(harTilgangTilBruker)
-    }
-
-    @Test
     fun `Gitt saksbehandler har tilgang til NAV-ansatte i PESYS og GOSYS OG bruker jobber i NAV SÅ returner TRUE`(){
         val autorisasjonsservice = AuthorisationService()
         val roller = listOf(AdRolle.PENSJON_NAV_ANSATT, AdRolle.GOSYS_NAV_ANSATT)
-
-        val brukerFNR = "12345678901"
-        val saksbehandlerFNR = "123456123451"
         val brukerAnsattINav = true
         val adressesperre = Adressesperre.INGEN_ADRESSESPERRE
         val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBrukerISaken(
             roller,
-            brukerFNR,
-            saksbehandlerFNR,
             brukerAnsattINav,
             adressesperre)
 
@@ -220,15 +193,10 @@ class AuthorisationServiceTest {
     fun `Gitt saksbehandler ikke har tilgang til NAV-ansatte i PESYS OG har tilgang i GOSYS OG bruker jobber i NAV SÅ returner TRUE`(){
         val autorisasjonsservice = AuthorisationService()
         val roller = listOf(AdRolle.GOSYS_NAV_ANSATT)
-
-        val brukerFNR = "12345678901"
-        val saksbehandlerFNR = "123456123451"
         val brukerAnsattINav = true
         val adressesperre = Adressesperre.INGEN_ADRESSESPERRE
         val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBrukerISaken(
             roller,
-            brukerFNR,
-            saksbehandlerFNR,
             brukerAnsattINav,
             adressesperre)
 
@@ -239,15 +207,10 @@ class AuthorisationServiceTest {
     fun `Gitt saksbehandler har tilgang til NAV-ansatte i PESYS OG ikke tilgang i GOSYS OG bruker jobber i NAV SÅ returner TRUE`(){
         val autorisasjonsservice = AuthorisationService()
         val roller = listOf(AdRolle.PENSJON_NAV_ANSATT)
-
-        val brukerFNR = "12345678901"
-        val saksbehandlerFNR = "123456123451"
         val brukerAnsattINav = true
         val adressesperre = Adressesperre.INGEN_ADRESSESPERRE
         val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBrukerISaken(
             roller,
-            brukerFNR,
-            saksbehandlerFNR,
             brukerAnsattINav,
             adressesperre)
 
@@ -258,15 +221,10 @@ class AuthorisationServiceTest {
     fun `Gitt saksbehandler har ikke tilgang til NAV-ansatte OG bruker jobber i NAV SÅ returner TRUE`(){
         val autorisasjonsservice = AuthorisationService()
         val roller = listOf(AdRolle.PENSJON_SAKSBEHANDLER)
-
-        val brukerFNR = "12345678901"
-        val saksbehandlerFNR = "123456123451"
         val brukerAnsattINav = true
         val adressesperre = Adressesperre.INGEN_ADRESSESPERRE
         val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBrukerISaken(
             roller,
-            brukerFNR,
-            saksbehandlerFNR,
             brukerAnsattINav,
             adressesperre)
 
@@ -283,14 +241,10 @@ class AuthorisationServiceTest {
             AdRolle.PENSJON_STRENGT_FORTROLIG
         )
 
-        val brukerFNR = "12345678901"
-        val saksbehandlerFNR = "123456123451"
         val brukerAnsattINav = false
         val adressesperre = Adressesperre.FORTROLIG_ADRESSE
         val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBrukerISaken(
             roller,
-            brukerFNR,
-            saksbehandlerFNR,
             brukerAnsattINav,
             adressesperre
         )
@@ -306,14 +260,10 @@ class AuthorisationServiceTest {
                 AdRolle.PENSJON_FORTROLIG,
                 AdRolle.PENSJON_STRENGT_FORTROLIG)
 
-            val brukerFNR = "12345678901"
-            val saksbehandlerFNR = "123456123451"
             val brukerAnsattINav = false
             val adressesperre = Adressesperre.STRENGT_FORTROLIG_ADRESSE
             val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBrukerISaken(
                 roller,
-                brukerFNR,
-                saksbehandlerFNR,
                 brukerAnsattINav,
                 adressesperre)
 
@@ -324,15 +274,10 @@ class AuthorisationServiceTest {
     fun `Gitt saksbehandler har tilgang kode 7 og ikke 6 OG bruker er merket strengt fortrolig SÅ returner FALSE`(){
         val autorisasjonsservice = AuthorisationService()
         val roller = listOf(AdRolle.GOSYS_FORTROLIG, AdRolle.PENSJON_FORTROLIG)
-
-        val brukerFNR = "12345678901"
-        val saksbehandlerFNR = "123456123451"
         val brukerAnsattINav = false
         val adressesperre = Adressesperre.STRENGT_FORTROLIG_ADRESSE
         val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBrukerISaken(
             roller,
-            brukerFNR,
-            saksbehandlerFNR,
             brukerAnsattINav,
             adressesperre)
 
@@ -343,15 +288,10 @@ class AuthorisationServiceTest {
     fun `Gitt saksbehandler har tilgang kode 6 og ikke 7 OG bruker er merket strengt fortrolig SÅ returner TRUE`(){
         val autorisasjonsservice = AuthorisationService()
         val roller = listOf(AdRolle.GOSYS_STRENGT_FORTROLIG, AdRolle.PENSJON_STRENGT_FORTROLIG)
-
-        val brukerFNR = "12345678901"
-        val saksbehandlerFNR = "123456123451"
         val brukerAnsattINav = false
         val adressesperre = Adressesperre.STRENGT_FORTROLIG_ADRESSE
         val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBrukerISaken(
             roller,
-            brukerFNR,
-            saksbehandlerFNR,
             brukerAnsattINav,
             adressesperre)
 
@@ -362,15 +302,10 @@ class AuthorisationServiceTest {
     fun `Gitt saksbehandler har tilgang kode 6 PESYS og ikke 6 GOSYS OG bruker er merket strengt fortrolig SÅ returner FALSE`(){
         val autorisasjonsservice = AuthorisationService()
         val roller = listOf(AdRolle.PENSJON_STRENGT_FORTROLIG)
-
-        val brukerFNR = "12345678901"
-        val saksbehandlerFNR = "123456123451"
         val brukerAnsattINav = false
         val adressesperre = Adressesperre.STRENGT_FORTROLIG_ADRESSE
         val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBrukerISaken(
             roller,
-            brukerFNR,
-            saksbehandlerFNR,
             brukerAnsattINav,
             adressesperre)
 
@@ -381,15 +316,10 @@ class AuthorisationServiceTest {
     fun `Gitt saksbehandler har tilgang kode 6 GOSYS og ikke 6 PESYS OG bruker er merket strengt fortrolig SÅ returner FALSE`(){
         val autorisasjonsservice = AuthorisationService()
         val roller = listOf(AdRolle.GOSYS_STRENGT_FORTROLIG)
-
-        val brukerFNR = "12345678901"
-        val saksbehandlerFNR = "123456123451"
         val brukerAnsattINav = false
         val adressesperre = Adressesperre.STRENGT_FORTROLIG_ADRESSE
         val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBrukerISaken(
             roller,
-            brukerFNR,
-            saksbehandlerFNR,
             brukerAnsattINav,
             adressesperre)
 
@@ -400,15 +330,10 @@ class AuthorisationServiceTest {
     fun `Gitt saksbehandler har tilgang kode 7 PESYS og 7 GOSYS OG bruker er merket fortrolig SÅ returner TRUE`(){
         val autorisasjonsservice = AuthorisationService()
         val roller = listOf(AdRolle.GOSYS_FORTROLIG, AdRolle.PENSJON_FORTROLIG)
-
-        val brukerFNR = "12345678901"
-        val saksbehandlerFNR = "123456123451"
         val brukerAnsattINav = false
         val adressesperre = Adressesperre.FORTROLIG_ADRESSE
         val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBrukerISaken(
             roller,
-            brukerFNR,
-            saksbehandlerFNR,
             brukerAnsattINav,
             adressesperre)
 
@@ -419,15 +344,10 @@ class AuthorisationServiceTest {
     fun `Gitt saksbehandler har tilgang kode 7 GOSYS og ikke 7 PESYS OG bruker er merket fortrolig SÅ returner FALSE`(){
         val autorisasjonsservice = AuthorisationService()
         val roller = listOf(AdRolle.GOSYS_FORTROLIG)
-
-        val brukerFNR = "12345678901"
-        val saksbehandlerFNR = "123456123451"
         val brukerAnsattINav = false
         val adressesperre = Adressesperre.FORTROLIG_ADRESSE
         val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBrukerISaken(
             roller,
-            brukerFNR,
-            saksbehandlerFNR,
             brukerAnsattINav,
             adressesperre)
 
@@ -438,15 +358,10 @@ class AuthorisationServiceTest {
     fun `Gitt saksbehandler har tilgang kode 7 PESYS og ikke 7 GOSYS OG bruker er merket fortrolig SÅ returner FALSE`(){
         val autorisasjonsservice = AuthorisationService()
         val roller = listOf(AdRolle.PENSJON_FORTROLIG)
-
-        val brukerFNR = "12345678901"
-        val saksbehandlerFNR = "123456123451"
         val brukerAnsattINav = false
         val adressesperre = Adressesperre.FORTROLIG_ADRESSE
         val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBrukerISaken(
             roller,
-            brukerFNR,
-            saksbehandlerFNR,
             brukerAnsattINav,
             adressesperre)
 
@@ -456,17 +371,11 @@ class AuthorisationServiceTest {
     @Test
     fun `Gitt saksbehandler har tilgang kode 7 OG bruker er ikke skjermet SÅ returner TRUE`(){
         val autorisasjonsservice = AuthorisationService()
-        val roller = listOf(AdRolle.PENSJON_FORTROLIG, AdRolle.GOSYS_FORTROLIG
-        )
-
-        val brukerFNR = "12345678901"
-        val saksbehandlerFNR = "123456123451"
+        val roller = listOf(AdRolle.PENSJON_FORTROLIG, AdRolle.GOSYS_FORTROLIG)
         val brukerAnsattINav = false
         val adressesperre = Adressesperre.INGEN_ADRESSESPERRE
         val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBrukerISaken(
             roller,
-            brukerFNR,
-            saksbehandlerFNR,
             brukerAnsattINav,
             adressesperre)
 
@@ -477,15 +386,10 @@ class AuthorisationServiceTest {
     fun `Gitt saksbehandler har tilgang kode 6 OG bruker er merket fortrolig SÅ returner FALSE`(){
         val autorisasjonsservice = AuthorisationService()
         val roller = listOf(AdRolle.PENSJON_STRENGT_FORTROLIG, AdRolle.GOSYS_STRENGT_FORTROLIG)
-
-        val brukerFNR = "12345678901"
-        val saksbehandlerFNR = "123456123451"
         val brukerAnsattINav = false
         val adressesperre = Adressesperre.FORTROLIG_ADRESSE
         val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBrukerISaken(
             roller,
-            brukerFNR,
-            saksbehandlerFNR,
             brukerAnsattINav,
             adressesperre)
 
@@ -496,15 +400,10 @@ class AuthorisationServiceTest {
     fun `Gitt saksbehandler har ikke har tilgang kode 6 og 7 OG bruker er merket fortrolig SÅ returner FALSE`(){
         val autorisasjonsservice = AuthorisationService()
         val roller = listOf(AdRolle.GOSYS_NAV_ANSATT)
-
-        val brukerFNR = "12345678901"
-        val saksbehandlerFNR = "123456123451"
         val brukerAnsattINav = false
         val adressesperre = Adressesperre.FORTROLIG_ADRESSE
         val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBrukerISaken(
             roller,
-            brukerFNR,
-            saksbehandlerFNR,
             brukerAnsattINav,
             adressesperre)
 
@@ -515,15 +414,10 @@ class AuthorisationServiceTest {
     fun `Gitt saksbehandler har ikke har tilgang kode 6 og 7 OG bruker er merket strengt fortrolig SÅ returner FALSE`(){
         val autorisasjonsservice = AuthorisationService()
         val roller = listOf(AdRolle.GOSYS_NAV_ANSATT)
-
-        val brukerFNR = "12345678901"
-        val saksbehandlerFNR = "123456123451"
         val brukerAnsattINav = false
         val adressesperre = Adressesperre.STRENGT_FORTROLIG_ADRESSE
         val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBrukerISaken(
             roller,
-            brukerFNR,
-            saksbehandlerFNR,
             brukerAnsattINav,
             adressesperre)
 

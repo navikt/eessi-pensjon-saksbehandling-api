@@ -13,12 +13,11 @@ class AuthorisationService {
      *               EESSI-Pensjon bruker de samme rollene som PESYS-PSAK gjør for å sjekke tilgang.
      */
     fun harTilgangTilEessiPensjon(roller: List<AdRolle>): Boolean {
-
         return roller.containsAll(Tilgang.EESSI_PENSJON.grupper)
     }
 
     /**
-     * Roller i AD for PESYS-saksbehandlereer lagt opp litt rart. Alle får rollen "saksbehandler". indirekte betyr
+     * Roller i AD for PESYS-saksbehandlere er lagt opp litt rart. Alle får rollen "saksbehandler". indirekte betyr
      * at saksbehandler har tilgang til alderspensjon, barnepensjon og etterlattepensjon (gjenlevende).
      *
      * Når så rollen "Uføretrygd/pensjon" blir gitt til en saksbehandler så får saksbehandler ikke lengre lov å
@@ -45,42 +44,19 @@ class AuthorisationService {
             throw AuthorisationUkjentSakstypeException("Ukjent sakstype fra PESYS: $pesysSakstype")
         }
 
-        if (pesysSakstype == PesysSakstype.ALDERSPENSJON) {
-            if (roller.containsAll(listOf(AdRolle.PENSJON_UFORE))) {
-                return false
-            }
-            return true
+        return when (pesysSakstype) {
+            PesysSakstype.ALDERSPENSJON, PesysSakstype.BARNEPENSJON -> !erMedlemAvUfore(roller)
+            PesysSakstype.UFORETRYGD -> erMedlemAvUfore(roller)
+            PesysSakstype.GJENLEVENDE -> return true
         }
-
-        if (pesysSakstype == PesysSakstype.BARNEPENSJON){
-            if (roller.containsAll(listOf(AdRolle.PENSJON_UFORE))){
-                return false
-            }
-            return true
-        }
-
-        if (pesysSakstype == PesysSakstype.GJENLEVENDE){
-            return true
-        }
-
-        if (pesysSakstype == PesysSakstype.UFORETRYGD) {
-            if (roller.containsAll(listOf(AdRolle.PENSJON_UFORE))) {
-                return true
-            }
-            return false
-        }
-
-        // Vil aldri havne her
-        return false
     }
 
     /**
      * Saksbehandler har i utgangspunktet lov til å jobbe på alle brukere (borgere) i Norge men med noen unntak
-     *      1. Får aldri lov til å jobbe på seg selv
-     *      2. Får bare jobbe på brukere ansatt i NAV hvis de har en AD-rolle "Utvidet" (Ansatt i NAV)
-     *      3. Får bare jobbe på brukere med strengt fortrolig adresse hvis de har tilsvarende AD-roller
+     *      1. Får bare jobbe på brukere ansatt i NAV hvis de har en AD-rolle "Utvidet" (Ansatt i NAV)
+     *      2. Får bare jobbe på brukere med strengt fortrolig adresse hvis de har tilsvarende AD-roller
      *         fra PESYS og GOSYS
-     *      4. Får bare jobbe på brukere med fortrolig adresse hvis de har tilsvarende AD-roller
+     *      3. Får bare jobbe på brukere med fortrolig adresse hvis de har tilsvarende AD-roller
      *         fra PESYS og GOSYS
      *
      * @param roller er hentet fra AD. Summen av roller beskriver hva en saksbehandler har tilgang til i PESYS.
@@ -96,32 +72,16 @@ class AuthorisationService {
      */
     fun harTilgangTilBrukerISaken(
         roller: List<AdRolle>,
-        saksbehandlerFnr: String,
-        brukerFNR: String,
         brukerAnsattINav: Boolean,
-        adressesperre: Adressesperre
-    ): Boolean {
-
-        if (brukerFNR == saksbehandlerFnr){
-            return false
-        }
+        adressesperre: Adressesperre): Boolean {
         if (brukerAnsattINav){
-            if (roller.containsAll(listOf(AdRolle.PENSJON_NAV_ANSATT, AdRolle.GOSYS_NAV_ANSATT))){
-                return true
-            }
-            return false
+            return erMedlemAvNavAnsatt(roller)
         }
         if (adressesperre == Adressesperre.STRENGT_FORTROLIG_ADRESSE){
-            if (roller.containsAll(listOf(AdRolle.PENSJON_STRENGT_FORTROLIG, AdRolle.GOSYS_STRENGT_FORTROLIG))){
-                return true
-            }
-            return false
+            return erMedlemAvStrengtFortrolig(roller)
         }
         if (adressesperre == Adressesperre.FORTROLIG_ADRESSE){
-            if (roller.containsAll(listOf(AdRolle.PENSJON_FORTROLIG, AdRolle.GOSYS_FORTROLIG))){
-                return true
-            }
-            return false
+            return erMedlemAvFortrolig(roller)
         }
         return true
     }
@@ -148,20 +108,30 @@ class AuthorisationService {
                 return true
             }
             if (sedPensjonstype == SedPensjonstype.BARNEPENSJON){
-                if (roller.containsAll(listOf(AdRolle.PENSJON_UFORE))){
-                    return false
-                }
-                return true
+                return !erMedlemAvUfore(roller)
             }
             return true
         }
         if (buctype == Buctype.PBUC03_KRAV_OM_UFORETRYGD){
-            if (roller.containsAll(listOf(AdRolle.PENSJON_UFORE))){
-                return true
-            }
-            return false
+            return erMedlemAvUfore(roller)
         }
         return true
+    }
+
+    private fun erMedlemAvUfore(roller: List<AdRolle>): Boolean {
+        return roller.containsAll(listOf(AdRolle.PENSJON_UFORE))
+    }
+
+    private fun erMedlemAvNavAnsatt(roller: List<AdRolle>): Boolean {
+        return roller.containsAll(listOf(AdRolle.PENSJON_NAV_ANSATT, AdRolle.GOSYS_NAV_ANSATT))
+    }
+
+    private fun erMedlemAvFortrolig(roller: List<AdRolle>): Boolean {
+        return roller.containsAll(listOf(AdRolle.PENSJON_FORTROLIG, AdRolle.GOSYS_FORTROLIG))
+    }
+
+    private fun erMedlemAvStrengtFortrolig(roller: List<AdRolle>): Boolean {
+        return roller.containsAll(listOf(AdRolle.PENSJON_STRENGT_FORTROLIG, AdRolle.GOSYS_STRENGT_FORTROLIG))
     }
 }
 
