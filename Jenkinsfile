@@ -75,7 +75,7 @@ node {
 
         stage("Cucumber tests") {
                  build([
-                     job       : 'Automatiske tester',
+                     job       : 'Automatisk E207',
                      wait      : true,
                      parameters: [
                          string(name: 'environment', value: "autotest_env_T"),
