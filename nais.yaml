@@ -74,12 +74,6 @@ fasitResources:
   - alias: srveessipensjon
     resourceType: Credential
 
-  - alias: srveessi-pensjon-journalforing
-    resourceType: credential
-    propertyMap:
-      username: srvusername
-      password: srvpassword
-
   - alias: eessi-pensjon-frontend-api-fss_channel
     resourceType: Channel
 
