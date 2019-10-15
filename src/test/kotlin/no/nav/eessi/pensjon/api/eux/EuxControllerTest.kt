@@ -61,7 +61,7 @@ class EuxControllerTest : EuxBaseTest() {
     @Test
     fun `Calling euxController|getSubjectArea returns subject areas`() {
 
-        val expectedResponse = listOf("Pensjon", "Andre")
+        val expectedResponse = listOf("Pensjon")
         val generatedResponse = euxController.getSubjectArea()
         assertEquals(generatedResponse, expectedResponse)
     }
