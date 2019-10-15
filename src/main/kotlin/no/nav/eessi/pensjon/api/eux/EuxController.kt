@@ -45,7 +45,7 @@ class EuxController(private val euxService: EuxService, private val navRegistreS
 
     @GetMapping("/subjectarea")
     fun getSubjectArea(): List<String> {
-        return listOf("Pensjon", "Andre")
+        return listOf("Pensjon")
 
     }
 }
