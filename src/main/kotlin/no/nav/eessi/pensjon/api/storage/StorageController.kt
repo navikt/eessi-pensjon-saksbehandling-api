@@ -49,13 +49,6 @@ class StorageController(private val storage: StorageService,
     @Timed("s3.get")
     @GetMapping(value = ["/get/{path}"], produces = [MediaType.APPLICATION_JSON_VALUE])
     fun getDocument(@PathVariable(required = true) path: String): ResponseEntity<String> {
-        try{
-            // Tester LDAP integrasjonen
-            logger.debug(ldapService.hentBrukerInformasjon(getClaims(oidcRequestContextHolder).subject).toString())
-        } catch (e: Exception) {
-            logger.error("En feil oppstod under henting av brukerinformasjon fra AD: ", e)
-        }
-
         return try {
             validerPath(path)
             logger.info("Henter S3 dokument")
