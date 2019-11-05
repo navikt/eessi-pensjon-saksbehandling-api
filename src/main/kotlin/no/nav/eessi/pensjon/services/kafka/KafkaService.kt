@@ -17,8 +17,8 @@ class KafkaService(val kafkaTemplate: KafkaTemplate<String, String>) {
     private final val kafkaSelvbetjeningsinfoMottattProdusertTellerNavn = "eessipensjon_frontend-api.kafka_selvbetjeningsinfomottatt_produsert"
     private val kafkaSelvbetjeningsinfoMottattProdusertVellykkede = counter(kafkaSelvbetjeningsinfoMottattProdusertTellerNavn, "vellykkede")
 
-    @Value("\${FASIT_ENVIRONMENT_NAME:t8}")
-    lateinit var topicPostfix: String // = "t8"
+    @Value("\${FASIT_ENVIRONMENT_NAME}")
+    lateinit var topicPostfix: String
 
 
     fun publishSubmissionReceivedEvent(payload: String) {

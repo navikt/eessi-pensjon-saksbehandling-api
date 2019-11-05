@@ -28,10 +28,10 @@ class KafkaServiceTest() {
         assertEquals(0, argumentCaptor.allValues.size)
 
         kafkaService.submissionReceivedTopicPrefix = "privat-eessipensjon-selvbetjeningsinfoMottatt"
-        kafkaService.topicPostfix = "t8"
+        kafkaService.topicPostfix = "q2"
         kafkaService.publishSubmissionReceivedEvent("Payload")
 
-        assertEquals("privat-eessipensjon-selvbetjeningsinfoMottatt-t8", argumentCaptor.firstValue)
+        assertEquals("privat-eessipensjon-selvbetjeningsinfoMottatt-q2", argumentCaptor.firstValue)
     }
 
     @Test
@@ -39,7 +39,7 @@ class KafkaServiceTest() {
         val argumentCaptor = argumentCaptor<Message<String>>()
 
         kafkaService.submissionReceivedTopicPrefix = "privat-eessipensjon-selvbetjeningsinfoMottatt"
-        kafkaService.topicPostfix = "t8"
+        kafkaService.topicPostfix = "q2"
         MDC.put(kafkaService.X_REQUEST_ID, "mockRequestId")
         doReturn(null).`when`(mockKafkaTemplate).send(argumentCaptor.capture())
         kafkaService.publishSubmissionReceivedEvent("Payload")
@@ -53,7 +53,7 @@ class KafkaServiceTest() {
         val argumentCaptor = argumentCaptor<Message<String>>()
 
         kafkaService.submissionReceivedTopicPrefix = "privat-eessipensjon-selvbetjeningsinfoMottatt"
-        kafkaService.topicPostfix = "t8"
+        kafkaService.topicPostfix = "q2"
         doReturn(null).`when`(mockKafkaTemplate).send(argumentCaptor.capture())
         kafkaService.publishSubmissionReceivedEvent("Payload")
 
