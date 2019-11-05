@@ -61,11 +61,11 @@ class FssLoginControllerTest {
 
     @Test
     fun `Given a login attempt in FSS zone When environment is preprod Then redirect to preprod`() {
-        fssLoginController.fasitEnvironmentName = "t8"
+        fssLoginController.fasitEnvironmentName = "q2"
         fssLoginController.navDomain = "nais.preprod.local"
 
         fssLoginController.login(req, resp, "somewhereelse", "somecontext")
 
-        verify(resp).sendRedirect("https://${fssLoginController.appName}-t8.nais.preprod.local/openamlogin?redirect=somewhereelse&context=somecontext")
+        verify(resp).sendRedirect("https://${fssLoginController.appName}-q2.nais.preprod.local/openamlogin?redirect=somewhereelse&context=somecontext")
     }
 }

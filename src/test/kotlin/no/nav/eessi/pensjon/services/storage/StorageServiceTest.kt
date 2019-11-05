@@ -270,12 +270,6 @@ class StorageServiceTest : S3StorageBaseTest() {
     }
 
     @Test
-    fun `When environment is t8 then getBucketname returns bucket with environmentpostfix -t8`() {
-        s3storageService.fasitEnvironmentName = "t8"
-        assertEquals("$BUCKET-t8", s3storageService.getBucketName())
-    }
-
-    @Test
     fun `When environment is p then getBucketname returns bucket with no environmentpostfix`() {
         s3storageService.fasitEnvironmentName = "p"
         assertEquals("$BUCKET", s3storageService.getBucketName())

@@ -33,7 +33,7 @@ class LoginControllerMockTest : BaseTest() {
         request.serverName = "pensjon-utland-t.nav.no"
         request.scheme = "http"
 
-        loginController.fasitEnvironmentName = "t8"
+        loginController.fasitEnvironmentName = "q2"
         loginController.appName = "eessi-pensjon-frontend-api-fss"
         loginController.navDomain = "nais.preprod.local"
         request.serverName = "pensjon-utland-t.nav.no"
@@ -46,7 +46,7 @@ class LoginControllerMockTest : BaseTest() {
 
         val encodedContext = URLEncoder.encode(context, "UTF-8")
         val generatedResponse = response.getHeader("Location")
-        val expectedResponse = "https://eessi-pensjon-frontend-api-fss-t8.nais.preprod.local/openamlogin?redirect=$redirectTo&context=$encodedContext"
+        val expectedResponse = "https://eessi-pensjon-frontend-api-fss-q2.nais.preprod.local/openamlogin?redirect=$redirectTo&context=$encodedContext"
 
         assertEquals(response.status, 302)
         assertEquals(expectedResponse, generatedResponse)

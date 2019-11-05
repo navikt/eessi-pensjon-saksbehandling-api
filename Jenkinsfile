@@ -51,41 +51,6 @@ node {
             }
         }
 
-        stage("deploy T8") {
-            parallel (
-                deploy: {
-                    def version = sh(script: 'git describe --abbrev=0', returnStdout: true).trim()
-                    build([
-                        job       : 'nais-deploy-pipeline',
-                        wait      : true,
-                        parameters: [
-                            string(name: 'APP', value: "eessi-pensjon-frontend-api-fss"),
-                            string(name: 'REPO', value: "navikt/eessi-pensjon-saksbehandling-api"),
-                            string(name: 'VERSION', value: "${version}"),
-                            string(name: 'DEPLOY_REF', value: "${version}"),
-                            string(name: 'DEPLOY_ENV', value: 't8'),
-                            string(name: 'NAMESPACE', value: 't8'),
-                            string(name: 'CLUSTER', value: 'fss'),
-                            string(name: 'CONTEXT_ROOTS', value: '/callback')
-                        ]
-                    ])
-                }
-            )
-        }
-
-        stage("Cucumber tests") {
-             build([
-                 job       : 'Automatisk E207',
-                 wait      : true,
-                 parameters: [
-                     string(name: 'environment', value: "autotest_env_T"),
-                     booleanParam(name: 'testsaksbehandler', value: false),
-                     booleanParam(name: 'testBorger', value: true),
-                     booleanParam(name: 'testKravAlder', value: false)
-                 ]
-             ])
-        }
-
         stage("deploy Q6") {
            parallel(
                deploy_to_fss: {
