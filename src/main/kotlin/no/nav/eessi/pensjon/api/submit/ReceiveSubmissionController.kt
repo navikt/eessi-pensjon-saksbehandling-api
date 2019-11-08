@@ -1,18 +1,19 @@
 package no.nav.eessi.pensjon.api.submit
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry
+import no.nav.eessi.pensjon.metrics.MetricsHelper
 import no.nav.eessi.pensjon.services.kafka.KafkaService
-import no.nav.eessi.pensjon.services.pdf.PdfService
 import no.nav.eessi.pensjon.services.pdf.TemplateService
 import no.nav.eessi.pensjon.services.storage.StorageService
 import no.nav.eessi.pensjon.utils.mapAnyToJson
-import no.nav.eessi.pensjon.utils.counter
 import no.nav.eessi.pensjon.utils.errorBody
 import no.nav.eessi.pensjon.utils.getClaims
 import no.nav.eessi.pensjon.utils.successBody
 import no.nav.security.oidc.api.Protected
 import no.nav.security.oidc.context.OIDCRequestContextHolder
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -28,20 +29,13 @@ class ReceiveSubmissionController(
 
     val kafkaService: KafkaService,
     val storageService: StorageService,
-    val javaTimeObjectMapper: ObjectMapper,
     val oidcRequestContextHolder: OIDCRequestContextHolder,
-    val pdfService: PdfService,
-    val templateService: TemplateService
-) {
+    val templateService: TemplateService,
+    @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(
+        SimpleMeterRegistry())) {
 
     private val logger = LoggerFactory.getLogger(ReceiveSubmissionController::class.java)
-    private final val kafkaSendtTilFssTellerNavn = "eessipensjon_frontend-api.soknad_sendt_kafka"
-    private val kafkaSendtTilFssVellykkede = counter(kafkaSendtTilFssTellerNavn, "vellykkede")
-    private val kafkaSendtTilFssFeilede = counter(kafkaSendtTilFssTellerNavn, "feilede")
-
-    private final val kafkaKvitteringTilFssTellerNavn = "eessipensjon_frontend-api.kvittering_sendt_kafka"
-    private val kafkaKvitteringTilFssVellykkede = counter(kafkaKvitteringTilFssTellerNavn, "vellykkede")
-    private val kafkaKvitteringTilFssFeilede = counter(kafkaKvitteringTilFssTellerNavn, "feilede")
+    private val mapper = ObjectMapper()
 
     val PINFO_SUBMISSION = "PinfoSubmission"
     val PINFO_SUBMISSION_RECEIPT = "PinfoSubmissionReceipt"
@@ -54,21 +48,23 @@ class ReceiveSubmissionController(
         val uuid = UUID.randomUUID().toString()
         logger.info("Sender inn endelig eessi-personinformasjon. $uuid")
 
-        val content = javaTimeObjectMapper.writeValueAsString(requestBody)
+        val content = mapper.writeValueAsString(requestBody)
         val filename: String
 
         try {
             filename = lagreFil(personIdentifier, PINFO_SUBMISSION, content)
             putOnKafka(filename, uuid)
-            kafkaSendtTilFssVellykkede.increment()
-            logger.info("put submission " + page + " on kafka queue: " + content)
+            metricsHelper.increment("soknad_sendt_kafka", "successful")
+            logger.info("put submission $page on kafka queue: $content")
+            mapOf("filename" to filename)
         } catch (ex: Exception) {
             logger.error(ex.message + " uuid: $uuid", ex)
-            kafkaSendtTilFssFeilede.increment()
+            metricsHelper.increment("soknad_sendt_kafka", "failed")
             throw ex
         }
         return mapOf("filename" to filename)
     }
+
 
     @PostMapping(value = ["/resubmit"], produces = [MediaType.APPLICATION_JSON_VALUE])
     fun resendSubmission(@RequestBody fileName: String) : ResponseEntity<String> {
@@ -76,14 +72,15 @@ class ReceiveSubmissionController(
 
         return try {
             kafkaService.publishSubmissionReceivedEvent(fileName)
-            kafkaSendtTilFssVellykkede.increment()
             logger.info("Resubmitted on kafka queue")
+            metricsHelper.increment("soknad_sendt_kafka", "successful")
             ResponseEntity.ok().body(successBody())
         } catch (ex: Exception) {
             val uuid = UUID.randomUUID().toString()
-            kafkaSendtTilFssFeilede.increment()
             logger.error("Resubmit feilet. $ex.message uuid: $uuid")
-            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorBody("Resend av submission feilet. ",uuid))
+            metricsHelper.increment("soknad_sendt_kafka", "failed")
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(errorBody("Resend av submission feilet. ", uuid))
         }
     }
 
@@ -116,13 +113,13 @@ class ReceiveSubmissionController(
     @GetMapping("/receipt/{page}")
     fun sendReceipt(@PathVariable(required = true) page: String): String {
         logger.info("Sender inn endelig kvittering")
+
         val personIdentifier = getClaims(oidcRequestContextHolder).subject
         val receipt: Map<String, Any>
         val receiptJson: String
         val filename: String
         val submission = getSubmission(personIdentifier) ?: throw IllegalStateException("No submission")
         val uuid = UUID.randomUUID().toString()
-
 
         try {
             receipt = templateService.generateReceipt(submission, personIdentifier, page)
@@ -134,13 +131,12 @@ class ReceiveSubmissionController(
         }
 
         try {
-            //kafkaService.publishSubmissionReceivedEvent(filename)
             putOnKafka(filename, uuid)
-            kafkaKvitteringTilFssVellykkede.increment()
+            metricsHelper.increment("kvittering_sendt_kafka", "successful")
             logger.info("put receipt on kafka queue")
         } catch (ex: Exception) {
             logger.error(ex.message, ex)
-            kafkaKvitteringTilFssFeilede.increment()
+            metricsHelper.increment("kvittering_sendt_kafka", "failed")
             throw ex
         }
         return receiptJson
@@ -155,10 +151,13 @@ class ReceiveSubmissionController(
     fun getSubmissionAsJson(@PathVariable subject: String): ResponseEntity<String> {
 
         return try {
-            ResponseEntity.ok().body(mapAnyToJson(mapOf("content" to getSubmission(subject))))
+            val resp = mapAnyToJson(mapOf("content" to getSubmission(subject)))
+            metricsHelper.increment("hent_innsending", "successful")
+            ResponseEntity.ok().body(resp)
         } catch (ex: Exception) {
             val uuid = UUID.randomUUID().toString()
             logger.error("Get feilet. $ex.message $uuid")
+            metricsHelper.increment("hent_innsending", "failed")
             ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ex.message)
         }
     }
