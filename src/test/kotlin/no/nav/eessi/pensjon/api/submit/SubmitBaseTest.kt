@@ -53,9 +53,7 @@ open class SubmitBaseTest : S3StorageBaseTest() {
         receiveSubmissionController = Mockito.spy(ReceiveSubmissionController(
                 kafkaService,
                 s3storageService,
-                ObjectMapper(),
                 generateMockContextHolder(),
-                pdfService,
                 templateService
         ))
     }

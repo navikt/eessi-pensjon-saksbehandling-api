@@ -60,7 +60,6 @@ class ArchitectureTest {
                 .whereLayer("Config").mayNotBeAccessedByAnyLayer()
                 .whereLayer("Security").mayOnlyBeAccessedByLayers("Config")
                 .whereLayer("Interceptor").mayOnlyBeAccessedByLayers("Config")
-                .whereLayer("Metrics").mayOnlyBeAccessedByLayers("Config", "Security")
                 .whereLayer("Logging").mayOnlyBeAccessedByLayers("Config", "Security")
                 //Verify rules
                 .check(classesToAnalyze)
