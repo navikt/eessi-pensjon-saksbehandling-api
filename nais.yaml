@@ -45,7 +45,7 @@ fasitResources:
   - alias: rina_host
     resourceType: BaseUrl
 
-  - alias: s3
+  - alias: s3-fss
     resourceType: BaseUrl
 
   - alias: NAV_DOMAIN
