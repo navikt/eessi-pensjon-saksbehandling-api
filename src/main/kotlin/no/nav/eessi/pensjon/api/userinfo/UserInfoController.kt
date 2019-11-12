@@ -1,6 +1,8 @@
 package no.nav.eessi.pensjon.api.userinfo
 
+import no.nav.eessi.pensjon.logging.AuditLogger
 import no.nav.eessi.pensjon.services.whitelist.WhitelistService
+import no.nav.eessi.pensjon.utils.counter
 import no.nav.eessi.pensjon.utils.getClaims
 import no.nav.eessi.pensjon.utils.mapAnyToJson
 import no.nav.security.oidc.api.Protected
@@ -18,6 +20,11 @@ class UserInfoController(val oidcRequestContextHolder: OIDCRequestContextHolder,
                          val whitelistService: WhitelistService) {
 
     private val logger = LoggerFactory.getLogger(UserInfoController::class.java)
+    private val auditLogger = AuditLogger(oidcRequestContextHolder)
+    private final val getUserInfoTeller = "getUserInfo"
+    private val getUserInfoTellerSaksbehandler = counter(getUserInfoTeller, "saksbehandler")
+    private val getUserInfoTellerBorger = counter(getUserInfoTeller, "borger")
+    private val getUserInfoTellerUkjente = counter(getUserInfoTeller, "feilede")
 
     /**
      *  This endpoint is used to get the userinfo about the currently logged in requester.
@@ -37,6 +44,15 @@ class UserInfoController(val oidcRequestContextHolder: OIDCRequestContextHolder,
         val jwtset =  getClaims(oidcRequestContextHolder).claimSet
         val expirationTime = jwtset.expirationTime.time
 
+        when (role) {
+            "SAKSBEHANDLER" -> {
+                auditLogger.log("getUserInfo")
+                getUserInfoTellerSaksbehandler.increment()
+            }
+            "BRUKER" -> getUserInfoTellerBorger.increment()
+            else -> getUserInfoTellerUkjente.increment()
+        }
+
         return ResponseEntity.ok().body(mapAnyToJson(UserInfoResponse(fnr, role, allowed,expirationTime)))
     }
 
@@ -51,7 +67,7 @@ class UserInfoController(val oidcRequestContextHolder: OIDCRequestContextHolder,
     fun checkWhitelist(): Boolean {
         logger.info("Sjekker om brukeren er whitelistet")
         val personIdentifier = getClaims(oidcRequestContextHolder).subject
-        return whitelistService.isPersonWhitelisted(personIdentifier)
+        return whitelistService.isPersonWhitelisted(personIdentifier.toUpperCase())
     }
 }
 

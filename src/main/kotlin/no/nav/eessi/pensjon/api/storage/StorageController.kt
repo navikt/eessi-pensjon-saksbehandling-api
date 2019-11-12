@@ -3,6 +3,7 @@ package no.nav.eessi.pensjon.api.storage
 import com.amazonaws.AmazonServiceException
 import com.amazonaws.SdkClientException
 import io.micrometer.core.annotation.Timed
+import no.nav.eessi.pensjon.logging.AuditLogger
 import no.nav.eessi.pensjon.services.ldap.LdapService
 import no.nav.eessi.pensjon.services.storage.StorageService
 import no.nav.eessi.pensjon.utils.*
@@ -23,6 +24,7 @@ class StorageController(private val storage: StorageService,
                         private val oidcRequestContextHolder: OIDCRequestContextHolder) {
 
     private val logger = LoggerFactory.getLogger(StorageController::class.java)
+    private val auditLogger = AuditLogger(oidcRequestContextHolder)
 
     @Timed("s3.put")
     @PostMapping("/{path}")
@@ -31,6 +33,7 @@ class StorageController(private val storage: StorageService,
         return try {
             validerPath(path)
             logger.info("Lagrer S3 dokument")
+            auditLogger.log("storeDocument")
             storage.put(path, document)
             ResponseEntity.ok().body(successBody())
         } catch(awsEx: AmazonServiceException) {
@@ -52,6 +55,7 @@ class StorageController(private val storage: StorageService,
         return try {
             validerPath(path)
             logger.info("Henter S3 dokument")
+            auditLogger.log("getDocument")
             ResponseEntity.ok().body(storage.get(path))
         } catch(awsEx: AmazonServiceException) {
             val uuid = UUID.randomUUID().toString()
@@ -78,6 +82,7 @@ class StorageController(private val storage: StorageService,
         return try {
             validerPath(prefix)
             logger.info("Lister S3 dokumenter")
+            auditLogger.log("listDocuments")
             ResponseEntity.ok().body(storage.list(prefix))
         } catch(awsEx: AmazonServiceException) {
             val uuid = UUID.randomUUID().toString()
@@ -102,6 +107,7 @@ class StorageController(private val storage: StorageService,
     fun deleteDocument(@PathVariable(required = true) path: String): ResponseEntity<String> {
         return try {
             validerPath(path)
+            auditLogger.log("deleteDocument")
             storage.delete(path)
             ResponseEntity.ok().body(successBody())
         } catch(awsEx: AmazonServiceException) {
@@ -138,6 +144,7 @@ class StorageController(private val storage: StorageService,
                 paths.forEach {
                     validerPath(it)
                 }
+                auditLogger.log("deleteMultipleDocuments")
                 storage.multipleDelete(paths)
             }
             ResponseEntity.ok().body(successBody())
