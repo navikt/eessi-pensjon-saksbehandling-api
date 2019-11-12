@@ -1,13 +1,15 @@
 package no.nav.eessi.pensjon.services.varsel
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry
+import no.nav.eessi.pensjon.metrics.MetricsHelper
 import no.nav.eessi.pensjon.services.fagmodul.NavRegistreOppslagService
 import no.nav.eessi.pensjon.services.storage.StorageService
 import no.nav.eessi.pensjon.services.whitelist.WhitelistService
-import no.nav.eessi.pensjon.utils.counter
 import no.nav.melding.virksomhet.varsel.v1.varsel.*
 import no.nav.security.oidc.api.Protected
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.jms.core.JmsTemplate
 import org.springframework.stereotype.Component
@@ -25,7 +27,9 @@ class VarselService(val wmqJmsTemplate: JmsTemplate,
                     val storageService: StorageService,
                     val navRegistreService: NavRegistreOppslagService,
                     val whitelistService: WhitelistService,
-                    val javaTimeObjectMapper: ObjectMapper) {
+                    val javaTimeObjectMapper: ObjectMapper,
+                    @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(
+                        SimpleMeterRegistry()))  {
 
     @Value("\${VARSELPRODUKSJON.VARSLINGER.queuename}")
     lateinit var varselQueue: String
@@ -35,11 +39,6 @@ class VarselService(val wmqJmsTemplate: JmsTemplate,
 
     @Value("\${eessi.pensjon.frontend.api.varsel.tittel}")
     lateinit var varselTittel: String
-
-
-    private final val varselSendtTilKøTellerNavn = "eessipensjon_frontend-api.varsel_sendt_til_kø"
-    private val varselSendtTilKøVellykkede = counter(varselSendtTilKøTellerNavn, "vellykkede")
-    private val varselSendtTilKøFeilede = counter(varselSendtTilKøTellerNavn, "feilede")
 
     fun sendVarsel(personIdentifikator: String, saksId: String, varseltype: String) {
 
@@ -61,17 +60,18 @@ class VarselService(val wmqJmsTemplate: JmsTemplate,
 
         val now = LocalDateTime.now()
 
-        try {
-            val marshalledVarsel = marshal(varsel)
-            logger.info("Legger varselmelding på kø")
-            wmqJmsTemplate.convertAndSend(varselQueue, marshalledVarsel)
-            varselSendtTilKøVellykkede.increment()
-        } catch (e: Exception) {
-            varselSendtTilKøFeilede.increment()
-            throw VarselServiceException("Kunne ikke sende varselet til varseltjenesten: ${e.message}")
+         metricsHelper.measure("varsel_sendt_til_kø") {
+             try {
+                val marshalledVarsel = marshal(varsel)
+                logger.info("Legger varselmelding på kø")
+                wmqJmsTemplate.convertAndSend(varselQueue, marshalledVarsel)
+             } catch (e: Exception) {
+                throw VarselServiceException("Kunne ikke sende varselet til varseltjenesten: ${e.message}")
+            }
         }
         storeVarsel(now, personIdentifikator, saksId, varseltype)
         whitelistService.addToWhitelist(personIdentifikator)
+
     }
 
     private fun storeVarsel(now: LocalDateTime, aktoerId: String, saksId: String, varseltype: String) {
