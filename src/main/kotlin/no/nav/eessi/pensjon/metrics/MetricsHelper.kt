@@ -18,7 +18,8 @@ class MetricsHelper(val registry: MeterRegistry, @Autowired(required = false) va
     fun initCounters() {
         listOf("kvittering_sendt_kafka",
             "soknad_sendt_kafka",
-            "hent_innsending").forEach {counterName ->
+            "hent_innsending",
+            "hentoidctokenforsystembruker").forEach {counterName ->
             Counter.builder(configuration.measureMeterName)
                     .tag(configuration.typeTag, configuration.successTypeTagValue)
                     .tag(configuration.methodTag, counterName)
