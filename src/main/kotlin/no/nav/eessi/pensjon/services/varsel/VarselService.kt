@@ -60,7 +60,7 @@ class VarselService(val wmqJmsTemplate: JmsTemplate,
 
         val now = LocalDateTime.now()
 
-         metricsHelper.measure("varsel_sendt_til_kø") {
+         metricsHelper.measure("varsel_sendt_til_ko") {
              try {
                 val marshalledVarsel = marshal(varsel)
                 logger.info("Legger varselmelding på kø")
