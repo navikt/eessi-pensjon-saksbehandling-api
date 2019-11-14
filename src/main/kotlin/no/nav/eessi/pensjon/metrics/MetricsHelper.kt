@@ -20,7 +20,8 @@ class MetricsHelper(val registry: MeterRegistry, @Autowired(required = false) va
             "soknad_sendt_kafka",
             "hent_innsending",
             "hentoidctokenforsystembruker",
-            "varsel_sendt_til_ko").forEach {counterName ->
+            "varsel_sendt_til_ko",
+            "hentinstitusjoner").forEach {counterName ->
             Counter.builder(configuration.measureMeterName)
                     .tag(configuration.typeTag, configuration.successTypeTagValue)
                     .tag(configuration.methodTag, counterName)
