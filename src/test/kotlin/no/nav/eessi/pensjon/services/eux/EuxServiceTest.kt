@@ -1,12 +1,7 @@
 package no.nav.eessi.pensjon.services.eux
 
-import com.fasterxml.jackson.core.type.TypeReference
-import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.doThrow
-import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.whenever
-import no.nav.eessi.pensjon.utils.errorBody
 import no.nav.eessi.pensjon.utils.mapAnyToJson
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -22,8 +17,6 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestClientException
 
 class EuxServiceTest : EuxBaseTest() {
-
-    val rinaAksjonTypeRef = object : TypeReference<List<RinaAksjon>>() {}
 
     @AfterEach
     fun cleanUpTest() {
@@ -68,60 +61,5 @@ class EuxServiceTest : EuxBaseTest() {
         assertThrows<RestClientException> {
             euxService.getInstitusjoner(bucType, landKode)
         }
-    }
-
-    @Test
-    fun `Calling euxService|getRinaSaker returns OK RinaSak json`() {
-
-        val rinaSakNr = "123"
-        val fnr = "123456"
-
-        val list = listOf(RinaSak(id = "123", traits = RinaTraits(flowType = "testBuC")))
-        val mockResponse = ResponseEntity.ok().body(mapAnyToJson(list))
-
-//        /rinasaker?BuCType=&F%C3%B8dselsnummer=123456&RINASaksnummer=123&Status=open
-        doReturn(mockResponse).whenever(mockEuxRestTemplate).exchange(
-                eq("/rinasaker?BuCType=&F%C3%B8dselsnummer=$fnr&RINASaksnummer=$rinaSakNr&Status=open"),
-                eq(HttpMethod.GET),
-                any<HttpEntity<*>>(),
-                eq(String::class.java))
-
-        val generatedResponse = euxService.getRinaSaker(rinaSakNr, fnr)
-        assertEquals(generatedResponse, mockResponse)
-    }
-
-
-    @Test
-    fun `Calling euxService|getRinaSaker returns error`() {
-        val rinaSakNr = "123"
-        val fnr = "123456"
-
-        val expectedResponse = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorBody("Feiler ved henting av rinasaker mot EUX"))
-        val exception = RuntimeException("error eux")
-
-        doThrow(exception).whenever(mockEuxRestTemplate).exchange(
-                eq("/rinasaker?BuCType=&F%C3%B8dselsnummer=$fnr&RINASaksnummer=$rinaSakNr"),
-                eq(HttpMethod.GET),
-                any<HttpEntity<*>>(),
-                eq(String::class.java))
-
-        val generatedResponse = euxService.getRinaSaker(rinaSakNr, fnr)
-        assertEquals(generatedResponse, expectedResponse)
-
-    }
-
-
-    @Test
-    fun `Calling euxService|getAvailableSEDonBuc returns BuC lists`() {
-
-        var buc = "P_BUC_01"
-        var expectedResponse = listOf("P2000")
-        var generatedResponse = euxService.getAvailableSEDonBuc(buc)
-        assertEquals(generatedResponse, expectedResponse)
-
-        buc = "P_BUC_06"
-        expectedResponse = listOf("P5000", "P6000", "P7000", "P10000")
-        generatedResponse = euxService.getAvailableSEDonBuc(buc)
-        assertEquals(generatedResponse, expectedResponse)
     }
 }

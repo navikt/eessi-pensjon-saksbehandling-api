@@ -84,7 +84,7 @@ fun counter(name: String, type: String): Counter {
     return Metrics.counter(name, "type", type)
 }
 
-fun errorBody(error: String, uuid: String = "no-uuid"): String {
+fun errorBody(error: String?, uuid: String = "no-uuid"): String {
     return "{\"success\": false, \n \"error\": \"$error\", \"uuid\": \"$uuid\"}"
 }
 
