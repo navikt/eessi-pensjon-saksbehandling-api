@@ -1,6 +1,5 @@
 package no.nav.eessi.pensjon.utils
 
-import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -10,10 +9,6 @@ import no.nav.security.oidc.context.OIDCClaims
 import no.nav.security.oidc.context.OIDCRequestContextHolder
 import no.nav.security.oidc.context.TokenContext
 import org.springframework.core.ParameterizedTypeReference
-import org.springframework.http.ResponseEntity
-import org.springframework.web.client.RestClientException
-
-class Utils
 
 inline fun <reified T : Any> typeRef(): ParameterizedTypeReference<T> = object : ParameterizedTypeReference<T>() {}
 inline fun <reified T : Any> typeRefs(): TypeReference<T> = object : TypeReference<T>() {}
@@ -27,26 +22,10 @@ inline fun <reified T : Any> mapJsonToAny(json: String, objec: TypeReference<T>,
     }
 }
 
-fun createErrorMessage(responseBody: String): RestClientException {
-    return mapJsonToAny(responseBody, typeRefs())
-}
-
 fun mapAnyToJson(data: Any): String {
     return jacksonObjectMapper()
             .writerWithDefaultPrettyPrinter()
             .writeValueAsString(data)
-}
-
-fun mapAnyToJson(data: Any, nonempty: Boolean = false): String {
-    return if (nonempty) {
-        val json = jacksonObjectMapper()
-                .setDefaultPropertyInclusion(JsonInclude.Include.NON_EMPTY)
-                .writerWithDefaultPrettyPrinter()
-                .writeValueAsString(data)
-        json
-    } else {
-        mapAnyToJson(data)
-    }
 }
 
 fun validateJson(json: String): Boolean {
@@ -121,9 +100,5 @@ fun filterPensionSedAndSort(sedList: List<String>): List<String> {
 
 fun <E> List<E>.toJson(): String {
     return mapAnyToJson(this)
-}
-
-fun <E> List<E>.toResponse(): ResponseEntity<String?> {
-    return ResponseEntity.ok().body(this.toJson())
 }
 

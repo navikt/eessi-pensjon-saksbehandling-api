@@ -38,6 +38,6 @@ open class EuxBaseTest : BaseTest() {
         mockFagmodulRestTemplate = generateMockFagmodulRestTemplate()
         navRegistreService = Mockito.spy(NavRegistreOppslagService(mockFagmodulRestTemplate))
         euxService = Mockito.spy(EuxService(mockEuxRestTemplate))
-        euxController = Mockito.spy(EuxController(euxService, navRegistreService))
+        euxController = Mockito.spy(EuxController(euxService))
     }
 }
