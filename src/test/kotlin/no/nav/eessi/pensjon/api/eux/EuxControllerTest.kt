@@ -51,14 +51,6 @@ class EuxControllerTest : EuxBaseTest() {
     }
 
     @Test
-    fun `Calling euxController|getCountryCode returns country codes`() {
-
-        val expectedResponse = listOf("NO", "SE", "DK", "FI")
-        val generatedResponse = euxController.getCountryCode()
-        assertEquals(generatedResponse, expectedResponse)
-    }
-
-    @Test
     fun `Calling euxController|getSubjectArea returns subject areas`() {
 
         val expectedResponse = listOf("Pensjon")

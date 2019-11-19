@@ -1,10 +1,8 @@
 package no.nav.eessi.pensjon.api.eux
 
 import no.nav.eessi.pensjon.services.eux.EuxService
-import no.nav.eessi.pensjon.services.fagmodul.NavRegistreOppslagService
 import no.nav.eessi.pensjon.utils.errorBody
 import no.nav.security.oidc.api.Protected
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -18,9 +16,7 @@ import org.springframework.web.client.HttpStatusCodeException
 @Protected
 @RestController
 @RequestMapping("/eux")
-class EuxController(private val euxService: EuxService, private val navRegistreService: NavRegistreOppslagService) {
-
-    private val logger = LoggerFactory.getLogger(EuxController::class.java)
+class EuxController(private val euxService: EuxService) {
 
     @Value("\${rina_host.url}")
     lateinit var rinaUrl: String
@@ -42,19 +38,8 @@ class EuxController(private val euxService: EuxService, private val navRegistreS
         }
     }
 
-    @GetMapping("/countrycode")
-    fun getCountryCode(): List<String> {
-        return try {
-            navRegistreService.landkoder()
-        } catch (ex: Exception) {
-            logger.error(ex.message)
-            listOf("NO", "SE", "DK", "FI")
-        }
-    }
-
     @GetMapping("/subjectarea")
     fun getSubjectArea(): List<String> {
         return listOf("Pensjon")
-
     }
 }

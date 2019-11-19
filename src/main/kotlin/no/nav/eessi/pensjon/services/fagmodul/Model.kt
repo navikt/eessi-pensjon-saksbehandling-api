@@ -1,8 +1,5 @@
 package no.nav.eessi.pensjon.services.fagmodul
 
-import org.springframework.http.HttpStatus
-import org.springframework.web.bind.annotation.ResponseStatus
-
 data class SedRequest(
         val sakId: String? = null,
         val vedtakId: String? = null,
@@ -28,20 +25,5 @@ data class Personinformasjon(var fulltNavn: String? = null,
                              var fornavn: String? = null,
                              var mellomnavn: String? = null,
                              var etternavn: String? = null)
-
-@ResponseStatus(value = HttpStatus.NOT_FOUND)
-class SedDokumentOpprettelseException(message: String): Exception(message)
-
-class SedDokumentHentingException(message: String): Exception(message)
-
-class SedDokumentSlettingException(message: String): Exception(message)
-
-class SedDokumentSendingException(message: String): Exception(message)
-
-class SedDokumentLeggeTilException(message: String): Exception(message)
-
-class BucOpprettelseException(message: String): Exception(message)
-
-class LandkodeException(message: String): Exception(message)
 
 class PersonInformasjonException(message: String): Exception(message)
