@@ -24,8 +24,6 @@ euxbasis.v1:
   apiKey: "apikey"
   url:  'http://localhost:9090/cpi'
 
-EUXBASIS_V1_URL: "someurl"
-
 EessiPensjonFrontendApi_v1:
   url: "someurl"
 

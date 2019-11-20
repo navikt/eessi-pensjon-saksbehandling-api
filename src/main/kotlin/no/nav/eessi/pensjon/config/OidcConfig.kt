@@ -38,10 +38,10 @@ class OidcConfig : WebMvcConfigurer {
     @Value("\${no.nav.security.oidc.issuer.isso.discoveryurl}")
     lateinit var discoveryUrl: String
 
-    @Value("\${no.nav.security.oidc.issuer.isso.cookiename:cookie}")
+    @Value("\${no.nav.security.oidc.issuer.isso.cookiename}")
     lateinit var cookiename: String
 
-    @Value("\${redirectscheme:https}")
+    @Value("\${redirectscheme}")
     lateinit var redirectScheme: String
 
     @Value("\${FASIT_ENVIRONMENT_NAME}")

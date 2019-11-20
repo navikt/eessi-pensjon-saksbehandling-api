@@ -76,3 +76,7 @@ ldap.provider:
   user-search-base=: "OU=NAV,OU=BusinessUnits"
   group-search-base=OU: "NAV,OU=BusinessUnits"
 #PENSJON_UTLAND_WS_ALLOWED_ORIGINS_URL: "http://someorigin"
+
+submitTopic: privat-eessipensjon-selvbetjeningsinfoMottatt-v1
+S3_REGION: us-east-1
+requestsamlpolicy.path: "classpath:policy/requestSamlPolicy.xml"

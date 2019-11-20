@@ -5,15 +5,12 @@ import no.nav.eessi.pensjon.services.BaseTest
 import no.nav.eessi.pensjon.services.fagmodul.NavRegistreOppslagService
 import org.junit.jupiter.api.BeforeEach
 import org.mockito.Mockito
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.web.client.DefaultResponseErrorHandler
 import org.springframework.web.client.RestTemplate
 
 
 open class EuxBaseTest : BaseTest() {
-    @Value("\${EUXBASIS_V1_URL:http://localhost:9090/cpi}")
-    lateinit var euxUrl: String
 
     lateinit var mockEuxRestTemplate: RestTemplate
     lateinit var mockFagmodulRestTemplate: RestTemplate
