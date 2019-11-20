@@ -18,13 +18,13 @@ import org.springframework.web.client.RestTemplate
 @Component
 class STSRestTemplate {
 
-    @Value("\${security-token-service-token.url:http://localhost}")
+    @Value("\${security-token-service-token.url}")
     lateinit var baseUrl: String
 
-    @Value("\${srveessipensjon.username:user}")
+    @Value("\${srveessipensjon.username}")
     lateinit var username: String
 
-    @Value("\${srveessipensjon.password:pass}")
+    @Value("\${srveessipensjon.password}")
     lateinit var password: String
 
     @Autowired

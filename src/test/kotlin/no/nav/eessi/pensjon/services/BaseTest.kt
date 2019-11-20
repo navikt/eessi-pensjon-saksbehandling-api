@@ -38,7 +38,10 @@ import java.util.*
 @ExtendWith(SpringExtension::class)
 open class BaseTest {
 
-    @Value("\${fagmodul.url:http://localhost:8081}")
+    @Value("\${EUXBASIS_V1.URL}")
+   lateinit var euxUrl: String
+
+    @Value("\${fagmodul.url}")
     lateinit var fagmodulUrl: String
 
     @Value("\${aktoerregister.api.v1.url}")

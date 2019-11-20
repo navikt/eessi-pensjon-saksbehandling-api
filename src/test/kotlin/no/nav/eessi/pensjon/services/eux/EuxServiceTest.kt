@@ -1,26 +1,32 @@
 package no.nav.eessi.pensjon.services.eux
 
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.whenever
+import com.nhaarman.mockitokotlin2.*
 import no.nav.eessi.pensjon.utils.mapAnyToJson
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import org.mockito.ArgumentMatchers
-import org.mockito.Mockito
-import org.springframework.core.ParameterizedTypeReference
+import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.Mock
+import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.client.RestClientException
+import org.springframework.web.client.HttpClientErrorException
+import org.springframework.web.client.RestTemplate
 
-class EuxServiceTest : EuxBaseTest() {
+@ExtendWith(MockitoExtension::class)
+class EuxServiceTest {
 
-    @AfterEach
+    @Mock
+    lateinit var restTemplate: RestTemplate
+
+    lateinit var euxService: EuxService
+
+    @BeforeEach
     fun cleanUpTest() {
-        Mockito.reset(mockEuxRestTemplate);
+        euxService = EuxService(restTemplate)
     }
 
     @Test
@@ -33,11 +39,11 @@ class EuxServiceTest : EuxBaseTest() {
 
         val mockResponse = ResponseEntity.ok().body(mapAnyToJson(moockList))
 
-        doReturn(mockResponse).whenever(mockEuxRestTemplate).exchange(
-                ArgumentMatchers.eq("/institusjoner?BuCType=$bucType&LandKode=$landKode"),
-                ArgumentMatchers.eq(HttpMethod.GET),
-                ArgumentMatchers.any(HttpEntity::class.java),
-                ArgumentMatchers.any(ParameterizedTypeReference::class.java))
+        doReturn(mockResponse).whenever(restTemplate).exchange(
+                eq("/institusjoner?BuCType=$bucType&LandKode=$landKode"),
+                eq(HttpMethod.GET),
+                eq(HttpEntity("")),
+                eq(String::class.java))
 
         val generatedResponse = euxService.getInstitusjoner(bucType, landKode)
         assertEquals(generatedResponse, mockResponse)
@@ -49,16 +55,14 @@ class EuxServiceTest : EuxBaseTest() {
         val bucType = "P_BUC_01"
         val landKode = "NN"
 
-        val expectedResponse = "{\"msg\":\"error\"}"
-        val mockResponse = ResponseEntity(expectedResponse, HttpStatus.BAD_REQUEST)
+        doThrow(HttpClientErrorException(HttpStatus.BAD_REQUEST, "bad request")).whenever(restTemplate).exchange(
+                eq("/institusjoner?BuCType=P_BUC_01&LandKode=NN"),
+                eq(HttpMethod.GET),
+                eq(HttpEntity("")),
+                eq(String::class.java)
+        )
 
-        doReturn(mockResponse).whenever(mockEuxRestTemplate).exchange(
-                ArgumentMatchers.eq("/Institusjoner?BuCType=P_BUC_01&LandKode=NN"),
-                ArgumentMatchers.eq(HttpMethod.GET),
-                ArgumentMatchers.any(HttpEntity::class.java),
-                ArgumentMatchers.any(ParameterizedTypeReference::class.java))
-
-        assertThrows<RestClientException> {
+        assertThrows<RuntimeException> {
             euxService.getInstitusjoner(bucType, landKode)
         }
     }

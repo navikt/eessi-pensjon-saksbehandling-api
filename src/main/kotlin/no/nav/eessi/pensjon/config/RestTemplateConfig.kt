@@ -27,13 +27,13 @@ class RestTemplateConfig(val restTemplateBuilder: RestTemplateBuilder,
                          val securityTokenExchangeService: StsSystemOidcService
 ) {
 
-    @Value("\${eessifagmodulservice.url:http://localhost}")
+    @Value("\${eessifagmodulservice.url}")
     lateinit var fagmodulUrl: String
 
-    @Value("\${eessipen-eux-rina.url:http://localhost}")
+    @Value("\${eessipen-eux-rina.url}")
     lateinit var euxrinaapi: String
 
-    @Value("\${aktoerregister.api.v1.url:http://localhost}")
+    @Value("\${aktoerregister.api.v1.url}")
     lateinit var url: String
 
     @Autowired

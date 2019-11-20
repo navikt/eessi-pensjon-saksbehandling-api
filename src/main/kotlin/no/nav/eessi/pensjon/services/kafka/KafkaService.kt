@@ -11,7 +11,7 @@ import org.springframework.messaging.support.MessageBuilder
 class KafkaService(val kafkaTemplate: KafkaTemplate<String, String>) {
     val X_REQUEST_ID = "x_request_id"
 
-    @Value("\${submitTopic:privat-eessipensjon-selvbetjeningsinfoMottatt-v1}")
+    @Value("\${submitTopic}")
     lateinit var submissionReceivedTopicPrefix: String
 
     private final val kafkaSelvbetjeningsinfoMottattProdusertTellerNavn = "eessipensjon_frontend-api.kafka_selvbetjeningsinfomottatt_produsert"

@@ -24,7 +24,7 @@ class S3StorageConfig {
     @Value("\${s3_fss_url}")
     lateinit var s3Endpoint: String
 
-    @Value("\${S3_REGION:us-east-1}")
+    @Value("\${S3_REGION}")
     lateinit var s3Region: String
 
     @Bean
