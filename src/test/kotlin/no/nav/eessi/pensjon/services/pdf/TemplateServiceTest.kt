@@ -9,7 +9,6 @@ import java.util.*
 
 
 class TemplateServiceTest : PdfBaseTest() {
-    @Disabled
     @Suppress("UNCHECKED_CAST")
     @Test
     fun `given valid e207 submission when generating receipt then generate kvittering pdf`() {
