@@ -17,8 +17,7 @@ class UserInfoControllerTest : S3StorageBaseTest() {
     @BeforeEach
     fun mockSetup() {
         val mockOidcContextolder = generateMockContextHolder()
-        userInfoController = Mockito.spy(UserInfoController(mockOidcContextolder,whitelistService)
-        )
+        userInfoController = Mockito.spy(UserInfoController(mockOidcContextolder,whitelistService))
     }
 
     @Test fun `Calling UserInfoController|getUserInfo returns OK response`() {
@@ -28,6 +27,18 @@ class UserInfoControllerTest : S3StorageBaseTest() {
             expirationTime = 1531157178000
         )
         assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), userInfoController.getUserInfo())
+    }
+
+    @Test fun `Calling UserInfoController|getUserInfo saksbehandler returns OK response`() {
+        val userInfoController2 = Mockito.spy(UserInfoController(generateMockSaksbehContextHolder(),whitelistService))
+
+        val usr =  UserInfoResponse(subject ="A123456",
+            role ="SAKSBEHANDLER",
+            allowed = false,
+            expirationTime = 1531157178000
+        )
+        assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), userInfoController2.getUserInfo())
+
     }
 
     @Test fun `Calling UserInfoController|checkWhitelist with no whitelist person returns false`() {

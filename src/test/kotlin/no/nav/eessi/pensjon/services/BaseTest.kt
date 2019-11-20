@@ -6,6 +6,7 @@ import com.nimbusds.jwt.PlainJWT
 import com.sun.jndi.ldap.LdapCtx
 import com.unboundid.ldap.listener.InMemoryDirectoryServer
 import com.unboundid.ldap.listener.InMemoryDirectoryServerConfig
+import no.nav.eessi.pensjon.logging.AuditLogger
 import no.nav.eessi.pensjon.services.ldap.LdapKlient
 import no.nav.eessi.pensjon.services.ldap.LdapInnlogging
 import no.nav.eessi.pensjon.services.ldap.LdapService
@@ -50,7 +51,11 @@ open class BaseTest {
     @Value("\${ldapServerPort}")
     lateinit var ldapServerPort: String
 
-    @Test fun dummy() {}
+    lateinit var auditLogger: AuditLogger
+
+    @Test
+    fun dummy() {
+    }
 
     companion object {
         @BeforeAll
@@ -64,18 +69,23 @@ open class BaseTest {
             server.connection.use { connection ->
                 System.setProperty("ldapServerPort", connection.connectedPort.toString())
             }
+
         }
     }
 
-    fun generateMockContextHolder(): OIDCRequestContextHolder {
+    fun generateMockSaksbehContextHolder() = mockContextHolder("jwtSaksbehandlerEksempel.json", "isso")
 
-        val issuer = "testIssuer"
+    fun generateMockContextHolder() = mockContextHolder("jwtExample.json")
+
+    fun mockContextHolder(fileName: String, issuer: String = "testIssuer"): OIDCRequestContextHolder {
+
+        val issuer = issuer
         val idToken = "testIdToken"
         val oidcContextHolder = MockOIDCRequestContextHolder()
         val oidcContext = OIDCValidationContext()
         val tokenContext = TokenContext(issuer, idToken)
         val claimSet = JWTClaimsSet
-                .parse(FileUtils.readFileToString(File("src/test/resources/json/jwtExample.json"), Charset.forName("UTF-8")))
+            .parse(FileUtils.readFileToString(File("src/test/resources/json/$fileName"), Charset.forName("UTF-8")))
         val jwt = PlainJWT(claimSet)
 
         oidcContext.addValidatedToken(issuer, tokenContext, OIDCClaims(jwt))
@@ -86,10 +96,10 @@ open class BaseTest {
     fun generateMockFagmodulRestTemplate(): RestTemplate {
 
         val fagmodulRestTemplate = RestTemplateBuilder()
-                .rootUri(fagmodulUrl)
-                .errorHandler(DefaultResponseErrorHandler())
-                .additionalInterceptors()
-                .build()
+            .rootUri(fagmodulUrl)
+            .errorHandler(DefaultResponseErrorHandler())
+            .additionalInterceptors()
+            .build()
         return Mockito.spy(fagmodulRestTemplate)
     }
 
@@ -97,19 +107,21 @@ open class BaseTest {
     fun generateMockAktoerregisterRestTemplate(): RestTemplate {
 
         val aktoerregisterRestTemplate = RestTemplateBuilder()
-                .rootUri(aktoerregisterUrl)
-                .errorHandler(DefaultResponseErrorHandler())
-                .additionalInterceptors()
-                .build()
+            .rootUri(aktoerregisterUrl)
+            .errorHandler(DefaultResponseErrorHandler())
+            .additionalInterceptors()
+            .build()
         return Mockito.spy(aktoerregisterRestTemplate)
     }
 
     fun generateMockSaksbehandlerLdapService(): LdapService {
-        val ldapContext = LdapCtx("dc=test,dc=local",
+        val ldapContext = LdapCtx(
+            "dc=test,dc=local",
             "localhost",
             ldapServerPort.toInt(),
             Hashtable<String, String>(),
-            false)
+            false
+        )
         val ldapInnlogging = LdapInnlogging()
         val ldapBrukeroppslag = LdapKlient(
             Hashtable(),
@@ -124,7 +136,7 @@ open class BaseTest {
 
 class MockOIDCRequestContextHolder : OIDCRequestContextHolder {
 
-    private lateinit var oidcValidationContext : OIDCValidationContext
+    private lateinit var oidcValidationContext: OIDCValidationContext
 
     override fun setOIDCValidationContext(oidcValidationContext: OIDCValidationContext?) {
         this.oidcValidationContext = oidcValidationContext!!
