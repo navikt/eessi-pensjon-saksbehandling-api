@@ -3,23 +3,25 @@ package no.nav.eessi.pensjon.services.storage.amazons3
 import com.amazonaws.AmazonServiceException
 import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.model.*
-import no.nav.eessi.pensjon.utils.counter
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry
+import no.nav.eessi.pensjon.metrics.MetricsHelper
 import no.nav.eessi.pensjon.services.storage.StorageService
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.event.EventListener
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.util.stream.Collectors.joining
-import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import java.lang.RuntimeException
 
 private val logger = LoggerFactory.getLogger(S3Storage::class.java)
 
 @Component
-class S3Storage(val s3: AmazonS3) : StorageService {
+class S3Storage(val s3: AmazonS3,
+                @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())) : StorageService {
 
     @Value("\${eessi_pensjon_s3_crypto_password}")
     lateinit var passphrase: String
@@ -43,19 +45,6 @@ class S3Storage(val s3: AmazonS3) : StorageService {
         }
         return environmentPostfix
     }
-
-    private final val lists3objectsTellerNavn = "eessipensjon_frontend-api.lists3objects"
-    private val lists3objectsVellykkede = counter(lists3objectsTellerNavn, "vellykkede")
-    private val lists3objectsFeilede = counter(lists3objectsTellerNavn, "feilede")
-    private final val hents3objectTellerNavn = "eessipensjon_frontend-api.hents3object"
-    private val hents3objectVellykkede = counter(hents3objectTellerNavn, "vellykkede")
-    private val hents3objectFeilede = counter(hents3objectTellerNavn, "feilede")
-    private final val sletts3objectTellerNavn = "eessipensjon_frontend-api.sletts3object"
-    private val sletts3objectVellykkede = counter(sletts3objectTellerNavn, "vellykkede")
-    private val sletts3objectFeilede = counter(sletts3objectTellerNavn, "feilede")
-    private final val oppretts3objectTellerNavn = "eessipensjon_frontend-api.oppretts3object"
-    private val oppretts3objectVellykkede = counter(oppretts3objectTellerNavn, "vellykkede")
-    private val oppretts3objectFeilede = counter(oppretts3objectTellerNavn, "feilede")
 
     @EventListener(ApplicationReadyEvent::class)
     fun init() {
@@ -102,42 +91,52 @@ class S3Storage(val s3: AmazonS3) : StorageService {
      * @param path
      */
     override fun list(path: String): List<String> {
-        try {
-            val list = mutableListOf<String>()
-            val listObjectsRequest = populerListObjectRequest(path)
-            val objectListing = s3.listObjectsV2(listObjectsRequest)
-            objectListing.objectSummaries.mapTo(list) { it.key }
-            lists3objectsVellykkede.increment()
-            return list
-        } catch (ex: Exception) {
-            lists3objectsFeilede.increment()
-            throw ex
+        return metricsHelper.measure("lists3objects") {
+            try {
+                val list = mutableListOf<String>()
+                val listObjectsRequest = populerListObjectRequest(path)
+                val objectListing = s3.listObjectsV2(listObjectsRequest)
+                objectListing.objectSummaries.mapTo(list) { it.key }
+                list
+            } catch (ex: AmazonServiceException) {
+                logger.error("En feil oppstod under listing av bucket ex: $ex message: ${ex.errorMessage} errorcode: ${ex.errorCode}")
+                throw ex
+            } catch (ex: Exception) {
+                logger.error("En feil oppstod under listing av bucket ex: $ex")
+                throw ex
+            }
         }
     }
 
     override fun get(path: String): String? {
-        return try {
-            val content: String
-            logger.info("Getting plaintext path")
-            val s3Object = s3.getObject(getBucketName(), path)
-            content = readS3Stream(s3Object)
-            hents3objectVellykkede.increment()
-            content
-        } catch(awsEx: AmazonServiceException) {
-            if(awsEx.statusCode != HttpStatus.NOT_FOUND.value()){
-                hents3objectFeilede.increment()
+        return metricsHelper.measure("hents3objects") {
+            try {
+                val content: String
+                logger.info("Getting plaintext path")
+                val s3Object = s3.getObject(getBucketName(), path)
+                content = readS3Stream(s3Object)
+                content
+            } catch (ex: AmazonServiceException) {
+                logger.error("En feil oppstod under henting av objekt ex: $ex message: ${ex.errorMessage} errorcode: ${ex.errorCode}")
+                throw ex
+            } catch (ex: Exception) {
+                logger.error("En feil oppstod under henting av objekt ex: $ex")
+                throw ex
             }
-            throw awsEx
         }
     }
 
     override fun delete(path: String) {
-        try {
-            s3.deleteObject(getBucketName(), path)
-            sletts3objectVellykkede.increment()
-        } catch (ex: Exception) {
-            sletts3objectFeilede.increment()
-            throw ex
+        return metricsHelper.measure("sletts3object") {
+            try {
+                s3.deleteObject(getBucketName(), path)
+            } catch (ex: AmazonServiceException) {
+                logger.error("En feil oppstod under sletting av objekt ex: $ex message: ${ex.errorMessage} errorcode: ${ex.errorCode}")
+                throw ex
+            } catch (ex: Exception) {
+                logger.error("En feil oppstod under sletting av objekt ex: $ex")
+                throw ex
+            }
         }
     }
 
@@ -148,12 +147,16 @@ class S3Storage(val s3: AmazonS3) : StorageService {
      * @param content innholdet i objektet
      */
     override fun put(path: String, content: String) {
-        try {
-            s3.putObject(getBucketName(), path, content)
-            oppretts3objectVellykkede.increment()
-        } catch (ex: Exception) {
-            oppretts3objectFeilede.increment()
-            throw ex
+        return metricsHelper.measure("oppretts3object") {
+            try {
+                s3.putObject(getBucketName(), path, content)
+            } catch (ex: AmazonServiceException) {
+                logger.error("En feil oppstod under opprettelse av objekt ex: $ex message: ${ex.errorMessage} errorcode: ${ex.errorCode}")
+                throw ex
+            } catch (ex: Exception) {
+                logger.error("En feil oppstod under opprettelse av objekt ex: $ex")
+                throw ex
+            }
         }
     }
 

@@ -1,7 +1,6 @@
 package no.nav.eessi.pensjon.api.storage
 
 import com.amazonaws.AmazonServiceException
-import com.amazonaws.SdkClientException
 import io.micrometer.core.annotation.Timed
 import no.nav.eessi.pensjon.logging.AuditLogger
 import no.nav.eessi.pensjon.services.ldap.LdapService
@@ -36,16 +35,12 @@ class StorageController(private val storage: StorageService,
             auditLogger.log("storeDocument")
             storage.put(path, document)
             ResponseEntity.ok().body(successBody())
-        } catch(awsEx: AmazonServiceException) {
+        } catch (awsEx: AmazonServiceException) {
             val uuid = UUID.randomUUID().toString()
-            logger.error("Klarte ikke å lagre s3 dokument : ${maskerPersonIdentifier(path)}, ${awsEx.errorMessage}, $uuid")
-            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(errorBody("Klarte ikke å lagre s3 dokument", uuid))
-        } catch(sdkEx: SdkClientException) {
+            ResponseEntity.status(HttpStatus.valueOf(awsEx.statusCode)).body(errorBody(awsEx.errorMessage, uuid))
+        } catch (ex: Exception) {
             val uuid = UUID.randomUUID().toString()
-            logger.error("Klarte ikke å lagre s3 dokument: ${maskerPersonIdentifier(path)} , ${sdkEx.message}, $uuid")
-            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(errorBody("Klarte ikke å lagre s3 dokument", uuid))
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorBody("Klarte ikke å lagre s3 dokumenter", uuid))
         }
     }
 
@@ -57,22 +52,12 @@ class StorageController(private val storage: StorageService,
             logger.info("Henter S3 dokument")
             auditLogger.log("getDocument")
             ResponseEntity.ok().body(storage.get(path))
-        } catch(awsEx: AmazonServiceException) {
+        } catch (awsEx: AmazonServiceException) {
             val uuid = UUID.randomUUID().toString()
-            if(awsEx.statusCode == HttpStatus.NOT_FOUND.value()){
-                logger.info("S3 dokumentet eksisterer ikke, $uuid")
-                ResponseEntity.status(HttpStatus.valueOf(awsEx.statusCode))
-                        .body(errorBody("S3 dokumentet eksisterer ikke", uuid))
-            } else {
-                logger.error("Klarte ikke å hente s3 dokument fra : ${maskerPersonIdentifier(path)} , ${awsEx.errorMessage}, $uuid")
-                ResponseEntity.status(HttpStatus.valueOf(awsEx.statusCode))
-                        .body(errorBody("Klarte ikke å hente s3 dokument", uuid))
-            }
-        } catch(sdkEx: SdkClientException) {
+            ResponseEntity.status(HttpStatus.valueOf(awsEx.statusCode)).body(errorBody(awsEx.errorMessage, uuid))
+        } catch (ex: Exception) {
             val uuid = UUID.randomUUID().toString()
-            logger.error("Klarte ikke å hente s3 dokument, ${sdkEx.message}, $uuid")
-            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(errorBody("Klarte ikke å hente s3 dokument", uuid))
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorBody("Klarte ikke å hente s3 dokument", uuid))
         }
     }
 
@@ -84,21 +69,12 @@ class StorageController(private val storage: StorageService,
             logger.info("Lister S3 dokumenter")
             auditLogger.log("listDocuments")
             ResponseEntity.ok().body(storage.list(prefix))
-        } catch(awsEx: AmazonServiceException) {
+        } catch (awsEx: AmazonServiceException) {
             val uuid = UUID.randomUUID().toString()
-            logger.error("Klarte ikke å liste s3 dokumenter fra : ${maskerPersonIdentifier(prefix)}, ${awsEx.errorMessage}, $uuid")
-            ResponseEntity.status(HttpStatus.valueOf(awsEx.statusCode))
-                    .body(listOf(errorBody("Klarte ikke å liste s3 dokumenter", uuid)))
-        } catch(sdkEx: SdkClientException) {
+            ResponseEntity.status(HttpStatus.valueOf(awsEx.statusCode)).body(listOf(errorBody(awsEx.errorMessage, uuid)))
+        } catch (ex: Exception) {
             val uuid = UUID.randomUUID().toString()
-            logger.error("Klarte ikke å liste s3 dokumenter fra : ${maskerPersonIdentifier(prefix)}, $uuid")
-            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(listOf(errorBody("Klarte ikke å liste s3 dokumenter", uuid)))
-        } catch(ex: Exception) {
-            val uuid = UUID.randomUUID().toString()
-            logger.error("Generell exception list/{prefix}, $ex, $uuid")
-            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(listOf(errorBody("Klarte ikke å liste s3 dokumenter", uuid)))
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(listOf(errorBody("Klarte ikke å liste s3 dokumenter", uuid)))
         }
     }
 
@@ -110,27 +86,13 @@ class StorageController(private val storage: StorageService,
             auditLogger.log("deleteDocument")
             storage.delete(path)
             ResponseEntity.ok().body(successBody())
-        } catch(awsEx: AmazonServiceException) {
+        } catch (awsEx: AmazonServiceException) {
             val uuid = UUID.randomUUID().toString()
-            logger.error("Klarte ikke å slette s3 dokument: ${maskerPersonIdentifier(path)}, ${awsEx.errorMessage}, $uuid")
-            ResponseEntity.status(HttpStatus.valueOf(awsEx.statusCode))
-                    .body(errorBody("Klarte ikke å slette s3 dokument", uuid))
-        } catch(sdkEx: SdkClientException) {
+            ResponseEntity.status(HttpStatus.valueOf(awsEx.statusCode)).body(errorBody(awsEx.errorMessage, uuid))
+        } catch (ex: Exception) {
             val uuid = UUID.randomUUID().toString()
-            logger.error("Klarte ikke å slette s3 dokument: ${maskerPersonIdentifier(path)}, ${sdkEx.message}, $uuid")
-            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(errorBody("Klarte ikke å slette s3 dokument", uuid))
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorBody("Klarte ikke å slette s3 dokument", uuid))
         }
-    }
-
-    private fun validerPath(path: String) {
-        if (path.isEmpty()) {
-            throw IllegalArgumentException("s3 path kan ikke være tom")
-        }
-        if (!path.matches(Regex("^.+___.+"))) {
-            throw IllegalArgumentException("s3 path må følge mønsteret")
-        }
-        logger.info(maskerPersonIdentifier(path) + " validert")
     }
 
     @Timed("s3.delete")
@@ -148,21 +110,22 @@ class StorageController(private val storage: StorageService,
                 storage.multipleDelete(paths)
             }
             ResponseEntity.ok().body(successBody())
-        } catch(awsEx: AmazonServiceException) {
+        } catch (awsEx: AmazonServiceException) {
             val uuid = UUID.randomUUID().toString()
-            logger.error("Klarte ikke å slette s3 dokumenterer med mønsteret: ${maskerPersonIdentifier(path)}, ${awsEx.errorMessage}, $uuid")
-            ResponseEntity.status(HttpStatus.valueOf(awsEx.statusCode))
-                    .body(errorBody("Klarte ikke å slette s3 dokument", uuid))
-        } catch(sdkEx: SdkClientException) {
+            ResponseEntity.status(HttpStatus.valueOf(awsEx.statusCode)).body(errorBody(awsEx.errorMessage, uuid))
+        } catch (ex: Exception) {
             val uuid = UUID.randomUUID().toString()
-            logger.error("Klarte ikke å slette s3 dokument: ${maskerPersonIdentifier(path)}, ${sdkEx.message}, $uuid")
-            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(errorBody("Klarte ikke å slette s3 dokumenter med mønsteret", uuid))
-        } catch(iaEx: IllegalArgumentException) {
-            val uuid = UUID.randomUUID().toString()
-            logger.error("Klarte ikke å slette s3 dokument: ${maskerPersonIdentifier(path)}, ${iaEx.message}, $uuid")
-            ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(errorBody("Klarte ikke å slette s3 dokumenter med mønsteret", uuid))
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorBody("Klarte ikke å slette s3 dokumenter", uuid))
         }
+    }
+
+    private fun validerPath(path: String) {
+        if (path.isEmpty()) {
+            throw IllegalArgumentException("s3 path kan ikke være tom")
+        }
+        if (!path.matches(Regex("^.+___.+"))) {
+            throw IllegalArgumentException("s3 path må følge mønsteret")
+        }
+        logger.info(maskerPersonIdentifier(path) + " validert")
     }
 }

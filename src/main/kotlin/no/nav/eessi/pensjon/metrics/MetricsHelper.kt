@@ -22,7 +22,11 @@ class MetricsHelper(val registry: MeterRegistry) {
             "varsel_sendt_til_ko",
             "hentinstitusjoner",
             "hentpersoninformasjon",
-            "aktoerregister").forEach {counterName ->
+            "aktoerregister",
+            "lists3objects",
+            "hents3objects",
+            "sletts3object",
+            "oppretts3object").forEach {counterName ->
             Counter.builder(measureMeterName)
                 .tag(typeTag, successTypeTagValue)
                 .tag(methodTag, counterName)
