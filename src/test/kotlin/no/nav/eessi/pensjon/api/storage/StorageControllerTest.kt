@@ -40,7 +40,6 @@ class StorageControllerTest : S3StorageBaseTest() {
 
         val path = "12345678910___path___123"
         val document = "document.json"
-        val mockError = "Klarte ikke å lagre s3 dokument"
 
         val expectedError = AmazonServiceException("errorMessage")
         expectedError.statusCode = 500
@@ -51,7 +50,7 @@ class StorageControllerTest : S3StorageBaseTest() {
 
         assertTrue(generatedResponse.statusCode.is5xxServerError)
         assertEquals(false, generatedBody.get("success").booleanValue)
-        assertEquals(mockError, generatedBody.get("error").textValue)
+        assertEquals("errorMessage", generatedBody.get("error").textValue)
         assertTrue(generatedBody.get("uuid").textValue.matches(Regex("\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}")))
     }
 
@@ -79,14 +78,13 @@ class StorageControllerTest : S3StorageBaseTest() {
         val generatedBody = mapper.readTree(generatedResponse.body)
 
         assertTrue(generatedResponse.statusCode == HttpStatus.NOT_FOUND)
-        assertEquals(generatedResponse.body, errorBody("S3 dokumentet eksisterer ikke", generatedBody.get("uuid").textValue))
+        assertEquals(generatedResponse.body, errorBody("The resource you requested does not exist", generatedBody.get("uuid").textValue))
     }
 
     @Test
     fun `Calling storageController|getDocument returns error response with storage error`() {
 
         val path = "12345678910___nopath___123"
-        val mockError  ="Klarte ikke å hente s3 dokument"
         val expectedError = AmazonServiceException("errorMessage")
         expectedError.statusCode = 500
 
@@ -96,7 +94,7 @@ class StorageControllerTest : S3StorageBaseTest() {
 
         assertTrue(generatedResponse.statusCode.is5xxServerError)
         assertEquals(false, generatedBody.get("success").booleanValue)
-        assertEquals(mockError, generatedBody.get("error").textValue)
+        assertEquals("errorMessage", generatedBody.get("error").textValue)
         assertTrue(generatedBody.get("uuid").textValue.matches(Regex("\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}")))
 
     }
@@ -135,7 +133,6 @@ class StorageControllerTest : S3StorageBaseTest() {
     fun `Calling storageController|listDocument returns error response with storage error`() {
 
         val path = "12345678910___nopath___123"
-        val mockError ="Klarte ikke å liste s3 dokumenter"
         val expectedError = AmazonServiceException("errorMessage")
         expectedError.statusCode = 500
 
@@ -145,7 +142,7 @@ class StorageControllerTest : S3StorageBaseTest() {
 
         assertTrue(generatedResponse.statusCode.is5xxServerError)
         assertEquals(false, generatedBody.get("success").booleanValue)
-        assertEquals(mockError, generatedBody.get("error").textValue)
+        assertEquals("errorMessage", generatedBody.get("error").textValue)
         assertTrue(generatedBody.get("uuid").textValue.matches(Regex("\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}")))
     }
 
@@ -172,7 +169,6 @@ class StorageControllerTest : S3StorageBaseTest() {
     fun `Calling storageController|deleteDocument on empty storage returns OK`() {
 
         val path1 = "12345678910___path___123"
-        val mockError = "Klarte ikke å slette s3 dokument"
 
         // stage
         val generatedResponse = storageController.deleteDocument(path1)
@@ -180,8 +176,6 @@ class StorageControllerTest : S3StorageBaseTest() {
 
         assertTrue(generatedResponse.statusCode.is4xxClientError)
         assertEquals(false, generatedBody.get("success").booleanValue)
-        assertEquals(mockError, generatedBody.get("error").textValue)
-        assertTrue(generatedBody.get("uuid").textValue.matches(Regex("\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}")))
 
         val generatedResponse2 = storageController.listDocuments("12345678910___path")
         assertEquals(listOf<String>(), generatedResponse2.body!!)
@@ -191,7 +185,6 @@ class StorageControllerTest : S3StorageBaseTest() {
     fun `Calling storageController|deleteDocument returns error response with storage error`() {
 
         val path1 = "12345678910___path___123"
-        val mockError = "Klarte ikke å slette s3 dokument"
 
         val expectedError = AmazonServiceException("errorMessage")
         expectedError.statusCode = 500
@@ -202,7 +195,7 @@ class StorageControllerTest : S3StorageBaseTest() {
 
         assertTrue(generatedResponse.statusCode.is5xxServerError)
         assertEquals(false, generatedBody.get("success").booleanValue)
-        assertEquals(mockError, generatedBody.get("error").textValue)
+        assertEquals("errorMessage", generatedBody.get("error").textValue)
         assertTrue(generatedBody.get("uuid").textValue.matches(Regex("\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}")))
     }
 }
