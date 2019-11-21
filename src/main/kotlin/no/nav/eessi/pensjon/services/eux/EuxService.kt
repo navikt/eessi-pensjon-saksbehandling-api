@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpStatusCodeException
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.util.UriComponentsBuilder
-import java.lang.RuntimeException
 
 @Service
 @Description("Service class for EuxBasis - EuxCpiServiceController.java")
@@ -41,10 +40,10 @@ class EuxService(private val euxRestTemplate: RestTemplate,
                 euxRestTemplate.exchange(builder.toUriString(), HttpMethod.GET, httpEntity, String::class.java)
             } catch (ex: HttpStatusCodeException) {
                 logger.error("En feil oppstod under henting av institusjoner ex: $ex body: ${ex.responseBodyAsString}")
-                throw RuntimeException("En feil oppstod under henting av institusjoner ex: ${ex.message} body: ${ex.responseBodyAsString}")
+                throw ex
             } catch (ex: Exception) {
                 logger.error("En feil oppstod under henting av institusjoner ex: $ex")
-                throw RuntimeException("En feil oppstod under henting av institusjoner ex: ${ex.message}")
+                throw ex
             }
         }
     }

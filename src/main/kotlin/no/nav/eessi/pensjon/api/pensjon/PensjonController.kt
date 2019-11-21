@@ -10,11 +10,9 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.client.HttpClientErrorException
-import org.springframework.web.client.HttpServerErrorException
+import org.springframework.web.client.HttpStatusCodeException
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.util.UriComponentsBuilder
-import java.util.*
 
 @RestController
 @Protected
@@ -41,19 +39,11 @@ class PensjonController(private val fagmodulRestTemplate: RestTemplate) {
                 HttpMethod.GET,
                 httpEntity,
                 String::class.java)
-        } catch (ex: HttpClientErrorException.NotFound) {
-            logger.info("Fikk ikke saktype fra fagmodul")
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorBody("Henting av saktype feilet - ikke funnet"))
-        } catch (ex: HttpClientErrorException) {
-            logger.error("Henting av saktype fra PESYS feilet", ex)
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorBody("Henting av saktype fra PESYS feilet"))
-        } catch (ex: HttpServerErrorException) {
-            logger.error("Henting av saktype fra PESYS feilet", ex)
-            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(errorBody("Henting av saktype fra PESYS feilet"))
+
+        } catch (sce: HttpStatusCodeException) {
+            return ResponseEntity.status(sce.statusCode).body(errorBody(sce.responseBodyAsString))
         } catch (ex: Exception) {
-            val uuid = UUID.randomUUID().toString()
-            logger.error("Feiler med kontakt mot fagmodul, ${ex}, ${uuid}", ex)
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorBody("ved henting av saktype fra PESYS, Melding: ${ex.message}", uuid))
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorBody(ex.message))
         }
         return response
     }
