@@ -1,15 +1,18 @@
 package no.nav.eessi.pensjon.services.aktoerregister
-
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+
 import com.fasterxml.jackson.module.kotlin.readValue
-import io.micrometer.core.instrument.Counter
-import io.micrometer.core.instrument.Metrics
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry
+import no.nav.eessi.pensjon.metrics.MetricsHelper
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
+import org.springframework.web.client.HttpStatusCodeException
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.util.UriComponentsBuilder
 import java.util.*
@@ -26,17 +29,10 @@ data class IdentinfoForAktoer(
 )
 
 @Service
-class AktoerregisterService(val aktoerregisterRestTemplate: RestTemplate) {
+class AktoerregisterService(val aktoerregisterRestTemplate: RestTemplate,
+                            @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())) {
 
     private val logger = LoggerFactory.getLogger(AktoerregisterService::class.java)
-
-    private val aktoerregister_teller_navn = "eessipensjon_journalforing.aktoerregister"
-    private val aktoerregister_teller_type_vellykkede = counter(aktoerregister_teller_navn, "vellykkede")
-    private val aktoerregister_teller_type_feilede = counter(aktoerregister_teller_navn, "feilede")
-
-    final fun counter(name: String, type: String): Counter {
-        return Metrics.counter(name, "type", type)
-    }
 
     @Value("\${app.name}")
     lateinit var appName: String
@@ -87,22 +83,25 @@ class AktoerregisterService(val aktoerregisterRestTemplate: RestTemplate) {
                 .queryParam("identgruppe", identGruppe)
                 .queryParam("gjeldende", gjeldende)
         logger.info("Kaller aktørregisteret: /identer")
-        val responseEntity = aktoerregisterRestTemplate.exchange(uriBuilder.toUriString(),
-                HttpMethod.GET,
-                requestEntity,
-                String::class.java)
+        var resp : ResponseEntity<String>
 
-        if (responseEntity.statusCode.isError) {
-            logger.error("Fikk ${responseEntity.statusCode} feil fra aktørregisteret")
-            aktoerregister_teller_type_feilede.increment()
-            if (responseEntity.hasBody()) {
-                logger.error(responseEntity.body.toString())
+        return metricsHelper.measure("aktoerregister") {
+            try {
+                resp = aktoerregisterRestTemplate.exchange(
+                    uriBuilder.toUriString(),
+                    HttpMethod.GET,
+                    requestEntity,
+                    String::class.java)
+
+            } catch (ex: HttpStatusCodeException) {
+                logger.error("En feil oppstod under kall til aktørregisteret ex: $ex body: ${ex.responseBodyAsString}")
+                throw ex
+            } catch (ex: Exception) {
+                logger.error("En feil oppstod under kall til aktørregisteret ex: $ex")
+                throw ex
             }
-            throw AktoerregisterException("Received ${responseEntity.statusCodeValue} ${responseEntity.statusCode.reasonPhrase} from aktørregisteret")
+            jacksonObjectMapper().readValue(resp.body!!)
         }
-        aktoerregister_teller_type_vellykkede.increment()
-
-        return jacksonObjectMapper().readValue(responseEntity.body!!)
     }
 }
 

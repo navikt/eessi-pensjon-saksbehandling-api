@@ -21,7 +21,8 @@ class MetricsHelper(val registry: MeterRegistry) {
             "hentoidctokenforsystembruker",
             "varsel_sendt_til_ko",
             "hentinstitusjoner",
-            "hentpersoninformasjon").forEach {counterName ->
+            "hentpersoninformasjon",
+            "aktoerregister").forEach {counterName ->
             Counter.builder(measureMeterName)
                 .tag(typeTag, successTypeTagValue)
                 .tag(methodTag, counterName)
