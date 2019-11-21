@@ -1,6 +1,5 @@
 package no.nav.eessi.pensjon.api.person
 
-import no.nav.eessi.pensjon.services.aktoerregister.AktoerregisterException
 import no.nav.eessi.pensjon.services.aktoerregister.AktoerregisterService
 import no.nav.eessi.pensjon.services.fagmodul.NavRegistreOppslagService
 import no.nav.eessi.pensjon.services.fagmodul.PersonInformasjonException
@@ -12,6 +11,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.client.HttpStatusCodeException
 
 @Protected
 @RestController
@@ -38,10 +38,10 @@ class NavRegistreOppslagController(val navRegistreOppslagService: NavRegistreOpp
         logger.info("Henter norskidenter")
         return try{
             ResponseEntity.ok().body(aktoerregisterService.hentGjeldendeAktorIdForNorskIdent(fnr))
-        }catch(ae: AktoerregisterException){
-            logger.error("Klarte ikke å hente gjeldende aktørId, ${ae.message}")
-            ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(errorBody("Klarte ikke å hente gjeldende aktørId, ${ae.message}"))
+        } catch (sce: HttpStatusCodeException) {
+            return ResponseEntity.status(sce.statusCode).body(errorBody(sce.responseBodyAsString))
+        } catch (ex: Exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorBody(ex.message))
         }
     }
 }

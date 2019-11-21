@@ -1,6 +1,8 @@
 package no.nav.eessi.pensjon.services.aktoerregister
 
 import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.doThrow
+import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.whenever
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -12,8 +14,10 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.http.HttpEntity
+import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestTemplate
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -120,15 +124,18 @@ class AktoerregisterServiceTest {
 
     @Test
     fun `should throw runtimeexception when 403-forbidden is returned`() {
-        val mockResponseEntity = createResponseEntityFromJsonFile("src/test/resources/json/aktoerregister/403-Forbidden.json", HttpStatus.FORBIDDEN)
-        whenever(mockrestTemplate.exchange(any<String>(), any(), any<HttpEntity<Unit>>(), ArgumentMatchers.eq(String::class.java))).thenReturn(mockResponseEntity)
-
+        doThrow(HttpClientErrorException(HttpStatus.FORBIDDEN, "bad request")).whenever(mockrestTemplate).exchange(
+            eq("/identer?identgruppe=AktoerId&gjeldende=true"),
+            eq(HttpMethod.GET),
+            any(),
+            eq(String::class.java)
+        )
         val testAktoerId = "does-not-matter"
 
-        val are = assertThrows<AktoerregisterException> {
+        val are = assertThrows<RuntimeException> {
             aktoerregisterService.hentGjeldendeAktorIdForNorskIdent(testAktoerId)
         }
-        assertEquals("Received 403 Forbidden from aktørregisteret", are.message!!, "RuntimeException skal kastes dersom mer enn 1 ident returneres")
+        assertEquals("403 bad request", are.message!!, "RuntimeException skal kastes dersom mer enn 1 ident returneres")
     }
 
     private fun createResponseEntityFromJsonFile(filePath: String, httpStatus: HttpStatus = HttpStatus.OK): ResponseEntity<String> {
