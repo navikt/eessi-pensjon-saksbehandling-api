@@ -26,7 +26,11 @@ class MetricsHelper(val registry: MeterRegistry) {
             "lists3objects",
             "hents3objects",
             "sletts3object",
-            "oppretts3object").forEach {counterName ->
+            "oppretts3object",
+            "selvbetjeningsinfoprodusert",
+            "hentUserinfoSaksbehandler",
+            "hentUserinfoBorger",
+            "hentUserinfoUkjent").forEach {counterName ->
             Counter.builder(measureMeterName)
                 .tag(typeTag, successTypeTagValue)
                 .tag(methodTag, counterName)

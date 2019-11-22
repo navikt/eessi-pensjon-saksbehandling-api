@@ -3,8 +3,6 @@ package no.nav.eessi.pensjon.utils
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import io.micrometer.core.instrument.Counter
-import io.micrometer.core.instrument.Metrics
 import no.nav.security.oidc.context.OIDCClaims
 import no.nav.security.oidc.context.OIDCRequestContextHolder
 import no.nav.security.oidc.context.TokenContext
@@ -57,10 +55,6 @@ fun getToken(oidcRequestContextHolder: OIDCRequestContextHolder): TokenContext {
     val issuer = context.getIssuers().first()
 
     return context.getToken(issuer)
-}
-
-fun counter(name: String, type: String): Counter {
-    return Metrics.counter(name, "type", type)
 }
 
 fun errorBody(error: String?, uuid: String = "no-uuid"): String {
