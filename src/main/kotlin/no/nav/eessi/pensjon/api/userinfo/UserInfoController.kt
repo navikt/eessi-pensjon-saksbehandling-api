@@ -1,13 +1,15 @@
 package no.nav.eessi.pensjon.api.userinfo
 
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import no.nav.eessi.pensjon.logging.AuditLogger
+import no.nav.eessi.pensjon.metrics.MetricsHelper
 import no.nav.eessi.pensjon.services.whitelist.WhitelistService
-import no.nav.eessi.pensjon.utils.counter
 import no.nav.eessi.pensjon.utils.getClaims
 import no.nav.eessi.pensjon.utils.mapAnyToJson
 import no.nav.security.oidc.api.Protected
 import no.nav.security.oidc.context.OIDCRequestContextHolder
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -16,15 +18,13 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @Protected
 @RequestMapping("/api")
-class UserInfoController(val oidcRequestContextHolder: OIDCRequestContextHolder,
-                         val whitelistService: WhitelistService) {
+class UserInfoController(
+    val oidcRequestContextHolder: OIDCRequestContextHolder,
+    val whitelistService: WhitelistService,
+    @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())) {
 
     private val logger = LoggerFactory.getLogger(UserInfoController::class.java)
     private val auditLogger = AuditLogger(oidcRequestContextHolder)
-    private final val getUserInfoTeller = "getUserInfo"
-    private val getUserInfoTellerSaksbehandler = counter(getUserInfoTeller, "saksbehandler")
-    private val getUserInfoTellerBorger = counter(getUserInfoTeller, "borger")
-    private val getUserInfoTellerUkjente = counter(getUserInfoTeller, "feilede")
 
     /**
      *  This endpoint is used to get the userinfo about the currently logged in requester.
@@ -47,10 +47,11 @@ class UserInfoController(val oidcRequestContextHolder: OIDCRequestContextHolder,
         when (role) {
             "SAKSBEHANDLER" -> {
                 auditLogger.log("getUserInfo")
-                getUserInfoTellerSaksbehandler.increment()
+                metricsHelper.increment("hentUserinfoSaksbehandler", "successful")
             }
-            "BRUKER" -> getUserInfoTellerBorger.increment()
-            else -> getUserInfoTellerUkjente.increment()
+            "BRUKER" -> metricsHelper.increment("hentUserinfoBorger", "successful")
+
+            else -> metricsHelper.increment("hentUserinfoUkjent", "successful")
         }
 
         return ResponseEntity.ok().body(mapAnyToJson(UserInfoResponse(fnr, role, allowed,expirationTime)))
