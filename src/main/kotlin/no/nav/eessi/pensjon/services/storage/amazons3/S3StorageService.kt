@@ -117,8 +117,13 @@ class S3Storage(val s3: AmazonS3,
                 content = readS3Stream(s3Object)
                 content
             } catch (ex: AmazonServiceException) {
-                logger.error("En feil oppstod under henting av objekt ex: $ex message: ${ex.errorMessage} errorcode: ${ex.errorCode}")
-                throw ex
+                if(ex.statusCode == 404) {
+                    logger.info("Objektet som forsøkes å hentes finnes ikke $ex")
+                    throw ex
+                } else {
+                    logger.error("En feil oppstod under henting av objekt ex: $ex message: ${ex.errorMessage} errorcode: ${ex.errorCode}")
+                    throw ex
+                }
             } catch (ex: Exception) {
                 logger.error("En feil oppstod under henting av objekt ex: $ex")
                 throw ex
