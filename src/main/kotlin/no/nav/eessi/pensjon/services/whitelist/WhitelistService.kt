@@ -44,16 +44,7 @@ class WhitelistService(val storageService: StorageService,
     }
 
     fun isPersonWhitelisted(key: String): Boolean {
-        return try {
-            logger.info("Sjekker om borger er whitelistet")
-            getWhitelistInformationFromS3(key)
-        } catch (ex: Exception) {
-            logger.error("Noe gikk galt under sjekk av whitelisting: " + ex.message)
-            false
-        }
-    }
-
-    private fun getWhitelistInformationFromS3(key: String): Boolean {
+        logger.info("Sjekker om borger er whitelistet")
         try{
             val resp = storageService.get("$key$personIdentifierSeparator$whitelistEnding")
             if(resp != null){

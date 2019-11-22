@@ -84,32 +84,6 @@ class ReceiveSubmissionController(
         }
     }
 
-    //helper function to put message on kafka, will retry 3 times and wait before fail
-    fun putOnKafka(message: String, uuid: String): String {
-        logger.info("Trying to resubmit")
-
-        var count = 0
-        val maxTries = 3
-        val waitTime = 8000L
-        var failException : Exception ?= null
-
-        while (count < maxTries) {
-            try {
-                kafkaService.publishSubmissionReceivedEvent(message)
-                logger.info("put submission on kafka queue, uuid: $uuid")
-                return uuid
-            } catch (ex: Exception) {
-                count++
-                logger.warn("Failed to put submission on kafka, try nr.: $count, Error message: ${ex.message} ")
-                failException = ex
-                Thread.sleep(waitTime)
-            }
-        }
-        logger.error("Failed to put message on kafka, uuid: $uuid. meesage: $message", failException)
-        throw failException!!
-
-    }
-
     @GetMapping("/receipt/{page}")
     fun sendReceipt(@PathVariable(required = true) page: String): String {
         logger.info("Sender inn endelig kvittering")
@@ -126,7 +100,7 @@ class ReceiveSubmissionController(
             receiptJson = ObjectMapper().writeValueAsString(receipt)
             filename = lagreFil(personIdentifier, PINFO_SUBMISSION_RECEIPT, receiptJson)
         } catch (ex: Exception) {
-            logger.error(ex.message, ex)
+            logger.error("En feil oppstod under produsering av pdf for kvittering $ex")
             throw ex
         }
 
@@ -135,16 +109,11 @@ class ReceiveSubmissionController(
             metricsHelper.increment("kvittering_sendt_kafka", "successful")
             logger.info("put receipt on kafka queue")
         } catch (ex: Exception) {
-            logger.error(ex.message, ex)
+            logger.error("En feil oppstod under produsering av kafkamelding for kvittering $ex")
             metricsHelper.increment("kvittering_sendt_kafka", "failed")
             throw ex
         }
         return receiptJson
-    }
-
-    val dateTimeStrToLocalDateTime: (String) -> LocalDateTime = {
-        val dateString = ".*___${PINFO_SUBMISSION}___(.*)\\.json".toRegex().matchEntire(it)?.groups?.get(1)?.value
-        LocalDateTime.parse(dateString, DateTimeFormatter.ISO_DATE_TIME)
     }
 
     @GetMapping(value = ["/get/{subject}"], produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -176,5 +145,36 @@ class ReceiveSubmissionController(
         val filename = "${personIdentifier}___${fileDescription}___$now.json"
         storageService.put(filename, content)
         return filename
+    }
+
+    //helper function to put message on kafka, will retry 3 times and wait before fail
+    fun putOnKafka(message: String, uuid: String): String {
+        logger.info("Trying to resubmit")
+
+        var count = 0
+        val maxTries = 3
+        val waitTime = 8000L
+        var failException : Exception ?= null
+
+        while (count < maxTries) {
+            try {
+                kafkaService.publishSubmissionReceivedEvent(message)
+                logger.info("put submission on kafka queue, uuid: $uuid")
+                return uuid
+            } catch (ex: Exception) {
+                count++
+                logger.warn("Failed to put submission on kafka, try nr.: $count, Error message: ${ex.message} ")
+                failException = ex
+                Thread.sleep(waitTime)
+            }
+        }
+        logger.error("Failed to put message on kafka, uuid: $uuid. meesage: $message", failException)
+        throw failException!!
+
+    }
+
+    val dateTimeStrToLocalDateTime: (String) -> LocalDateTime = {
+        val dateString = ".*___${PINFO_SUBMISSION}___(.*)\\.json".toRegex().matchEntire(it)?.groups?.get(1)?.value
+        LocalDateTime.parse(dateString, DateTimeFormatter.ISO_DATE_TIME)
     }
 }
