@@ -42,7 +42,7 @@ class ReceiveSubmissionController(
 
     @PostMapping(value = ["/submit/{page}"], produces = [MediaType.APPLICATION_JSON_VALUE])
     fun receiveSubmission(@PathVariable(required = true) page: String,
-                          @RequestBody requestBody: SubmissionRequest): Map<String, String> {
+                          @RequestBody requestBody: SubmissionRequest) : ResponseEntity<String> {
 
         val personIdentifier = getClaims(oidcRequestContextHolder).subject
         val uuid = UUID.randomUUID().toString()
@@ -51,20 +51,17 @@ class ReceiveSubmissionController(
         val content = mapper.writeValueAsString(requestBody)
         val filename: String
 
-        try {
+        return try {
             filename = lagreFil(personIdentifier, PINFO_SUBMISSION, content)
             putOnKafka(filename, uuid)
             metricsHelper.increment("soknad_sendt_kafka", "successful")
-            logger.info("put submission $page on kafka queue: $content")
-            mapOf("filename" to filename)
+            ResponseEntity.status(HttpStatus.OK).body(successBody())
         } catch (ex: Exception) {
             logger.error(ex.message + " uuid: $uuid", ex)
             metricsHelper.increment("soknad_sendt_kafka", "failed")
-            throw ex
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorBody("En feil oppstod under innsending av skjema", uuid))
         }
-        return mapOf("filename" to filename)
     }
-
 
     @PostMapping(value = ["/resubmit"], produces = [MediaType.APPLICATION_JSON_VALUE])
     fun resendSubmission(@RequestBody fileName: String) : ResponseEntity<String> {

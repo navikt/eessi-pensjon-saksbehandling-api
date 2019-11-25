@@ -62,10 +62,9 @@ internal class ReceiveSubmissionControllerTest {
         val submissionRequest = jacksonObjectMapper().readValue(submissionRequestJson, SubmissionRequest::class.java)
 
         // Når
-        val resp = controller.receiveSubmission("somepage", submissionRequest)
+        controller.receiveSubmission("somepage", submissionRequest)
 
         // Så
-        assertTrue((resp["filename"] ?: fail("Burde respondert med filnavn")).startsWith("12345678910___PinfoSubmission___"))
         verify(storageService, times(1)).put(any(), any())
         verify(kafkaService, times(1)).publishSubmissionReceivedEvent(any())
     }

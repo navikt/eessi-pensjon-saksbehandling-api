@@ -8,10 +8,10 @@ import com.nhaarman.mockitokotlin2.whenever
 import no.nav.eessi.pensjon.utils.mapAnyToJson
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.mockito.Mockito
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 
 class SubmitControllerTest : SubmitBaseTest() {
@@ -22,32 +22,7 @@ class SubmitControllerTest : SubmitBaseTest() {
         Mockito.reset(s3storageService)
     }
 
-    @Test fun `Calling receiveSubmissionController|receiveSubmission returns OK`() {
-        val mockRequest = SubmissionRequest(
-                periodeInfo = PeriodeInfo(),
-                personInfo = Personinfo(),
-                bankInfo = Bankinfo(),
-                comment = "comment"
-        )
-
-        doNothing().whenever(kafkaService).publishSubmissionReceivedEvent(any())
-
-        val generatedResponse = receiveSubmissionController.receiveSubmission("p4000", mockRequest)
-        val filename = generatedResponse.getValue("filename")
-
-        assertTrue(filename.startsWith("12345678910___PinfoSubmission___"))
-        assertTrue(filename.endsWith(".json"))
-
-        val content = storageController.getDocument(filename)
-
-        val json = mapper.readTree(content.body!!)
-        assertTrue(json.has("periodeInfo"))
-        assertTrue(json.has("personInfo"))
-        assertTrue(json.has("bankInfo"))
-        assertTrue(json.has("comment"))
-    }
-
-    @Test fun `Calling receiveSubmissionController|receiveSubmission fail on s3`() {
+    @Test fun `Gitt en skjema innsending når en feil oppstår under s3 lagring så returner Internal server error`() {
         val mockRequest = SubmissionRequest(
                 periodeInfo = PeriodeInfo(),
                 personInfo = Personinfo(),
@@ -58,12 +33,9 @@ class SubmitControllerTest : SubmitBaseTest() {
         doNothing().whenever(kafkaService).publishSubmissionReceivedEvent(any())
         doThrow(RuntimeException("Feiler her ved s3")).whenever(s3storageService).put(any(),any())
 
-        assertThrows<Exception> {
-            receiveSubmissionController.receiveSubmission("p4000", mockRequest)
-        }
+        val resp = receiveSubmissionController.receiveSubmission("p4000", mockRequest)
+        assertEquals(resp.statusCode, HttpStatus.INTERNAL_SERVER_ERROR)
     }
-
-
 
     @Test fun `Resending a failed submission|resendSubmission returns OK`() {
         val subject = "12345678910"
