@@ -109,25 +109,27 @@ class S3Storage(val s3: AmazonS3,
     }
 
     override fun get(path: String): String? {
-        return metricsHelper.measure("hents3objects") {
-            try {
-                val content: String
-                logger.info("Getting plaintext path")
-                val s3Object = s3.getObject(getBucketName(), path)
-                content = readS3Stream(s3Object)
-                content
-            } catch (ex: AmazonServiceException) {
-                if(ex.statusCode == 404) {
-                    logger.info("Objektet som forsøkes å hentes finnes ikke $ex")
-                    throw ex
-                } else {
-                    logger.error("En feil oppstod under henting av objekt ex: $ex message: ${ex.errorMessage} errorcode: ${ex.errorCode}")
-                    throw ex
-                }
-            } catch (ex: Exception) {
-                logger.error("En feil oppstod under henting av objekt ex: $ex")
-                throw ex
+        return try {
+            val content: String
+            logger.info("Getting plaintext path")
+            val s3Object = s3.getObject(getBucketName(), path)
+            content = readS3Stream(s3Object)
+            metricsHelper.increment("hents3objects", "successful")
+            content
+        } catch (se: AmazonServiceException) {
+            if(se.statusCode == 404) {
+                logger.info("Objektet som forsøkes å hentes finnes ikke $se")
+                metricsHelper.increment("hents3objects", "successful")
+                throw se
+            } else {
+                logger.error("En feil oppstod under henting av objekt ex: $se message: ${se.errorMessage} errorcode: ${se.errorCode}")
+                metricsHelper.increment("hents3objects", "failed")
+                throw se
             }
+        } catch (ex: Exception) {
+            logger.error("En feil oppstod under henting av objekt ex: $ex")
+            metricsHelper.increment("hents3objects", "failed")
+            throw ex
         }
     }
 
