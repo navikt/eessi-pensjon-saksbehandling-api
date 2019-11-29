@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.HttpStatusCodeException
 
-
 @Protected
 @RestController
 @RequestMapping("/eux")
@@ -31,6 +30,17 @@ class EuxController(private val euxService: EuxService) {
             @PathVariable(value = "countrycode", required = false) landkode: String = ""): ResponseEntity<String> {
         return try {
             euxService.getInstitusjoner(bucType, landkode)
+        } catch (sce: HttpStatusCodeException) {
+            ResponseEntity.status(sce.statusCode).body(errorBody(sce.responseBodyAsString))
+        } catch (ex: Exception) {
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorBody(ex.message))
+        }
+    }
+
+    @GetMapping("/countries/{buctype}")
+    fun getPaakobledeland(@PathVariable(value = "buctype", required = true) bucType: String): ResponseEntity<String> {
+        return try {
+            ResponseEntity.ok().body(euxService.getPaakobledeLand(bucType))
         } catch (sce: HttpStatusCodeException) {
             ResponseEntity.status(sce.statusCode).body(errorBody(sce.responseBodyAsString))
         } catch (ex: Exception) {
