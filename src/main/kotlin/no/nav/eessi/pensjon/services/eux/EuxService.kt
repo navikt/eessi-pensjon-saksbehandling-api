@@ -12,6 +12,10 @@ import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpStatusCodeException
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.util.UriComponentsBuilder
+import org.codehaus.jackson.map.ObjectMapper
+import org.codehaus.jackson.node.ArrayNode
+import org.springframework.util.LinkedMultiValueMap
+
 
 @Service
 @Description("Service class for EuxBasis - EuxCpiServiceController.java")
@@ -26,11 +30,13 @@ class EuxService(private val euxRestTemplate: RestTemplate,
      * @param bucType
      * @param landKode
      */
-    fun getInstitusjoner(bucType: String, landKode: String = ""): ResponseEntity<String> {
+    fun getInstitusjoner(bucType: String, landKode: String?): ResponseEntity<String> {
 
-        val builder = UriComponentsBuilder.fromPath("/institusjoner")
-                .queryParam("BuCType", bucType)
-                .queryParam("LandKode", landKode)
+        val params: LinkedMultiValueMap<String, String> = LinkedMultiValueMap()
+        params.add("BuCType", bucType)
+        landKode?.let { params.add("LandKode", landKode) }
+
+        val builder = UriComponentsBuilder.fromPath("/institusjoner").queryParams(params)
 
         val httpEntity = HttpEntity("")
 
@@ -46,5 +52,15 @@ class EuxService(private val euxRestTemplate: RestTemplate,
                 throw ex
             }
         }
+    }
+
+    /**
+     * Henter en liste av påkoblede landkoder for en konkret buctype
+     */
+    fun getPaakobledeLand(buctype : String): String {
+        val resp = getInstitusjoner(buctype, null)
+        return ObjectMapper().readValue(resp.body, ArrayNode::class.java).map { land ->
+            land.get("landkode").textValue
+        }.distinct().toJson()
     }
 }
