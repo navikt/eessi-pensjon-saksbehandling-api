@@ -21,9 +21,9 @@ private val logger = LoggerFactory.getLogger(VarselController::class.java)
 class VarselController(val varselService: VarselService,
                        val aktoerregisterService: AktoerregisterService) {
 
-    @PostMapping
-    fun sendVarsel(@RequestParam("aktoerId") aktoerId: String,
-                   @RequestParam("saksId") saksId: String): ResponseEntity<String> {
+    @PostMapping("/{saksId}/{aktoerId}")
+    fun sendVarsel(@PathVariable(required = true) aktoerId: String,
+                   @PathVariable(required = true) saksId: String): ResponseEntity<String> {
         try {
             val fnr = aktoerregisterService.hentGjeldendeNorskIdentForAktorId(aktoerId)
             varselService.sendVarsel(fnr, saksId, "EessiPenVarsleBrukerUfore")
