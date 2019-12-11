@@ -29,6 +29,7 @@ class SocketTextHandler : TextWebSocketHandler() {
     fun handleSubscription (session: WebSocketSession, message: JsonNode) {
         if (message.isArray) {
             session.attributes["subscriptions"] = message.map { it.textValue() }
+            logger.info("Accepting request of session " + session + " to subscribe  " + message.map { it.textValue() })
             session.sendMessage(TextMessage("{ \"subscriptions\" : true }" ))
         }
     }
@@ -77,7 +78,9 @@ class SocketTextHandler : TextWebSocketHandler() {
     fun alertSubscribers(caseId: String, subject: String? = null) {
         try {
             if(subject != null){
-                filterSessionsByBruker(subject).map { session ->
+                val subscribers = filterSessionsByBruker(subject)
+                logger.info("Alerting " + subscribers.size + " subscribers that bucUpdated for caseId " + caseId)
+                subscribers.map { session ->
                     session.sendMessage(TextMessage("{\"bucUpdated\": {\"caseId\": \"$caseId\"}}"))
                 }
             }
