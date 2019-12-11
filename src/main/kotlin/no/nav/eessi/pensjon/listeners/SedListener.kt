@@ -18,7 +18,7 @@ class SedListener (private val socketTextHandler: SocketTextHandler) {
         try {
             val sedHendelse = SedHendelseModel.fromJson(hendelse)
             if(sedHendelse.sektorKode == "P") {
-                logger.info("Innkommet sedSendt hendelse")
+                logger.info("Innkommet sedSendt hendelse med rinaSakId " + sedHendelse.rinaSakId + ", navBruker " + sedHendelse.navBruker)
                 socketTextHandler.alertSubscribers(sedHendelse.rinaSakId, sedHendelse.navBruker)
             }
         } catch (jsonParseException: JsonParseException) {

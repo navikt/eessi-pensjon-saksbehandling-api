@@ -58,6 +58,7 @@ class SocketTextHandler : TextWebSocketHandler() {
     }
 
     fun filterSessionsByBruker (navBruker: String): MutableList<WebSocketSession> {
+        logger.debug("Filtering " + sessions.size + "sessions for navBruker " + navBruker)
         return sessions
             .filter { it.value.attributes["subscriptions"] != null }
             .filter { it.value.attributes["subscriptions"] is List<*> }
@@ -79,7 +80,7 @@ class SocketTextHandler : TextWebSocketHandler() {
         try {
             if(subject != null){
                 val subscribers = filterSessionsByBruker(subject)
-                logger.info("Alerting " + subscribers.size + " subscribers that bucUpdated for caseId " + caseId)
+                logger.info("Alerting " + subscribers.size + " subscribers that caseId " + caseId + " updated for subject " + subject)
                 subscribers.map { session ->
                     session.sendMessage(TextMessage("{\"bucUpdated\": {\"caseId\": \"$caseId\"}}"))
                 }
