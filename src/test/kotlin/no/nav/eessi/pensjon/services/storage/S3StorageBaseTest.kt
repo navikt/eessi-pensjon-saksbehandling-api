@@ -6,14 +6,11 @@ import com.amazonaws.client.builder.AwsClientBuilder
 import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.AmazonS3ClientBuilder
 import io.findify.s3mock.S3Mock
-import io.mockk.mockk
-import io.mockk.spyk
 import no.nav.eessi.pensjon.api.storage.StorageController
 import no.nav.eessi.pensjon.services.BaseTest
 import no.nav.eessi.pensjon.services.ldap.LdapService
 import no.nav.eessi.pensjon.services.storage.amazons3.S3Storage
 import no.nav.eessi.pensjon.services.whitelist.WhitelistService
-import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.mockito.Mockito
