@@ -23,13 +23,14 @@ class MetricsHelper(val registry: MeterRegistry) {
             "hentinstitusjoner",
             "hentpersoninformasjon",
             "aktoerregister",
-            "lists3objects",
-            "hents3objects",
-            "sletts3object",
-            "oppretts3object",
             "selvbetjeningsinfoprodusert",
             "hentUserinfoSaksbehandler",
             "hentUserinfoBorger",
+            "storeDocument",
+            "getDocument",
+            "listDocuments",
+            "deleteDocument",
+            "deleteMultipleDocuments",
             "hentUserinfoUkjent").forEach {counterName ->
             Counter.builder(measureMeterName)
                 .tag(typeTag, successTypeTagValue)
