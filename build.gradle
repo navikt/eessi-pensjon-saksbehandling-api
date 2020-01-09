@@ -6,10 +6,10 @@ buildscript {
         jacksonVersion = '2.10.2'
         mockitoVersion = '3.2.4'
         oidcTokenSupportVersion = '0.2.18'
-        logstashLogbackVersion = '6.1'
+        logstashLogbackVersion = '6.3'
         pac4jVersion = '3.2.0'
         cxfVersion = '3.3.4'
-        personV3Version = '3.4.1'
+        personV3Version = '3.6.1'
         openhtmltopdfVersion = '1.0.0'
     }
     repositories {
@@ -93,7 +93,7 @@ dependencies {
 
     // Kafka
     implementation("org.springframework.kafka:spring-kafka")
-    implementation("io.confluent:kafka-avro-serializer:5.1.0") {
+    implementation("io.confluent:kafka-avro-serializer:5.3.2") {
         exclude group: "org.apache.zookeeper",  module: "zookeeper"
     }
 
@@ -129,10 +129,10 @@ dependencies {
     implementation("com.openhtmltopdf:openhtmltopdf-jsoup-dom-converter:${openhtmltopdfVersion}") // deprecated
 
     // HTML-parser/manipulator
-    implementation('org.jsoup:jsoup:1.11.3')
+    implementation('org.jsoup:jsoup:1.12.1')
 
     // Amazon S3
-    implementation("com.amazonaws:aws-java-sdk-s3:1.11.602")
+    implementation("com.amazonaws:aws-java-sdk-s3:1.11.703")
 
     // Micrometer
     implementation("io.micrometer:micrometer-registry-prometheus")
