@@ -153,7 +153,7 @@ dependencies {
     testImplementation "io.mockk:mockk:1.9.2"
 
     // Architecture tests
-    testImplementation 'com.tngtech.archunit:archunit:0.11.0'
+    testImplementation 'com.tngtech.archunit:archunit:0.12.0'
 
     // Allows for variable expiration-date of each cache-entry
     implementation("net.jodah:expiringmap:0.5.9")
