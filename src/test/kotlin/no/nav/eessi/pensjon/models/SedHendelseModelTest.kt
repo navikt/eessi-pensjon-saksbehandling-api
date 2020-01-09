@@ -1,4 +1,4 @@
-package no.nav.eessi.pensjon.listeners
+package no.nav.eessi.pensjon.models
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

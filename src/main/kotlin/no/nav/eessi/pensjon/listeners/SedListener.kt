@@ -1,6 +1,7 @@
 package no.nav.eessi.pensjon.listeners
 
 import com.fasterxml.jackson.core.JsonParseException
+import no.nav.eessi.pensjon.models.SedHendelseModel
 import no.nav.eessi.pensjon.websocket.SocketTextHandler
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Description
