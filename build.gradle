@@ -1,15 +1,16 @@
 buildscript {
     ext {
-        kotlinVersion = '1.3.41'
-        springBootVersion = '2.1.6.RELEASE'
+        kotlinVersion = '1.3.61'
+        springBootVersion = '2.2.2.RELEASE'
         springfoxVersion = '2.9.2'
-        jacksonModuleKotlinVersion = '2.9.9'
-        mockitoVersion = '3.0.0'
+        jacksonVersion = '2.10.2'
+        mockitoVersion = '3.2.4'
         oidcTokenSupportVersion = '0.2.18'
-        logstashLogbackVersion = '6.1'
+        logstashLogbackVersion = '6.3'
         pac4jVersion = '3.2.0'
-        cxfVersion = '3.3.2'
-        personV3Version = '3.4.1'
+        cxfVersion = '3.3.4'
+        personV3Version = '3.6.1'
+        openhtmltopdfVersion = '1.0.0'
     }
     repositories {
         maven {
@@ -24,9 +25,9 @@ buildscript {
 }
 
 plugins {
-    id 'com.github.ben-manes.versions' version '0.21.0'
-    id 'se.patrikerdes.use-latest-versions' version '0.2.12'
-    id "org.sonarqube" version "2.7.1"
+    id 'com.github.ben-manes.versions' version '0.27.0'
+    id 'se.patrikerdes.use-latest-versions' version '0.2.13'
+    id "org.sonarqube" version "2.8"
     id 'jacoco'
 }
 
@@ -84,7 +85,7 @@ dependencies {
     }
     implementation("org.springframework:spring-jms")
     // MQ
-    implementation("com.ibm.mq:com.ibm.mq.allclient:9.1.1.0")
+    implementation("com.ibm.mq:com.ibm.mq.allclient:9.1.4.0")
 
     // Messaging
     implementation("org.springframework:spring-websocket")
@@ -92,7 +93,7 @@ dependencies {
 
     // Kafka
     implementation("org.springframework.kafka:spring-kafka")
-    implementation("io.confluent:kafka-avro-serializer:5.1.0") {
+    implementation("io.confluent:kafka-avro-serializer:5.3.2") {
         exclude group: "org.apache.zookeeper",  module: "zookeeper"
     }
 
@@ -100,11 +101,11 @@ dependencies {
     implementation("org.apache.cxf:cxf-spring-boot-starter-jaxws:${cxfVersion}")
     implementation("org.apache.cxf:cxf-rt-ws-security:${cxfVersion}")
 
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.9")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonVersion}")
     implementation("commons-io:commons-io:2.6")
 
     // Kotlin
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:${jacksonModuleKotlinVersion}")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:${jacksonVersion}")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
     implementation("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
 
@@ -122,16 +123,16 @@ dependencies {
     implementation("org.syslog4j:syslog4j:0.9.30")
 
     // PDF box
-    implementation("org.apache.pdfbox:pdfbox:2.0.13")
-    implementation('com.openhtmltopdf:openhtmltopdf-core:0.0.1-RC17')
-    implementation('com.openhtmltopdf:openhtmltopdf-pdfbox:0.0.1-RC17')
-    implementation('com.openhtmltopdf:openhtmltopdf-jsoup-dom-converter:0.0.1-RC17')
+    implementation("org.apache.pdfbox:pdfbox:2.0.18")
+    implementation("com.openhtmltopdf:openhtmltopdf-core:${openhtmltopdfVersion}")
+    implementation("com.openhtmltopdf:openhtmltopdf-pdfbox:${openhtmltopdfVersion}")
+    implementation("com.openhtmltopdf:openhtmltopdf-jsoup-dom-converter:${openhtmltopdfVersion}") // deprecated
 
     // HTML-parser/manipulator
-    implementation('org.jsoup:jsoup:1.11.3')
+    implementation('org.jsoup:jsoup:1.12.1')
 
     // Amazon S3
-    implementation("com.amazonaws:aws-java-sdk-s3:1.11.602")
+    implementation("com.amazonaws:aws-java-sdk-s3:1.11.703")
 
     // Micrometer
     implementation("io.micrometer:micrometer-registry-prometheus")
@@ -146,14 +147,14 @@ dependencies {
     //mock
     testImplementation("no.nav.security:oidc-test-support:${oidcTokenSupportVersion}")
     testImplementation("org.mockito:mockito-core:${mockitoVersion}")
-    testImplementation("org.junit.jupiter:junit-jupiter:5.5.1")
-    testImplementation('org.mockito:mockito-junit-jupiter:3.0.0')
-    testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.5.2")
+    testImplementation("org.mockito:mockito-junit-jupiter:${mockitoVersion}")
+    testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
     testImplementation("io.findify:s3mock_2.12:0.2.5")
-    testImplementation "io.mockk:mockk:1.9.2"
+    testImplementation "io.mockk:mockk:1.9.3"
 
     // Architecture tests
-    testImplementation 'com.tngtech.archunit:archunit:0.11.0'
+    testImplementation 'com.tngtech.archunit:archunit:0.12.0'
 
     // Allows for variable expiration-date of each cache-entry
     implementation("net.jodah:expiringmap:0.5.9")
