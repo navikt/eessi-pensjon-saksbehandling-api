@@ -1,10 +1,10 @@
 package no.nav.eessi.pensjon.services.pdf
 
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.node.NullNode
 import com.openhtmltopdf.extend.FSSupplier
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder
-import org.codehaus.jackson.JsonNode
-import org.codehaus.jackson.map.ObjectMapper
-import org.codehaus.jackson.node.NullNode
 import org.jsoup.Jsoup
 import org.jsoup.helper.W3CDom
 import org.jsoup.nodes.Document
@@ -78,7 +78,7 @@ class TemplateService {
         if (it.has(key)) {
             val node = it.get(key)
             if (node !is NullNode) {
-                return node.textValue
+                return node.textValue()
             }
         }
         return "-"

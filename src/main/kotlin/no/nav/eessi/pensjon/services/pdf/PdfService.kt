@@ -1,7 +1,5 @@
 package no.nav.eessi.pensjon.services.pdf
 
-import com.openhtmltopdf.extend.FSSupplier
-import com.openhtmltopdf.pdfboxout.PdfRendererBuilder
 import org.apache.pdfbox.multipdf.PDFMergerUtility
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.pdmodel.PDPage
@@ -10,19 +8,10 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState
 import org.apache.pdfbox.util.Matrix
-import org.codehaus.jackson.JsonNode
-import org.codehaus.jackson.map.ObjectMapper
-import org.codehaus.jackson.node.NullNode
-import org.jsoup.Jsoup
-import org.jsoup.helper.W3CDom
-import org.jsoup.nodes.Document
-import org.jsoup.nodes.Element
-import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Description
 import org.springframework.stereotype.Service
 import org.springframework.util.Base64Utils
 import java.io.ByteArrayOutputStream
-import java.io.InputStream
 import java.net.URL
 import java.util.*
 import kotlin.math.atan
@@ -33,13 +22,8 @@ import kotlin.math.sqrt
 @Service
 @Description("Service class for PDF")
 class PdfService {
-
-    private val logger = LoggerFactory.getLogger(PdfService::class.java)
-
     private final val fontPath = "/fonts/LiberationSans-Regular.ttf"
-    val htmlPath = "/html-templates"
     val url: URL = this.javaClass.getResource(fontPath)
-    val fontName = "LiberationSans"
 
     fun generate(request: PDFRequest): HashMap<String, Map<String, Any>> {
 

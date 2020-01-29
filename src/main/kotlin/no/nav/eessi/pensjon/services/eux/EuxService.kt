@@ -1,5 +1,7 @@
 package no.nav.eessi.pensjon.services.eux
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.node.ArrayNode
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import no.nav.eessi.pensjon.metrics.MetricsHelper
 import no.nav.eessi.pensjon.utils.toJson
@@ -13,8 +15,6 @@ import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpStatusCodeException
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.util.UriComponentsBuilder
-import org.codehaus.jackson.map.ObjectMapper
-import org.codehaus.jackson.node.ArrayNode
 import org.springframework.util.LinkedMultiValueMap
 
 
@@ -61,7 +61,7 @@ class EuxService(private val euxRestTemplate: RestTemplate,
     fun getPaakobledeLand(buctype : String): String {
         val resp = getInstitusjoner(buctype, null)
         return ObjectMapper().readValue(resp.body, ArrayNode::class.java).map { land ->
-            land.get("landkode").textValue
+            land.get("landkode").textValue()
         }.distinct().toJson()
     }
 }

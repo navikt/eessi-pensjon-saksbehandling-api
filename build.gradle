@@ -120,9 +120,9 @@ dependencies {
 
     // Kafka
     implementation("org.springframework.kafka:spring-kafka")
-    implementation("io.confluent:kafka-avro-serializer:5.3.2") {
-        exclude group: "org.apache.zookeeper",  module: "zookeeper"
-    }
+//    implementation("io.confluent:kafka-avro-serializer:5.3.2") {
+//        exclude group: "org.apache.zookeeper",  module: "zookeeper"
+//    }
 
     // Apache CXF
     implementation("org.apache.cxf:cxf-spring-boot-starter-jaxws:${cxfVersion}")

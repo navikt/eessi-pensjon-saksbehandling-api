@@ -1,6 +1,6 @@
 package no.nav.eessi.pensjon.utils
 
-import org.codehaus.jackson.map.ObjectMapper
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.jetbrains.annotations.TestOnly
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
@@ -29,8 +29,8 @@ class UtilsTest {
         val mapper = ObjectMapper()
 
         val tree = mapper.readTree(body)
-        assertEquals("En feilmelding" , tree.get("error").textValue)
-        assertEquals(false , tree.get("success").booleanValue)
+        assertEquals("En feilmelding" , tree.get("error").textValue())
+        assertEquals(false , tree.get("success").booleanValue())
     }
 
     @Test
@@ -41,8 +41,8 @@ class UtilsTest {
         val mapper = ObjectMapper()
 
         val tree = mapper.readTree(body)
-        assertEquals("" , tree.get("error").textValue)
-        assertEquals(false , tree.get("success").booleanValue)
+        assertEquals("" , tree.get("error").textValue())
+        assertEquals(false , tree.get("success").booleanValue())
     }
 
     @Test
@@ -61,7 +61,7 @@ class UtilsTest {
         val mapper = ObjectMapper()
 
         val tree = mapper.readTree(body)
-        assertEquals(true , tree.get("success").booleanValue)
+        assertEquals(true , tree.get("success").booleanValue())
     }
 
     @Test

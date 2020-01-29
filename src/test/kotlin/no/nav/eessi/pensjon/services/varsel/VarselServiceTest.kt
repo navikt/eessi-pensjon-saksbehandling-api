@@ -1,10 +1,10 @@
 package no.nav.eessi.pensjon.services.varsel
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.nhaarman.mockitokotlin2.doNothing
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.doThrow
 import com.nhaarman.mockitokotlin2.whenever
-import org.codehaus.jackson.map.ObjectMapper
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
@@ -17,7 +17,7 @@ import javax.jms.JMSSecurityException
 
 class VarselServiceTest : VarselBaseTest() {
 
-    val mapper = ObjectMapper()
+    private val mapper = ObjectMapper()
 
     @AfterEach
     fun cleanUpTest() {
@@ -47,10 +47,10 @@ class VarselServiceTest : VarselBaseTest() {
 
         val response = mapper.readTree(sentVarsel)
 
-        assertEquals("Ny elektronisk løsning fra NAV", response.get("tittel").textValue)
-        assertEquals(navn, response.get("fulltnavn").textValue)
-        assertEquals(varseltype, response.get("varseltype").textValue)
-        assertNull(response.get("parametere").textValue)
+        assertEquals("Ny elektronisk løsning fra NAV", response.get("tittel").textValue())
+        assertEquals(navn, response.get("fulltnavn").textValue())
+        assertEquals(varseltype, response.get("varseltype").textValue())
+        assertNull(response.get("parametere").textValue())
     }
 
     @Test

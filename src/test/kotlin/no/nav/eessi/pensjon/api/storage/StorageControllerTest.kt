@@ -1,11 +1,11 @@
 package no.nav.eessi.pensjon.api.storage
 
 import com.amazonaws.AmazonServiceException
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.nhaarman.mockitokotlin2.doThrow
 import com.nhaarman.mockitokotlin2.whenever
 import no.nav.eessi.pensjon.services.storage.S3StorageBaseTest
 import no.nav.eessi.pensjon.utils.errorBody
-import org.codehaus.jackson.map.ObjectMapper
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -15,7 +15,7 @@ import org.springframework.http.HttpStatus
 
 class StorageControllerTest : S3StorageBaseTest() {
 
-    val mapper = ObjectMapper()
+    private val mapper = ObjectMapper()
 
     @AfterEach
     fun cleanUpTest() {
@@ -49,9 +49,9 @@ class StorageControllerTest : S3StorageBaseTest() {
         val generatedBody = mapper.readTree(generatedResponse.body)
 
         assertTrue(generatedResponse.statusCode.is5xxServerError)
-        assertEquals(false, generatedBody.get("success").booleanValue)
-        assertEquals("errorMessage", generatedBody.get("error").textValue)
-        assertTrue(generatedBody.get("uuid").textValue.matches(Regex("\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}")))
+        assertEquals(false, generatedBody.get("success").booleanValue())
+        assertEquals("errorMessage", generatedBody.get("error").textValue())
+        assertTrue(generatedBody.get("uuid").textValue().matches(Regex("\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}")))
     }
 
     @Test
@@ -78,7 +78,7 @@ class StorageControllerTest : S3StorageBaseTest() {
         val generatedBody = mapper.readTree(generatedResponse.body)
 
         assertTrue(generatedResponse.statusCode == HttpStatus.NOT_FOUND)
-        assertEquals(generatedResponse.body, errorBody("The resource you requested does not exist", generatedBody.get("uuid").textValue))
+        assertEquals(generatedResponse.body, errorBody("The resource you requested does not exist", generatedBody.get("uuid").textValue()))
     }
 
     @Test
@@ -93,9 +93,9 @@ class StorageControllerTest : S3StorageBaseTest() {
         val generatedBody = mapper.readTree(generatedResponse.body)
 
         assertTrue(generatedResponse.statusCode.is5xxServerError)
-        assertEquals(false, generatedBody.get("success").booleanValue)
-        assertEquals("errorMessage", generatedBody.get("error").textValue)
-        assertTrue(generatedBody.get("uuid").textValue.matches(Regex("\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}")))
+        assertEquals(false, generatedBody.get("success").booleanValue())
+        assertEquals("errorMessage", generatedBody.get("error").textValue())
+        assertTrue(generatedBody.get("uuid").textValue().matches(Regex("\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}")))
 
     }
 
@@ -141,9 +141,9 @@ class StorageControllerTest : S3StorageBaseTest() {
         val generatedBody = mapper.readTree(generatedResponse.body!!.get(0))
 
         assertTrue(generatedResponse.statusCode.is5xxServerError)
-        assertEquals(false, generatedBody.get("success").booleanValue)
-        assertEquals("errorMessage", generatedBody.get("error").textValue)
-        assertTrue(generatedBody.get("uuid").textValue.matches(Regex("\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}")))
+        assertEquals(false, generatedBody.get("success").booleanValue())
+        assertEquals("errorMessage", generatedBody.get("error").textValue())
+        assertTrue(generatedBody.get("uuid").textValue().matches(Regex("\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}")))
     }
 
     @Test
@@ -175,7 +175,7 @@ class StorageControllerTest : S3StorageBaseTest() {
         val generatedBody = ObjectMapper().readTree(generatedResponse.body)
 
         assertTrue(generatedResponse.statusCode.is4xxClientError)
-        assertEquals(false, generatedBody.get("success").booleanValue)
+        assertEquals(false, generatedBody.get("success").booleanValue())
 
         val generatedResponse2 = storageController.listDocuments("12345678910___path")
         assertEquals(listOf<String>(), generatedResponse2.body!!)
@@ -194,8 +194,8 @@ class StorageControllerTest : S3StorageBaseTest() {
         val generatedBody = ObjectMapper().readTree(generatedResponse.body)
 
         assertTrue(generatedResponse.statusCode.is5xxServerError)
-        assertEquals(false, generatedBody.get("success").booleanValue)
-        assertEquals("errorMessage", generatedBody.get("error").textValue)
-        assertTrue(generatedBody.get("uuid").textValue.matches(Regex("\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}")))
+        assertEquals(false, generatedBody.get("success").booleanValue())
+        assertEquals("errorMessage", generatedBody.get("error").textValue())
+        assertTrue(generatedBody.get("uuid").textValue().matches(Regex("\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}")))
     }
 }

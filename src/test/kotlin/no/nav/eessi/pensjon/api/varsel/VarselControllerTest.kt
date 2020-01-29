@@ -1,5 +1,6 @@
 package no.nav.eessi.pensjon.api.varsel
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.nhaarman.mockitokotlin2.doNothing
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.doThrow
@@ -9,7 +10,6 @@ import com.nhaarman.mockitokotlin2.whenever
 import no.nav.eessi.pensjon.services.varsel.VarselBaseTest
 import no.nav.eessi.pensjon.services.varsel.VarselServiceException
 import no.nav.eessi.pensjon.utils.successBody
-import org.codehaus.jackson.map.ObjectMapper
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -52,9 +52,9 @@ class VarselControllerTest : VarselBaseTest() {
         val generatedBody = ObjectMapper().readTree(generatedResponse.body)
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, generatedResponse.statusCode)
-        assertEquals(false, generatedBody.get("success").booleanValue)
-        assertEquals(e.message, generatedBody.get("error").textValue)
-        assertTrue(generatedBody.get("uuid").textValue.matches(Regex("\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}")))
+        assertEquals(false, generatedBody.get("success").booleanValue())
+        assertEquals(e.message, generatedBody.get("error").textValue())
+        assertTrue(generatedBody.get("uuid").textValue().matches(Regex("\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}")))
     }
 
     @Test

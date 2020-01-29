@@ -1,8 +1,8 @@
 package no.nav.eessi.pensjon.api.login
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import no.nav.security.oidc.api.Unprotected
 import no.nav.security.oidc.test.support.spring.TokenGeneratorConfiguration
-import org.codehaus.jackson.map.ObjectMapper
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -48,7 +48,7 @@ class LocalLoginController {
                 String::class.java)
 
         val body = ObjectMapper().readTree(cookieResult.body)
-        val cookie = Cookie(body.get("name").textValue, body.get("value").textValue)
+        val cookie = Cookie(body.get("name").textValue(), body.get("value").textValue())
 
         logger.debug("Redirecting back to frontend: $redirectTo")
         httpServletResponse.addCookie(cookie)
