@@ -13,8 +13,30 @@ buildscript {
         openhtmltopdfVersion = '1.0.0'
     }
     repositories {
-        maven {
-            url "https://repo.adeo.no/repository/maven-central"
+
+        if (project.hasProperty('github')) {
+            mavenCentral()
+
+            maven {
+                url "https://maven.pkg.github.com/navikt/maven-release"
+                credentials {
+                    username = "token"
+                    password = "$System.env.GITHUB_TOKEN"
+                }
+            }
+
+            maven {
+                credentials {
+                    username = "token"
+                    password = "$System.env.GITHUB_TOKEN"
+                }
+
+                setUrl("https://maven.pkg.github.com/navikt/tjenestespesifikasjoner")
+            }
+        } else {
+            maven {
+                url "https://repo.adeo.no/repository/maven-central"
+            }
         }
     }
     dependencies {
@@ -68,11 +90,16 @@ jar {
 
 dependencies {
 
-    //NAV
-    implementation("no.nav.tjenester:nav-person-v3-tjenestespesifikasjon:${personV3Version}")
-    implementation('no.nav.meldinger.virksomhet:nav-virksomhet-varsel-v1-meldingsdefinisjon:1.1.1:jaxb')
-    implementation("no.nav.tjenester.fim:nav-fim-behandleJournal-v3-tjenestespesifikasjon:3.0.2:jaxws")
-
+    // Tjenestespesifikasjoner
+    if (project.hasProperty('github')) {
+        compile("no.nav.tjenestespesifikasjoner:person-v3-tjenestespesifikasjon:1.2020.01.13-12.13-a8a32ba1c072")
+        implementation('no.nav.meldinger.virksomhet:nav-virksomhet-varsel-v1-meldingsdefinisjon:1.2020.01.27-14.53-7065a2d75840')
+        implementation("no.nav.tjenester.fim:nav-fim-behandleJournal-v3-tjenestespesifikasjon:1.2020.01.27-14.53-7065a2d75840")
+    } else {
+        implementation("no.nav.tjenester:nav-person-v3-tjenestespesifikasjon:${personV3Version}")
+        implementation('no.nav.meldinger.virksomhet:nav-virksomhet-varsel-v1-meldingsdefinisjon:1.1.1:jaxb')
+        implementation("no.nav.tjenester.fim:nav-fim-behandleJournal-v3-tjenestespesifikasjon:3.0.2:jaxws")
+    }
 
     // Spring
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -171,15 +198,33 @@ dependencies {
 }
 
 repositories {
-    maven {
-        name 'Confluent maven repo'
-        url 'http://packages.confluent.io/maven/'
-    }
-    maven {
-        url "https://repo.adeo.no/repository/maven-central"
-    }
-    maven {
-        url "https://repo.adeo.no/repository/maven-releases/"
+
+    if (project.hasProperty('github')) {
+        mavenCentral()
+
+        maven {
+            url "https://maven.pkg.github.com/navikt/maven-release"
+            credentials {
+                username = "token"
+                password = "$System.env.GITHUB_TOKEN"
+            }
+        }
+
+        maven {
+            credentials {
+                username = "token"
+                password = "$System.env.GITHUB_TOKEN"
+            }
+
+            setUrl("https://maven.pkg.github.com/navikt/tjenestespesifikasjoner")
+        }
+    } else {
+        maven {
+            url "https://repo.adeo.no/repository/maven-central"
+        }
+        maven {
+            url "https://repo.adeo.no/repository/maven-releases"
+        }
     }
 }
 
