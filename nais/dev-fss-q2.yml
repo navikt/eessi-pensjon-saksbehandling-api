@@ -10,7 +10,7 @@ spec:
     - name: NAV_TRUSTSTORE_KEYSTOREALIAS
       value: na
     - name: EESSIFAGMODULSERVICE_URL
-      value: https://eessi-fagmodul-q2.nais.preprod.local/
+      value: https://eessi-pensjon-fagmodul-q2.nais.preprod.local/
     - name: SPRING_PROFILES_ACTIVE
       value: test,fss
     - name: EESSI_PENSJON_WHITELIST_USERS

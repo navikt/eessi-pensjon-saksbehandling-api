@@ -12,7 +12,7 @@ management:
     prometheus.enabled: true
   metrics.web.server.auto-time-requests: true
 
-eessifagmodulservice.url: 'http://eessi-fagmodul/'
+eessifagmodulservice.url: 'http://eessi-pensjon-fagmodul/'
 
 eessi.pensjon.frontend.api:
   varsel.tittel: 'Ny elektronisk løsning fra NAV'
