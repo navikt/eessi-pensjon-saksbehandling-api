@@ -6,6 +6,7 @@ metadata:
   labels:
     team: eessipensjon
 spec:
+  webproxy: true
   env:
     - name: NAV_TRUSTSTORE_KEYSTOREALIAS
       value: na
