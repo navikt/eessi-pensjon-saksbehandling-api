@@ -21,8 +21,8 @@ class LdapConfig {
     private val ldapUsername: String? = null
     @Value("\${ldap.domain}")
     private val ldapDomain: String? = null
-    @Value("\${ldap.password}")
-    private val ldapPassword: String? = null
+  //  @Value("\${ldap.password}")
+ //   private val ldapPassword: String? = null
     @Value("\${ldap.basedn}")
     private val ldapBasedn: String? = null
 
@@ -33,7 +33,7 @@ class LdapConfig {
         environment[Context.INITIAL_CONTEXT_FACTORY] = "com.sun.jndi.ldap.LdapCtxFactory"
         environment[Context.PROVIDER_URL] = ldapUrl!!
         environment[Context.SECURITY_AUTHENTICATION] = "simple"
-        environment[Context.SECURITY_CREDENTIALS] = ldapPassword!!
+        environment[Context.SECURITY_CREDENTIALS] = ""
         environment[Context.SECURITY_PRINCIPAL] = "$ldapUsername@$ldapDomain"
 
         val searchBase = "OU=Users,OU=NAV,OU=BusinessUnits," + ldapBasedn!!
