@@ -18,7 +18,7 @@ private val logger = LoggerFactory.getLogger(WhitelistService::class.java)
 @Service
 class WhitelistService(
     val storageService: StorageService,
-    @Value("\${eessi.pensjon.whitelist.users}") var newUsersToWhitelist: List<String>,
+    @Value("\${whitelist_users}") var newUsersToWhitelist: List<String>,
     @Value("\${eessi.pensjon.frontend.api.s3.whitelist.key.ending}") var whitelistEnding: String,
     @Value("\${eessi.pensjon.frontend.api.s3.personidentifier.separator}") var personIdentifierSeparator: String,
     @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())

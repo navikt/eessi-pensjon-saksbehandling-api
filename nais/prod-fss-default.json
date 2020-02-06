@@ -1,3 +1,4 @@
 {
-  "serviceuserkv": "/serviceuser/data/prod/srveessipensjon"
+  "serviceuserkv": "/serviceuser/data/prod/srveessipensjon",
+  "appsecrets": "/kv/prod/fss/eessi-pensjon-saksbehandling-api/default"
 }

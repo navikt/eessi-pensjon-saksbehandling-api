@@ -31,6 +31,13 @@ then
     export isso_agent_password=$(cat /var/run/secrets/nais.io/appsecrets/isso_agent_password)
 fi
 
+echo "Sjekker whitelist_users"
+if test -f /var/run/secrets/nais.io/appsecrets/whitelist_users;
+then
+  echo "Setter whitelist_users"
+    export whitelist_users=$(cat /var/run/secrets/nais.io/appsecrets/whitelist_users)
+fi
+
 #Vault path
 #/secrets/credential/dev/eessi-pensjon-fss
 

@@ -13,8 +13,6 @@ spec:
       value: http://eessi-pensjon-fagmodul/
     - name: SPRING_PROFILES_ACTIVE
       value: test,fss
-    - name: EESSI_PENSJON_WHITELIST_USERS
-      value: 01065201794,02015826862
     - name: PENSJON_UTLAND_WS_ALLOWED_ORIGINS_URL
       value: https://pensjon-utland-q2.nais.preprod.local
     - name: RINA_HOST_URL
