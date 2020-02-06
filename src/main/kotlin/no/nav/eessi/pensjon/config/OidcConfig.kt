@@ -44,7 +44,7 @@ class OidcConfig : WebMvcConfigurer {
     @Value("\${redirectscheme}")
     lateinit var redirectScheme: String
 
-    @Value("\${FASIT_ENVIRONMENT_NAME}")
+    @Value("\${ENVCLASS}")
     lateinit var fasitEnvironmentName: String
 
     var cookieDomain: String = "localhost"

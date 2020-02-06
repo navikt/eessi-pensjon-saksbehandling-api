@@ -24,7 +24,7 @@ class S3Storage(private val s3: AmazonS3) : StorageService {
     @Value("\${eessi.pensjon.frontend.api.s3.bucket.name}")
     lateinit var bucketname: String
 
-    @Value("\${FASIT_ENVIRONMENT_NAME}")
+    @Value("\${ENVCLASS}")
     lateinit var fasitEnvironmentName: String
 
     fun getBucketName(): String {

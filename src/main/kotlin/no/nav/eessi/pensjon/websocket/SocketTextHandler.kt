@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap
 @Component
 class SocketTextHandler : TextWebSocketHandler() {
 
-    @Value("\${FASIT_ENVIRONMENT_NAME}")
+    @Value("\${ENVCLASS}")
     lateinit var fasitEnvironmentName: String
 
     private val logger = LoggerFactory.getLogger(TextWebSocketHandler::class.java)

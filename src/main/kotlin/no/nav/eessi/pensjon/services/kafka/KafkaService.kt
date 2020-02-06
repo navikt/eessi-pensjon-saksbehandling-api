@@ -17,7 +17,7 @@ class KafkaService(val kafkaTemplate: KafkaTemplate<String, String>,
     @Value("\${submitTopic}")
     lateinit var submissionReceivedTopicPrefix: String
 
-    @Value("\${FASIT_ENVIRONMENT_NAME}")
+    @Value("\${ENVCLASS}")
     lateinit var topicPostfix: String
 
 

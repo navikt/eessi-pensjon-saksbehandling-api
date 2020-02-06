@@ -63,8 +63,8 @@ srveessipensjon:
 
 eessi.pensjon.whitelist.users:
 
-APP_NAME: 'eessi-pensjon-saksbehandling-api'
-FASIT_ENVIRONMENT_NAME: 'test'
+NAIS_APP_NAME: 'eessi-pensjon-saksbehandling-api'
+ENVCLASS: 'test'
 
 isso.agent.password: 'somepass'
 rina_host.url: 'someurl'

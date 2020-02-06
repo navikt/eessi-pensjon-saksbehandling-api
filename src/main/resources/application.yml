@@ -28,9 +28,9 @@ no.nav:
       proxyurl:
       cookiename: 'eessipensjon-idtoken'
       discoveryurl: '${OPENIDCONNECT_URL}/oauth2/.well-known/openid-configuration'
-      accepted_audience: 'eessi-pensjon-frontend-api-fss-${FASIT_ENVIRONMENT_NAME}'
+      accepted_audience: 'eessi-pensjon-frontend-api-fss-${ENVCLASS}'
 
-isso.agentname: '${APP_NAME}-${FASIT_ENVIRONMENT_NAME}'
+isso.agentname: '${NAIS_APP_NAME}-${ENVCLASS}'
 
 http.proxy.parametername: 'dontuse.proxy'
 redirectscheme: 'https'
