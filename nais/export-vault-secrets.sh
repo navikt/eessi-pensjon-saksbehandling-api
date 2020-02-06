@@ -15,6 +15,16 @@ then
 fi
 
 #Vault path
+#/kv/preprod/fss/eessi-pensjon-frontend-api-fss/q2
+
+echo "Sjekker eessi_pensjon_s3_crypto_password"
+if test -f /var/run/secrets/nais.io/appsecrets/eessi_pensjon_s3_crypto_password;
+then
+  echo "Setter eessi_pensjon_s3_crypto_password"
+    export eessi_pensjon_s3_crypto_password=$(cat /var/run/secrets/nais.io/appsecrets/eessi_pensjon_s3_crypto_password)
+fi
+
+#Vault path
 #/secrets/credential/dev/eessi-pensjon-fss
 
 echo "Sjekker eessi_pensjon_frontend_api_s3_creds_password"

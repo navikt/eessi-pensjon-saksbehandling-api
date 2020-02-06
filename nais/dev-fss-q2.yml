@@ -43,8 +43,6 @@ spec:
       value: 0090b6e1-ffcc-4c37-bc21-049f7d1f0fe5
     - name: EESSIPEN_EUX_RINA_URL
       value: https://eux-rina-api-q2.nais.preprod.local/cpi
-    - name: AKTOERREGISTER_API_V1_DESCRIPTION
-      value: Versjon 1 av REST-API for aktoerregisteret
     - name: AKTOERREGISTER_API_V1_URL
       value: https://app-q2.adeo.no/aktoerregister/api/v1
     - name: EESSI_PENSJON_FRONTEND_API_FSS_OIDC_ISSUERURL
