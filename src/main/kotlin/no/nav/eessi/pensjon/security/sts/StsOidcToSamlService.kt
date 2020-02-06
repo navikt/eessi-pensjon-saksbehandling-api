@@ -24,10 +24,10 @@ class StsOidcToSamlService {
     @Value("\${security-token-service-token.url}")
     lateinit var baseUrl: String
 
-    @Value("\${srveessipensjon.username}")
+    @Value("\${srvusername}")
     lateinit var username: String
 
-    @Value("\${srveessipensjon.password}")
+    @Value("\${srvpassword}")
     lateinit var password: String
 
     // Only requestSamlPolicyNoTransportBinding.xml on localhost, should use the requestSamlPolicy.xml with transport binding https when in production.

@@ -19,10 +19,10 @@ class KafkaConfig {
     @Value("\${app.name}")
     lateinit var appName: String
 
-    @Value("\${srveessipensjon.username}")
+    @Value("\${srvusername}")
     lateinit var username: String
 
-    @Value("\${srveessipensjon.password}")
+    @Value("\${srvpassword}")
     lateinit var password: String
 
     fun producerFactory(): DefaultKafkaProducerFactory<String, String> {

@@ -54,12 +54,8 @@ eessi.pensjon.frontend.api:
     bucket.name: 'eessipensjon'
     personidentifier.separator: '___'
 
-srveessipensjon:
-  username: "someuser"
-  password: "somepass"
-
-#srvusername: "someuser"
-#srvpassword: "somepass"
+srvusername: 'someuser'
+srvpassword: 'somepass'
 
 eessi.pensjon.whitelist.users:
 
