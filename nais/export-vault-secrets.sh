@@ -24,6 +24,13 @@ then
     export eessi_pensjon_s3_crypto_password=$(cat /var/run/secrets/nais.io/appsecrets/eessi_pensjon_s3_crypto_password)
 fi
 
+echo "Sjekker isso_agent_password"
+if test -f /var/run/secrets/nais.io/appsecrets/isso_agent_password;
+then
+  echo "Setter isso_agent_password"
+    export isso_agent_password=$(cat /var/run/secrets/nais.io/appsecrets/isso_agent_password)
+fi
+
 #Vault path
 #/secrets/credential/dev/eessi-pensjon-fss
 
