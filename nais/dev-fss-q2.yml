@@ -6,12 +6,11 @@ metadata:
   labels:
     team: eessipensjon
 spec:
-  webproxy: true
   env:
     - name: NAV_TRUSTSTORE_KEYSTOREALIAS
       value: na
-    - name: EESSIFAGMODULSERVICE_URL
-      value: https://eessi-pensjon-fagmodul-q2.nais.preprod.local/
+    - name: EESSI_PENSJON_FAGMODUL_URL
+      value: http://eessi-pensjon-fagmodul/
     - name: SPRING_PROFILES_ACTIVE
       value: test,fss
     - name: EESSI_PENSJON_WHITELIST_USERS
@@ -21,7 +20,7 @@ spec:
     - name: RINA_HOST_URL
       value: rina-ss1-q.adeo.no
     - name: S3_FSS_URL
-      value: http://objectstore.rook-ceph
+      value: http://objectstore.rook-ceph.svc.nais.local
     - name: NAV_DOMAIN_URL
       value: nais.preprod.local
     - name: OPENIDCONNECT_URL

@@ -27,7 +27,7 @@ class RestTemplateConfig(val restTemplateBuilder: RestTemplateBuilder,
                          val securityTokenExchangeService: StsSystemOidcService
 ) {
 
-    @Value("\${eessifagmodulservice.url}")
+    @Value("\${eessi_pensjon_fagmodul_url}")
     lateinit var fagmodulUrl: String
 
     @Value("\${eessipen-eux-rina.url}")
