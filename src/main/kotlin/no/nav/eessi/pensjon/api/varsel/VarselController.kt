@@ -6,7 +6,7 @@ import no.nav.eessi.pensjon.services.varsel.VarselService
 import no.nav.eessi.pensjon.services.varsel.VarselServiceException
 import no.nav.eessi.pensjon.utils.errorBody
 import no.nav.eessi.pensjon.utils.successBody
-import no.nav.security.oidc.api.Unprotected
+import no.nav.security.oidc.api.Protected
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -15,7 +15,7 @@ import java.util.*
 
 private val logger = LoggerFactory.getLogger(VarselController::class.java)
 
-@Unprotected
+@Protected
 @RestController
 @RequestMapping("/api/varsel")
 class VarselController(val varselService: VarselService,
