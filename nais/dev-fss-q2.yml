@@ -106,5 +106,7 @@ spec:
     paths:
       - kvPath: {{serviceuserkv}}
         mountPath: /var/run/secrets/nais.io/srveessipensjon
+      - kvPath: {{appsecrets}}
+        mountPath: /var/run/secrets/nais.io/appsecrets
       - kvPath: credential/data/dev/eessi-pensjon-fss
         mountPath: /var/run/secrets/nais.io/appcredentials
