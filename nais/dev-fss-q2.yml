@@ -85,6 +85,8 @@ spec:
       value: ldaps://ldapgw.preprod.local
     - name: LDAP_USERNAME
       value: srvSSOLinux
+    - name: ENVCLASS
+      value: q2
   image: {{ image }}
   ingresses:
     - https://eessi-pensjon-saksbehandling-api-q2.nais.preprod.local
