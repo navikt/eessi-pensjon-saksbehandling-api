@@ -75,6 +75,8 @@ spec:
       value: ldaps://ldapgw.preprod.local
     - name: ENVCLASS
       vaue: q2
+    - name: EESSI_PENSJON_FRONTEND_API_S3_CREDS_USERNAME
+      value: 879WUUD2HMZ041GBNN4B
   image: {{ image }}
   ingresses:
     - https://eessi-pensjon-saksbehandling-api-q2.nais.preprod.local

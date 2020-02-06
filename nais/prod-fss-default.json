@@ -1,4 +1,3 @@
 {
-  "cluster": "prod",
   "serviceuserkv": "/serviceuser/data/prod/srveessipensjon"
 }
