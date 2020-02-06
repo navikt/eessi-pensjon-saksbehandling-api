@@ -34,7 +34,7 @@ class AktoerregisterService(val aktoerregisterRestTemplate: RestTemplate,
 
     private val logger = LoggerFactory.getLogger(AktoerregisterService::class.java)
 
-    @Value("\${app.name}")
+    @Value("\${NAIS_APP_NAME}")
     lateinit var appName: String
 
     fun hentGjeldendeNorskIdentForAktorId(aktorid: String): String {

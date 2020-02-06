@@ -1,7 +1,6 @@
 server:
   port: 8080
 
-app.name: test2
 app:
   name: TEST
   version: 0.1

@@ -5,7 +5,7 @@
    |  _)|  _) \__ \\__ \| |  |  _)|   / (_) )   | | |     \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
    \ ___)\___)|___/|___/| |  |_|  |_|_\\___/|_\_| |_|      '  |____| .__|_| |_|_| |_\__, | / / / /
 ========================|_|========================================|_|==============|___/=/_/_/_/==
-  EESSI-APP : ${app.name}:${app.version}               :: Spring Boot ::      (${spring-boot.version})
+  EESSI-APP : ${NAIS_APP_NAME}:${app.version}               :: Spring Boot ::      (${spring-boot.version})
 
                -=<>=- Electronic Exchange of Social Security Information  -=<>=-
 

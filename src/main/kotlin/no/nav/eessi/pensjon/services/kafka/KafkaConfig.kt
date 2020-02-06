@@ -16,7 +16,7 @@ class KafkaConfig {
     @Value("\${kafka.brokers.url}")
     lateinit var brokers: String
 
-    @Value("\${app.name}")
+    @Value("\${NAIS_APP_NAME}")
     lateinit var appName: String
 
     @Value("\${srvusername}")
