@@ -44,7 +44,7 @@ jobs:
         run: |
           ./gradlew -Pgithub test build
           docker build --tag ${{ env.IMAGE }} .
-          docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${secrets.DISPATCH_TOKEN}
+          docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${{ secrets.DISPATCH_TOKEN }}
           docker push ${{ env.IMAGE }}
 
       # DEPLOYER TIL NAIS
