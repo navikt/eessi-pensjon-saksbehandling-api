@@ -37,6 +37,12 @@ jobs:
       - name: 'Set Image'
         run: echo "::set-env name=IMAGE::docker.pkg.github.com/${{ github.repository }}/eessi-pensjon-saksbehandling-api:${{ steps.previoustag.outputs.tag }}"
 
+      - name: Check API rate limit
+        run: |
+          curl -s "https://api.github.com/rate_limit" -H "Authorization: token $GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       # BYGGER DOCKER CONTAINER
       - name: 'Build and publish Docker image'
         env:
