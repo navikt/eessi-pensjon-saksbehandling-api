@@ -35,7 +35,7 @@ jobs:
 
       # OPPRETTER IMAGE VARIABEL MED VERSJONSNUMMER
       - name: 'Set Image'
-        run: echo "::set-env name=IMAGE::docker.pkg.github.com/${{ github.repository }}/eessi-pensjon-saksbehandling-api:${{ steps.previoustag.outputs.tag }}"
+        run: echo "::set-env name=IMAGE::github-package-registry-mirror.gc.nav.no/cached/maven-release/eessi-pensjon-saksbehandling-api:${{ steps.previoustag.outputs.tag }}"
 
       # BYGGER DOCKER CONTAINER
       - name: 'Build and publish Docker image'
@@ -44,7 +44,7 @@ jobs:
         run: |
           ./gradlew -Pgithub test build
           docker build --tag ${{ env.IMAGE }} .
-          docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
+          docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${DISPATCH_TOKEN}
           docker push ${{ env.IMAGE }}
 
       # DEPLOYER TIL NAIS
