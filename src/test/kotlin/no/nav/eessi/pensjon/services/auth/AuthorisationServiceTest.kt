@@ -8,19 +8,19 @@ class AuthorisationServiceTest {
 
     // Tilgang til EESSI-Pensjon
 
-     @Test
-     fun `Gitt en pensjonsaksbehandler med utenlandstilgang når tilgang blir etterspurt så returner True`() {
+    @Test
+    fun `Gitt en pensjonsaksbehandler med utenlandstilgang når tilgang blir etterspurt så returner True`() {
 
-         val autorisasjonsservice = AuthorisationService()
-         val roller = listOf(AdRolle.PENSJON_UTLAND,
-             AdRolle.PENSJON_SAKSBEHANDLER,
-             AdRolle.PENSJON_STRENGT_FORTROLIG)
+        val autorisasjonsservice = AuthorisationService()
+        val roller = listOf(AdRolle.PENSJON_UTLAND,
+            AdRolle.PENSJON_SAKSBEHANDLER,
+            AdRolle.PENSJON_STRENGT_FORTROLIG, AdRolle.EESSI_BASIS)
 
-         val tilgangEessipensjon = autorisasjonsservice.harTilgangTilEessiPensjon(roller)
+        val tilgangEessipensjon = autorisasjonsservice.harTilgangTilEessiPensjon(roller)
 
-         assertTrue(tilgangEessipensjon)
+        assertTrue(tilgangEessipensjon)
 
-     }
+    }
 
     @Test
     fun `Gitt en saksbehandler som ikke har tilgang til utland Når tilgang blir etterspurt så returner FALSE`(){
@@ -252,22 +252,22 @@ class AuthorisationServiceTest {
         assertTrue(harTilgangTilBruker)
     }
 
-        @Test
-        fun `Gitt saksbehandler har tilgang kode 6 og 7 OG bruker er merket strengt fortrolig SÅ returner TRUE`(){
-            val autorisasjonsservice = AuthorisationService()
-            val roller = listOf(AdRolle.GOSYS_FORTROLIG,
-                AdRolle.GOSYS_STRENGT_FORTROLIG,
-                AdRolle.PENSJON_FORTROLIG,
-                AdRolle.PENSJON_STRENGT_FORTROLIG)
+    @Test
+    fun `Gitt saksbehandler har tilgang kode 6 og 7 OG bruker er merket strengt fortrolig SÅ returner TRUE`(){
+        val autorisasjonsservice = AuthorisationService()
+        val roller = listOf(AdRolle.GOSYS_FORTROLIG,
+            AdRolle.GOSYS_STRENGT_FORTROLIG,
+            AdRolle.PENSJON_FORTROLIG,
+            AdRolle.PENSJON_STRENGT_FORTROLIG)
 
-            val brukerAnsattINav = false
-            val adressesperre = Adressesperre.STRENGT_FORTROLIG_ADRESSE
-            val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBrukerISaken(
-                roller,
-                brukerAnsattINav,
-                adressesperre)
+        val brukerAnsattINav = false
+        val adressesperre = Adressesperre.STRENGT_FORTROLIG_ADRESSE
+        val harTilgangTilBruker = autorisasjonsservice.harTilgangTilBrukerISaken(
+            roller,
+            brukerAnsattINav,
+            adressesperre)
 
-            assertTrue(harTilgangTilBruker)
+        assertTrue(harTilgangTilBruker)
     }
 
     @Test

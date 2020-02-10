@@ -3,6 +3,7 @@ package no.nav.eessi.pensjon.api.userinfo
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import no.nav.eessi.pensjon.logging.AuditLogger
 import no.nav.eessi.pensjon.metrics.MetricsHelper
+import no.nav.eessi.pensjon.services.auth.EessiPensjonTilgang
 import no.nav.eessi.pensjon.services.whitelist.WhitelistService
 import no.nav.eessi.pensjon.utils.getClaims
 import no.nav.eessi.pensjon.utils.mapAnyToJson
@@ -34,6 +35,7 @@ class UserInfoController(
      *
      *  @return userinfo containing: subject, role and allowed
      */
+    @EessiPensjonTilgang
     @GetMapping("/userinfo")
     fun getUserInfo(): ResponseEntity<String> {
         logger.info("Henter userinfo")
@@ -64,11 +66,11 @@ class UserInfoController(
      *
      * @return whitelisted
      */
+    @EessiPensjonTilgang
     @GetMapping("/whitelisted")
     fun checkWhitelist(): Boolean {
         logger.info("Sjekker om brukeren er whitelistet")
-        val personIdentifier = getClaims(oidcRequestContextHolder).subject
-        return whitelistService.isPersonWhitelisted(personIdentifier.toUpperCase())
+        return true
     }
 }
 

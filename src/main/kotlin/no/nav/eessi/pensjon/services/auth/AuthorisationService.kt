@@ -1,6 +1,13 @@
 package no.nav.eessi.pensjon.services.auth
 
+import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Component
+
+@Component
 class AuthorisationService {
+
+    private val logger = LoggerFactory.getLogger(AuthorisationService::class.java)
+
 
     /**
      * Det er kun saksbehandlere i PESYS-PSAK som jobber på utenlandsområdet som skal ha tilgang til EESSI-Pensjon.
@@ -12,6 +19,7 @@ class AuthorisationService {
      * @param roller er hentet fra AD. Summen av roller beskriver hva en saksbehandler har tilgang til i PESYS.
      *               EESSI-Pensjon bruker de samme rollene som PESYS-PSAK gjør for å sjekke tilgang.
      */
+
     fun harTilgangTilEessiPensjon(roller: List<AdRolle>): Boolean {
         return roller.containsAll(Tilgang.EESSI_PENSJON.grupper)
     }
@@ -144,7 +152,34 @@ enum class AdRolle(val rollenavn: String) {
     GOSYS_STRENGT_FORTROLIG("0000-GA-GOSYS_KODE6"),
     PENSJON_STRENGT_FORTROLIG("0000-GA-Pensjon_KODE6"),
     GOSYS_FORTROLIG("0000-GA-GOSYS_KODE7"),
-    PENSJON_FORTROLIG("0000-GA-PENSJON_KODE7")
+    PENSJON_FORTROLIG("0000-GA-PENSJON_KODE7"),
+    EESSI_BASIS("0000-ga-eessi-basis"),
+    EESSI_BASIS_CLERK("0000-ga-eessi-clerk");
+
+    companion object {
+        /**
+         * Tar imot en liste av roller hentet fra AD og mapper de over til
+         * en liste av roller angitt som enum. Roller i AD som ikke brukes i tilgangskontrollen
+         * vil ikke bli mappet til en enum.
+         */
+        fun konverterAdRollerTilEnum(medlemAv: List<String>): List<AdRolle> {
+            val adRoller = arrayListOf<AdRolle>()
+            medlemAv.forEach {rolle ->
+                val adRolle = getAdRolle(rolle)
+                adRolle?.let {adRoller.add(adRolle)}
+            }
+            return adRoller
+        }
+
+        /**
+         * Tar imot en streng og finner frem til tilhørende enum
+         * som finnes i enum-classen AdRolle.
+         * Hvis det ikke finnes en tilhørende enum returneres NULL
+         */
+        fun getAdRolle(rollenavn: String): AdRolle? {
+            return values().find { it.rollenavn == rollenavn }
+        }
+    }
 }
 
 enum class Adressesperre(val adressesperre: String){
@@ -188,7 +223,7 @@ enum class SedPensjonstype(val pensjonstype: String){
  * Liste av roller som saksbehandler må ha i AD for å få tilgang til EESSI-Pensjon
  */
 enum class Tilgang(var grupper: List<AdRolle>) {
-    EESSI_PENSJON(listOf(AdRolle.PENSJON_UTLAND, AdRolle.PENSJON_SAKSBEHANDLER))
+    EESSI_PENSJON(listOf(AdRolle.PENSJON_UTLAND, AdRolle.PENSJON_SAKSBEHANDLER, AdRolle.EESSI_BASIS))
 }
 
 /**

@@ -1,20 +1,22 @@
 package no.nav.eessi.pensjon.services.ldap
 
 import org.slf4j.LoggerFactory
+import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
 import java.lang.IllegalArgumentException
 import java.util.regex.Pattern
 import javax.naming.directory.Attribute
 import javax.naming.directory.SearchResult
 
+@Profile("!integrationtest", "!test")
 @Service
-class LdapService(private val ldapKlient: LdapKlient) {
+class LdapService(private val ldapKlient: LdapKlient) : BrukerInformasjonService {
 
     // Pattern for NAV brukerident, f.eks Z123456
     private val IDENT_PATTERN = Pattern.compile("^[a-zA-Z][0-9]*")
     private val logger = LoggerFactory.getLogger(LdapInnlogging::class.java)
 
-    fun hentBrukerInformasjon(ident: String): BrukerInformasjon {
+    override fun hentBrukerInformasjon(ident: String): BrukerInformasjon {
         logger.info("Henter bruker-informasjon fra LDAP")
         if (ident.isEmpty()) {
             logger.warn("Brukerident mangler")

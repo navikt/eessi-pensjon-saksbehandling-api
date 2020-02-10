@@ -193,6 +193,12 @@ dependencies {
     implementation("org.apache.cxf:cxf-rt-ws-security:${cxfVersion}")
     implementation('org.jvnet.jaxb2_commons:jaxb2-basics-runtime:1.11.1')
 
+    // Kafka
+    testImplementation 'org.springframework.kafka:spring-kafka-test'
+    testCompileOnly('junit:junit:4.12') {
+        because "spring-kafka-test needs it - but we should not use it in our code"
+    }
+
     // LDAP
     implementation("org.springframework.ldap:spring-ldap-core")
     implementation("org.springframework.security:spring-security-ldap")

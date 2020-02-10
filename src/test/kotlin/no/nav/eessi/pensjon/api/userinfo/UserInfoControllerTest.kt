@@ -23,7 +23,7 @@ class UserInfoControllerTest : S3StorageBaseTest() {
     @Test fun `Calling UserInfoController|getUserInfo returns OK response`() {
         val usr =  UserInfoResponse(subject ="12345678910",
                 role ="BRUKER",
-                allowed = false,
+                allowed = true,
             expirationTime = 1531157178000
         )
         assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), userInfoController.getUserInfo())
@@ -34,16 +34,11 @@ class UserInfoControllerTest : S3StorageBaseTest() {
 
         val usr =  UserInfoResponse(subject ="A123456",
             role ="SAKSBEHANDLER",
-            allowed = false,
+            allowed = true,
             expirationTime = 1531157178000
         )
         assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), userInfoController2.getUserInfo())
 
-    }
-
-    @Test fun `Calling UserInfoController|checkWhitelist with no whitelist person returns false`() {
-        val generatedResponse = userInfoController.checkWhitelist()
-        assertFalse(generatedResponse)
     }
 
     @Test fun `Calling UserInfoController|getRole`() {
@@ -55,7 +50,7 @@ class UserInfoControllerTest : S3StorageBaseTest() {
     @Test fun CallingUserInfoController_getUserInfowithEXP() {
         val usr =  UserInfoResponse(subject ="12345678910",
             role ="BRUKER",
-            allowed = false,
+            allowed = true,
             expirationTime = 1531157178000
         )
         val result = userInfoController.getUserInfo()

@@ -11,7 +11,7 @@
 
     isso.agentname                  : ${isso.agentname}
     Frontend-UI                     : ${eessi-pensjon-frontend-ui.url}
-    s3_bucket                       : ${s3_bucket_link_url}
+    s3_url                          : ${s3_fss_url}
 
     Nav Tokensupport loginservice   : ${no.nav.security.oidc.issuer.loginservice.discoveryurl}
 
@@ -20,9 +20,10 @@
 
 
     Eessi Fagmodulservice           : ${eessifagmodulservice.url}
-    EUXBais                         : ${eessipen-eux-rina.url}
+    Essi pensjon fagmodul url       : ${eessi-pensjon-fagmodul.url}
+    Essi eux rina api               : ${eessipen-eux-rina.url}
     Rina Host                       : ${rina_host.url}
-    pensjon-mottak_channel          : ${pensjon.mottak.channel.name}
+    pensjon-mottak_channel          : ${submitTopic}
     varselservice                   : ${VARSELPRODUKSJON.VARSLINGER.queuename}
 
 

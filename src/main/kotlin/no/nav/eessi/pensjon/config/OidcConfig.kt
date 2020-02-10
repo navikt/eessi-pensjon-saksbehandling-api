@@ -2,6 +2,7 @@ package no.nav.eessi.pensjon.config
 
 import com.nimbusds.jose.JWSAlgorithm
 import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod
+import no.nav.eessi.pensjon.interceptor.AuthInterceptor
 import org.pac4j.core.client.Clients
 import org.pac4j.core.config.Config
 import org.pac4j.core.context.Cookie
@@ -13,6 +14,7 @@ import org.pac4j.oidc.config.OidcConfiguration
 import org.pac4j.oidc.profile.OidcProfile
 import org.pac4j.springframework.web.SecurityInterceptor
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
@@ -30,27 +32,32 @@ private val logger = LoggerFactory.getLogger(OidcConfig::class.java)
 class OidcConfig : WebMvcConfigurer {
 
     @Value("\${isso.agentname}")
-    lateinit var clientId: String
+    private lateinit var clientId: String
 
     @Value("\${isso.agent.password}")
-    lateinit var clientSecret: String
+    private lateinit var clientSecret: String
 
     @Value("\${no.nav.security.oidc.issuer.isso.discoveryurl}")
-    lateinit var discoveryUrl: String
+    private lateinit var discoveryUrl: String
 
     @Value("\${no.nav.security.oidc.issuer.isso.cookiename}")
-    lateinit var cookiename: String
+    private lateinit var cookiename: String
 
     @Value("\${redirectscheme}")
-    lateinit var redirectScheme: String
+    private lateinit var redirectScheme: String
 
     @Value("\${ENVCLASS}")
-    lateinit var fasitEnvironmentName: String
+    private lateinit var fasitEnvironmentName: String
+
+    @Autowired
+    private lateinit var authInterceptor: AuthInterceptor
 
     var cookieDomain: String = "localhost"
 
     override fun addInterceptors(registry: InterceptorRegistry) {
         registry.addInterceptor(securityInterceptor()).addPathPatterns("/openamlogin")
+        registry.addInterceptor(authInterceptor)
+
     }
 
     @Bean

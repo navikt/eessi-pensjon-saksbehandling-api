@@ -52,8 +52,7 @@ open class S3StorageBaseTest : BaseTest() {
                 "whitelisted",
                 "___"))
 
-        storageController = Mockito.spy(StorageController(s3storageService, generateMockSaksbehandlerLdapService(),
-            generateMockContextHolder()))
+        storageController = Mockito.spy(StorageController(s3storageService, generateMockContextHolder()))
     }
 
     @AfterEach fun teardown() {

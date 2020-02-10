@@ -21,6 +21,7 @@ class LdapServiceTest {
     @InjectMocks
     lateinit var ldapService: LdapService
 
+
     @Test
     fun `gitt en bruker med medlemskap i flere grupper når etterspør memberOf så returner en liste av CN feltet for gruppene`() {
         val attribute = BasicAttribute("memberOf")
@@ -34,10 +35,12 @@ class LdapServiceTest {
         assertEquals(2, brukerInfo.medlemAv.size)
         assertTrue(brukerInfo.medlemAv.contains("0000-GA-EnGruppe"))
         assertTrue(brukerInfo.medlemAv.contains("0000-GA-EnAnnenGruppe"))
+
+        assertEquals("0000-GA-EnAnnenGruppe", brukerInfo.medlemAv[1])
     }
 
     @Test
-    fun `gitt en tom ident når etterspør memberOf så kast illegalArguementException`() {
+    fun `gitt en tom ident når etterspør memberOf så kast illegalArgumentException`() {
         assertThrows<IllegalArgumentException> {
             ldapService.hentBrukerInformasjon("")
         }

@@ -5,7 +5,7 @@ import io.micrometer.core.annotation.Timed
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import no.nav.eessi.pensjon.logging.AuditLogger
 import no.nav.eessi.pensjon.metrics.MetricsHelper
-import no.nav.eessi.pensjon.services.ldap.LdapService
+import no.nav.eessi.pensjon.services.auth.EessiPensjonTilgang
 import no.nav.eessi.pensjon.services.storage.StorageService
 import no.nav.eessi.pensjon.utils.*
 import no.nav.security.oidc.api.Protected
@@ -22,14 +22,13 @@ import java.util.*
 @RestController
 @RequestMapping("/api/storage")
 class StorageController(private val storage: StorageService,
-                        private val ldapService: LdapService,
                         private val oidcRequestContextHolder: OIDCRequestContextHolder,
-                        @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(
-                            SimpleMeterRegistry())) {
+                        @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())) {
 
     private val logger = LoggerFactory.getLogger(StorageController::class.java)
     private val auditLogger = AuditLogger(oidcRequestContextHolder)
 
+    @EessiPensjonTilgang
     @Timed("s3.put")
     @PostMapping("/{path}")
     fun storeDocument(@PathVariable(required = true) path: String,
@@ -52,6 +51,7 @@ class StorageController(private val storage: StorageService,
         }
     }
 
+    @EessiPensjonTilgang
     @Timed("s3.get")
     @GetMapping(value = ["/get/{path}"], produces = [MediaType.APPLICATION_JSON_VALUE])
     fun getDocument(@PathVariable(required = true) path: String): ResponseEntity<String> {
@@ -72,6 +72,7 @@ class StorageController(private val storage: StorageService,
         }
     }
 
+    @EessiPensjonTilgang
     @Timed("s3.list")
     @GetMapping("/list/{prefix}")
     fun listDocuments(@PathVariable(required = true) prefix: String): ResponseEntity<List<String>> {
@@ -93,6 +94,7 @@ class StorageController(private val storage: StorageService,
         }
     }
 
+    @EessiPensjonTilgang
     @Timed("s3.delete")
     @DeleteMapping("/{path}")
     fun deleteDocument(@PathVariable(required = true) path: String): ResponseEntity<String> {
@@ -113,6 +115,7 @@ class StorageController(private val storage: StorageService,
         }
     }
 
+    @EessiPensjonTilgang
     @Timed("s3.delete")
     @DeleteMapping("/multiple/{path}")
     fun deleteMultipleDocuments(@PathVariable(required = true) path: String): ResponseEntity<String> {
