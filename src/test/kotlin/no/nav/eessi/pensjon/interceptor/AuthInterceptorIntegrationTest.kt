@@ -37,6 +37,7 @@ private const val SED_SENDT_TOPIC = "eessi-basis-sedSendt-v1"
 private const val SED_MOTTATT_TOPIC = "eessi-basis-sedMottatt-v1"
 private const val MOTTAK_TOPIC = "privat-eessipensjon-selvbetjeningsinfoMottatt-test"
 
+@Disabled
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = [ AuthInterceptorIntegrationTest.TestConfig::class])
 @ActiveProfiles("integrationtest")
 @Import(TokenGeneratorConfiguration::class)

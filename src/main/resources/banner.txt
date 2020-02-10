@@ -18,7 +18,6 @@
     Nav Tokensupport isso           : ${no.nav.security.oidc.issuer.isso.discoveryurl}
     Nav Tokensupport accept         : ${no.nav.security.oidc.issuer.isso.accepted_audience}
 
-
     Eessi Fagmodulservice           : ${eessifagmodulservice.url}
     Essi pensjon fagmodul url       : ${eessi-pensjon-fagmodul.url}
     Essi eux rina api               : ${eessipen-eux-rina.url}
