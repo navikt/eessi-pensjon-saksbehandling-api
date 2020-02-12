@@ -7,8 +7,6 @@ metadata:
     team: eessipensjon
 spec:
   env:
-    - name: NAV_TRUSTSTORE_KEYSTOREALIAS
-      value: na
     - name: EESSI_PENSJON_FAGMODUL_URL
       value: http://eessi-pensjon-fagmodul/
     - name: SPRING_PROFILES_ACTIVE
@@ -53,12 +51,8 @@ spec:
       value: https://isso-q.adeo.no:443/isso/oauth2/connect/jwk_uri
     - name: KAFKA_BOOTSTRAP_SERVERS_URL
       value: SSL://b27apvl00045.preprod.local:8443,SSL://b27apvl00046.preprod.local:8443,SSL://b27apvl00047.preprod.local:8443
-    - name: VIRKSOMHET_PERSON_V3_SECURITYTOKEN
-      value: SAML
     - name: VIRKSOMHET_PERSON_V3_ENDPOINTURL
       value: https://wasapp-q2.adeo.no/tpsws/ws/Person/v3
-    - name: VIRKSOMHET_PERSON_V3_WSDLURL
-      value: http://maven.adeo.no/nexus/content/groups/public/no/nav/tjenester/nav-person-v3-tjenestespesifikasjon/3.6.1/nav-person-v3-tjenestespesifikasjon-3.6.1.zip
     - name: LDAP_USER_BASEDN
       value: ou=NAV,ou=BusinessUnits,dc=preprod,dc=local
     - name: LDAP_SERVICEUSER_BASEDN
@@ -91,7 +85,7 @@ spec:
   liveness:
     path: /internal/isalive
     port: 8080
-    initialDelay: 60
+    initialDelay: 40
   port: 8080
   prometheus:
     enabled: true
@@ -99,7 +93,7 @@ spec:
   readiness:
     path: /internal/isready
     port: 8080
-    initialDelay: 60
+    initialDelay: 40
   replicas:
     min: 1
     max: 1
