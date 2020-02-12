@@ -63,6 +63,8 @@ spec:
       value: SASL_SSL://a01apvl00145.adeo.no:8443,SASL_SSL://a01apvl00146.adeo.no:8443,SASL_SSL://a01apvl00147.adeo.no:8443,SASL_SSL://a01apvl00149.adeo.no:8443
     - name: VIRKSOMHET_PERSON_V3_ENDPOINTURL
       value: https://wasapp.adeo.no/tpsws/ws/Person/v3
+    - name: EESSI_PENSJON_FRONTEND_API_S3_CREDS_USERNAME
+      value: 7XBV68T6HNRIE3FMB20C
     - name: LDAP_DOMAIN
       value: ADEO.NO
     - name: LDAP_BASEDN
