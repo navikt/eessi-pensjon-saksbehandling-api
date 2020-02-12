@@ -7,10 +7,8 @@ metadata:
     team: eessipensjon
 spec:
   env:
-    - name: NAV_TRUSTSTORE_KEYSTOREALIAS
-      value: na
     - name: EESSI_PENSJON_FAGMODUL_URL
-      value: http://eessi-pensjon-fagmodul/
+      value: http://eessi-fagmodul/
     - name: SPRING_PROFILES_ACTIVE
       value: prod,fss
     - name: PENSJON_UTLAND_WS_ALLOWED_ORIGINS_URL
@@ -18,7 +16,7 @@ spec:
     - name: RINA_HOST_URL
       value: rina-ss1.adeo.no
     - name: S3_FSS_URL
-      value: http://objectstore.rook-ceph
+      value: http://objectstore.rook-ceph.svc.nais.local
     - name: NAV_DOMAIN_URL
       value: nais.adeo.no
     - name: OPENIDCONNECT_URL
@@ -41,8 +39,6 @@ spec:
       value: 45104d6a-f5bc-4e8c-b352-4bbfc9381f25
     - name: EESSIPEN_EUX_RINA_URL
       value: https://eux-rina-api.nais.adeo.no/cpi
-    - name: AKTOERREGISTER_API_V1_DESCRIPTION
-      value: Versjon 1 av REST-API for aktoerregisteret
     - name: AKTOERREGISTER_API_V1_URL
       value: https://app.adeo.no/aktoerregister/api/v1
     - name: APPDYNAMICS_CONTROLLER_HOST_NAME
@@ -65,12 +61,8 @@ spec:
       value: eessi-pensjon-frontend-api-fss-p
     - name: KAFKA_BOOTSTRAP_SERVERS_URL
       value: SASL_SSL://a01apvl00145.adeo.no:8443,SASL_SSL://a01apvl00146.adeo.no:8443,SASL_SSL://a01apvl00147.adeo.no:8443,SASL_SSL://a01apvl00149.adeo.no:8443
-    - name: VIRKSOMHET_PERSON_V3_SECURITYTOKEN
-      value: SAML
     - name: VIRKSOMHET_PERSON_V3_ENDPOINTURL
       value: https://wasapp.adeo.no/tpsws/ws/Person/v3
-    - name: VIRKSOMHET_PERSON_V3_WSDLURL
-      value: http://maven.adeo.no/nexus/content/groups/public/no/nav/tjenester/nav-person-v3-tjenestespesifikasjon/3.6.1/nav-person-v3-tjenestespesifikasjon-3.6.1.zip
     - name: LDAP_DOMAIN
       value: ADEO.NO
     - name: LDAP_BASEDN
