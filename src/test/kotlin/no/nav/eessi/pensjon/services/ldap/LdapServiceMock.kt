@@ -52,14 +52,16 @@ class LdapServiceMock(): BrukerInformasjonService {
         // Alderspensjon - Saksbehandler
         if(ident.substring(0,1) == "A") {
             rolleListe.add("0000-GA-PENSJON_SAKSBEHANDLER")
-            rolleListe.add("0000-ga-eessi-basis")
+            rolleListe.add("0000-ga-eessi-clerk")
+            rolleListe.add("0000-ga-eessi-clerk-pensjon")
         }
 
         // Uføre - Saksbehandler
         if(ident.substring(0,1) == "U") {
             rolleListe.add("0000-GA-PENSJON_SAKSBEHANDLER")
             rolleListe.add("0000-GA-pensjon_ufore")
-            rolleListe.add("0000-ga-eessi-basis")
+            rolleListe.add("0000-ga-eessi-clerk")
+            rolleListe.add("0000-ga-eessi-clerk-pensjon")
         }
 
         // Utland

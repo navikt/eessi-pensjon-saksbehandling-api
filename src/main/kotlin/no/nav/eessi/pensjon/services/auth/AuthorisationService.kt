@@ -2,6 +2,7 @@ package no.nav.eessi.pensjon.services.auth
 
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+import java.awt.image.TileObserver
 
 @Component
 class AuthorisationService {
@@ -21,7 +22,11 @@ class AuthorisationService {
      */
 
     fun harTilgangTilEessiPensjon(roller: List<AdRolle>): Boolean {
+        logger.debug("Følgende roller MÅ ident ha for å få tilgang til EP:"+
+                Tilgang.EESSI_PENSJON.grupper.toString())
+
         return roller.containsAll(Tilgang.EESSI_PENSJON.grupper)
+
     }
 
     /**
@@ -153,8 +158,8 @@ enum class AdRolle(val rollenavn: String) {
     PENSJON_STRENGT_FORTROLIG("0000-GA-Pensjon_KODE6"),
     GOSYS_FORTROLIG("0000-GA-GOSYS_KODE7"),
     PENSJON_FORTROLIG("0000-GA-PENSJON_KODE7"),
-    EESSI_BASIS("0000-ga-eessi-basis"),
-    EESSI_BASIS_CLERK("0000-ga-eessi-clerk");
+    EESSI_CLERK("0000-ga-eessi-clerk"),
+    EESSI_CLERK_PENSJON("0000-ga-eessi-clerk-pensjon");
 
     companion object {
         /**
@@ -202,9 +207,9 @@ enum class PesysSakstype(val pesysSakstype: String) {
  * BUC-er som har spesielle tilgangsregler.
  */
 enum class Buctype(val buctype: String){
-    PBUC01_KRAV_OM_ALDER("PBUC01"),
-    PBUC02_KRAV_OM_ETTERLATTEPENSJON("PBUC02"),
-    PBUC03_KRAV_OM_UFORETRYGD("PBUC03")
+    PBUC01_KRAV_OM_ALDER("P_BUC_01"),
+    PBUC02_KRAV_OM_ETTERLATTEPENSJON("P_BUC_02"),
+    PBUC03_KRAV_OM_UFORETRYGD("P_BUC_03")
 }
 
 /**
@@ -223,7 +228,8 @@ enum class SedPensjonstype(val pensjonstype: String){
  * Liste av roller som saksbehandler må ha i AD for å få tilgang til EESSI-Pensjon
  */
 enum class Tilgang(var grupper: List<AdRolle>) {
-    EESSI_PENSJON(listOf(AdRolle.PENSJON_UTLAND, AdRolle.PENSJON_SAKSBEHANDLER, AdRolle.EESSI_BASIS))
+    EESSI_PENSJON(listOf(AdRolle.PENSJON_UTLAND, AdRolle.PENSJON_SAKSBEHANDLER,  AdRolle.EESSI_CLERK, AdRolle.EESSI_CLERK_PENSJON)),
+    //EESSI_PENSJON(listOf(AdRolle.PENSJON_UTLAND, AdRolle.PENSJON_SAKSBEHANDLER))
 }
 
 /**

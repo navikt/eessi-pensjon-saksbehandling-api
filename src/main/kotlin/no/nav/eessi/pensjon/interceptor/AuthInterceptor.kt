@@ -1,5 +1,7 @@
 package no.nav.eessi.pensjon.interceptor
 
+import com.fasterxml.jackson.core.type.TypeReference
+import no.nav.eessi.pensjon.logging.AuditLogger
 import no.nav.eessi.pensjon.services.auth.AdRolle
 import no.nav.eessi.pensjon.services.auth.AuthorisationService
 import no.nav.eessi.pensjon.services.auth.EessiPensjonTilgang
@@ -18,21 +20,15 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 @Component
-class AuthInterceptor(private val ldapService: BrukerInformasjonService) : HandlerInterceptor {
-
-    @Autowired
-    lateinit var whitelistService: WhitelistService
-
-    @Autowired
-    lateinit var authorisationService: AuthorisationService
-
-//    @Autowired
-//    lateinit var ldapService: BrukerInformasjonService
-
-    @Autowired
-    lateinit var oidcRequestContextHolder: OIDCRequestContextHolder
+class AuthInterceptor(private val ldapService: BrukerInformasjonService,
+    private val authorisationService: AuthorisationService,
+    private val oidcRequestContextHolder: OIDCRequestContextHolder,
+    private val auditLogger: AuditLogger) : HandlerInterceptor {
 
     private val logger = LoggerFactory.getLogger(AuthInterceptor::class.java)
+
+    private val regexNavident  = Regex("^[a-zA-Z]\\d{6}$")
+    private val regexBorger = Regex("^\\d{11}$")
 
     @Throws(Exception::class)
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
@@ -47,7 +43,9 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService) : Handl
                 return sjekkTilgangTilEessiPensjonTjeneste()
             }
         }
+
         return true
+
     }
 
 
@@ -65,14 +63,14 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService) : Handl
         // Er bruker det samme som saksbehandler eller er det en borger? Jeg ønsker saksbehandler
         val ident = getClaims(oidcRequestContextHolder).subject
         val expirationTime = getClaims(oidcRequestContextHolder).claimSet.expirationTime
-        logger.debug("Ident: $ident  Expire: $expirationTime")
 
-        val lengdeSaksbehandlerident = 7 // F.eks. "L123456"
-
+        logger.debug("Ident: $ident  Expire: $expirationTime Role: ${getRole(ident)}")
         logger.debug("Sjekke tilgang 1")
+
         // Bare saksbehandlere skal sjekkes om de har tilgang.
         // Brukere med fødselsnummer har tilgang til seg selv. Det er håndtert ved pålogging.
-        if (ident.length == lengdeSaksbehandlerident) {
+
+        if (ident.matches(regexNavident)) {
 
             logger.debug("Hente ut brukerinformasjon fra AD $ident")
 
@@ -81,24 +79,36 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService) : Handl
             val adRoller = AdRolle.konverterAdRollerTilEnum(brukerInformasjon.medlemAv)
 
             // Sjekk tilgang til EESSI-Pensjon
-            if(!authorisationService.harTilgangTilEessiPensjon(adRoller)){
+            if( authorisationService.harTilgangTilEessiPensjon(adRoller).not() ){
+
                 // Ikke tilgang til EESSI-Pensjon
                 logger.warn("Bruker har ikke korrekt tilganger vi avviser med UNAUTHORIZED")
+                auditLogger.log("sjekkTilgangTilEessiPensjonTjeneste, INGEN TILGANG")
                 throw AuthorisationIkkeTilgangTilEeessiPensjonException("Ikke tilgang til EESSI-Pensjon")
-            }
-            logger.debug("Tilgang til EESSI-Pensjon er i orden")
 
+            }
+            logger.debug("Saksbehandler tilgang til EESSI-Pensjon er i orden")
             // Sjekk tilgang til PESYS-SAK?
             // Hvordan får jeg tak i sakstypen?
-
             // Sjekk tilgang til BUC?
-
             // Sjekk tilgang til alle brukere i SED eller andre data
+            return true
+
+        } else {
+
+            logger.debug("Borger/systembruker tilgang til EESSI-Pensjon alltid i orden")
+            return true
 
         }
 
-        logger.debug("Sjekke tilgang 3")
-        return true
+    }
+
+    fun getRole(subject: String): String {
+        return when {
+            subject.matches(regexNavident) -> "SAKSBEHANDLER"
+            subject.matches(regexBorger) -> "BRUKER"
+            else -> "UNKNOWN"
+        }
     }
 
     /**
@@ -108,4 +118,5 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService) : Handl
     class AuthorisationIkkeTilgangTilEeessiPensjonException(message: String?) : Exception(message)
 
 }
+
 

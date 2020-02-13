@@ -314,6 +314,29 @@ class AuthInterceptorIntegrationTest() {
     }
 
     @Test
+    fun `Gitt at uføre saksbehandler har rollen Uføre, så skal det gis tilgang til EP (whitelisted)`() {
+        val request = HttpGet("http://localhost:$port/local/jwt?subject=U230067")
+
+        // When
+        val response = HttpClientBuilder.create().build().execute(request)
+        val token = String(response.entity.content.readBytes())
+
+        // Then
+        val getDocument = HttpGet("http://localhost:$port/api/whitelisted")
+        getDocument.setHeader("Authorization", "Bearer $token")
+
+        val handler: ResponseHandler<String> = BasicResponseHandler()
+
+        val responseGetDocument = HttpClientBuilder.create().build().execute(getDocument)
+        val body = handler.handleResponse(responseGetDocument)
+
+        Assertions.assertTrue(responseGetDocument != null)
+        Assertions.assertEquals("true", body)
+
+    }
+
+
+    @Test
     fun `Gitt at saksbehandler ikke har rollen Alderspensjon, så skal det ikke gis tilgang til EP`() {
         val request = HttpGet("http://localhost:$port/local/jwt?subject=Z000000")
 
@@ -387,6 +410,7 @@ class AuthInterceptorIntegrationTest() {
 
     }
 
+    //Mock StorageService da vi ikke skal teste selve s3 men kun tilgang eller ikke
     private class StorageServiceMock: StorageService {
         override fun list(path: String): List<String> {
             return listOf("")
