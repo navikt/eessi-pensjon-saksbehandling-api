@@ -62,15 +62,6 @@ eessi.pensjon.whitelist.users:
 
 NAIS_APP_NAME: 'eessi-pensjon-saksbehandling-api'
 
-#kafka:
-#  sedSendt:
-#    topic: eessi-basis-sedSendt-v1
-#    groupid: eessi-pensjon-group
-#  oppgave:
-#    topic: eessi-pensjon-oppgave-v1
-#    groupid: eessi-pensjon-group
-
-
 isso.agent.password: 'somepass'
 rina_host.url: 'http://localhost'
 kafka.brokers.url: '{spring.embedded.kafka.brokers}'

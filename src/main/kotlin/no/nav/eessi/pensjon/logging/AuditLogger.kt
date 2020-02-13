@@ -16,7 +16,6 @@ class AuditLogger(private val oidcRequestContextHolder: OIDCRequestContextHolder
     //brukerident: Z990638 tjenesten: getBucogSedView
     fun log(tjenesteFunctionName: String) {
         logger.info("brukerident: ${getSubject()} tjenesten: $tjenesteFunctionName")
-//        logger.info("brukerident: ${getSubjectfromToken()} tjenesten: $tjenesteFunctionName")
     }
 
     private fun getSubject(): String {
@@ -35,30 +34,5 @@ class AuditLogger(private val oidcRequestContextHolder: OIDCRequestContextHolder
         val issuer = context.issuers.first()
         return context.getClaims(issuer)
     }
-
-//    private fun getSubjectfromToken() : String {
-//
-//        return try {
-//            val context = oidcRequestContextHolder.oidcValidationContext
-//            val tokenContext = getTokenContext("isso")
-//            val issuer = tokenContext.issuer
-//            context.getClaims(issuer).subject
-//        } catch (ex: Exception) {
-//            logger.error("Brukerident ikke funnet")
-//            "n/a"
-//        }
-//    }
-//
-//    private fun getTokenContext(tokenKey: String): TokenContext {
-//        val context = oidcRequestContextHolder.oidcValidationContext
-//        if (context.issuers.isEmpty()) throw RuntimeException("No issuer found in context")
-//        val tokenkeys = context.issuers
-//        if (tokenkeys.contains(tokenKey)) {
-//            return context.getToken(tokenKey)
-//        }
-//        throw RuntimeException("No issuer found in context")
-//    }
-
-
 
 }
