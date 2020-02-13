@@ -36,10 +36,10 @@ no.nav.security.oidc.issuer.isso:
   acceptedaudience: "aud-localhost"
   cookiename: "localhost-idtoken"
 
-s3_url: 'https://s3.nais.preprod.local'
-
-S3_FSS_URL: "http://localhost"
-s3_fss_url: "http://localhost"
+s3_url: 'http://objectstore.rook-ceph.svc.nais.local'
+S3_REGION: 'us-east-1'
+S3_FSS_URL: "http://objectstore.rook-ceph.svc.nais.local"
+s3_fss_url: "http://objectstore.rook-ceph.svc.nais.local"
 #http://objectstore.rook-ceph.svc.nais.local
 
 spring.main.allow-bean-definition-overriding: true
@@ -62,18 +62,9 @@ eessi.pensjon.whitelist.users:
 
 NAIS_APP_NAME: 'eessi-pensjon-saksbehandling-api'
 
-#kafka:
-#  sedSendt:
-#    topic: eessi-basis-sedSendt-v1
-#    groupid: eessi-pensjon-group
-#  oppgave:
-#    topic: eessi-pensjon-oppgave-v1
-#    groupid: eessi-pensjon-group
-
-
 isso.agent.password: 'somepass'
 rina_host.url: 'http://localhost'
-kafka.brokers.url: 'http://localhost'
+kafka.brokers.url: '{spring.embedded.kafka.brokers}'
 NAV_DOMAIN_URL: 'somedomain'
 VARSELPRODUKSJON.VARSLINGER.queuename: 'http://someurl:1245'
 LOGINSERVICE_HOSTURL: 'http://localhost'
@@ -102,13 +93,26 @@ spring:
   ldap:
     embedded:
       base-dn: "dc=test,dc=local"
-      port: 9389
-      validation.enabled: false
+      port: '9389'
+      validation.enabled: 'false'
       credential:
         username: "CN=srvapp,OU=ApplAccounts,OU=ServiceAccounts,DC=test,DC=local"
         password: "serviceuserpassword"
     username: "user"
     password: "pass"
+  kafka:
+    listener:
+      ack-mode: manual
+    consumer:
+      enable-auto-commit: false
+      auto-offset-reset: earliest
+    bootstrap-servers: ${spring.embedded.kafka.brokers}
+    properties:
+      security.protocol: PLAINTEXT
+  main:
+    allow-bean-definition-overriding: true
+
+
 
 # LDAP client config:
 ldap:
@@ -122,10 +126,10 @@ ldap:
   NAIS_NAMESPACE: "q2"
   nais_namespace: "q2"
 
-  name: eessi-pensjon-saksbehandling-api
-  namespace: q2
+  name: 'eessi-pensjon-saksbehandling-api'
+  namespace: 'q2'
   labels:
-    team: eessipensjon
+    team: 'eessipensjon'
 
 EESSI_PENSJON_FAGMODUL_URL: "http://localhost"
 SPRING_PROFILES_ACTIVE: "test"

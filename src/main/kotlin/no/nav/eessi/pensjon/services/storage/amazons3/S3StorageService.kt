@@ -7,6 +7,7 @@ import no.nav.eessi.pensjon.services.storage.StorageService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.context.event.ApplicationReadyEvent
+import org.springframework.context.annotation.Profile
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Component
 import java.io.BufferedReader
@@ -16,6 +17,7 @@ import java.util.stream.Collectors.joining
 private val logger = LoggerFactory.getLogger(S3Storage::class.java)
 
 @Component
+@Profile("!integrationtest")
 class S3Storage(private val s3: AmazonS3) : StorageService {
 
     @Value("\${eessi_pensjon_s3_crypto_password}")
