@@ -1,14 +1,14 @@
 kind: Application
 apiVersion: nais.io/v1alpha1
 metadata:
-  name: eessi-pensjon-saksbehandling-api
+  name: eessi-pensjon-frontend-api-fss
   namespace: default
   labels:
     team: eessipensjon
 spec:
   env:
     - name: EESSI_PENSJON_FAGMODUL_URL
-      value: http://eessi-fagmodul/
+      value: http://eessi-pensjon-fagmodul/
     - name: SPRING_PROFILES_ACTIVE
       value: prod,fss
     - name: PENSJON_UTLAND_WS_ALLOWED_ORIGINS_URL
@@ -81,7 +81,7 @@ spec:
       vaue: p
   image: {{ image }}
   ingresses:
-    - https://eessi-pensjon-saksbehandling-api.nais.adeo.no
+    - https://eessi-pensjon-frontend-api-fss.nais.adeo.no
   liveness:
     path: /internal/isalive
     port: 8080

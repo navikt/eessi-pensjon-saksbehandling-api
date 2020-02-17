@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 
-echo "Sjekker eessi-pensjon-saksbehandling-api srvPassord"
+echo "Sjekker eessi-pensjon-frontend-api-fss srvPassord"
 if test -f /var/run/secrets/nais.io/srveessipensjon/password;
 then
-  echo "Setter eessi-pensjon-saksbehandling-api srvPassord"
+  echo "Setter eessi-pensjon-frontend-api-fss srvPassord"
     export srvpassword=$(cat /var/run/secrets/nais.io/srveessipensjon/password)
 fi
 
-echo "Sjekker eessi-pensjon-saksbehandling-api srvUsername"
+echo "Sjekker eessi-pensjon-frontend-api-fss srvUsername"
 if test -f /var/run/secrets/nais.io/srveessipensjon/username;
 then
-    echo "Setter eessi-pensjon-saksbehandling-api srvUsername"
+    echo "Setter eessi-pensjon-frontend-api-fss srvUsername"
     export srvusername=$(cat /var/run/secrets/nais.io/srveessipensjon/username)
 fi
 
