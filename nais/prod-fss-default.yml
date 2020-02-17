@@ -79,6 +79,10 @@ spec:
       value: ou=ServiceAccounts,dc=adeo,dc=no
     - name: ENVCLASS
       vaue: p
+    - name: KAFKA_SEDSENDT_TOPIC
+      value: eessi-basis-sedSendt-v1
+    - name: KAFKA_SEDMOTTATT_TOPIC
+      value: eessi-basis-sedMottatt-v1
   image: {{ image }}
   ingresses:
     - https://eessi-pensjon-frontend-api-fss.nais.adeo.no

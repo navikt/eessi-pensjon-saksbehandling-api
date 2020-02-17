@@ -1,10 +1,13 @@
 package no.nav.eessi.pensjon.interceptor
 
 import com.fasterxml.jackson.core.type.TypeReference
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import no.nav.eessi.pensjon.logging.AuditLogger
+import no.nav.eessi.pensjon.metrics.MetricsHelper
 import no.nav.eessi.pensjon.services.auth.AdRolle
 import no.nav.eessi.pensjon.services.auth.AuthorisationService
 import no.nav.eessi.pensjon.services.auth.EessiPensjonTilgang
+import no.nav.eessi.pensjon.services.ldap.BrukerInformasjon
 import no.nav.eessi.pensjon.services.ldap.BrukerInformasjonService
 import no.nav.eessi.pensjon.services.whitelist.WhitelistService
 import no.nav.eessi.pensjon.utils.getClaims
@@ -23,7 +26,9 @@ import javax.servlet.http.HttpServletResponse
 class AuthInterceptor(private val ldapService: BrukerInformasjonService,
     private val authorisationService: AuthorisationService,
     private val oidcRequestContextHolder: OIDCRequestContextHolder,
-    private val auditLogger: AuditLogger) : HandlerInterceptor {
+    private val auditLogger: AuditLogger,
+    private val whitelistService: WhitelistService,
+    @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())) : HandlerInterceptor {
 
     private val logger = LoggerFactory.getLogger(AuthInterceptor::class.java)
 
@@ -59,48 +64,62 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
      *      o BUC
      */
     fun sjekkTilgangTilEessiPensjonTjeneste(): Boolean{
+        return metricsHelper.measure("authInterceptor") {
 
-        // Er bruker det samme som saksbehandler eller er det en borger? Jeg ønsker saksbehandler
-        val ident = getClaims(oidcRequestContextHolder).subject
-        val expirationTime = getClaims(oidcRequestContextHolder).claimSet.expirationTime
+            // Er bruker det samme som saksbehandler eller er det en borger? Jeg ønsker saksbehandler
+            val ident = getClaims(oidcRequestContextHolder).subject
+            val expirationTime = getClaims(oidcRequestContextHolder).claimSet.expirationTime
 
-        logger.debug("Ident: $ident  Expire: $expirationTime Role: ${getRole(ident)}")
-        logger.debug("Sjekke tilgang 1")
+            logger.debug("Ident: $ident  Token Expire: $expirationTime Role: ${getRole(ident)}")
+            logger.debug("Sjekke tilgang 1")
 
-        // Bare saksbehandlere skal sjekkes om de har tilgang.
-        // Brukere med fødselsnummer har tilgang til seg selv. Det er håndtert ved pålogging.
+            // Bare saksbehandlere skal sjekkes om de har tilgang.
+            // Brukere med fødselsnummer har tilgang til seg selv. Det er håndtert ved pålogging.
 
-        if (ident.matches(regexNavident)) {
+            if (ident.matches(regexNavident)) {
 
-            logger.debug("Hente ut brukerinformasjon fra AD $ident")
+                logger.debug("Hente ut brukerinformasjon fra AD '$ident'")
 
-            val brukerInformasjon = ldapService.hentBrukerInformasjon(ident)
-            logger.debug("Ldap brukerinfo: $brukerInformasjon")
-            val adRoller = AdRolle.konverterAdRollerTilEnum(brukerInformasjon.medlemAv)
+                val brukerInformasjon: BrukerInformasjon
+                try {
+                    brukerInformasjon = ldapService.hentBrukerInformasjon(ident)
+                    logger.info("Ldap brukerinformasjon hentet")
+                    logger.debug("Ldap brukerinfo: $brukerInformasjon")
+                } catch (ex: Exception) {
+                    logger.error("Feil ved henthing av ldpap brukerinformasjon", ex)
 
-            // Sjekk tilgang til EESSI-Pensjon
-            if( authorisationService.harTilgangTilEessiPensjon(adRoller).not() ){
+                    //det feiler ved ldap oppsalg benytter witheliste for å sjekke ident
+                    logger.warn("Prøver å slå opp ident i whitelisting")
+                    if (whitelistService.isPersonWhitelisted(ident)) {
+                        logger.warn("Godkjenner følgende saksbehandler fra whitelisting grunnet ldap feil: $ident")
+                        return@measure true
+                    }
+                    return@measure false
+                }
 
-                // Ikke tilgang til EESSI-Pensjon
-                logger.warn("Bruker har ikke korrekt tilganger vi avviser med UNAUTHORIZED")
-                auditLogger.log("sjekkTilgangTilEessiPensjonTjeneste, INGEN TILGANG")
-                throw AuthorisationIkkeTilgangTilEeessiPensjonException("Ikke tilgang til EESSI-Pensjon")
 
+                val adRoller = AdRolle.konverterAdRollerTilEnum(brukerInformasjon.medlemAv)
+                    // Sjekk tilgang til EESSI-Pensjon
+                    if( authorisationService.harTilgangTilEessiPensjon(adRoller).not() ){
+
+                        // Ikke tilgang til EESSI-Pensjon
+                        logger.warn("Bruker har ikke korrekt tilganger vi avviser med UNAUTHORIZED")
+                        auditLogger.log("sjekkTilgangTilEessiPensjonTjeneste, INGEN TILGANG")
+                        throw AuthorisationIkkeTilgangTilEeessiPensjonException("Ikke tilgang til EESSI-Pensjon")
+
+                    }
+                    logger.info("Saksbehandler tilgang til EESSI-Pensjon er i orden")
+                    // Sjekk tilgang til PESYS-SAK?
+                    // Hvordan får jeg tak i sakstypen?
+                    // Sjekk tilgang til BUC?
+                    // Sjekk tilgang til alle brukere i SED eller andre data
+                    return@measure true
+
+            } else {
+                logger.info("Borger/systembruker tilgang til EESSI-Pensjon alltid i orden")
+                return@measure true
             }
-            logger.debug("Saksbehandler tilgang til EESSI-Pensjon er i orden")
-            // Sjekk tilgang til PESYS-SAK?
-            // Hvordan får jeg tak i sakstypen?
-            // Sjekk tilgang til BUC?
-            // Sjekk tilgang til alle brukere i SED eller andre data
-            return true
-
-        } else {
-
-            logger.debug("Borger/systembruker tilgang til EESSI-Pensjon alltid i orden")
-            return true
-
         }
-
     }
 
     fun getRole(subject: String): String {

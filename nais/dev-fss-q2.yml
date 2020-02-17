@@ -79,6 +79,10 @@ spec:
       value: srvSSOLinux
     - name: ENVCLASS
       value: q2
+    - name: KAFKA_SEDSENDT_TOPIC
+      value: eessi-basis-sedSendt-v1-q2
+    - name: KAFKA_SEDMOTTATT_TOPIC
+      value: eessi-basis-sedMottatt-v1-q2
   image: {{ image }}
   ingresses:
     - https://eessi-pensjon-frontend-api-fss-q2.nais.preprod.local
