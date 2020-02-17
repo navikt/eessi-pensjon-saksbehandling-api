@@ -37,10 +37,10 @@ redirectscheme: 'https'
 
 kafka:
   sedSendt:
-    topic: eessi-basis-sedSendt-v1
+    topic: ${KAFKA_SEDSENDT_TOPIC}
     groupid: eessi-pensjon-saksbehandling-group
   sedMottatt:
-    topic: eessi-basis-sedMottatt-v1
+    topic: ${KAFKA_SEDMOTTATT_TOPIC}
     groupid: eessi-pensjon-saksbehandling-group
 
 #Spring

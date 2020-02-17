@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
 import java.lang.IllegalArgumentException
 import java.util.regex.Pattern
+import javax.naming.NamingException
 
 @Profile("integrationtest", "test")
 @Service
@@ -48,6 +49,11 @@ class LdapServiceMock(): BrukerInformasjonService {
         }
 
         val rolleListe = mutableListOf<String>()
+
+        if (ident == "X000000") {
+            throw NamingException("Mockfeil ved kall til tjeneste")
+        }
+
 
         // Alderspensjon - Saksbehandler
         if(ident.substring(0,1) == "A") {
