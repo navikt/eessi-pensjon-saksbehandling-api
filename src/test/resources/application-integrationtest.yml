@@ -60,7 +60,7 @@ srvpassword: 'somepass'
 
 eessi.pensjon.whitelist.users:
 
-NAIS_APP_NAME: 'eessi-pensjon-saksbehandling-api'
+NAIS_APP_NAME: 'eessi-pensjon-frontend-api-fss'
 
 isso.agent.password: 'somepass'
 rina_host.url: 'http://localhost'
@@ -126,7 +126,7 @@ ldap:
   NAIS_NAMESPACE: "q2"
   nais_namespace: "q2"
 
-  name: 'eessi-pensjon-saksbehandling-api'
+  name: 'eessi-pensjon-frontend-api-fss'
   namespace: 'q2'
   labels:
     team: 'eessipensjon'
