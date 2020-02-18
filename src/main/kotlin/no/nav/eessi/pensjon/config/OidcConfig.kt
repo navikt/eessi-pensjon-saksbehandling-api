@@ -56,7 +56,7 @@ class OidcConfig : WebMvcConfigurer {
 
     override fun addInterceptors(registry: InterceptorRegistry) {
         registry.addInterceptor(securityInterceptor()).addPathPatterns("/openamlogin")
-        registry.addInterceptor(authInterceptor)
+        //registry.addInterceptor(authInterceptor)
 
     }
 
