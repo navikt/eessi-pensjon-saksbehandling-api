@@ -31,6 +31,24 @@ then
     export isso_agent_password=$(cat /var/run/secrets/nais.io/appsecrets/isso_agent_password)
 fi
 
+echo "Sjekker aad_b2c_clientid_password"
+if test -f /var/run/secrets/nais.io/appsecrets/aad_b2c_clientid_password;
+then
+  echo "Setter aad_b2c_clientid_password"
+    export aad_b2c_clientid_password=$(cat /var/run/secrets/nais.io/appsecrets/aad_b2c_clientid_password)
+
+echo "Sjekker aad_b2c_clientid_username"
+if test -f /var/run/secrets/nais.io/appsecrets/aad_b2c_clientid_username;
+then
+  echo "Setter aad_b2c_clientid_username"
+    export aad_b2c_clientid_username=$(cat /var/run/secrets/nais.io/appsecrets/aad_b2c_clientid_username)
+
+echo "Sjekker OpenIdConnectAgent_password"
+if test -f /var/run/secrets/nais.io/appsecrets/OpenIdConnectAgent_password;
+then
+  echo "Setter OpenIdConnectAgent_password"
+    export OpenIdConnectAgent_password=$(cat /var/run/secrets/nais.io/appsecrets/OpenIdConnectAgent_password)
+
 echo "Sjekker whitelist_users"
 if test -f /var/run/secrets/nais.io/appsecrets/whitelist_users;
 then
