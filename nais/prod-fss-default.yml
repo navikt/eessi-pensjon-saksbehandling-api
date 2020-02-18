@@ -78,7 +78,7 @@ spec:
     - name: LDAP_SERVICEUSER_BASEDN
       value: ou=ServiceAccounts,dc=adeo,dc=no
     - name: ENV
-      vaue: p
+      value: p
     - name: KAFKA_SEDSENDT_TOPIC
       value: eessi-basis-sedSendt-v1
     - name: KAFKA_SEDMOTTATT_TOPIC
