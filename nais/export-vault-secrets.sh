@@ -35,14 +35,14 @@ echo "Sjekker aad_b2c_clientid_password"
 if test -f /var/run/secrets/nais.io/appsecrets/aad_b2c_clientid_password;
 then
   echo "Setter aad_b2c_clientid_password"
-    export loginservice_agent.password=$(cat /var/run/secrets/nais.io/appsecrets/aad_b2c_clientid_password)
+    export loginservice_agent_password=$(cat /var/run/secrets/nais.io/appsecrets/aad_b2c_clientid_password)
 fi
 
 echo "Sjekker aad_b2c_clientid_username"
 if test -f /var/run/secrets/nais.io/appsecrets/aad_b2c_clientid_username;
 then
   echo "Setter aad_b2c_clientid_username"
-    export loginservice_agent.name=$(cat /var/run/secrets/nais.io/appsecrets/aad_b2c_clientid_username)
+    export loginservice_agent_name=$(cat /var/run/secrets/nais.io/appsecrets/aad_b2c_clientid_username)
 fi
 
 echo "Sjekker OpenIdConnectAgent_password"
