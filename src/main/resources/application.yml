@@ -28,9 +28,9 @@ no.nav:
       proxyurl:
       cookiename: 'eessipensjon-idtoken'
       discoveryurl: '${OPENIDCONNECT_URL}/oauth2/.well-known/openid-configuration'
-      accepted_audience: 'eessi-pensjon-frontend-api-fss-${ENVCLASS}'
+      accepted_audience: 'eessi-pensjon-frontend-api-fss-${ENV}'
 
-isso.agentname: '${NAIS_APP_NAME}-${ENVCLASS}'
+isso.agentname: '${NAIS_APP_NAME}-${ENV}'
 
 http.proxy.parametername: 'dontuse.proxy'
 redirectscheme: 'https'
@@ -78,6 +78,3 @@ ldap.provider:
 submitTopic: 'privat-eessipensjon-selvbetjeningsinfoMottatt-v1'
 S3_REGION: us-east-1
 requestsamlpolicy.path: "classpath:policy/requestSamlPolicy.xml"
-
-
-NAIS_NAMESPACE: ${ENVCLASS}
