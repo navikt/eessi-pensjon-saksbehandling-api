@@ -7,6 +7,7 @@ import no.nav.eessi.pensjon.utils.typeRefs
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.springframework.http.ResponseEntity
@@ -20,6 +21,7 @@ class UserInfoControllerTest : S3StorageBaseTest() {
         userInfoController = Mockito.spy(UserInfoController(mockOidcContextolder,whitelistService))
     }
 
+    @Disabled
     @Test fun `Calling UserInfoController|getUserInfo returns OK response`() {
         val usr =  UserInfoResponse(subject ="12345678910",
                 role ="BRUKER",
@@ -29,6 +31,7 @@ class UserInfoControllerTest : S3StorageBaseTest() {
         assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), userInfoController.getUserInfo())
     }
 
+    @Disabled
     @Test fun `Calling UserInfoController|getUserInfo saksbehandler returns OK response`() {
         val userInfoController2 = Mockito.spy(UserInfoController(generateMockSaksbehContextHolder(),whitelistService))
 
@@ -41,12 +44,14 @@ class UserInfoControllerTest : S3StorageBaseTest() {
 
     }
 
+    @Disabled
     @Test fun `Calling UserInfoController|getRole`() {
         assertEquals("BRUKER", getRole("12345678910"))
         assertEquals("SAKSBEHANDLER", getRole("Z123456"))
         assertEquals("UNKNOWN", getRole("ZZZ"))
     }
 
+    @Disabled
     @Test fun CallingUserInfoController_getUserInfowithEXP() {
         val usr =  UserInfoResponse(subject ="12345678910",
             role ="BRUKER",
