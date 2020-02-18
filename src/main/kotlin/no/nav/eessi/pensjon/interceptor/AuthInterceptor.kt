@@ -80,23 +80,22 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
 
                 logger.debug("Hente ut brukerinformasjon fra AD '$ident'")
 
-                val brukerInformasjon: BrukerInformasjon
+//                val brukerInformasjon: BrukerInformasjon
                 try {
-                    brukerInformasjon = ldapService.hentBrukerInformasjon(ident)
-                    logger.info("Ldap brukerinformasjon hentet")
-                    logger.debug("Ldap brukerinfo: $brukerInformasjon")
+                    return@measure sjekkWhitelisting(ident)
+
+//                    vi hopper over ldap oppslag intill prodfeil fikset. (ldap error log støyer mye)
+//
+//                    brukerInformasjon = ldapService.hentBrukerInformasjon(ident)
+//                    logger.info("Ldap brukerinformasjon hentet")
+//                    logger.debug("Ldap brukerinfo: $brukerInformasjon")
                 } catch (ex: Exception) {
                     logger.error("Feil ved henthing av ldpap brukerinformasjon", ex)
 
                     //det feiler ved ldap oppsalg benytter witheliste for å sjekke ident
-                    logger.warn("Prøver å slå opp ident i whitelisting")
-                    if (whitelistService.isPersonWhitelisted(ident)) {
-                        logger.warn("Godkjenner følgende saksbehandler fra whitelisting grunnet ldap feil: $ident")
-                        return@measure true
-                    }
-                    return@measure false
+                    return@measure sjekkWhitelisting(ident)
                 }
-
+/*
 
                 val adRoller = AdRolle.konverterAdRollerTilEnum(brukerInformasjon.medlemAv)
                     // Sjekk tilgang til EESSI-Pensjon
@@ -114,12 +113,22 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
                     // Sjekk tilgang til BUC?
                     // Sjekk tilgang til alle brukere i SED eller andre data
                     return@measure true
-
+*/
             } else {
                 logger.info("Borger/systembruker tilgang til EESSI-Pensjon alltid i orden")
                 return@measure true
             }
         }
+    }
+
+    private fun sjekkWhitelisting(ident: String): Boolean {
+        logger.warn("Prøver å slå opp ident i whitelisting")
+        if (whitelistService.isPersonWhitelisted(ident)) {
+            logger.info("Godkjenner følgende saksbehandler fra whitelisting : $ident")
+            return true
+        }
+        logger.warn("Følgende ident er ikke whitelisted : $ident  INGEN TILGANG")
+        throw AuthorisationIkkeTilgangTilEeessiPensjonException("Ikke tilgang til EESSI-Pensjon")
     }
 
     fun getRole(subject: String): String {
