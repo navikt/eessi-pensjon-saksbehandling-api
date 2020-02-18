@@ -61,7 +61,7 @@ class LoginController {
 
     val logger: Logger = LoggerFactory.getLogger(LoginController::class.java)
 
-    @Value("\${ENVCLASS}")
+    @Value("\${NAIS_NAMESPACE}")
     lateinit var fasitEnvironmentName: String
 
     @Value("\${NAIS_APP_NAME}")
