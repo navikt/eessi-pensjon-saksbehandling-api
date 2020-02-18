@@ -26,18 +26,18 @@ class S3Storage(private val s3: AmazonS3) : StorageService {
     @Value("\${eessi.pensjon.frontend.api.s3.bucket.name}")
     lateinit var bucketname: String
 
-    @Value("\${NAIS_NAMESPACE}")
-    lateinit var namespace: String
+    @Value("\${ENV}")
+    lateinit var env: String
 
     fun getBucketName(): String {
         return bucketname + postfixFasitEnv()
     }
 
     private fun postfixFasitEnv(): String {
-        var environmentPostfix = "-$namespace"
+        var environmentPostfix = "-$env"
 
         // Det settes nå kun dfault i prod, namespace brukes i alle andre miljø
-        if (namespace.contains("default", true)) {
+        if (env.contains("p", true)) {
             environmentPostfix = ""
         }
         return environmentPostfix

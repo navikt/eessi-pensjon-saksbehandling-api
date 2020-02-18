@@ -265,13 +265,13 @@ class StorageServiceTest : S3StorageBaseTest() {
 
     @Test
     fun `When environment is q2 then getBucketname returns bucket with environmentpostfix -q2`() {
-        s3storageService.namespace = "q2"
+        s3storageService.env = "q2"
         assertEquals("$BUCKET-q2", s3storageService.getBucketName())
     }
 
     @Test
     fun `When environment is p then getBucketname returns bucket with no environmentpostfix`() {
-        s3storageService.namespace = "default"
+        s3storageService.env = "p"
         assertEquals("$BUCKET", s3storageService.getBucketName())
     }
 }

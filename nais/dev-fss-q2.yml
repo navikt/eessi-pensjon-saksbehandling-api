@@ -77,7 +77,7 @@ spec:
       value: ldaps://ldapgw.preprod.local
     - name: LDAP_USERNAME
       value: srvSSOLinux
-    - name: ENVCLASS
+    - name: ENV
       value: q2
     - name: KAFKA_SEDSENDT_TOPIC
       value: eessi-basis-sedSendt-v1-q2

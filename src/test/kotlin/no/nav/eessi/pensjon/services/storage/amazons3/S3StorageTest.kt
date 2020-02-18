@@ -40,7 +40,7 @@ class S3StorageTest {
         s3MockClient.createBucket("eessipensjon")
         storage = S3Storage(s3MockClient)
         storage.bucketname = "eessipensjon"
-        storage.namespace = "q1"
+        storage.env = "q1"
         storage.passphrase = "mypassphrase"
         storage.init()
     }

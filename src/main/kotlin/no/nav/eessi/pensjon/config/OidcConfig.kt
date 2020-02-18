@@ -46,7 +46,7 @@ class OidcConfig : WebMvcConfigurer {
     @Value("\${redirectscheme}")
     private lateinit var redirectScheme: String
 
-    @Value("\${ENVCLASS}")
+    @Value("\${ENV}")
     private lateinit var fasitEnvironmentName: String
 
     @Autowired

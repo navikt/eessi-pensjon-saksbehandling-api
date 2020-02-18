@@ -51,7 +51,7 @@ class FssLoginControllerTest {
 
     @Test
     fun `Given a login attempt in FSS zone When environment is p Then redirect to adeo`() {
-        fssLoginController.fasitEnvironmentName = "default"
+        fssLoginController.fasitEnvironmentName = "p"
         fssLoginController.navDomain = "nais.adeo.no"
 
         fssLoginController.login(req, resp, "somewhereelse", "somecontext")

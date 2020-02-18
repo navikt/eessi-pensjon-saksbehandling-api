@@ -77,7 +77,7 @@ spec:
       value: ou=NAV,ou=BusinessUnits,dc=adeo,dc=no
     - name: LDAP_SERVICEUSER_BASEDN
       value: ou=ServiceAccounts,dc=adeo,dc=no
-    - name: ENVCLASS
+    - name: ENV
       vaue: p
     - name: KAFKA_SEDSENDT_TOPIC
       value: eessi-basis-sedSendt-v1

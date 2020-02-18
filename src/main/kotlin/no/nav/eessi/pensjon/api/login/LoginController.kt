@@ -61,7 +61,7 @@ class LoginController {
 
     val logger: Logger = LoggerFactory.getLogger(LoginController::class.java)
 
-    @Value("\${NAIS_NAMESPACE}")
+    @Value("\${ENV}")
     lateinit var fasitEnvironmentName: String
 
     @Value("\${NAIS_APP_NAME}")
@@ -80,7 +80,7 @@ class LoginController {
         var environmentPostfix = "-$fasitEnvironmentName"
 
         // Det settes nå kun dfault i prod, namespace brukes i alle andre miljø
-        if (fasitEnvironmentName.contains("default", true)) {
+        if (fasitEnvironmentName.contains("p", true)) {
             environmentPostfix = ""
         }
 

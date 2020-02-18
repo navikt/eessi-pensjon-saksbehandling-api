@@ -125,7 +125,6 @@ ldap:
   password: "bogus"
 
   NAIS_NAMESPACE: "q2"
-  nais_namespace: "q2"
 
   name: 'eessi-pensjon-frontend-api-fss'
   namespace: 'q2'
@@ -141,6 +140,6 @@ EESSIPEN_EUX_RINA_URL: "http://localhost"
 AKTOERREGISTER_API_V1_URL: "http://localhost"
 VIRKSOMHET_PERSON_V3_ENDPOINTURL: "http://localhost"
 VIRKSOMHET_PERSON_V3_WSDLURL: "http://localhost"
-ENVCLASS: "q2"
+ENV: "q2"
 
 whitelist_users: ""
