@@ -8,15 +8,17 @@
     </appender>
     <appender name="auditLogger" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>[%boldMagenta(%d{"yyyy-MM-dd'T'HH:mm:ss,SSSXXX", UTC}) %highlight(%level)] %red(%logger{15}) : %mdc - %m%n%xEx</pattern>
+            <pattern>[%boldMagenta(%d{"yyyy-MM-dd'T'HH:mm:ss,SSSXXX", UTC}) %highlight(%level)] %red(%logger{20}) : %mdc - %m%n%xEx</pattern>
         </encoder>
     </appender>
 
     <logger name="io" level="INFO"/>
     <logger name="org" level="INFO"/>
     <logger name="com" level="INFO"/>
+    <logger name="kafka" level="WARN" />
+    <logger name="org.apache.zookeeper" level="WARN" />
     <logger name="no.nav" level="DEBUG"/>
-    <logger name="no.nav.security" level="INFO"/>
+    <logger name="no.nav.security" level="DEBUG"/>
     <logger name="no.nav.eessi" level="DEBUG"/>
     <logger name="auditLogger" level="INFO" additivity="false">
         <appender-ref ref="auditLogger" />
