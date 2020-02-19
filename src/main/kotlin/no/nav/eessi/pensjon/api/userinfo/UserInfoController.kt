@@ -35,7 +35,7 @@ class UserInfoController(
      *
      *  @return userinfo containing: subject, role and allowed
      */
-    //@EessiPensjonTilgang
+    @EessiPensjonTilgang
     @GetMapping("/userinfo")
     fun getUserInfo(): ResponseEntity<String> {
         logger.info("Henter userinfo")
@@ -66,12 +66,13 @@ class UserInfoController(
      *
      * @return whitelisted
      */
-    //@EessiPensjonTilgang
+    @EessiPensjonTilgang
     @GetMapping("/whitelisted")
     fun checkWhitelist(): Boolean {
         logger.info("Sjekker om brukeren er whitelistet")
-        val personIdentifier = getClaims(oidcRequestContextHolder).subject
-        return whitelistService.isPersonWhitelisted(personIdentifier.toUpperCase())
+        return true
+//        val personIdentifier = getClaims(oidcRequestContextHolder).subject
+//        return whitelistService.isPersonWhitelisted(personIdentifier.toUpperCase())
     }
 }
 
