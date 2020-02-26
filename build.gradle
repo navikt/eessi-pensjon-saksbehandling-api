@@ -102,7 +102,8 @@ dependencies {
         implementation("no.nav.tjenestespesifikasjoner:nav-fim-behandleJournal-v3-tjenestespesifikasjon:1.2020.01.30-14.36-cdf257baea96")
     } else {
         implementation("no.nav.tjenester:nav-person-v3-tjenestespesifikasjon:${personV3Version}")
-//        implementation('no.nav.meldinger.virksomhet:nav-virksomhet-varsel-v1-meldingsdefinisjon:1.1.1:jaxb')
+//      Se VarselService for årsak til utkommentering
+//      implementation('no.nav.meldinger.virksomhet:nav-virksomhet-varsel-v1-meldingsdefinisjon:1.1.1:jaxb')
         implementation("no.nav.tjenester.fim:nav-fim-behandleJournal-v3-tjenestespesifikasjon:3.0.2:jaxws")
     }
 
