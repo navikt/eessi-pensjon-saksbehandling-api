@@ -118,4 +118,6 @@ spec:
         mountPath: /var/run/secrets/nais.io/appcredentials
       - kvPath: {{appsecrets}}
         mountPath: /var/run/secrets/nais.io/appsecrets
+      - kvPath: /apikey/appdynamics/prod
+        mountPath: /var/run/secrets/nais.io/vault
 
