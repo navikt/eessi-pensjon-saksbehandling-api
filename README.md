@@ -1,3 +1,7 @@
+![](https://github.com/navikt/eessi-pensjon-saksbehandling-api/workflows/Bygg%20og%20deploy%20Q2/badge.svg)
+![](https://github.com/navikt/eessi-pensjon-saksbehandling-api/workflows/Manuell%20deploy/badge.svg)
+
+
 EESSI Pensjon Frontend API
 ===============================
 

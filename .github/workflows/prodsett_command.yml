@@ -1,4 +1,4 @@
-name: Build, push, and deploy
+name: Manuell deploy
 on:
   repository_dispatch:
     types: [prodsett-command]
