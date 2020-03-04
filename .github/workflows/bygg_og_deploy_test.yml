@@ -49,12 +49,16 @@ jobs:
         run: |
           curl -v -s -X POST https://api.github.com/repos/navikt/eessi-pensjon-saksbehandling-api/git/refs -H "Authorization: token  ${{ secrets.GITHUB_TOKEN }}" -d '{ "ref": "refs/tags/${{ env.DATE }}---${{ env.COMMIT_HASH }}",  "sha": "${{ env.COMMIT_HASH }}" }'
 
-      - name: 'Deploy to NAIS Q1'
-        if: success()
-        uses: nais/deploy/actions/deploy@v1
-        env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: dev-fss
-          RESOURCE: nais/dev-fss-q1.yml
-          VARS: nais/dev-fss-q1.json
-          IMAGE: ${{ env.IMAGE }}
+#  tag_deploy_q1:
+#    needs: tag_build_and_deploy
+#    name: 'Deploy q1'
+#    runs-on: ubuntu-latest
+#      steps:
+#    - name: 'Deploy to NAIS Q1'
+#        uses: nais/deploy/actions/deploy@v1
+#        env:
+#          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+#          CLUSTER: dev-fss
+#          RESOURCE: nais/dev-fss-q1.yml
+#          VARS: nais/dev-fss-q1.json
+#          IMAGE: ${{ env.IMAGE }}
