@@ -78,7 +78,7 @@ spec:
     - name: LDAP_USERNAME
       value: srvSSOLinux
     - name: ENV
-      value: q2
+      value: q1
     - name: KAFKA_SEDSENDT_TOPIC
       value: eessi-basis-sedSendt-v1-q1
     - name: KAFKA_SEDMOTTATT_TOPIC
@@ -118,3 +118,5 @@ spec:
         mountPath: /var/run/secrets/nais.io/appsecrets
       - kvPath: credential/data/dev/eessi-pensjon-fss
         mountPath: /var/run/secrets/nais.io/appcredentials
+      - kvPath: /apikey/appdynamics/dev
+        mountPath: /var/run/secrets/nais.io/vault
