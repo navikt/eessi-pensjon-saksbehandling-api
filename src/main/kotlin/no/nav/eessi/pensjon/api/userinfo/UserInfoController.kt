@@ -11,6 +11,7 @@ import no.nav.security.oidc.api.Protected
 import no.nav.security.oidc.context.OIDCRequestContextHolder
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -23,6 +24,9 @@ class UserInfoController(
     val oidcRequestContextHolder: OIDCRequestContextHolder,
     val whitelistService: WhitelistService,
     @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())) {
+
+    @Value("\${ENV}")
+    lateinit var fasitEnvironmentName: String
 
     private val logger = LoggerFactory.getLogger(UserInfoController::class.java)
     private val auditLogger = AuditLogger(oidcRequestContextHolder)
@@ -42,7 +46,7 @@ class UserInfoController(
         val fnr = getClaims(oidcRequestContextHolder).subject
         val role = getRole(fnr)
         val allowed = checkWhitelist()
-
+        val features = if (allowed) getFeatures() else mapOf()
         val jwtset =  getClaims(oidcRequestContextHolder).claimSet
         val expirationTime = jwtset.expirationTime.time
 
@@ -56,7 +60,15 @@ class UserInfoController(
             else -> metricsHelper.increment("hentUserinfoUkjent", "successful")
         }
 
-        return ResponseEntity.ok().body(mapAnyToJson(UserInfoResponse(fnr, role, allowed,expirationTime)))
+        return ResponseEntity.ok().body(mapAnyToJson(UserInfoResponse(fnr, role, allowed,expirationTime, features)))
+    }
+
+    fun isProductionEnv(): Boolean {
+        return fasitEnvironmentName.contains("p", true)
+    }
+
+    fun getFeatures(): Map<String, Boolean> {
+        return mapOf("P5000_VISIBLE" to !isProductionEnv())
     }
 
     /**
@@ -96,5 +108,6 @@ data class UserInfoResponse(
         val subject: String,
         val role: String,
         val allowed: Boolean,
-        val expirationTime: Long
+        val expirationTime: Long,
+        val features: Map<String, Boolean>
 )
