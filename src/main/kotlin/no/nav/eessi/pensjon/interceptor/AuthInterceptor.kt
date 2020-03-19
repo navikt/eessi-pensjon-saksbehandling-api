@@ -93,7 +93,6 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
                     return@measure sjekkWhitelisting(ident)
                 }
 
-
                 val adRoller = AdRolle.konverterAdRollerTilEnum(brukerInformasjon.medlemAv)
                     // Sjekk tilgang til EESSI-Pensjon
                     if( authorisationService.harTilgangTilEessiPensjon(adRoller).not() ){

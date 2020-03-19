@@ -2,7 +2,6 @@ package no.nav.eessi.pensjon.config
 
 import com.nimbusds.jose.JWSAlgorithm
 import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod
-import no.nav.eessi.pensjon.interceptor.AuthInterceptor
 import org.pac4j.core.client.Clients
 import org.pac4j.core.config.Config
 import org.pac4j.core.context.Cookie
@@ -14,22 +13,20 @@ import org.pac4j.oidc.config.OidcConfiguration
 import org.pac4j.oidc.profile.OidcProfile
 import org.pac4j.springframework.web.SecurityInterceptor
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import org.springframework.web.util.UriComponentsBuilder
+
 
 private const val CALLBACK_URI = "/callback"
 
-private val logger = LoggerFactory.getLogger(OidcConfig::class.java)
-
 @Configuration
 @ComponentScan(basePackages = ["org.pac4j.springframework.web"])
-class OidcConfig : WebMvcConfigurer {
+class OidcInterceptor {
+
+    private val logger = LoggerFactory.getLogger(OidcInterceptor::class.java)
 
     @Value("\${isso.agentname}")
     private lateinit var clientId: String
@@ -47,18 +44,9 @@ class OidcConfig : WebMvcConfigurer {
     private lateinit var redirectScheme: String
 
     @Value("\${ENV}")
-    private lateinit var fasitEnvironmentName: String
+    private lateinit var environmentName: String
 
-    @Autowired
-    private lateinit var authInterceptor: AuthInterceptor
-
-    var cookieDomain: String = "localhost"
-
-    override fun addInterceptors(registry: InterceptorRegistry) {
-        registry.addInterceptor(securityInterceptor()).addPathPatterns("/openamlogin")
-        registry.addInterceptor(authInterceptor)
-
-    }
+    private var cookieDomain: String = "localhost"
 
     @Bean
     fun securityInterceptor(): SecurityInterceptor {
@@ -69,7 +57,7 @@ class OidcConfig : WebMvcConfigurer {
     fun config(): Config {
 
         val oidcConfiguration = OidcConfiguration().apply {
-            clientId = this@OidcConfig.clientId
+            clientId = this.clientId
             secret = clientSecret
             isUseNonce = true
             discoveryURI = discoveryUrl
@@ -93,8 +81,8 @@ class OidcConfig : WebMvcConfigurer {
                     if(!computed.contains("http://localhost")) {
                         if (discoveryUrl.contains("isso-t") || discoveryUrl.contains("isso-q")) {
                             // We are in a test-environment
-                            var environmentPostfix = "-$fasitEnvironmentName"
-                            if (fasitEnvironmentName == "p") {
+                            var environmentPostfix = "-$environmentName"
+                            if (environmentName == "p") {
                                 environmentPostfix = ""
                             }
                             computed = "https://eessi-pensjon-frontend-api-fss$environmentPostfix.nais.preprod.local/callback"

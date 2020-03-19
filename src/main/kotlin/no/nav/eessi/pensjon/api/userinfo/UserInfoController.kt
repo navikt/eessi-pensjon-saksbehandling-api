@@ -1,6 +1,8 @@
 package no.nav.eessi.pensjon.api.userinfo
 
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry
+import no.nav.eessi.pensjon.config.FeatureName
+import no.nav.eessi.pensjon.config.FeatureToggle
 import no.nav.eessi.pensjon.logging.AuditLogger
 import no.nav.eessi.pensjon.metrics.MetricsHelper
 import no.nav.eessi.pensjon.services.auth.EessiPensjonTilgang
@@ -11,7 +13,6 @@ import no.nav.security.oidc.api.Protected
 import no.nav.security.oidc.context.OIDCRequestContextHolder
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -21,12 +22,10 @@ import org.springframework.web.bind.annotation.RestController
 @Protected
 @RequestMapping("/api")
 class UserInfoController(
-    val oidcRequestContextHolder: OIDCRequestContextHolder,
-    val whitelistService: WhitelistService,
+    private val toggle: FeatureToggle,
+    private val oidcRequestContextHolder: OIDCRequestContextHolder,
+    private val whitelistService: WhitelistService,
     @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())) {
-
-    @Value("\${ENV}")
-    lateinit var fasitEnvironmentName: String
 
     private val logger = LoggerFactory.getLogger(UserInfoController::class.java)
     private val auditLogger = AuditLogger(oidcRequestContextHolder)
@@ -46,8 +45,8 @@ class UserInfoController(
         val fnr = getClaims(oidcRequestContextHolder).subject
         val role = getRole(fnr)
         val allowed = checkWhitelist()
-        val features = if (allowed) getFeatures() else mapOf()
-        val jwtset =  getClaims(oidcRequestContextHolder).claimSet
+        val features = if (allowed) toggle.getUIFeatures() else mapOf()
+        val jwtset = getClaims(oidcRequestContextHolder).claimSet
         val expirationTime = jwtset.expirationTime.time
 
         when (role) {
@@ -60,15 +59,7 @@ class UserInfoController(
             else -> metricsHelper.increment("hentUserinfoUkjent", "successful")
         }
 
-        return ResponseEntity.ok().body(mapAnyToJson(UserInfoResponse(fnr, role, allowed,expirationTime, features)))
-    }
-
-    fun isProductionEnv(): Boolean {
-        return fasitEnvironmentName.contains("p", true)
-    }
-
-    fun getFeatures(): Map<String, Boolean> {
-        return mapOf("P5000_VISIBLE" to !isProductionEnv())
+        return ResponseEntity.ok().body(mapAnyToJson(UserInfoResponse(fnr, role, allowed, expirationTime, features)))
     }
 
     /**
@@ -82,33 +73,43 @@ class UserInfoController(
     @GetMapping("/whitelisted")
     fun checkWhitelist(): Boolean {
         logger.info("Sjekker om brukeren er whitelistet")
-        return true
-//        val personIdentifier = getClaims(oidcRequestContextHolder).subject
-//        return whitelistService.isPersonWhitelisted(personIdentifier.toUpperCase())
+
+        return when {
+            toggle.getAPIFeatures().getValue(FeatureName.ENABLE_AUTH.name) -> {
+                true
+            }
+            toggle.getAPIFeatures().getValue(FeatureName.WHITELISTING.name) -> {
+                val personIdentifier = getClaims(oidcRequestContextHolder).subject
+                whitelistService.isPersonWhitelisted(personIdentifier.toUpperCase())
+            }
+            else -> false
+        }
     }
+
 }
 
-/**
- * Parses the OIDC token subject and returns a role
- * SAKSBEHANDLER, BRUKER, or UNKNOWN if the two regex has no matches
- *
- * if saksbehandler it will have a letter followed by 6 digits ( eg. A999999 )
- * if citizen bruker it will have a fødselsnummer / dnummer, 11 digits
- *
- * @param subject
- */
-fun getRole(subject: String): String {
-    return when {
-        subject.matches(Regex("^[a-zA-Z]\\d{6}$")) -> "SAKSBEHANDLER"
-        subject.matches(Regex("^\\d{11}$")) -> "BRUKER"
-        else -> "UNKNOWN"
+    /**
+     * Parses the OIDC token subject and returns a role
+     * SAKSBEHANDLER, BRUKER, or UNKNOWN if the two regex has no matches
+     *
+     * if saksbehandler it will have a letter followed by 6 digits ( eg. A999999 )
+     * if citizen bruker it will have a fødselsnummer / dnummer, 11 digits
+     *
+     * @param subject
+     */
+    fun getRole(subject: String): String {
+        return when {
+            subject.matches(Regex("^[a-zA-Z]\\d{6}$")) -> "SAKSBEHANDLER"
+            subject.matches(Regex("^\\d{11}$")) -> "BRUKER"
+            else -> "UNKNOWN"
+        }
     }
-}
 
 data class UserInfoResponse(
-        val subject: String,
-        val role: String,
-        val allowed: Boolean,
-        val expirationTime: Long,
-        val features: Map<String, Boolean>
+    val subject: String,
+    val role: String,
+    val allowed: Boolean,
+    val expirationTime: Long,
+    val features: Map<String, Boolean>
 )
+

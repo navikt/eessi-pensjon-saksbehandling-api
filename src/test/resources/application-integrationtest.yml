@@ -140,6 +140,7 @@ EESSIPEN_EUX_RINA_URL: "http://localhost"
 AKTOERREGISTER_API_V1_URL: "http://localhost"
 VIRKSOMHET_PERSON_V3_ENDPOINTURL: "http://localhost"
 VIRKSOMHET_PERSON_V3_WSDLURL: "http://localhost"
-ENV: "q2"
+#  feature toddle authInteceptor Q1 atm.
+ENV: "q1"
 
 whitelist_users: ""
