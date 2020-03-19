@@ -28,7 +28,7 @@ class StorageController(private val storage: StorageService,
     private val logger = LoggerFactory.getLogger(StorageController::class.java)
     private val auditLogger = AuditLogger(oidcRequestContextHolder)
 
-    //@EessiPensjonTilgang
+    @EessiPensjonTilgang
     @Timed("s3.put")
     @PostMapping("/{path}")
     fun storeDocument(@PathVariable(required = true) path: String,
@@ -51,7 +51,7 @@ class StorageController(private val storage: StorageService,
         }
     }
 
-    //@EessiPensjonTilgang
+    @EessiPensjonTilgang
     @Timed("s3.get")
     @GetMapping(value = ["/get/{path}"], produces = [MediaType.APPLICATION_JSON_VALUE])
     fun getDocument(@PathVariable(required = true) path: String): ResponseEntity<String> {
@@ -72,7 +72,7 @@ class StorageController(private val storage: StorageService,
         }
     }
 
-    //@EessiPensjonTilgang
+    @EessiPensjonTilgang
     @Timed("s3.list")
     @GetMapping("/list/{prefix}")
     fun listDocuments(@PathVariable(required = true) prefix: String): ResponseEntity<List<String>> {
@@ -94,7 +94,7 @@ class StorageController(private val storage: StorageService,
         }
     }
 
-    //@EessiPensjonTilgang
+    @EessiPensjonTilgang
     @Timed("s3.delete")
     @DeleteMapping("/{path}")
     fun deleteDocument(@PathVariable(required = true) path: String): ResponseEntity<String> {
@@ -115,7 +115,7 @@ class StorageController(private val storage: StorageService,
         }
     }
 
-    //@EessiPensjonTilgang
+    @EessiPensjonTilgang
     @Timed("s3.delete")
     @DeleteMapping("/multiple/{path}")
     fun deleteMultipleDocuments(@PathVariable(required = true) path: String): ResponseEntity<String> {

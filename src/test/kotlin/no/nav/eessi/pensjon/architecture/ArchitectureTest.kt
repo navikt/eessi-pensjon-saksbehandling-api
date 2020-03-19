@@ -57,7 +57,7 @@ class ArchitectureTest {
                 .whereLayer("Listeners").mayNotBeAccessedByAnyLayer()
                 .whereLayer("Websockets").mayOnlyBeAccessedByLayers("Listeners")
                 .whereLayer("Services").mayOnlyBeAccessedByLayers("API", "Interceptor")
-                .whereLayer("Config").mayNotBeAccessedByAnyLayer()
+                .whereLayer("Config").mayOnlyBeAccessedByLayers("API")
                 .whereLayer("Security").mayOnlyBeAccessedByLayers("Config")
                 .whereLayer("Interceptor").mayOnlyBeAccessedByLayers("Config", "Logging")
                 .whereLayer("Logging").mayOnlyBeAccessedByLayers("API", "Config", "Interceptor")

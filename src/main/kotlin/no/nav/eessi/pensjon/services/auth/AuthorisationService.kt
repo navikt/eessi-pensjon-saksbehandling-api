@@ -228,8 +228,7 @@ enum class SedPensjonstype(val pensjonstype: String){
  * Liste av roller som saksbehandler må ha i AD for å få tilgang til EESSI-Pensjon
  */
 enum class Tilgang(var grupper: List<AdRolle>) {
-    EESSI_PENSJON(listOf(AdRolle.PENSJON_UTLAND, AdRolle.PENSJON_SAKSBEHANDLER,  AdRolle.EESSI_CLERK, AdRolle.EESSI_CLERK_PENSJON)),
-    //EESSI_PENSJON(listOf(AdRolle.PENSJON_UTLAND, AdRolle.PENSJON_SAKSBEHANDLER))
+    EESSI_PENSJON(listOf(AdRolle.PENSJON_UTLAND, AdRolle.EESSI_CLERK, AdRolle.EESSI_CLERK_PENSJON))
 }
 
 /**

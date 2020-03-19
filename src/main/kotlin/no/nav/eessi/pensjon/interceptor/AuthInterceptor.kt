@@ -14,6 +14,7 @@ import no.nav.eessi.pensjon.utils.getClaims
 import no.nav.security.oidc.context.OIDCRequestContextHolder
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.core.Ordered
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.web.bind.annotation.ResponseStatus
@@ -28,7 +29,7 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
     private val oidcRequestContextHolder: OIDCRequestContextHolder,
     private val auditLogger: AuditLogger,
     private val whitelistService: WhitelistService,
-    @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())) : HandlerInterceptor {
+    @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())) : HandlerInterceptor, Ordered {
 
     private val logger = LoggerFactory.getLogger(AuthInterceptor::class.java)
 
@@ -80,22 +81,17 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
 
                 logger.debug("Hente ut brukerinformasjon fra AD '$ident'")
 
-//                val brukerInformasjon: BrukerInformasjon
+                val brukerInformasjon: BrukerInformasjon
                 try {
-                    return@measure sjekkWhitelisting(ident)
-
-//                    vi hopper over ldap oppslag intill prodfeil fikset. (ldap error log støyer mye)
-//
-//                    brukerInformasjon = ldapService.hentBrukerInformasjon(ident)
-//                    logger.info("Ldap brukerinformasjon hentet")
-//                    logger.debug("Ldap brukerinfo: $brukerInformasjon")
+                    brukerInformasjon = ldapService.hentBrukerInformasjon(ident)
+                    logger.info("Ldap brukerinformasjon hentet")
+                    logger.debug("Ldap brukerinfo: $brukerInformasjon")
                 } catch (ex: Exception) {
                     logger.error("Feil ved henthing av ldpap brukerinformasjon", ex)
 
                     //det feiler ved ldap oppsalg benytter witheliste for å sjekke ident
                     return@measure sjekkWhitelisting(ident)
                 }
-/*
 
                 val adRoller = AdRolle.konverterAdRollerTilEnum(brukerInformasjon.medlemAv)
                     // Sjekk tilgang til EESSI-Pensjon
@@ -113,7 +109,7 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
                     // Sjekk tilgang til BUC?
                     // Sjekk tilgang til alle brukere i SED eller andre data
                     return@measure true
-*/
+
             } else {
                 logger.info("Borger/systembruker tilgang til EESSI-Pensjon alltid i orden")
                 return@measure true
@@ -144,6 +140,10 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
      */
     @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
     class AuthorisationIkkeTilgangTilEeessiPensjonException(message: String?) : Exception(message)
+
+    override fun getOrder(): Int {
+        return Ordered.LOWEST_PRECEDENCE
+    }
 
 }
 
