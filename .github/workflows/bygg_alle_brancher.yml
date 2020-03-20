@@ -1,4 +1,4 @@
-name: Build, push, and deploy
+name: Build and test all branches
 
 on:
   push:
@@ -6,6 +6,7 @@ on:
       - '*'
       - '*/*'
       - '!master'
+      - '!feature/authInterceptorQ1fix'
 
 jobs:
   tag_build_and_deploy:
