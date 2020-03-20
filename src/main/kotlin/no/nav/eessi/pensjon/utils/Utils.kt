@@ -50,9 +50,9 @@ fun getClaims(oidcRequestContextHolder: OIDCRequestContextHolder): OIDCClaims {
 
 fun getToken(oidcRequestContextHolder: OIDCRequestContextHolder): TokenContext {
     val context = oidcRequestContextHolder.oidcValidationContext
-    if(context.getIssuers().isEmpty())
+    if(context.issuers.isEmpty())
         throw RuntimeException("No issuer found in context")
-    val issuer = context.getIssuers().first()
+    val issuer = context.issuers.first()
 
     return context.getToken(issuer)
 }

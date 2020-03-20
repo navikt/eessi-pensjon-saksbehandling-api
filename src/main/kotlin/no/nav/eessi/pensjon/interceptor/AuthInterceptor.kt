@@ -1,6 +1,5 @@
 package no.nav.eessi.pensjon.interceptor
 
-import com.fasterxml.jackson.core.type.TypeReference
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import no.nav.eessi.pensjon.logging.AuditLogger
 import no.nav.eessi.pensjon.metrics.MetricsHelper
@@ -11,6 +10,7 @@ import no.nav.eessi.pensjon.services.ldap.BrukerInformasjon
 import no.nav.eessi.pensjon.services.ldap.BrukerInformasjonService
 import no.nav.eessi.pensjon.services.whitelist.WhitelistService
 import no.nav.eessi.pensjon.utils.getClaims
+import no.nav.eessi.pensjon.utils.getToken
 import no.nav.security.oidc.context.OIDCRequestContextHolder
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -33,6 +33,8 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
 
     private val logger = LoggerFactory.getLogger(AuthInterceptor::class.java)
 
+    private val userinfoPath = "/api/userinfo"
+
     private val regexNavident  = Regex("^[a-zA-Z]\\d{6}$")
     private val regexBorger = Regex("^\\d{11}$")
 
@@ -46,14 +48,25 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
             val eessiPensjonTilgang = handler.getMethodAnnotation(EessiPensjonTilgang::class.java)
             if (eessiPensjonTilgang != null) {
                 // Skal sjekke tilgang til tjenesten som kalles
+                sjekkTilgangTilUserinfo(request)
                 return sjekkTilgangTilEessiPensjonTjeneste()
             }
         }
-
         return true
 
     }
 
+    fun sjekkTilgangTilUserinfo(request: HttpServletRequest) {
+        logger.debug("reqestURI: ${request.requestURI}  localvar: $userinfoPath")
+        if (request.requestURI == userinfoPath) {
+            try {
+                getToken(oidcRequestContextHolder)
+            } catch (rx: RuntimeException) {
+                logger.warn("Bruker har ingen token, kaster 401 så vi får logget bruker inn via forgeRock oidctoken")
+                throw AuthorisationIkkeTilgangTilEeessiPensjonException("Ingen gyldig token")
+            }
+        }
+    }
 
     /**
      * Tilgangen til en tjenesten skal kalles hvis den er annotert med "EessiPensjonTilgang". Ved annotering skal

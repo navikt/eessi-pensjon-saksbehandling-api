@@ -367,6 +367,17 @@ class AuthInterceptorIntegrationTest() {
     }
 
     @Test
+    fun `Gitt at ingen token finnes ved henting av userinfo så skal det ikke gis tilgang til EP`() {
+        // Then
+        val getDocument = HttpGet("http://localhost:$port/api/userinfo")
+
+        val responseGetDocument = HttpClientBuilder.create().build().execute(getDocument)
+        val statusCode: Int = responseGetDocument.getStatusLine().getStatusCode()
+
+        Assertions.assertEquals(HttpStatus.SC_UNAUTHORIZED, statusCode)
+    }
+
+    @Test
     fun `Gitt at saksbehandler ikke har rollen Alderspensjon, ved henting av userinfo så skal det ikke gis tilgang til EP`() {
         val request = HttpGet("http://localhost:$port/local/jwt?subject=Z000000")
 
@@ -405,7 +416,6 @@ class AuthInterceptorIntegrationTest() {
         Assertions.assertEquals(HttpStatus.SC_OK, statusCode)
         Assertions.assertTrue(responseGetDocument != null)
         Assertions.assertTrue(body.contains("X000000"))
-
     }
 
     @TestConfiguration
