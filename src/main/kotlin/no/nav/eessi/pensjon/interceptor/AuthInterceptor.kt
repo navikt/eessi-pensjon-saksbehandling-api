@@ -10,7 +10,7 @@ import no.nav.eessi.pensjon.services.ldap.BrukerInformasjon
 import no.nav.eessi.pensjon.services.ldap.BrukerInformasjonService
 import no.nav.eessi.pensjon.services.whitelist.WhitelistService
 import no.nav.eessi.pensjon.utils.getClaims
-import no.nav.eessi.pensjon.utils.getToken
+import no.nav.security.oidc.context.OIDCClaims
 import no.nav.security.oidc.context.OIDCRequestContextHolder
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -38,6 +38,12 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
     private val regexNavident  = Regex("^[a-zA-Z]\\d{6}$")
     private val regexBorger = Regex("^\\d{11}$")
 
+    enum class Roller {
+        SAKSBEHANDLER,
+        BRUKER,
+        UNKNOWN
+    }
+
     @Throws(Exception::class)
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
 
@@ -48,23 +54,20 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
             val eessiPensjonTilgang = handler.getMethodAnnotation(EessiPensjonTilgang::class.java)
             if (eessiPensjonTilgang != null) {
                 // Skal sjekke tilgang til tjenesten som kalles
-                sjekkTilgangTilUserinfo(request)
-                return sjekkTilgangTilEessiPensjonTjeneste()
+                return sjekkTilgangTilEessiPensjonTjeneste(sjekkTilgangTilUserinfo())
             }
         }
         return true
 
     }
 
-    fun sjekkTilgangTilUserinfo(request: HttpServletRequest) {
-        logger.debug("reqestURI: ${request.requestURI}  localvar: $userinfoPath")
-        if (request.requestURI == userinfoPath) {
-            try {
-                getToken(oidcRequestContextHolder)
-            } catch (rx: RuntimeException) {
-                logger.warn("Bruker har ingen token, kaster 401 så vi får logget bruker inn via forgeRock oidctoken")
-                throw AuthorisationIkkeTilgangTilEeessiPensjonException("Ingen gyldig token")
-            }
+    fun sjekkTilgangTilUserinfo(): OIDCClaims {
+        try {
+            logger.debug("Sjekker om det finnes et token")
+            return getClaims(oidcRequestContextHolder)
+        } catch (rx: RuntimeException) {
+            logger.warn("Det finnes ingen gyldig token, kaster en exception")
+            throw AuthorisationIkkeTilgangTilEeessiPensjonException("Ingen gyldig token")
         }
     }
 
@@ -77,20 +80,22 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
      *      o Brukere
      *      o BUC
      */
-    fun sjekkTilgangTilEessiPensjonTjeneste(): Boolean{
+    fun sjekkTilgangTilEessiPensjonTjeneste(oidcClaims: OIDCClaims): Boolean{
         return metricsHelper.measure("authInterceptor") {
 
             // Er bruker det samme som saksbehandler eller er det en borger? Jeg ønsker saksbehandler
-            val ident = getClaims(oidcRequestContextHolder).subject
-            val expirationTime = getClaims(oidcRequestContextHolder).claimSet.expirationTime
+            val ident = oidcClaims.subject
+            val expirationTime = oidcClaims.claimSet.expirationTime
+            val brukerRolle = hentRolle(ident)
 
-            logger.debug("Ident: $ident  Token Expire: $expirationTime Role: ${getRole(ident)}")
+            logger.debug("Ident: $ident  Token Expire: $expirationTime Role: $brukerRolle")
             logger.debug("Sjekke tilgang 1")
 
             // Bare saksbehandlere skal sjekkes om de har tilgang.
             // Brukere med fødselsnummer har tilgang til seg selv. Det er håndtert ved pålogging.
 
-            if (ident.matches(regexNavident)) {
+            //if (ident.matches(regexNavident)) {
+            if (Roller.SAKSBEHANDLER == brukerRolle) {
 
                 logger.debug("Hente ut brukerinformasjon fra AD '$ident'")
 
@@ -100,7 +105,7 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
                     logger.info("Ldap brukerinformasjon hentet")
                     logger.debug("Ldap brukerinfo: $brukerInformasjon")
                 } catch (ex: Exception) {
-                    logger.error("Feil ved henthing av ldpap brukerinformasjon", ex)
+                    logger.error("Feil ved henthing av ldap brukerinformasjon", ex)
 
                     //det feiler ved ldap oppsalg benytter witheliste for å sjekke ident
                     return@measure sjekkWhitelisting(ident)
@@ -140,11 +145,11 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
         throw AuthorisationIkkeTilgangTilEeessiPensjonException("Ikke tilgang til EESSI-Pensjon")
     }
 
-    fun getRole(subject: String): String {
+    fun hentRolle(subject: String): Roller {
         return when {
-            subject.matches(regexNavident) -> "SAKSBEHANDLER"
-            subject.matches(regexBorger) -> "BRUKER"
-            else -> "UNKNOWN"
+            subject.matches(regexNavident) -> Roller.SAKSBEHANDLER
+            subject.matches(regexBorger) -> Roller.BRUKER
+            else -> Roller.UNKNOWN
         }
     }
 
