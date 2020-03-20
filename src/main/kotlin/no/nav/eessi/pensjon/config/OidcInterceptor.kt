@@ -57,7 +57,7 @@ class OidcInterceptor {
     fun config(): Config {
 
         val oidcConfiguration = OidcConfiguration().apply {
-            clientId = this.clientId
+            clientId = this@OidcInterceptor.clientId
             secret = clientSecret
             isUseNonce = true
             discoveryURI = discoveryUrl
@@ -77,7 +77,6 @@ class OidcInterceptor {
                     var computed = super.compute(url, context)
 
                     // TODO: This is dumb. But it works. Better hope loginservice comes to FSS soon so we can get rid of this whole pile of shit
-
                     if(!computed.contains("http://localhost")) {
                         if (discoveryUrl.contains("isso-t") || discoveryUrl.contains("isso-q")) {
                             // We are in a test-environment
