@@ -75,8 +75,6 @@ spec:
       value: dc=preprod,dc=local
     - name: LDAP_URL
       value: ldaps://ldapgw.preprod.local
-    - name: LDAP_USERNAME
-      value: srvSSOLinux
     - name: ENV
       value: q1
     - name: KAFKA_SEDSENDT_TOPIC

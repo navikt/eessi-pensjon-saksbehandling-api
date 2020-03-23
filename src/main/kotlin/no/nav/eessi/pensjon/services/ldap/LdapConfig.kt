@@ -17,10 +17,6 @@ class LdapConfig {
 
     @Value("\${ldap.url}")
     private val ldapUrl: String? = null
-//    @Value("\${ldap.username}")
-//    private val ldapUsername: String? = null
-//   @Value("\${ldap.password}")
-//   private val ldapPassword: String? = null
     @Value("\${ldap.domain}")
     private val ldapDomain: String? = null
     @Value("\${ldap.basedn}")

@@ -33,8 +33,6 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
 
     private val logger = LoggerFactory.getLogger(AuthInterceptor::class.java)
 
-    private val userinfoPath = "/api/userinfo"
-
     private val regexNavident  = Regex("^[a-zA-Z]\\d{6}$")
     private val regexBorger = Regex("^\\d{11}$")
 
@@ -113,7 +111,7 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
 
                 val adRoller = AdRolle.konverterAdRollerTilEnum(brukerInformasjon.medlemAv)
                     // Sjekk tilgang til EESSI-Pensjon
-                    if( authorisationService.harTilgangTilEessiPensjon(adRoller).not() ){
+                    if( authorisationService.harTilgangTilEessiPensjon(adRoller).not() ) {
 
                         // Ikke tilgang til EESSI-Pensjon
                         logger.warn("Bruker har ikke korrekt tilganger vi avviser med UNAUTHORIZED")
@@ -122,10 +120,6 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
 
                     }
                     logger.info("Saksbehandler tilgang til EESSI-Pensjon er i orden")
-                    // Sjekk tilgang til PESYS-SAK?
-                    // Hvordan får jeg tak i sakstypen?
-                    // Sjekk tilgang til BUC?
-                    // Sjekk tilgang til alle brukere i SED eller andre data
                     return@measure true
 
             } else {

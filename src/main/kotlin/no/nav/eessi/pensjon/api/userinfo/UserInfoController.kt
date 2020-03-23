@@ -72,13 +72,12 @@ class UserInfoController(
     @EessiPensjonTilgang
     @GetMapping("/whitelisted")
     fun checkWhitelist(): Boolean {
-        logger.info("Sjekker om brukeren er whitelistet")
-
         return when {
             toggle.getAPIFeatures().getValue(FeatureName.ENABLE_AUTH.name) -> {
                 true
             }
             toggle.getAPIFeatures().getValue(FeatureName.WHITELISTING.name) -> {
+                logger.info("Sjekker om brukeren er whitelistet")
                 val personIdentifier = getClaims(oidcRequestContextHolder).subject
                 whitelistService.isPersonWhitelisted(personIdentifier.toUpperCase())
             }
