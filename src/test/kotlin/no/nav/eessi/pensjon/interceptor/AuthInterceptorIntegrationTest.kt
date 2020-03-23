@@ -8,11 +8,9 @@ import org.apache.http.HttpStatus
 import org.apache.http.client.ResponseHandler
 import org.apache.http.client.methods.HttpDelete
 import org.apache.http.client.methods.HttpGet
-import org.apache.http.client.methods.HttpPut
 import org.apache.http.impl.client.BasicResponseHandler
 import org.apache.http.impl.client.HttpClientBuilder
 import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.boot.test.context.SpringBootTest
@@ -27,6 +25,7 @@ private const val SED_SENDT_TOPIC = "eessi-basis-sedSendt-v1"
 private const val SED_MOTTATT_TOPIC = "eessi-basis-sedMottatt-v1"
 private const val MOTTAK_TOPIC = "privat-eessipensjon-selvbetjeningsinfoMottatt-test"
 
+@Suppress("NonAsciiCharacters")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = [ AuthInterceptorIntegrationTest.TestConfig::class])
 @ActiveProfiles("integrationtest")
 @Import(TokenGeneratorConfiguration::class)
@@ -76,23 +75,6 @@ class AuthInterceptorIntegrationTest() {
         return getDocument
     }
 
-    fun setKallTilPutDocument(brukerId: String): HttpPut {
-        // Given
-        val request = HttpPut("http://localhost:$port/local/jwt?subject=$brukerId")
-
-        // When
-        val response = HttpClientBuilder.create().build().execute(request)
-        val token = String(response.entity.content.readBytes())
-
-        // Then
-        val putDocument = HttpPut("http://localhost:$port/api/storage/get/s3TestFil")
-        putDocument.setHeader("Authorization", "Bearer $token")
-
-        return setKallTilPutDocument(brukerId)
-    }
-
-
-
     /**
      * Saksbehandler med
      *      o ikke tilgang til EESSI-Pensjon
@@ -101,10 +83,9 @@ class AuthInterceptorIntegrationTest() {
      * lag kopi av denne og bruk den for put, samt legg til tester for ok og ikkeok
      */
     @Test
-    fun `Gitt Saksbehandler har ikke roller til å få tilgang til utland SÅ skal det kastes en feil` (){
+    fun `Gitt at saksbehandler har ikke roller til å få tilgang til utland SÅ skal det kastes 401` (){
         val brukerId = "Z000000"
         val getDocument = setKallTilGetDocument(brukerId, "testFil.json")
-        // Tester tilgang til en EP-tjeneste merket med EessiPensjonTilgang
 
         assertThrows<AuthInterceptor.AuthorisationIkkeTilgangTilEeessiPensjonException> {
             val doc = HttpClientBuilder.create().build().execute(getDocument)
@@ -129,7 +110,7 @@ class AuthInterceptorIntegrationTest() {
      *          o ingen adressesperre
      */
     @Test
-    fun `Gitt Saksbehandler har har rollene Saksbehandler og Utland SÅ skal det gis tilgang til å hente fil fra s3` (){
+    fun `Gitt at saksbehandler har har rollene Saksbehandler og Utland SÅ skal det gis tilgang til å hente fil fra s3` (){
 
         // Given
         val request = HttpGet("http://localhost:$port/local/jwt?subject=A234567")
@@ -162,7 +143,7 @@ class AuthInterceptorIntegrationTest() {
         getDocument.setHeader("Authorization", "Bearer $token")
 
         val responseGetDocument = HttpClientBuilder.create().build().execute(getDocument)
-        val statusCode: Int = responseGetDocument.getStatusLine().getStatusCode()
+        val statusCode: Int = responseGetDocument.statusLine.statusCode
 
         Assertions.assertEquals(HttpStatus.SC_UNAUTHORIZED, statusCode)
         Assertions.assertTrue(responseGetDocument != null)
@@ -170,7 +151,7 @@ class AuthInterceptorIntegrationTest() {
     }
 
     @Test
-    fun `Gitt Saksbehandler har har rollene alderpensjon så skal det gis tilgang til å hente fil fra s3` (){
+    fun `Gitt at saksbehandler har har rollene alderpensjon så skal det gis tilgang til å hente fil fra s3` (){
 
         // Given
         val request = HttpGet("http://localhost:$port/local/jwt?subject=A230067")
@@ -191,7 +172,7 @@ class AuthInterceptorIntegrationTest() {
         // henter ut body
         val body = handler.handleResponse(responseHentDokumenter)
         // henter ut statuskode
-        val statusCode: Int = responseHentDokumenter.getStatusLine().getStatusCode()
+        val statusCode: Int = responseHentDokumenter.statusLine.statusCode
 
         Assertions.assertEquals(HttpStatus.SC_OK, statusCode)
         Assertions.assertTrue(responseHentDokumenter != null)
@@ -214,7 +195,7 @@ class AuthInterceptorIntegrationTest() {
         val responseHentDokumenter = HttpClientBuilder.create().build().execute(hentListeAvDokumenter)
 
         val body = handler.handleResponse(responseHentDokumenter)
-        val statusCode: Int = responseHentDokumenter.getStatusLine().getStatusCode()
+        val statusCode: Int = responseHentDokumenter.statusLine.statusCode
 
         Assertions.assertEquals(HttpStatus.SC_OK, statusCode)
         Assertions.assertTrue(responseHentDokumenter != null)
@@ -234,7 +215,7 @@ class AuthInterceptorIntegrationTest() {
         hentListeAvDokumenter.setHeader("Authorization", "Bearer $token")
 
         val responseHentDokumenter = HttpClientBuilder.create().build().execute(hentListeAvDokumenter)
-        val statusCode: Int = responseHentDokumenter.getStatusLine().getStatusCode()
+        val statusCode: Int = responseHentDokumenter.statusLine.statusCode
 
         Assertions.assertEquals(HttpStatus.SC_UNAUTHORIZED, statusCode)
         Assertions.assertTrue(responseHentDokumenter != null)
@@ -253,7 +234,7 @@ class AuthInterceptorIntegrationTest() {
         deleteDok.setHeader("Authorization", "Bearer $token")
 
         val responseHentDokumenter = HttpClientBuilder.create().build().execute(deleteDok)
-        val statusCode: Int = responseHentDokumenter.getStatusLine().getStatusCode()
+        val statusCode: Int = responseHentDokumenter.statusLine.statusCode
 
         Assertions.assertEquals(HttpStatus.SC_UNAUTHORIZED, statusCode)
         Assertions.assertTrue(responseHentDokumenter != null)
@@ -273,7 +254,7 @@ class AuthInterceptorIntegrationTest() {
 
         val responseHentDokumenter = HttpClientBuilder.create().build().execute(deleteDok)
 
-        val statusCode: Int = responseHentDokumenter.getStatusLine().getStatusCode()
+        val statusCode: Int = responseHentDokumenter.statusLine.statusCode
 
         Assertions.assertEquals(HttpStatus.SC_OK, statusCode)
         Assertions.assertTrue(responseHentDokumenter != null)
@@ -324,6 +305,26 @@ class AuthInterceptorIntegrationTest() {
 
     }
 
+    @Test
+    fun `Gitt at uføre saksbehandler har rollen Uføre men mangler pensjon-utland, så skal det ikke gis tilgang til EP`() {
+        val request = HttpGet("http://localhost:$port/local/jwt?subject=U930067")
+
+        // When
+        val response = HttpClientBuilder.create().build().execute(request)
+        val token = String(response.entity.content.readBytes())
+
+        // Then
+        val getDocument = HttpGet("http://localhost:$port/api/userinfo")
+        getDocument.setHeader("Authorization", "Bearer $token")
+
+        val responseHentDokumenter = HttpClientBuilder.create().build().execute(getDocument)
+        val statusCode: Int = responseHentDokumenter.statusLine.statusCode
+
+        Assertions.assertEquals(HttpStatus.SC_UNAUTHORIZED, statusCode)
+        Assertions.assertTrue(responseHentDokumenter != null)
+
+    }
+
 
     @Test
     fun `Gitt at saksbehandler ikke har rollen Alderspensjon, så skal det ikke gis tilgang til EP`() {
@@ -338,7 +339,7 @@ class AuthInterceptorIntegrationTest() {
         getDocument.setHeader("Authorization", "Bearer $token")
 
         val responseGetDocument = HttpClientBuilder.create().build().execute(getDocument)
-        val statusCode: Int = responseGetDocument.getStatusLine().getStatusCode()
+        val statusCode: Int = responseGetDocument.statusLine.statusCode
 
         Assertions.assertEquals(HttpStatus.SC_UNAUTHORIZED, statusCode)
     }
@@ -372,7 +373,7 @@ class AuthInterceptorIntegrationTest() {
         val getDocument = HttpGet("http://localhost:$port/api/userinfo")
 
         val responseGetDocument = HttpClientBuilder.create().build().execute(getDocument)
-        val statusCode: Int = responseGetDocument.getStatusLine().getStatusCode()
+        val statusCode: Int = responseGetDocument.statusLine.statusCode
 
         Assertions.assertEquals(HttpStatus.SC_UNAUTHORIZED, statusCode)
     }
@@ -390,13 +391,13 @@ class AuthInterceptorIntegrationTest() {
         getDocument.setHeader("Authorization", "Bearer $token")
 
         val responseGetDocument = HttpClientBuilder.create().build().execute(getDocument)
-        val statusCode: Int = responseGetDocument.getStatusLine().getStatusCode()
+        val statusCode: Int = responseGetDocument.statusLine.statusCode
 
         Assertions.assertEquals(HttpStatus.SC_UNAUTHORIZED, statusCode)
     }
 
     @Test
-    fun `Gitt at det feiler ved oppslag av saksbehandler mot LDPA gis det tilgang til EP`() {
+    fun `Gitt at det feiler ved oppslag av saksbehandler mot LDAP gis det tilgang til EP`() {
         val request = HttpGet("http://localhost:$port/local/jwt?subject=X000000")
 
         // When
@@ -409,7 +410,7 @@ class AuthInterceptorIntegrationTest() {
 
         val handler: ResponseHandler<String> = BasicResponseHandler()
         val responseGetDocument = HttpClientBuilder.create().build().execute(getDocument)
-        val statusCode: Int = responseGetDocument.getStatusLine().getStatusCode()
+        val statusCode: Int = responseGetDocument.statusLine.statusCode
 
         val body = handler.handleResponse(responseGetDocument)
 

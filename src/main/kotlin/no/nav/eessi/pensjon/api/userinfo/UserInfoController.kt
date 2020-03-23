@@ -44,7 +44,7 @@ class UserInfoController(
         logger.info("Henter userinfo")
         val fnr = getClaims(oidcRequestContextHolder).subject
         val role = getRole(fnr)
-        val allowed = checkWhitelist()
+        val allowed = true
         val features = if (allowed) toggle.getUIFeatures() else mapOf()
         val jwtset = getClaims(oidcRequestContextHolder).claimSet
         val expirationTime = jwtset.expirationTime.time

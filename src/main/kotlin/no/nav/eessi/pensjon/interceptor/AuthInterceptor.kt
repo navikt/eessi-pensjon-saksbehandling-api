@@ -151,7 +151,7 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
      * Feil som kan kastes: Ikke tilgang til EESSI-Pensjon
      */
     @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
-    class AuthorisationIkkeTilgangTilEeessiPensjonException(message: String?) : Exception(message)
+    class AuthorisationIkkeTilgangTilEeessiPensjonException(message: String?): Exception(message)
 
     override fun getOrder(): Int {
         return Ordered.LOWEST_PRECEDENCE

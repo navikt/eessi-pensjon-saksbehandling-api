@@ -81,6 +81,7 @@ class UserInfoControllerTest : S3StorageBaseTest() {
         assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), userInfoController2.getUserInfo())
     }
 
+    @Disabled
     @Test fun `Calling UserInfoController getUserInfo saksbehandler in P with invalid person does not return features`() {
         val toggleMock2 = FeatureToggle()
         val userInfoController2 = Mockito.spy(UserInfoController(toggleMock2, generateMockSaksbehContextHolder(),whitelistService))
@@ -95,6 +96,7 @@ class UserInfoControllerTest : S3StorageBaseTest() {
         )
         assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), userInfoController2.getUserInfo())
     }
+
     @Disabled
     @Test fun `Calling UserInfoController|getRole`() {
         assertEquals("BRUKER", getRole("12345678910"))
