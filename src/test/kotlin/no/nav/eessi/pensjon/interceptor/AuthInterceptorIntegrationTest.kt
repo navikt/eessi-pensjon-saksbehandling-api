@@ -83,14 +83,14 @@ class AuthInterceptorIntegrationTest() {
      * lag kopi av denne og bruk den for put, samt legg til tester for ok og ikkeok
      */
     @Test
-    fun `Gitt at saksbehandler har ikke roller til å få tilgang til utland SÅ skal det kastes 401` (){
+    fun `Gitt at saksbehandler har ikke roller til å få tilgang til utland SÅ skal det kastes 403` (){
         val brukerId = "Z000000"
         val getDocument = setKallTilGetDocument(brukerId, "testFil.json")
 
         assertThrows<AuthInterceptor.AuthorisationIkkeTilgangTilEeessiPensjonException> {
             val doc = HttpClientBuilder.create().build().execute(getDocument)
             // Mocket statuskode for å fremheve en exception
-            if (doc.statusLine.statusCode == HttpStatus.SC_UNAUTHORIZED ) { throw AuthInterceptor.AuthorisationIkkeTilgangTilEeessiPensjonException("Ingen tilgang mate!! ....") }
+            if (doc.statusLine.statusCode == HttpStatus.SC_FORBIDDEN ) { throw AuthInterceptor.AuthorisationIkkeTilgangTilEeessiPensjonException("Ingen tilgang mate!! ....") }
         }
     }
 
@@ -129,7 +129,7 @@ class AuthInterceptorIntegrationTest() {
     }
 
     @Test
-    fun `Gitt at saksbehandler kun har har rollene 6 eller 7 så skal det kastes en 401` (){
+    fun `Gitt at saksbehandler kun har har rollene 6 eller 7 så skal det kastes en 403` (){
 
         // Given
         val request = HttpGet("http://localhost:$port/local/jwt?subject=Z000567")
@@ -145,7 +145,7 @@ class AuthInterceptorIntegrationTest() {
         val responseGetDocument = HttpClientBuilder.create().build().execute(getDocument)
         val statusCode: Int = responseGetDocument.statusLine.statusCode
 
-        Assertions.assertEquals(HttpStatus.SC_UNAUTHORIZED, statusCode)
+        Assertions.assertEquals(HttpStatus.SC_FORBIDDEN, statusCode)
         Assertions.assertTrue(responseGetDocument != null)
 
     }
@@ -217,7 +217,7 @@ class AuthInterceptorIntegrationTest() {
         val responseHentDokumenter = HttpClientBuilder.create().build().execute(hentListeAvDokumenter)
         val statusCode: Int = responseHentDokumenter.statusLine.statusCode
 
-        Assertions.assertEquals(HttpStatus.SC_UNAUTHORIZED, statusCode)
+        Assertions.assertEquals(HttpStatus.SC_FORBIDDEN, statusCode)
         Assertions.assertTrue(responseHentDokumenter != null)
 
     }
@@ -236,7 +236,7 @@ class AuthInterceptorIntegrationTest() {
         val responseHentDokumenter = HttpClientBuilder.create().build().execute(deleteDok)
         val statusCode: Int = responseHentDokumenter.statusLine.statusCode
 
-        Assertions.assertEquals(HttpStatus.SC_UNAUTHORIZED, statusCode)
+        Assertions.assertEquals(HttpStatus.SC_FORBIDDEN, statusCode)
         Assertions.assertTrue(responseHentDokumenter != null)
 
     }
@@ -320,7 +320,7 @@ class AuthInterceptorIntegrationTest() {
         val responseHentDokumenter = HttpClientBuilder.create().build().execute(getDocument)
         val statusCode: Int = responseHentDokumenter.statusLine.statusCode
 
-        Assertions.assertEquals(HttpStatus.SC_UNAUTHORIZED, statusCode)
+        Assertions.assertEquals(HttpStatus.SC_FORBIDDEN, statusCode)
         Assertions.assertTrue(responseHentDokumenter != null)
 
     }
@@ -341,7 +341,7 @@ class AuthInterceptorIntegrationTest() {
         val responseGetDocument = HttpClientBuilder.create().build().execute(getDocument)
         val statusCode: Int = responseGetDocument.statusLine.statusCode
 
-        Assertions.assertEquals(HttpStatus.SC_UNAUTHORIZED, statusCode)
+        Assertions.assertEquals(HttpStatus.SC_FORBIDDEN, statusCode)
     }
 
     @Test
@@ -368,7 +368,7 @@ class AuthInterceptorIntegrationTest() {
     }
 
     @Test
-    fun `Gitt at ingen token finnes ved henting av userinfo så skal det ikke gis tilgang til EP`() {
+    fun `Gitt at ingen token finnes ved henting av userinfo så skal det kastes en 401`() {
         // Then
         val getDocument = HttpGet("http://localhost:$port/api/userinfo")
 
@@ -393,7 +393,7 @@ class AuthInterceptorIntegrationTest() {
         val responseGetDocument = HttpClientBuilder.create().build().execute(getDocument)
         val statusCode: Int = responseGetDocument.statusLine.statusCode
 
-        Assertions.assertEquals(HttpStatus.SC_UNAUTHORIZED, statusCode)
+        Assertions.assertEquals(HttpStatus.SC_FORBIDDEN, statusCode)
     }
 
     @Test

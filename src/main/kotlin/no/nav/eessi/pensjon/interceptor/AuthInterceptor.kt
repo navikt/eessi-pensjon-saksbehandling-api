@@ -65,7 +65,7 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
             return getClaims(oidcRequestContextHolder)
         } catch (rx: RuntimeException) {
             logger.warn("Det finnes ingen gyldig token, kaster en exception")
-            throw AuthorisationIkkeTilgangTilEeessiPensjonException("Ingen gyldig token")
+            throw TokenIkkeTilgjengeligException("Ingen gyldig token")
         }
     }
 
@@ -150,12 +150,17 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
     /**
      * Feil som kan kastes: Ikke tilgang til EESSI-Pensjon
      */
+
     @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
+    class TokenIkkeTilgjengeligException(message: String?): Exception(message)
+
+    @ResponseStatus(value = HttpStatus.FORBIDDEN)
     class AuthorisationIkkeTilgangTilEeessiPensjonException(message: String?): Exception(message)
 
     override fun getOrder(): Int {
         return Ordered.LOWEST_PRECEDENCE
     }
+
 
 }
 
