@@ -35,6 +35,8 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
 
     private val regexNavident  = Regex("^[a-zA-Z]\\d{6}$")
     private val regexBorger = Regex("^\\d{11}$")
+    private val ugyldigToken = "UNAUTHORIZED"
+    private val avvistIdent = "FORBIDDEN"
 
     enum class Roller {
         SAKSBEHANDLER,
@@ -47,12 +49,13 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
 
         if (handler is HandlerMethod) {
             // Vi sjekker om det er en annotasjon av typen EessiPensjonTilgang
-            // Hvis den er der så skal vi sjekke om pålogget saksbehandler
-            // har tilgang til tjenesten som blir kalt
+            // Sjekke om pålogget saksbehandler har tilgang til tjenesten.
+
             val eessiPensjonTilgang = handler.getMethodAnnotation(EessiPensjonTilgang::class.java)
             if (eessiPensjonTilgang != null) {
-                // Skal sjekke tilgang til tjenesten som kalles
-                return sjekkTilgangTilEessiPensjonTjeneste(sjekkForGyldigToken())
+                return metricsHelper.measure("authInterceptor") {
+                    return@measure sjekkTilgangTilEessiPensjonTjeneste(sjekkForGyldigToken())
+                }
             }
         }
         return true
@@ -64,8 +67,8 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
             logger.debug("Sjekker om det finnes et token")
             return getClaims(oidcRequestContextHolder)
         } catch (rx: RuntimeException) {
-            logger.warn("Det finnes ingen gyldig token, kaster en exception")
-            throw TokenIkkeTilgjengeligException("Ingen gyldig token")
+            logger.warn("Det finnes ingen gyldig token, kaster en $ugyldigToken Exception")
+            throw TokenIkkeTilgjengeligException("Ingen gyldig token funnet")
         }
     }
 
@@ -79,63 +82,55 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
      *      o BUC
      */
     fun sjekkTilgangTilEessiPensjonTjeneste(oidcClaims: OIDCClaims): Boolean{
-        return metricsHelper.measure("authInterceptor") {
+        val ident = oidcClaims.subject
+        val issueTime = oidcClaims.claimSet.issueTime
+        val expirationTime = oidcClaims.claimSet.expirationTime
+        val brukerRolle = hentRolle(ident)
 
-            // Er bruker det samme som saksbehandler eller er det en borger? Jeg ønsker saksbehandler
-            val ident = oidcClaims.subject
-            val expirationTime = oidcClaims.claimSet.expirationTime
-            val brukerRolle = hentRolle(ident)
+        logger.info("Ident: $ident, Token issue time: $issueTime, expire: $expirationTime, Rolle: $brukerRolle")
 
-            logger.debug("Ident: $ident  Token Expire: $expirationTime Role: $brukerRolle")
-            logger.debug("Sjekke tilgang 1")
+        // Bare saksbehandlere skal sjekkes om de har tilgang.
+        // Skal borgere ha tilgang til api-fss?
+        return if (Roller.SAKSBEHANDLER == brukerRolle) {
+            logger.debug("Henter ut brukerinformasjon fra AD/Ldap")
 
-            // Bare saksbehandlere skal sjekkes om de har tilgang.
-            // Brukere med fødselsnummer har tilgang til seg selv. Det er håndtert ved pålogging.
-
-            //if (ident.matches(regexNavident)) {
-            if (Roller.SAKSBEHANDLER == brukerRolle) {
-
-                logger.debug("Hente ut brukerinformasjon fra AD '$ident'")
-
-                val brukerInformasjon: BrukerInformasjon
-                try {
-                    brukerInformasjon = ldapService.hentBrukerInformasjon(ident)
-                    logger.info("Ldap brukerinformasjon hentet")
-                    logger.debug("Ldap brukerinfo: $brukerInformasjon")
-                } catch (ex: Exception) {
-                    logger.error("Feil ved henting av ldap brukerinformasjon", ex)
-
-                    //det feiler ved ldap oppsalg benytter witheliste for å sjekke ident
-                    return@measure sjekkWhitelisting(ident)
-                }
-
-                val adRoller = AdRolle.konverterAdRollerTilEnum(brukerInformasjon.medlemAv)
-                    // Sjekk tilgang til EESSI-Pensjon
-                    if( authorisationService.harTilgangTilEessiPensjon(adRoller).not() ) {
-
-                        // Ikke tilgang til EESSI-Pensjon
-                        logger.warn("Bruker har ikke korrekt tilganger vi avviser med UNAUTHORIZED")
-                        auditLogger.log("sjekkTilgangTilEessiPensjonTjeneste, INGEN TILGANG")
-                        throw AuthorisationIkkeTilgangTilEeessiPensjonException("Ikke tilgang til EESSI-Pensjon")
-
-                    }
-                    logger.info("Saksbehandler tilgang til EESSI-Pensjon er i orden")
-                    return@measure true
-
-            } else {
-                logger.info("Borger/systembruker tilgang til EESSI-Pensjon alltid i orden")
-                return@measure true
+            val brukerInformasjon: BrukerInformasjon
+            try {
+                brukerInformasjon = ldapService.hentBrukerInformasjon(ident)
+                logger.info("Ldap brukerinformasjon hentet")
+                logger.debug("Ldap brukerinfo: $brukerInformasjon")
+            } catch (ex: Exception) {
+                logger.error("Feil ved henthing av ldap brukerinformasjon, prøver whitelistig s3", ex)
+                return sjekkWhitelisting(ident)
             }
+
+            val adRoller = AdRolle.konverterAdRollerTilEnum(brukerInformasjon.medlemAv)
+
+                // Sjekk tilgang til EESSI-Pensjon
+                if( authorisationService.harTilgangTilEessiPensjon(adRoller).not() ) {
+                    // Ikke tilgang til EESSI-Pensjon
+                    logger.warn("Bruker har ikke korrekt tilganger vi avviser med $avvistIdent")
+                    auditLogger.log("sjekkTilgangTilEessiPensjonTjeneste, INGEN TILGANG")
+                    throw AuthorisationIkkeTilgangTilEeessiPensjonException("Du har ikke tilgang til EESSI-Pensjon")
+
+                }
+                logger.debug("Saksbehandler tilgang til EESSI-Pensjon er i orden")
+                true
+
+        } else {
+            logger.debug("Borger/systembruker tilgang til EESSI-Pensjon alltid i orden")
+            true
         }
     }
 
+    //TODO Temp. denne skal fjernes etterhvert.
     private fun sjekkWhitelisting(ident: String): Boolean {
         logger.warn("Prøver å slå opp ident i whitelisting")
         if (whitelistService.isPersonWhitelisted(ident)) {
             logger.info("Godkjenner følgende saksbehandler fra whitelisting : $ident")
             return true
         }
-        logger.warn("Følgende ident er ikke whitelisted : $ident  INGEN TILGANG")
+        logger.warn("Bruker har ikke korrekt tilganger vi avviser med $avvistIdent")
         throw AuthorisationIkkeTilgangTilEeessiPensjonException("Ikke tilgang til EESSI-Pensjon")
     }
 

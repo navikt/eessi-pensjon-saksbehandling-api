@@ -15,7 +15,8 @@ class MetricsHelper(val registry: MeterRegistry) {
      */
     @PostConstruct
     fun initCounters() {
-        listOf("kvittering_sendt_kafka",
+        listOf("authInterceptor",
+            "kvittering_sendt_kafka",
             "soknad_resendt_kafka",
             "soknad_sendt_kafka",
             "hent_innsending",

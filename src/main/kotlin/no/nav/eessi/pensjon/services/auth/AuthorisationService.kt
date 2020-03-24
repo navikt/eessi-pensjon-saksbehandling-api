@@ -25,16 +25,14 @@ class AuthorisationService {
 
         val tilgangGenerell = roller.containsAll( Tilgang.EESSI_PENSJON.grupper )
         logger.debug("tilgangGenerell: $tilgangGenerell")
+
         val tilgangAlder = roller.containsAll(Tilgang.EESSI_PENSJON_ALDER.grupper)
         logger.debug("tilgangAlder: $tilgangAlder")
+
         val tilgangUfore =  roller.containsAll( Tilgang.EESSI_PENSJON_UFORE.grupper )
         logger.debug("tilgangUfore: $tilgangUfore")
 
-        var hartilgang = (tilgangGenerell.or(tilgangAlder).or(tilgangUfore))
-        logger.debug("hartilgang: $hartilgang")
-
-        return hartilgang
-
+        return tilgangGenerell.or(tilgangAlder).or(tilgangUfore)
     }
 
     /**
