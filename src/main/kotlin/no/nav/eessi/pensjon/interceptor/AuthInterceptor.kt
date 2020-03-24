@@ -52,14 +52,14 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
             val eessiPensjonTilgang = handler.getMethodAnnotation(EessiPensjonTilgang::class.java)
             if (eessiPensjonTilgang != null) {
                 // Skal sjekke tilgang til tjenesten som kalles
-                return sjekkTilgangTilEessiPensjonTjeneste(sjekkTilgangTilUserinfo())
+                return sjekkTilgangTilEessiPensjonTjeneste(sjekkForGyldigToken())
             }
         }
         return true
 
     }
 
-    fun sjekkTilgangTilUserinfo(): OIDCClaims {
+    fun sjekkForGyldigToken(): OIDCClaims {
         try {
             logger.debug("Sjekker om det finnes et token")
             return getClaims(oidcRequestContextHolder)
@@ -103,7 +103,7 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
                     logger.info("Ldap brukerinformasjon hentet")
                     logger.debug("Ldap brukerinfo: $brukerInformasjon")
                 } catch (ex: Exception) {
-                    logger.error("Feil ved henthing av ldap brukerinformasjon", ex)
+                    logger.error("Feil ved henting av ldap brukerinformasjon", ex)
 
                     //det feiler ved ldap oppsalg benytter witheliste for å sjekke ident
                     return@measure sjekkWhitelisting(ident)
