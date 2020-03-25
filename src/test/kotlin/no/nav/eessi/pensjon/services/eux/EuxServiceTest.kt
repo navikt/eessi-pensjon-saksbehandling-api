@@ -2,12 +2,13 @@ package no.nav.eessi.pensjon.services.eux
 
 import com.nhaarman.mockitokotlin2.*
 import no.nav.eessi.pensjon.utils.mapAnyToJson
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.fail
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.ArgumentMatchers
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.core.io.DefaultResourceLoader
@@ -16,6 +17,7 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.HttpClientErrorException
+import org.springframework.web.client.HttpServerErrorException
 import org.springframework.web.client.RestTemplate
 
 @ExtendWith(MockitoExtension::class)
@@ -88,5 +90,42 @@ class EuxServiceTest {
         assertTrue(landkoder.contains("CH"))
         assertTrue(landkoder.contains("BE"))
         assertTrue(landkoder.contains("BG"))
+    }
+
+    @Test
+    fun `Calling EuxService forventer ikke exception naar SED er sendt OK paa sendDocumentById`() {
+        val response: ResponseEntity<String> = ResponseEntity(HttpStatus.OK)
+        val euxCaseId = "123456"
+        val documentId = "213213-123123-123123"
+
+        doReturn(response).whenever(restTemplate).exchange(
+            eq("/buc/${euxCaseId}/sed/${documentId}/send"),
+            any(),
+            eq(null),
+            ArgumentMatchers.eq(String::class.java)
+        )
+
+        try {
+            euxService.sendDocumentById(euxCaseId, documentId)
+        } catch (ex : Exception) {
+            fail("Skulle ikke ha feilet")
+        }
+    }
+
+    @Test
+    fun `Calling EuxService  feiler med svar tilbake fra et kall til sendDocumentById`() {
+        val euxCaseId = "123456"
+        val documentId = "213213-123123-123123"
+        ResponseEntity.badRequest().body("")
+
+        doThrow(HttpServerErrorException(HttpStatus.FORBIDDEN)).whenever(restTemplate).exchange(
+            eq("/buc/${euxCaseId}/sed/${documentId}/send"),
+            any(),
+            eq(null),
+            ArgumentMatchers.eq(String::class.java)
+        )
+        assertThrows<HttpServerErrorException> {
+            euxService.sendDocumentById(euxCaseId, documentId)
+        }
     }
 }

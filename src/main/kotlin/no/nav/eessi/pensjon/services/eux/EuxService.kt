@@ -56,6 +56,37 @@ class EuxService(private val euxRestTemplate: RestTemplate,
     }
 
     /**
+     * prøver å sende et SED doument på RINA ut til eu/mottaker.
+     * @param euxCaseId  er iden til den aktuelle Buc/Rina sak
+     * @param documentId er iden til det unike dokuement/Sed som skal sendes.
+     * true hvis alt ok, og sed sendt. Exception error hvis feil.
+     */
+    fun sendDocumentById(euxCaseId: String, documentId: String) {
+
+        val path = "/buc/{RinaSakId}/sed/{DokumentId}/send"
+        val uriParams = mapOf("RinaSakId" to euxCaseId, "DokumentId" to documentId)
+        val builder = UriComponentsBuilder.fromUriString(path).buildAndExpand(uriParams)
+
+        return metricsHelper.measure("SendSED") {
+            try {
+                logger.info("Sender SED euxCaseId: $euxCaseId documentId: $documentId")
+                euxRestTemplate.exchange(
+                    builder.toUriString(),
+                    HttpMethod.POST,
+                    null,
+                    String::class.java
+                )
+            } catch (ex: HttpStatusCodeException) {
+                logger.error("En feil oppstod under sending av SED ex: $ex body: ${ex.responseBodyAsString}")
+                throw ex
+            } catch (ex: Exception) {
+                logger.error("En feil oppstod under sending av SED ex: $ex")
+                throw ex
+            }
+        }
+    }
+
+    /**
      * Henter en liste av påkoblede landkoder for en konkret buctype
      */
     fun getPaakobledeLand(buctype : String): String {
