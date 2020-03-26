@@ -2,7 +2,6 @@ package no.nav.eessi.pensjon.services.auth
 
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
-import java.awt.image.TileObserver
 
 @Component
 class AuthorisationService {
@@ -22,11 +21,18 @@ class AuthorisationService {
      */
 
     fun harTilgangTilEessiPensjon(roller: List<AdRolle>): Boolean {
-        logger.debug("Følgende roller MÅ ident ha for å få tilgang til EP:"+
-                Tilgang.EESSI_PENSJON.grupper.toString())
+        //logger.debug("Følgende roller MÅ ident ha for å få tilgang til EP:" + Tilgang.EESSI_PENSJON.grupper.toString())
 
-        return roller.containsAll(Tilgang.EESSI_PENSJON.grupper)
+        val tilgangGenerell = roller.containsAll( Tilgang.EESSI_PENSJON.grupper )
+        logger.debug("tilgangGenerell: $tilgangGenerell")
 
+        val tilgangAlder = roller.containsAll(Tilgang.EESSI_PENSJON_ALDER.grupper)
+        logger.debug("tilgangAlder: $tilgangAlder")
+
+        val tilgangUfore =  roller.containsAll( Tilgang.EESSI_PENSJON_UFORE.grupper )
+        logger.debug("tilgangUfore: $tilgangUfore")
+
+        return tilgangGenerell.or(tilgangAlder).or(tilgangUfore)
     }
 
     /**
@@ -159,7 +165,9 @@ enum class AdRolle(val rollenavn: String) {
     GOSYS_FORTROLIG("0000-GA-GOSYS_KODE7"),
     PENSJON_FORTROLIG("0000-GA-PENSJON_KODE7"),
     EESSI_CLERK("0000-ga-eessi-clerk"),
-    EESSI_CLERK_PENSJON("0000-ga-eessi-clerk-pensjon");
+    EESSI_BASIS("0000-ga-eessi-basis"),
+    EESSI_CLERK_PENSJON("0000-ga-eessi-clerk-pensjon"),
+    EESSI_CLERK_UFORE("0000-GA-EESSI-CLERK-UFORE");
 
     companion object {
         /**
@@ -228,7 +236,9 @@ enum class SedPensjonstype(val pensjonstype: String){
  * Liste av roller som saksbehandler må ha i AD for å få tilgang til EESSI-Pensjon
  */
 enum class Tilgang(var grupper: List<AdRolle>) {
-    EESSI_PENSJON(listOf(AdRolle.PENSJON_UTLAND, AdRolle.EESSI_CLERK, AdRolle.EESSI_CLERK_PENSJON))
+    EESSI_PENSJON(listOf(AdRolle.PENSJON_UTLAND, AdRolle.EESSI_BASIS)),
+    EESSI_PENSJON_ALDER(listOf(AdRolle.PENSJON_UTLAND, AdRolle.EESSI_BASIS, AdRolle.EESSI_CLERK_PENSJON)),
+    EESSI_PENSJON_UFORE(listOf(AdRolle.PENSJON_UTLAND, AdRolle.EESSI_BASIS, AdRolle.EESSI_CLERK_UFORE))
 }
 
 /**

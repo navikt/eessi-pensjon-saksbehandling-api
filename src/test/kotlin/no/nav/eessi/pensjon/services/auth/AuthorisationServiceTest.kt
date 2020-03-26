@@ -15,7 +15,7 @@ class AuthorisationServiceTest {
         val roller = listOf(AdRolle.PENSJON_UTLAND,
             AdRolle.PENSJON_SAKSBEHANDLER,
             AdRolle.PENSJON_STRENGT_FORTROLIG,
-            AdRolle.EESSI_CLERK,
+            AdRolle.EESSI_BASIS,
             AdRolle.EESSI_CLERK_PENSJON)
 
         val tilgangEessipensjon = autorisasjonsservice.harTilgangTilEessiPensjon(roller)

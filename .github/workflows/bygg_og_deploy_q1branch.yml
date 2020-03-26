@@ -1,0 +1,47 @@
+name: Bygg og deploy Q1 branch
+
+on:
+  push:
+    branches:
+      - '!master'
+      - 'feature/authInterceptorQ1fix'
+
+jobs:
+  tag_build_and_deploy:
+    name: 'Build, deploy q1'
+    runs-on: ubuntu-latest
+    steps:
+      # PULLER REPO
+      - name: 'Pull repo'
+        uses: actions/checkout@v1
+
+      # SETTER DATO OG COMMIT VARIABEL
+      - name: 'Setter dato og commit variabel'
+        run: |
+          export TZ=CET
+          echo "::set-env name=DATE::$(date "+%Y-%m-%d--%H-%M-%S")"
+          echo "::set-env name=COMMIT_HASH::$(git rev-parse HEAD)"
+
+      # SETTER IMAGE VARIABEL
+      - name: 'Setter Image'
+        run: echo "::set-env name=IMAGE::docker.pkg.github.com/${{ github.repository }}/eessi-pensjon-saksbehandling-api:${{ env.DATE }}---${{ env.COMMIT_HASH }}"
+
+      # BYGGER DOCKER CONTAINER
+      - name: 'Bygg og publiser docker image'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ./gradlew -Pgithub clean build
+          docker build --tag ${{ env.IMAGE }} .
+          docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${{ secrets.GITHUB_TOKEN }}
+          docker push ${{ env.IMAGE }}
+
+      # DEPLOYER TIL NAIS -Q1
+      - name: 'Deploy to NAIS Q1'
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: dev-fss
+          RESOURCE: nais/dev-fss-q1.yml
+          VARS: nais/dev-fss-q1.json
+          IMAGE: ${{ env.IMAGE }}

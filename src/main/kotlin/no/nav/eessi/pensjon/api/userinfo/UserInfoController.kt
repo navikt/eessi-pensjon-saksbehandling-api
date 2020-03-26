@@ -40,25 +40,14 @@ class UserInfoController(
      */
     @EessiPensjonTilgang
     @GetMapping("/userinfo")
-    fun getUserInfo(): ResponseEntity<String> {
+    fun getUserInfo(): ResponseEntity <String> {
         logger.info("Henter userinfo")
         val fnr = getClaims(oidcRequestContextHolder).subject
         val role = getRole(fnr)
-        val allowed = checkWhitelist()
-        val features = if (allowed) toggle.getUIFeatures() else mapOf()
+        val allowed = true //deprocated denne er alltid true ved bruk av authinterceptor
+        val features = toggle.getUIFeatures()
         val jwtset = getClaims(oidcRequestContextHolder).claimSet
         val expirationTime = jwtset.expirationTime.time
-
-        when (role) {
-            "SAKSBEHANDLER" -> {
-                auditLogger.log("getUserInfo")
-                metricsHelper.increment("hentUserinfoSaksbehandler", "successful")
-            }
-            "BRUKER" -> metricsHelper.increment("hentUserinfoBorger", "successful")
-
-            else -> metricsHelper.increment("hentUserinfoUkjent", "successful")
-        }
-
         return ResponseEntity.ok().body(mapAnyToJson(UserInfoResponse(fnr, role, allowed, expirationTime, features)))
     }
 
@@ -72,13 +61,12 @@ class UserInfoController(
     @EessiPensjonTilgang
     @GetMapping("/whitelisted")
     fun checkWhitelist(): Boolean {
-        logger.info("Sjekker om brukeren er whitelistet")
-
         return when {
             toggle.getAPIFeatures().getValue(FeatureName.ENABLE_AUTH.name) -> {
                 true
             }
             toggle.getAPIFeatures().getValue(FeatureName.WHITELISTING.name) -> {
+                logger.info("Sjekker om brukeren er whitelistet")
                 val personIdentifier = getClaims(oidcRequestContextHolder).subject
                 whitelistService.isPersonWhitelisted(personIdentifier.toUpperCase())
             }

@@ -81,41 +81,24 @@ class UserInfoControllerTest : S3StorageBaseTest() {
         assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), userInfoController2.getUserInfo())
     }
 
-    @Test fun `Calling UserInfoController getUserInfo saksbehandler in P with invalid person does not return features`() {
-        val toggleMock2 = FeatureToggle()
-        val userInfoController2 = Mockito.spy(UserInfoController(toggleMock2, generateMockSaksbehContextHolder(),whitelistService))
 
-        toggleMock2.setCurrentEnv("p")
-        doReturn(false).whenever(userInfoController2).checkWhitelist()
-        val usr =  UserInfoResponse(subject ="A123456",
-            role ="SAKSBEHANDLER",
-            allowed = false,
-            expirationTime = 1531157178000,
-            features = mapOf()
-        )
-        assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), userInfoController2.getUserInfo())
-    }
-    @Disabled
     @Test fun `Calling UserInfoController|getRole`() {
         assertEquals("BRUKER", getRole("12345678910"))
         assertEquals("SAKSBEHANDLER", getRole("Z123456"))
         assertEquals("UNKNOWN", getRole("ZZZ"))
     }
 
-    @Disabled
     @Test fun CallingUserInfoController_getUserInfowithEXP() {
         val usr =  UserInfoResponse(subject ="12345678910",
             role ="BRUKER",
             allowed = true,
             expirationTime = 1531157178000,
-            features = mapOf()
+            features = mapOf("P5000_VISIBLE" to true)
         )
         val result = userInfoController.getUserInfo()
         assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), result)
-
         val resultUserInfo = mapJsonToAny(result.body!!, typeRefs<UserInfoResponse>())
         assertEquals(1531157178000, resultUserInfo.expirationTime)
-
     }
 
 }

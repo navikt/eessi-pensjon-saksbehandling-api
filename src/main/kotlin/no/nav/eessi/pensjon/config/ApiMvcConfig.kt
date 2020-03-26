@@ -14,13 +14,12 @@ class ApiMvcConfig(private val toggle: FeatureToggle,
 
     private val logger = LoggerFactory.getLogger(ApiMvcConfig::class.java)
 
-
     override fun addInterceptors(registry: InterceptorRegistry) {
-        logger.debug("legger til OIDCInterceptor i: ${toggle.currentEnv()}")
+        logger.debug("legger til OIDCInterceptor")
         registry.addInterceptor(securityInterceptor).addPathPatterns("/openamlogin")
 
         if (toggle.getAPIFeatures().getValue(FeatureName.ENABLE_AUTH.name)) {
-            logger.debug("legger til AuthInterceptor i: ${toggle.currentEnv()}")
+            logger.debug("legger til AuthInterceptor")
             registry.addInterceptor(authInterceptor)
         }
 

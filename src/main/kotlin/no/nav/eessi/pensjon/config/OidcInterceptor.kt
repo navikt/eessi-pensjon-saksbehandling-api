@@ -77,13 +77,11 @@ class OidcInterceptor {
                     var computed = super.compute(url, context)
 
                     // TODO: This is dumb. But it works. Better hope loginservice comes to FSS soon so we can get rid of this whole pile of shit
+                    logger.debug("env: $environmentName")
                     if(!computed.contains("http://localhost")) {
-                        if (discoveryUrl.contains("isso-t") || discoveryUrl.contains("isso-q")) {
+                        if (discoveryUrl.contains("isso-q")) {
                             // We are in a test-environment
                             var environmentPostfix = "-$environmentName"
-                            if (environmentName == "p") {
-                                environmentPostfix = ""
-                            }
                             computed = "https://eessi-pensjon-frontend-api-fss$environmentPostfix.nais.preprod.local/callback"
                             cookieDomain = "nais.preprod.local"
                         } else {
@@ -114,7 +112,7 @@ class OidcInterceptor {
 
     private fun createCookie(domain: String, cookieName: String, content: String?, secureCookie: Boolean = true): Cookie {
         val cookie = Cookie(cookieName, content).apply {
-            maxAge = 60 * 60  // 3600 seconds = 1 hour
+            maxAge = 60 * 60 // 3600 seconds = 1 hour?
             this.domain = domain
             if (secureCookie) {
                 isHttpOnly = true
@@ -124,7 +122,7 @@ class OidcInterceptor {
                 isSecure = false
             }
         }
-        logger.debug("Created cookie ${cookie.name} for domain ${cookie.domain}")
+        logger.debug("Created cookie ${cookie.name} for domain ${cookie.domain} maxAge ${cookie.maxAge}")
         return cookie
     }
 }
