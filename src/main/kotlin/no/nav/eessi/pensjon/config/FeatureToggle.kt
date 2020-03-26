@@ -38,9 +38,10 @@ class FeatureToggle {
 
     fun getAPIFeatures(): Map<String, Boolean> {
         return mapOf(
-            FeatureName.ENABLE_AUTH.name to isQ1Env(),
+            FeatureName.ENABLE_AUTH.name to isOnEnv(),
             FeatureName.WHITELISTING.name to isOnEnv())
     }
+
 
 }
 
