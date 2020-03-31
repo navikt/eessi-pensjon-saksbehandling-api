@@ -46,28 +46,26 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
 
     @Throws(Exception::class)
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
-
         if (handler is HandlerMethod) {
             // Vi sjekker om det er en annotasjon av typen EessiPensjonTilgang
             // Sjekke om pålogget saksbehandler har tilgang til tjenesten.
-
             val eessiPensjonTilgang = handler.getMethodAnnotation(EessiPensjonTilgang::class.java)
             if (eessiPensjonTilgang != null) {
+                val oidcClaims = sjekkForGyldigToken()
                 return metricsHelper.measure("authInterceptor") {
-                    return@measure sjekkTilgangTilEessiPensjonTjeneste(sjekkForGyldigToken())
+                    return@measure sjekkTilgangTilEessiPensjonTjeneste(oidcClaims)
                 }
             }
         }
         return true
-
     }
 
     fun sjekkForGyldigToken(): OIDCClaims {
+        //kaster en 401 dersom ingen gyldig token finnes så UI kan redirekte til /login
         try {
-            logger.debug("Sjekker om det finnes et token")
             return getClaims(oidcRequestContextHolder)
         } catch (rx: RuntimeException) {
-            logger.warn("Det finnes ingen gyldig token, kaster en $ugyldigToken Exception")
+            logger.info("Ingen gyldig token, kaster en $ugyldigToken Exception")
             throw TokenIkkeTilgjengeligException("Ingen gyldig token funnet")
         }
     }
@@ -87,36 +85,31 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
         val expirationTime = oidcClaims.claimSet.expirationTime
         val brukerRolle = hentRolle(ident)
 
-        logger.info("Ident: $ident, Token issue time: $issueTime, expire: $expirationTime, Rolle: $brukerRolle")
-
         // Bare saksbehandlere skal sjekkes om de har tilgang.
         // Skal borgere ha tilgang til api-fss?
         return if (Roller.SAKSBEHANDLER == brukerRolle) {
+            logger.info("Ident: $ident, Token issue time: $issueTime, expire: $expirationTime, Rolle: $brukerRolle")
             logger.debug("Henter ut brukerinformasjon fra AD/Ldap")
-
             val brukerInformasjon: BrukerInformasjon
             try {
                 brukerInformasjon = ldapService.hentBrukerInformasjon(ident)
                 logger.info("Ldap brukerinformasjon hentet")
                 logger.debug("Ldap brukerinfo: $brukerInformasjon")
             } catch (ex: Exception) {
-                logger.error("Feil ved henthing av ldap brukerinformasjon, prøver whitelistig s3", ex)
+                logger.error("Feil ved henting av ldap brukerinformasjon, prøver whitelistig s3", ex)
                 return sjekkWhitelisting(ident)
             }
 
             val adRoller = AdRolle.konverterAdRollerTilEnum(brukerInformasjon.medlemAv)
-
                 // Sjekk tilgang til EESSI-Pensjon
                 if( authorisationService.harTilgangTilEessiPensjon(adRoller).not() ) {
                     // Ikke tilgang til EESSI-Pensjon
                     logger.warn("Bruker har ikke korrekt tilganger vi avviser med $avvistIdent")
                     auditLogger.log("sjekkTilgangTilEessiPensjonTjeneste, INGEN TILGANG")
                     throw AuthorisationIkkeTilgangTilEeessiPensjonException("Du har ikke tilgang til EESSI-Pensjon")
-
                 }
                 logger.debug("Saksbehandler tilgang til EESSI-Pensjon er i orden")
                 true
-
         } else {
             logger.debug("Borger/systembruker tilgang til EESSI-Pensjon alltid i orden")
             true
@@ -127,7 +120,7 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
     private fun sjekkWhitelisting(ident: String): Boolean {
         logger.warn("Prøver å slå opp ident i whitelisting")
         if (whitelistService.isPersonWhitelisted(ident)) {
-            logger.info("Godkjenner følgende saksbehandler fra whitelisting : $ident")
+            logger.info("Godkjenner fra whitelisting")
             return true
         }
         logger.warn("Bruker har ikke korrekt tilganger vi avviser med $avvistIdent")
