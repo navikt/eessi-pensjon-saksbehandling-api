@@ -149,6 +149,6 @@ class StorageController(private val storage: StorageService,
         if (!path.matches(Regex("^.+___.+"))) {
             throw IllegalArgumentException("s3 path må følge mønsteret")
         }
-        logger.info(maskerPersonIdentifier(path) + " validert")
+        logger.info("S3 path til ${maskerPersonIdentifier(path)} validert")
     }
 }
