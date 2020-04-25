@@ -13,29 +13,11 @@ buildscript {
         openhtmltopdfVersion = '1.0.0'
     }
     repositories {
+        mavenCentral()
 
-        if (project.hasProperty('github')) {
-            mavenCentral()
-
+        if (!project.hasProperty('github')) {
             maven {
-                url "https://maven.pkg.github.com/navikt/maven-release"
-                credentials {
-                    username = "token"
-                    password = "$System.env.GITHUB_TOKEN"
-                }
-            }
-
-            maven {
-                credentials {
-                    username = "token"
-                    password = "$System.env.GITHUB_TOKEN"
-                }
-
-                setUrl("https://maven.pkg.github.com/navikt/tjenestespesifikasjoner")
-            }
-        } else {
-            maven {
-                url "https://repo.adeo.no/repository/maven-central"
+                url "https://repo.adeo.no/repository/maven-releases"
             }
         }
     }
@@ -166,6 +148,7 @@ dependencies {
 
     // Micrometer
     implementation("io.micrometer:micrometer-registry-prometheus")
+    implementation("no.nav.eessi.pensjon:eessi-pensjon-metrics:0.1.0")
     
     // OIDC
     implementation("no.nav.security:oidc-spring-support:${oidcTokenSupportVersion}")
@@ -207,32 +190,22 @@ dependencies {
 }
 
 repositories {
+    mavenCentral()
 
-    if (project.hasProperty('github')) {
-        mavenCentral()
-
-        maven {
-            url "https://maven.pkg.github.com/navikt/maven-release"
-            credentials {
-                username = "token"
-                password = "$System.env.GITHUB_TOKEN"
-            }
-        }
-
-        maven {
-            credentials {
-                username = "token"
-                password = "$System.env.GITHUB_TOKEN"
-            }
-
-            setUrl("https://maven.pkg.github.com/navikt/tjenestespesifikasjoner")
-        }
-    } else {
-        maven {
-            url "https://repo.adeo.no/repository/maven-central"
-        }
+    if (!project.hasProperty('github')) {
         maven {
             url "https://repo.adeo.no/repository/maven-releases"
+        }
+    }
+    ["maven-release","tjenestespesifikasjoner","eessi-pensjon-metrics"].each { repo ->
+        String token = System.getenv("GITHUB_TOKEN") ?: project.findProperty("gpr.key")
+        if (!token) throw new NullPointerException("Missing token, you have to set GITHUB_TOKEN or gpr.key, see README")
+        maven {
+            url = uri("https://maven.pkg.github.com/navikt/$repo")
+            credentials {
+                username = "token"
+                password = token
+            }
         }
     }
 }
