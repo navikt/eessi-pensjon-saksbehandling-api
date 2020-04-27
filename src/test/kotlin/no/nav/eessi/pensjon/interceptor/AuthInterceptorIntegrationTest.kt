@@ -29,7 +29,7 @@ private const val MOTTAK_TOPIC = "privat-eessipensjon-selvbetjeningsinfoMottatt-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = [ AuthInterceptorIntegrationTest.TestConfig::class])
 @ActiveProfiles("integrationtest")
 @Import(TokenGeneratorConfiguration::class)
-@EmbeddedKafka(controlledShutdown = true, topics = [SED_SENDT_TOPIC, SED_MOTTATT_TOPIC, MOTTAK_TOPIC])
+@EmbeddedKafka(controlledShutdown = true, topics = [SED_SENDT_TOPIC, SED_MOTTATT_TOPIC, MOTTAK_TOPIC], brokerProperties= ["log.dir=out/embedded-kafka"])
 class AuthInterceptorIntegrationTest() {
 
     @LocalServerPort
