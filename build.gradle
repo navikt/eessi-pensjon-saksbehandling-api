@@ -9,18 +9,12 @@ buildscript {
         logstashLogbackVersion = '6.3'
         pac4jVersion = '3.2.0'
         cxfVersion = '3.3.4'
-        personV3Version = '3.6.1'
         openhtmltopdfVersion = '1.0.0'
     }
     repositories {
         mavenCentral()
-
-        if (!project.hasProperty('github')) {
-            maven {
-                url "https://repo.adeo.no/repository/maven-releases"
-            }
-        }
     }
+
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}")
@@ -77,17 +71,13 @@ jar {
 }
 
 dependencies {
-
     // Tjenestespesifikasjoner
-    if (project.hasProperty('github')) {
-        implementation("no.nav.tjenestespesifikasjoner:person-v3-tjenestespesifikasjon:1.2020.01.30-14.36-cdf257baea96")
-        implementation("no.nav.tjenestespesifikasjoner:nav-fim-behandleJournal-v3-tjenestespesifikasjon:1.2020.01.30-14.36-cdf257baea96")
-    } else {
-        implementation("no.nav.tjenester:nav-person-v3-tjenestespesifikasjon:${personV3Version}")
-//      Se VarselService for årsak til utkommentering
-//      implementation('no.nav.meldinger.virksomhet:nav-virksomhet-varsel-v1-meldingsdefinisjon:1.1.1:jaxb')
-        implementation("no.nav.tjenester.fim:nav-fim-behandleJournal-v3-tjenestespesifikasjon:3.0.2:jaxws")
-    }
+    implementation("no.nav.tjenestespesifikasjoner:person-v3-tjenestespesifikasjon:1.2020.01.30-14.36-cdf257baea96")
+    implementation("no.nav.tjenestespesifikasjoner:nav-fim-behandleJournal-v3-tjenestespesifikasjon:1.2020.01.30-14.36-cdf257baea96")
+
+//  Se VarselService for årsak til utkommentering
+//  implementation('no.nav.meldinger.virksomhet:nav-virksomhet-varsel-v1-meldingsdefinisjon:1.1.1:jaxb')
+
 
     // Spring
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -192,11 +182,6 @@ dependencies {
 repositories {
     mavenCentral()
 
-    if (!project.hasProperty('github')) {
-        maven {
-            url "https://repo.adeo.no/repository/maven-releases"
-        }
-    }
     ["maven-release","tjenestespesifikasjoner","eessi-pensjon-metrics"].each { repo ->
         String token = System.getenv("GITHUB_TOKEN") ?: project.findProperty("gpr.key")
         if (!token) throw new NullPointerException("Missing token, you have to set GITHUB_TOKEN or gpr.key, see README")
