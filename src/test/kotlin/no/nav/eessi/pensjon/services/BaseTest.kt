@@ -3,7 +3,6 @@ package no.nav.eessi.pensjon.services
 
 import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.PlainJWT
-import com.sun.jndi.ldap.LdapCtx
 import com.unboundid.ldap.listener.InMemoryDirectoryServer
 import com.unboundid.ldap.listener.InMemoryDirectoryServerConfig
 import no.nav.eessi.pensjon.logging.AuditLogger
@@ -31,6 +30,9 @@ import org.springframework.web.client.RestTemplate
 import java.io.File
 import java.nio.charset.Charset
 import java.util.*
+import javax.naming.InitialContext
+import javax.naming.ldap.InitialLdapContext
+import javax.naming.ldap.LdapContext
 
 
 @ActiveProfiles("test")
@@ -115,13 +117,7 @@ open class BaseTest {
     }
 
     fun generateMockSaksbehandlerLdapService(): LdapService {
-        val ldapContext = LdapCtx(
-            "dc=test,dc=local",
-            "localhost",
-            ldapServerPort.toInt(),
-            Hashtable<String, String>(),
-            false
-        )
+        val ldapContext = InitialLdapContext()
         val ldapInnlogging = LdapInnlogging()
         val ldapBrukeroppslag = LdapKlient(
             Hashtable(),
