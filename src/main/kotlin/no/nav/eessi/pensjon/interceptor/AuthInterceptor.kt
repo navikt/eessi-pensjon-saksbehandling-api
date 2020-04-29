@@ -1,8 +1,6 @@
 package no.nav.eessi.pensjon.interceptor
 
-import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import no.nav.eessi.pensjon.logging.AuditLogger
-import no.nav.eessi.pensjon.metrics.MetricsHelper
 import no.nav.eessi.pensjon.services.auth.AdRolle
 import no.nav.eessi.pensjon.services.auth.AuthorisationService
 import no.nav.eessi.pensjon.services.auth.EessiPensjonTilgang
@@ -13,7 +11,6 @@ import no.nav.eessi.pensjon.utils.getClaims
 import no.nav.security.oidc.context.OIDCClaims
 import no.nav.security.oidc.context.OIDCRequestContextHolder
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.Ordered
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
@@ -28,11 +25,9 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
     private val authorisationService: AuthorisationService,
     private val oidcRequestContextHolder: OIDCRequestContextHolder,
     private val auditLogger: AuditLogger,
-    private val whitelistService: WhitelistService,
-    @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())) : HandlerInterceptor, Ordered {
+    private val whitelistService: WhitelistService) : HandlerInterceptor, Ordered {
 
     private val logger = LoggerFactory.getLogger(AuthInterceptor::class.java)
-
     private val regexNavident  = Regex("^[a-zA-Z]\\d{6}$")
     private val regexBorger = Regex("^\\d{11}$")
     private val ugyldigToken = "UNAUTHORIZED"
@@ -52,9 +47,7 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
             val eessiPensjonTilgang = handler.getMethodAnnotation(EessiPensjonTilgang::class.java)
             if (eessiPensjonTilgang != null) {
                 val oidcClaims = sjekkForGyldigToken()
-                return metricsHelper.measure("authInterceptor") {
-                    return@measure sjekkTilgangTilEessiPensjonTjeneste(oidcClaims)
-                }
+                return sjekkTilgangTilEessiPensjonTjeneste(oidcClaims)
             }
         }
         return true
