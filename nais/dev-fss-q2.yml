@@ -73,8 +73,6 @@ spec:
       value: PREPROD.LOCAL
     - name: LDAP_BASEDN
       value: dc=preprod,dc=local
-    - name: LDAP_URL
-      value: ldaps://ldapgw.preprod.local
     - name: ENV
       value: q2
     - name: KAFKA_SEDSENDT_TOPIC
