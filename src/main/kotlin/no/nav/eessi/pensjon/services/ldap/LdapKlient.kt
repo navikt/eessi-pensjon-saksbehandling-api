@@ -1,6 +1,9 @@
 package no.nav.eessi.pensjon.services.ldap
 
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry
+import no.nav.eessi.pensjon.metrics.MetricsHelper
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import java.lang.IllegalArgumentException
 
 import javax.naming.LimitExceededException
@@ -14,36 +17,38 @@ open class LdapKlient(
     private val environment: Hashtable<String, Any>,
     private val ldapInnlogging: LdapInnlogging,
     private var context: LdapContext?,
-    private val searchBase: String?
-) {
+    private val searchBase: String?,
+    @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())) {
 
     private val logger = LoggerFactory.getLogger(LdapKlient::class.java)
 
-   open fun ldapSearch(ident: String): SearchResult? {
-        context = ldapInnlogging.lagLdapContext(environment)
+    open fun ldapSearch(ident: String): SearchResult? {
+        return metricsHelper.measure("ldapInnlogging") {
+            context = ldapInnlogging.lagLdapContext(environment)
 
-        if (context == null || searchBase == null) {
-            logger.error("Context eller searchbase må angis")
-            throw IllegalArgumentException("Context eller searchbase må angis")
-        }
-
-        val controls = SearchControls()
-        controls.searchScope = SearchControls.SUBTREE_SCOPE
-        controls.countLimit = 1
-        val soekestreng = String.format("(cn=%s)", ident)
-        try {
-            val result = context!!.search(searchBase, soekestreng, controls)
-            if (result.hasMoreElements()) {
-                return result.nextElement()
+            if (context == null || searchBase == null) {
+                logger.error("Context eller searchbase må angis")
+                throw IllegalArgumentException("Context eller searchbase må angis")
             }
-            logger.warn("Ident: $ident ikke funnet")
-            return null
-        } catch (lee: LimitExceededException) {
-            logger.error("En teknisk feil oppstod ved søk etter: $ident i LDAP", lee)
-            throw lee
-        } catch (ne: NamingException) {
-            logger.error("En teknisk feil oppstod ved søk etter: $ident i LDAP", ne)
-            throw ne
+
+            val controls = SearchControls()
+            controls.searchScope = SearchControls.SUBTREE_SCOPE
+            controls.countLimit = 1
+            val soekestreng = String.format("(cn=%s)", ident)
+            try {
+                val result = context!!.search(searchBase, soekestreng, controls)
+                if (result.hasMoreElements()) {
+                    return@measure result.nextElement()
+                }
+                logger.warn("Ident: $ident ikke funnet")
+                return@measure null
+            } catch (lee: LimitExceededException) {
+                logger.error("En teknisk feil oppstod ved søk etter: $ident i LDAP", lee)
+                throw lee
+            } catch (ne: NamingException) {
+                logger.error("En teknisk feil oppstod ved søk etter: $ident i LDAP", ne)
+                throw ne
+            }
         }
     }
 }
