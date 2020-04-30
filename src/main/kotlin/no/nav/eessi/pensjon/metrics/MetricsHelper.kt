@@ -3,11 +3,14 @@ package no.nav.eessi.pensjon.metrics
 import io.micrometer.core.instrument.Counter
 import io.micrometer.core.instrument.MeterRegistry
 import io.micrometer.core.instrument.Timer
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import javax.annotation.PostConstruct
 
 @Component
 class MetricsHelper(val registry: MeterRegistry) {
+
+    private val logger = LoggerFactory.getLogger(MetricsHelper::class.java)
 
     /**
      * Alle counters må legges inn i init listen slik at counteren med konkrete tagger blir initiert med 0.
@@ -56,6 +59,8 @@ class MetricsHelper(val registry: MeterRegistry) {
         meterName: String = measureMeterName,
         block: () -> R): R {
 
+        logger.debug("MetricsHelper: $meterName, Failure: $failure, meterName: $meterName")
+
         var typeTagValue = success
 
         try {
@@ -70,6 +75,7 @@ class MetricsHelper(val registry: MeterRegistry) {
             throw throwable
         } finally {
             try {
+                logger.debug("Incrementing counter: $meterName")
                 Counter.builder(meterName)
                     .tag(methodTag, method)
                     .tag(typeTag, typeTagValue)
