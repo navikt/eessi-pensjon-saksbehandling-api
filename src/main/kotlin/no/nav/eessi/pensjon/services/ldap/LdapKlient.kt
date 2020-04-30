@@ -12,10 +12,10 @@ import javax.naming.directory.SearchControls
 import javax.naming.directory.SearchResult
 import javax.naming.ldap.LdapContext
 import java.util.Hashtable
+import javax.naming.ldap.InitialLdapContext
 
 open class LdapKlient(
     private val environment: Hashtable<String, Any>,
-    private val ldapInnlogging: LdapInnlogging,
     private var context: LdapContext?,
     private val searchBase: String?,
     @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())) {
@@ -24,7 +24,7 @@ open class LdapKlient(
 
     open fun ldapSearch(ident: String): SearchResult? {
         return metricsHelper.measure("ldapInnlogging") {
-            context = ldapInnlogging.lagLdapContext(environment)
+            context = InitialLdapContext(environment, null)
 
             if (context == null || searchBase == null) {
                 logger.error("Context eller searchbase må angis")

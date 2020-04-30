@@ -14,7 +14,7 @@ class LdapService(private val ldapKlient: LdapKlient) : BrukerInformasjonService
 
     // Pattern for NAV brukerident, f.eks Z123456
     private val IDENT_PATTERN = Pattern.compile("^[a-zA-Z][0-9]*")
-    private val logger = LoggerFactory.getLogger(LdapInnlogging::class.java)
+    private val logger = LoggerFactory.getLogger(LdapService::class.java)
 
     override fun hentBrukerInformasjon(ident: String): BrukerInformasjon {
         logger.info("Henter bruker-informasjon fra LDAP")

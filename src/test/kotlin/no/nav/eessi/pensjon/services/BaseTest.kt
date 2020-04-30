@@ -7,7 +7,6 @@ import com.unboundid.ldap.listener.InMemoryDirectoryServer
 import com.unboundid.ldap.listener.InMemoryDirectoryServerConfig
 import no.nav.eessi.pensjon.logging.AuditLogger
 import no.nav.eessi.pensjon.services.ldap.LdapKlient
-import no.nav.eessi.pensjon.services.ldap.LdapInnlogging
 import no.nav.eessi.pensjon.services.ldap.LdapService
 import no.nav.security.oidc.context.OIDCClaims
 import no.nav.security.oidc.context.OIDCRequestContextHolder
@@ -118,10 +117,8 @@ open class BaseTest {
 
     fun generateMockSaksbehandlerLdapService(): LdapService {
         val ldapContext = InitialLdapContext()
-        val ldapInnlogging = LdapInnlogging()
         val ldapBrukeroppslag = LdapKlient(
             Hashtable(),
-            ldapInnlogging,
             ldapContext,
             "OU=Users,OU=NAV,OU=BusinessUnits,"
         )

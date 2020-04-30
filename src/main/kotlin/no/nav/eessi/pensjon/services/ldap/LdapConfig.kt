@@ -28,7 +28,7 @@ class LdapConfig {
     private val ldapPassword: String? = null
 
     @Bean
-    fun ldapKlient(ldapInnlogging: LdapInnlogging): LdapKlient {
+    fun ldapKlient(): LdapKlient {
         logger.info("Setter opp LDAP klient")
         val environment = Hashtable<String, Any>()
         environment[Context.INITIAL_CONTEXT_FACTORY] = "com.sun.jndi.ldap.LdapCtxFactory"
@@ -44,7 +44,7 @@ class LdapConfig {
         } catch (e: NamingException) {
         }
 
-        return LdapKlient(environment, ldapInnlogging, context, searchBase)
+        return LdapKlient(environment, context, searchBase)
     }
 }
 
