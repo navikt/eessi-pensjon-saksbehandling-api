@@ -73,7 +73,7 @@ class MetricsHelper(val registry: MeterRegistry) {
             throw throwable
         } finally {
             try {
-                logger.debug("Incrementing counter: $method")
+                logger.debug("Incrementing counter: $method, TypeTag: $typeTagValue")
                 Counter.builder(meterName)
                     .tag(methodTag, method)
                     .tag(typeTag, typeTagValue)
