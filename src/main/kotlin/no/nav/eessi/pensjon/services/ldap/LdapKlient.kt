@@ -18,25 +18,26 @@ open class LdapKlient(
     private val environment: Hashtable<String, Any>,
     private var context: LdapContext?,
     private val searchBase: String?,
-    @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())) {
+    @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())
+) {
 
     private val logger = LoggerFactory.getLogger(LdapKlient::class.java)
 
     open fun ldapSearch(ident: String): SearchResult? {
         return metricsHelper.measure("ldapInnlogging") {
             logger.info("ldapSearch: $ident")
-            context = InitialLdapContext(environment, null)
-
-            if (context == null || searchBase == null) {
-                logger.error("Context eller searchbase må angis")
-                throw IllegalArgumentException("Context eller searchbase må angis")
-            }
-
-            val controls = SearchControls()
-            controls.searchScope = SearchControls.SUBTREE_SCOPE
-            controls.countLimit = 1
-            val soekestreng = String.format("(cn=%s)", ident)
             try {
+                context = InitialLdapContext(environment, null)
+
+                if (context == null || searchBase == null) {
+                    logger.error("Context eller searchbase må angis")
+                    throw IllegalArgumentException("Context eller searchbase må angis")
+                }
+
+                val controls = SearchControls()
+                controls.searchScope = SearchControls.SUBTREE_SCOPE
+                controls.countLimit = 1
+                val soekestreng = String.format("(cn=%s)", ident)
                 val result = context!!.search(searchBase, soekestreng, controls)
                 if (result.hasMoreElements()) {
                     return@measure result.nextElement()
