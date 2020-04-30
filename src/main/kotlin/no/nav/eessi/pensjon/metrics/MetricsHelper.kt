@@ -59,8 +59,6 @@ class MetricsHelper(val registry: MeterRegistry) {
         meterName: String = measureMeterName,
         block: () -> R): R {
 
-        logger.debug("MetricsHelper: $meterName, Failure: $failure, meterName: $meterName")
-
         var typeTagValue = success
 
         try {
@@ -75,7 +73,7 @@ class MetricsHelper(val registry: MeterRegistry) {
             throw throwable
         } finally {
             try {
-                logger.debug("Incrementing counter: $meterName")
+                logger.debug("Incrementing counter: $method")
                 Counter.builder(meterName)
                     .tag(methodTag, method)
                     .tag(typeTag, typeTagValue)

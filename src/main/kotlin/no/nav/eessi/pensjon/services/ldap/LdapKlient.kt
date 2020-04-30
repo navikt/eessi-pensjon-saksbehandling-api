@@ -26,7 +26,7 @@ open class LdapKlient(
     open fun ldapSearch(ident: String): SearchResult? {
         return metricsHelper.measure("ldapInnlogging") {
             logger.info("ldapSearch: $ident")
-            try {
+            return@measure try {
                 context = InitialLdapContext(environment, null)
 
                 if (context == null || searchBase == null) {
@@ -40,10 +40,10 @@ open class LdapKlient(
                 val soekestreng = String.format("(cn=%s)", ident)
                 val result = context!!.search(searchBase, soekestreng, controls)
                 if (result.hasMoreElements()) {
-                    return@measure result.nextElement()
+                    result.nextElement()
                 }
                 logger.warn("Ident: $ident ikke funnet")
-                return@measure null
+                null
             } catch (lee: LimitExceededException) {
                 logger.error("En teknisk feil oppstod ved søk etter: $ident i LDAP", lee)
                 throw lee
