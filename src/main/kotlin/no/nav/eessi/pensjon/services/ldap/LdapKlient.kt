@@ -24,6 +24,7 @@ open class LdapKlient(
 
     open fun ldapSearch(ident: String): SearchResult? {
         return metricsHelper.measure("ldapInnlogging") {
+            logger.info("ldapSearch: $ident")
             context = InitialLdapContext(environment, null)
 
             if (context == null || searchBase == null) {
