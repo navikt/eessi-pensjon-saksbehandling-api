@@ -62,7 +62,7 @@ spec:
     - name: LDAP_BASEDN
       value: dc=preprod,dc=local
     - name: LDAP_URL
-      value: ldaps://ldapgw.preprod.local
+      value: ldaps://ldapgw.preprod.local.blablablablablablablablablabla]
     - name: EESSI_PENSJON_FRONTEND_API_S3_CREDS_USERNAME
       value: 879WUUD2HMZ041GBNN4B
     - name: LDAP_USER_BASEDN
@@ -73,8 +73,6 @@ spec:
       value: PREPROD.LOCAL
     - name: LDAP_BASEDN
       value: dc=preprod,dc=local
-    - name: LDAP_URL
-      value: ldaps://ldapgw.preprod.local
     - name: ENV
       value: q1
     - name: KAFKA_SEDSENDT_TOPIC
