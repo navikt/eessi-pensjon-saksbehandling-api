@@ -125,6 +125,7 @@ dependencies {
     implementation("net.logstash.logback:logstash-logback-encoder:${logstashLogbackVersion}")
     configurations { all*.exclude group: 'commons-logging', module: 'commons-logging' }
     implementation group: 'org.slf4j', name: 'jcl-over-slf4j'
+    implementation("no.nav.eessi.pensjon:eessi-pensjon-logging:0.0.7")
 
     // auditlogger syslog
     implementation("com.papertrailapp:logback-syslog4j:1.0.0")
