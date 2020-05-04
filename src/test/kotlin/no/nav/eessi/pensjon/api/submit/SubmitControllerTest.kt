@@ -222,5 +222,6 @@ class SubmitControllerTest : S3StorageBaseTest() {
                 generateMockContextHolder(),
                 templateService
         ))
+        receiveSubmissionController.initMetrics()
     }
 }

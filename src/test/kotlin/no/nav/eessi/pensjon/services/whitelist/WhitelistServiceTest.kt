@@ -29,6 +29,7 @@ class WhitelistServiceTest {
                 listOf("User1", "User2"),
                 "whitelisted",
                 "___"))
+        whitelistService.initMetrics()
     }
 
     @Test

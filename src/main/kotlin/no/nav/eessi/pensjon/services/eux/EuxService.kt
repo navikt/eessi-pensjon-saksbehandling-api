@@ -16,6 +16,7 @@ import org.springframework.web.client.HttpStatusCodeException
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.util.UriComponentsBuilder
 import org.springframework.util.LinkedMultiValueMap
+import javax.annotation.PostConstruct
 
 
 @Service
@@ -24,6 +25,15 @@ class EuxService(private val euxRestTemplate: RestTemplate,
                  @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())) {
 
     private val logger = LoggerFactory.getLogger(EuxService::class.java)
+
+    private lateinit var hentinstitusjoner: MetricsHelper.Metric
+    private lateinit var SendSED: MetricsHelper.Metric
+
+    @PostConstruct
+    fun initMetrics() {
+        hentinstitusjoner = metricsHelper.init("hentinstitusjoner")
+        SendSED = metricsHelper.init("SendSED")
+    }
 
     /**
      * Henter ut en liste over registrerte institusjoner innenfor spesifiserte EU-land
@@ -41,7 +51,7 @@ class EuxService(private val euxRestTemplate: RestTemplate,
 
         val httpEntity = HttpEntity("")
 
-        return metricsHelper.measure("hentinstitusjoner") {
+        return hentinstitusjoner.measure {
             try {
                 logger.info("Henter registrerte institusjoner")
                 euxRestTemplate.exchange(builder.toUriString(), HttpMethod.GET, httpEntity, String::class.java)
@@ -67,7 +77,7 @@ class EuxService(private val euxRestTemplate: RestTemplate,
         val uriParams = mapOf("RinaSakId" to euxCaseId, "DokumentId" to documentId)
         val builder = UriComponentsBuilder.fromUriString(path).buildAndExpand(uriParams)
 
-        return metricsHelper.measure("SendSED") {
+        return SendSED.measure {
             try {
                 logger.info("Sender SED euxCaseId: $euxCaseId documentId: $documentId")
                 euxRestTemplate.exchange(

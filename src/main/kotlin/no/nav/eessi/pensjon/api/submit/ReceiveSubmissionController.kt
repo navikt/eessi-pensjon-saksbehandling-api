@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
+import javax.annotation.PostConstruct
 
 @Protected
 @RestController
@@ -36,6 +37,20 @@ class ReceiveSubmissionController(
     private val logger = LoggerFactory.getLogger(ReceiveSubmissionController::class.java)
     private val mapper = ObjectMapper()
 
+    private lateinit var soknad_sendt_kafka: MetricsHelper.Metric
+    private lateinit var soknad_resendt_kafka: MetricsHelper.Metric
+    private lateinit var kvittering_sendt_kafka: MetricsHelper.Metric
+    private lateinit var hent_innsending: MetricsHelper.Metric
+
+    @PostConstruct
+    fun initMetrics() {
+        soknad_sendt_kafka = metricsHelper.init("soknad_sendt_kafka")
+        soknad_resendt_kafka = metricsHelper.init("soknad_resendt_kafka")
+        kvittering_sendt_kafka = metricsHelper.init("kvittering_sendt_kafka")
+        hent_innsending = metricsHelper.init("hent_innsending")
+    }
+
+
     val PINFO_SUBMISSION = "PinfoSubmission"
     val PINFO_SUBMISSION_RECEIPT = "PinfoSubmissionReceipt"
 
@@ -49,7 +64,7 @@ class ReceiveSubmissionController(
 
         val content = mapper.writeValueAsString(requestBody)
 
-        return metricsHelper.measure("soknad_sendt_kafka") {
+        return soknad_sendt_kafka.measure {
             val filename: String
             try {
                 filename = lagreFil(personIdentifier, PINFO_SUBMISSION, content)
@@ -66,7 +81,7 @@ class ReceiveSubmissionController(
     fun resendSubmission(@RequestBody fileName: String) : ResponseEntity<String> {
         logger.info("Trying to resubmit")
 
-        return metricsHelper.measure("soknad_resendt_kafka") {
+        return soknad_resendt_kafka.measure {
             try {
                 kafkaService.publishSubmissionReceivedEvent(fileName)
                 logger.info("Resubmitted on kafka queue")
@@ -83,7 +98,7 @@ class ReceiveSubmissionController(
     fun sendReceipt(@PathVariable(required = true) page: String): String {
         logger.info("Sender inn endelig kvittering")
 
-        return metricsHelper.measure("kvittering_sendt_kafka") {
+        return kvittering_sendt_kafka.measure {
 
             val personIdentifier = getClaims(oidcRequestContextHolder).subject
             val receipt: Map<String, Any>
@@ -115,7 +130,7 @@ class ReceiveSubmissionController(
     @GetMapping(value = ["/get/{subject}"], produces = [MediaType.APPLICATION_JSON_VALUE])
     fun getSubmissionAsJson(@PathVariable subject: String): ResponseEntity<String> {
 
-        return metricsHelper.measure("hent_innsending") {
+        return hent_innsending.measure {
             try {
                 val resp = mapAnyToJson(mapOf("content" to getSubmission(subject)))
                 ResponseEntity.ok().body(resp)

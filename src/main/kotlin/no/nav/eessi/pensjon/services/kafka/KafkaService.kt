@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Service
 import org.springframework.messaging.support.MessageBuilder
+import javax.annotation.PostConstruct
 
 @Service
 class KafkaService(val kafkaTemplate: KafkaTemplate<String, String>,
@@ -20,6 +21,12 @@ class KafkaService(val kafkaTemplate: KafkaTemplate<String, String>,
     @Value("\${ENV}")
     lateinit var topicPostfix: String
 
+    private lateinit var selvbetjeningsinfoprodusert: MetricsHelper.Metric
+
+    @PostConstruct
+    fun initMetrics() {
+        selvbetjeningsinfoprodusert = metricsHelper.init("selvbetjeningsinfoprodusert")
+    }
 
     fun publishSubmissionReceivedEvent(payload: String) {
         val topic = "$submissionReceivedTopicPrefix-$topicPostfix"
@@ -27,7 +34,7 @@ class KafkaService(val kafkaTemplate: KafkaTemplate<String, String>,
 
         val messageBuilder = MessageBuilder.withPayload(payload)
 
-        metricsHelper.measure("selvbetjeningsinfoprodusert") {
+        selvbetjeningsinfoprodusert.measure {
             if (MDC.get(X_REQUEST_ID).isNullOrEmpty()) {
                 val message = messageBuilder.build()
                 kafkaTemplate.send(message)
