@@ -29,9 +29,7 @@ import org.springframework.web.client.RestTemplate
 import java.io.File
 import java.nio.charset.Charset
 import java.util.*
-import javax.naming.InitialContext
 import javax.naming.ldap.InitialLdapContext
-import javax.naming.ldap.LdapContext
 
 
 @ActiveProfiles("test")
@@ -120,7 +118,8 @@ open class BaseTest {
         val ldapBrukeroppslag = LdapKlient(
             Hashtable(),
             ldapContext,
-            "OU=Users,OU=NAV,OU=BusinessUnits,"
+            "OU=Users,OU=NAV,OU=BusinessUnits,",
+            null
         )
 
         return LdapService(ldapBrukeroppslag)

@@ -1,9 +1,7 @@
 package no.nav.eessi.pensjon.services.ldap
 
-import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import no.nav.eessi.pensjon.metrics.MetricsHelper
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import java.lang.IllegalArgumentException
 
 import javax.naming.LimitExceededException
@@ -18,13 +16,13 @@ open class LdapKlient(
     private val environment: Hashtable<String, Any>,
     private var context: LdapContext?,
     private val searchBase: String?,
-    @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())
+    private val metricsHelper: MetricsHelper?
 ) {
 
     private val logger = LoggerFactory.getLogger(LdapKlient::class.java)
 
     open fun ldapSearch(ident: String): SearchResult? {
-        return metricsHelper.measure("ldapInnlogging") {
+        return metricsHelper!!.measure("ldapInnlogging") {
             logger.info("ldapSearch: $ident")
             try {
                 context = InitialLdapContext(environment, null)

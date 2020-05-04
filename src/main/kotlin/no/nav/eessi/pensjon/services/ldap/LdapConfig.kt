@@ -1,6 +1,9 @@
 package no.nav.eessi.pensjon.services.ldap
 
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry
+import no.nav.eessi.pensjon.metrics.MetricsHelper
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -11,40 +14,47 @@ import javax.naming.ldap.LdapContext
 import java.util.Hashtable
 
 @Configuration
-class LdapConfig {
+class LdapConfig(
+    @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(
+        SimpleMeterRegistry())
+    ) {
 
-    private val logger = LoggerFactory.getLogger(LdapConfig::class.java)
+        private val logger = LoggerFactory.getLogger(LdapConfig::class.java)
 
-    @Value("\${ldap.url}")
-    private val ldapUrl: String? = null
-    @Value("\${ldap.domain}")
-    private val ldapDomain: String? = null
-    @Value("\${ldap.basedn}")
-    private val ldapBasedn: String? = null
 
-    @Value("\${srvusername}")
-    private val ldapUsername: String? = null
-    @Value("\${srvpassword}")
-    private val ldapPassword: String? = null
+        @Value("\${ldap.url}")
+        private val ldapUrl: String? = null
 
-    @Bean
-    fun ldapKlient(): LdapKlient {
-        logger.info("Setter opp LDAP klient")
-        val environment = Hashtable<String, Any>()
-        environment[Context.INITIAL_CONTEXT_FACTORY] = "com.sun.jndi.ldap.LdapCtxFactory"
-        environment[Context.PROVIDER_URL] = ldapUrl!!
-        environment[Context.SECURITY_AUTHENTICATION] = "simple"
-        environment[Context.SECURITY_CREDENTIALS] = ldapPassword
-        environment[Context.SECURITY_PRINCIPAL] = "$ldapUsername@$ldapDomain"
+        @Value("\${ldap.domain}")
+        private val ldapDomain: String? = null
 
-        val searchBase = "OU=Users,OU=NAV,OU=BusinessUnits," + ldapBasedn!!
-        var context: LdapContext? = null
-        try {
-            context = InitialLdapContext()
-        } catch (e: NamingException) {
+        @Value("\${ldap.basedn}")
+        private val ldapBasedn: String? = null
+
+        @Value("\${srvusername}")
+        private val ldapUsername: String? = null
+
+        @Value("\${srvpassword}")
+        private val ldapPassword: String? = null
+
+        @Bean
+        fun ldapKlient(): LdapKlient {
+            logger.info("Setter opp LDAP klient")
+            val environment = Hashtable<String, Any>()
+            environment[Context.INITIAL_CONTEXT_FACTORY] = "com.sun.jndi.ldap.LdapCtxFactory"
+            environment[Context.PROVIDER_URL] = ldapUrl!!
+            environment[Context.SECURITY_AUTHENTICATION] = "simple"
+            environment[Context.SECURITY_CREDENTIALS] = ldapPassword
+            environment[Context.SECURITY_PRINCIPAL] = "$ldapUsername@$ldapDomain"
+
+            val searchBase = "OU=Users,OU=NAV,OU=BusinessUnits," + ldapBasedn!!
+            var context: LdapContext? = null
+            try {
+                context = InitialLdapContext()
+            } catch (e: NamingException) {
+            }
+
+            return LdapKlient(environment, context, searchBase, metricsHelper)
         }
-
-        return LdapKlient(environment, context, searchBase)
     }
-}
 
