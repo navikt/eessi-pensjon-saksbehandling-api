@@ -21,6 +21,7 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.*
 import java.util.concurrent.TimeUnit
+import javax.annotation.PostConstruct
 
 private val logger = LoggerFactory.getLogger(StsSystemOidcService::class.java)
 
@@ -40,6 +41,14 @@ class StsSystemOidcService(@Qualifier("stsRestTemplate") val stsRestTemplate: Re
 
     private val tokenCache = ExpiringMap.builder().variableExpiration().build<String, String>()
 
+    private lateinit var hentoidctokenforsystembruker: MetricsHelper.Metric
+
+    @PostConstruct
+    fun initMetrics() {
+        hentoidctokenforsystembruker = metricsHelper.init("hentoidctokenforsystembruker")
+    }
+
+
     fun getSystemOidcToken(): String {
         val token = tokenCache["token"]
         if(!token.isNullOrEmpty()) {
@@ -51,7 +60,7 @@ class StsSystemOidcService(@Qualifier("stsRestTemplate") val stsRestTemplate: Re
                 .queryParam("grant_type", "client_credentials")
                 .queryParam("scope", "openid")
                 .build().toUriString()
-        return metricsHelper.measure("hentoidctokenforsystembruker") {
+        return hentoidctokenforsystembruker.measure {
             try {
                 val responseEntity =
                     stsRestTemplate.exchange(uri, HttpMethod.GET, null, SecurityTokenResponse::class.java)

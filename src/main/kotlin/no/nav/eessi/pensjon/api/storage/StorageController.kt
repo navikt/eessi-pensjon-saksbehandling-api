@@ -17,6 +17,7 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.util.*
+import javax.annotation.PostConstruct
 
 @Protected
 @RestController
@@ -28,12 +29,28 @@ class StorageController(private val storage: StorageService,
     private val logger = LoggerFactory.getLogger(StorageController::class.java)
     private val auditLogger = AuditLogger(oidcRequestContextHolder)
 
+    private lateinit var storeDocument: MetricsHelper.Metric
+    private lateinit var getDocument: MetricsHelper.Metric
+    private lateinit var listDocuments: MetricsHelper.Metric
+    private lateinit var deleteDocument: MetricsHelper.Metric
+    private lateinit var deleteMultipleDocuments: MetricsHelper.Metric
+
+    @PostConstruct
+    fun initMetrics() {
+        storeDocument = metricsHelper.init("storeDocument")
+        getDocument = metricsHelper.init("getDocument")
+        listDocuments = metricsHelper.init("listDocuments")
+        deleteDocument = metricsHelper.init("deleteDocument")
+        deleteMultipleDocuments = metricsHelper.init("deleteMultipleDocuments")
+    }
+
+
     @EessiPensjonTilgang
     @Timed("s3.put")
     @PostMapping("/{path}")
     fun storeDocument(@PathVariable(required = true) path: String,
                       @RequestBody(required = true) document: String): ResponseEntity<String>{
-        return metricsHelper.measure("storeDocument") {
+        return storeDocument.measure {
             return@measure try {
                 validerPath(path)
                 logger.info("Lagrer S3 dokument")
@@ -55,7 +72,7 @@ class StorageController(private val storage: StorageService,
     @Timed("s3.get")
     @GetMapping(value = ["/get/{path}"], produces = [MediaType.APPLICATION_JSON_VALUE])
     fun getDocument(@PathVariable(required = true) path: String): ResponseEntity<String> {
-        return metricsHelper.measure("getDocument") {
+        return getDocument.measure {
             return@measure try {
                 validerPath(path)
                 logger.info("Henter S3 dokument")
@@ -76,7 +93,7 @@ class StorageController(private val storage: StorageService,
     @Timed("s3.list")
     @GetMapping("/list/{prefix}")
     fun listDocuments(@PathVariable(required = true) prefix: String): ResponseEntity<List<String>> {
-        return metricsHelper.measure("listDocuments") {
+        return listDocuments.measure {
             return@measure try {
                 validerPath(prefix)
                 logger.info("Lister S3 dokumenter")
@@ -98,7 +115,7 @@ class StorageController(private val storage: StorageService,
     @Timed("s3.delete")
     @DeleteMapping("/{path}")
     fun deleteDocument(@PathVariable(required = true) path: String): ResponseEntity<String> {
-        return metricsHelper.measure("deleteDocument") {
+        return deleteDocument.measure {
             return@measure try {
                 validerPath(path)
                 auditLogger.log("deleteDocument")
@@ -119,7 +136,7 @@ class StorageController(private val storage: StorageService,
     @Timed("s3.delete")
     @DeleteMapping("/multiple/{path}")
     fun deleteMultipleDocuments(@PathVariable(required = true) path: String): ResponseEntity<String> {
-        return metricsHelper.measure("deleteMultipleDocuments") {
+        return deleteMultipleDocuments.measure {
             return@measure try {
                 validerPath(path)
                 val paths = storage.list(path)

@@ -31,6 +31,7 @@ class EuxServiceTest {
     @BeforeEach
     fun cleanUpTest() {
         euxService = EuxService(restTemplate)
+        euxService.initMetrics()
     }
 
     @Test
