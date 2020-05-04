@@ -16,7 +16,7 @@ import javax.naming.ldap.LdapContext
 @Component
 @Profile("!integrationtest")
 class LdapKlient(
-    private var ldapContext: LdapContext,
+    private val ldapContext: LdapContext,
     @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())) {
 
     @Value("\${ldap.basedn}")
@@ -34,7 +34,7 @@ class LdapKlient(
                 controls.searchScope = SearchControls.SUBTREE_SCOPE
                 controls.countLimit = 1
                 val soekestreng = String.format("(cn=%s)", ident)
-                val result = ldapContext!!.search(searchBase, soekestreng, controls)
+                val result = ldapContext.search(searchBase, soekestreng, controls)
                 if (result.hasMoreElements()) {
                     result.nextElement()
                 }
