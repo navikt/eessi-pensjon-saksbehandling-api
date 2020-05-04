@@ -1,35 +1,25 @@
 package no.nav.eessi.pensjon.services.ldap
 
-import io.micrometer.core.instrument.simple.SimpleMeterRegistry
-import no.nav.eessi.pensjon.metrics.MetricsHelper
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
+import java.util.*
 import javax.naming.Context
-import javax.naming.NamingException
 import javax.naming.ldap.InitialLdapContext
 import javax.naming.ldap.LdapContext
-import java.util.Hashtable
 
 @Configuration
-class LdapConfig(
-    @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(
-        SimpleMeterRegistry())
-    ) {
-
+@Profile("!integrationtest")
+class LdapConfig {
         private val logger = LoggerFactory.getLogger(LdapConfig::class.java)
-
 
         @Value("\${ldap.url}")
         private val ldapUrl: String? = null
 
         @Value("\${ldap.domain}")
         private val ldapDomain: String? = null
-
-        @Value("\${ldap.basedn}")
-        private val ldapBasedn: String? = null
 
         @Value("\${srvusername}")
         private val ldapUsername: String? = null
@@ -38,7 +28,7 @@ class LdapConfig(
         private val ldapPassword: String? = null
 
         @Bean
-        fun ldapKlient(): LdapKlient {
+        fun ldapContext(): LdapContext {
             logger.info("Setter opp LDAP klient")
             val environment = Hashtable<String, Any>()
             environment[Context.INITIAL_CONTEXT_FACTORY] = "com.sun.jndi.ldap.LdapCtxFactory"
@@ -47,14 +37,7 @@ class LdapConfig(
             environment[Context.SECURITY_CREDENTIALS] = ldapPassword
             environment[Context.SECURITY_PRINCIPAL] = "$ldapUsername@$ldapDomain"
 
-            val searchBase = "OU=Users,OU=NAV,OU=BusinessUnits," + ldapBasedn!!
-            var context: LdapContext? = null
-            try {
-                context = InitialLdapContext()
-            } catch (e: NamingException) {
-            }
-
-            return LdapKlient(environment, context, searchBase, metricsHelper)
+            return InitialLdapContext(environment, null)
         }
-    }
+}
 

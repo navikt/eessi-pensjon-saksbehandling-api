@@ -28,7 +28,6 @@ import org.springframework.web.client.DefaultResponseErrorHandler
 import org.springframework.web.client.RestTemplate
 import java.io.File
 import java.nio.charset.Charset
-import java.util.*
 import javax.naming.ldap.InitialLdapContext
 
 
@@ -115,12 +114,7 @@ open class BaseTest {
 
     fun generateMockSaksbehandlerLdapService(): LdapService {
         val ldapContext = InitialLdapContext()
-        val ldapBrukeroppslag = LdapKlient(
-            Hashtable(),
-            ldapContext,
-            "OU=Users,OU=NAV,OU=BusinessUnits,",
-            null
-        )
+        val ldapBrukeroppslag = LdapKlient(ldapContext)
 
         return LdapService(ldapBrukeroppslag)
     }
