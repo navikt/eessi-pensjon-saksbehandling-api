@@ -29,7 +29,7 @@ class WhitelistServiceTest {
                 listOf("User1", "User2"),
                 "whitelisted",
                 "___"))
-        whitelistService.initMetrics()
+        whitelistService.setup()
     }
 
     @Test
@@ -54,7 +54,6 @@ class WhitelistServiceTest {
 
     @Test
     fun `Given two not whitelisted users When initializing Then add users to whitelist`() {
-        whitelistService.startup()
         assertEquals(whitelistService.newUsersToWhitelist.size, 2)
         verify(storageService, times(2)).put(any(), any())
     }
