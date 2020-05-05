@@ -13,21 +13,12 @@ import org.springframework.web.client.HttpStatusCodeException
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.util.UriComponentsBuilder
 import java.lang.RuntimeException
-import javax.annotation.PostConstruct
 
 @Service
 class NavRegistreOppslagService(private val fagmodulUntToRestTemplate: RestTemplate,
                                 @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())) {
 
     private val logger: Logger by lazy { LoggerFactory.getLogger(NavRegistreOppslagService::class.java) }
-
-    private lateinit var hentpersoninformasjon: MetricsHelper.Metric
-
-    @PostConstruct
-    fun initMetrics() {
-        hentpersoninformasjon = metricsHelper.init("hentpersoninformasjon")
-    }
-
 
     /**
      * Henter ut personinformasjon fra TPS via PersonV3
@@ -40,7 +31,7 @@ class NavRegistreOppslagService(private val fagmodulUntToRestTemplate: RestTempl
         val builder = UriComponentsBuilder.fromUriString(path).buildAndExpand(uriParams)
         val httpEntity = HttpEntity("")
 
-        return hentpersoninformasjon.measure {
+        return metricsHelper.measure("hentpersoninformasjon") {
             try {
                 logger.info("Kaller fagmodulen for å hente personinformasjon")
                 val resp = fagmodulUntToRestTemplate.exchange(

@@ -49,7 +49,6 @@ internal class ReceiveSubmissionControllerTest {
             storageService,
             oidcRequestContextHolder,
             templateService)
-        controller.initMetrics()
     }
 
     @Test

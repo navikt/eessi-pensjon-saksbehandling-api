@@ -5,7 +5,6 @@ import com.nhaarman.mockitokotlin2.doNothing
 import com.nhaarman.mockitokotlin2.doReturn
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.slf4j.MDC
@@ -20,11 +19,6 @@ class KafkaServiceTest() {
     @AfterEach
     fun cleanup(){
         MDC.clear()
-    }
-
-    @BeforeEach
-    fun init() {
-        kafkaService.initMetrics()
     }
 
     @Test

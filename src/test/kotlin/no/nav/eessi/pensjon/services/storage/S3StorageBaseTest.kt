@@ -51,10 +51,8 @@ open class S3StorageBaseTest : BaseTest() {
                 s3storageService, listOf("someUser"),
                 "whitelisted",
                 "___"))
-        whitelistService.initMetrics()
 
         storageController = Mockito.spy(StorageController(s3storageService, generateMockContextHolder()))
-        storageController.initMetrics()
     }
 
     @AfterEach fun teardown() {

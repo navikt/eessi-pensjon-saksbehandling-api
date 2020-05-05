@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
-import javax.annotation.PostConstruct
 import javax.naming.LimitExceededException
 import javax.naming.NamingException
 import javax.naming.directory.SearchControls
@@ -25,17 +24,10 @@ class LdapKlient(
 
     private val logger = LoggerFactory.getLogger(LdapKlient::class.java)
 
-    private lateinit var ldapInnlogging: MetricsHelper.Metric
-
-    @PostConstruct
-    fun initMetrics() {
-        ldapInnlogging = metricsHelper.init("ldapInnlogging")
-    }
-
     fun ldapSearch(ident: String): SearchResult? {
         val searchBase = "OU=Users,OU=NAV,OU=BusinessUnits,$ldapBasedn"
 
-        return ldapInnlogging.measure {
+        return metricsHelper.measure("ldapInnlogging") {
             logger.info("ldapSearch: $ident")
             try {
                 val controls = SearchControls()

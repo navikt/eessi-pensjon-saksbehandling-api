@@ -34,7 +34,6 @@ class AktoerregisterServiceTest {
     fun setup() {
         aktoerregisterService = AktoerregisterService(mockrestTemplate)
         aktoerregisterService.appName = "unittests"
-        aktoerregisterService.initMetrics()
     }
 
 

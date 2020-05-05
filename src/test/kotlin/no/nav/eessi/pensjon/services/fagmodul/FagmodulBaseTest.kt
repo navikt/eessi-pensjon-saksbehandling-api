@@ -19,7 +19,6 @@ open class FagmodulBaseTest : BaseTest() {
 
         mockFagmodulRestTemplate = generateMockFagmodulRestTemplate()
         navRegistreOppslagService = Mockito.spy(NavRegistreOppslagService(mockFagmodulRestTemplate))
-        navRegistreOppslagService.initMetrics()
         pensjonController = Mockito.spy(PensjonController(mockFagmodulRestTemplate))
     }
 
