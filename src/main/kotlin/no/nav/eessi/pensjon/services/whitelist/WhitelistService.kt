@@ -25,17 +25,13 @@ class WhitelistService(
 ) {
 
     private lateinit var addToWhitelist: MetricsHelper.Metric
-    private lateinit var isPersonWhitelistedMetric: MetricsHelper.Metric
+    private lateinit var isPersonWhitelist: MetricsHelper.Metric
 
     @PostConstruct
-    fun initMetrics() {
+    fun setup() {
         addToWhitelist = metricsHelper.init("addToWhitelist")
-        isPersonWhitelistedMetric = metricsHelper.init("isPersonWhitelisted")
-    }
+        isPersonWhitelist = metricsHelper.init("isPersonWhitelisted")
 
-
-    @PostConstruct
-    fun startup() {
         whitelistNewUsersFromFasit()
     }
 
@@ -65,7 +61,7 @@ class WhitelistService(
 
     fun isPersonWhitelisted(key: String): Boolean {
         logger.info("Sjekker om borger er whitelistet")
-        return isPersonWhitelistedMetric.measure {
+        return isPersonWhitelist.measure {
             return@measure try {
                 val resp = storageService.get("$key$personIdentifierSeparator$whitelistEnding")
                 if (resp != null) {
