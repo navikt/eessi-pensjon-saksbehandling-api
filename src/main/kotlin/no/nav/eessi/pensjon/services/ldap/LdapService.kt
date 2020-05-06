@@ -1,43 +1,56 @@
 package no.nav.eessi.pensjon.services.ldap
 
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry
+import no.nav.eessi.pensjon.metrics.MetricsHelper
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
-import java.lang.IllegalArgumentException
 import java.util.regex.Pattern
+import javax.annotation.PostConstruct
 import javax.naming.directory.Attribute
 import javax.naming.directory.SearchResult
 
 @Profile("!integrationtest", "!test")
 @Service
-class LdapService(private val ldapKlient: LdapKlient) : BrukerInformasjonService {
+class LdapService(private val ldapKlient: LdapKlient,
+                  @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())) : BrukerInformasjonService {
 
     // Pattern for NAV brukerident, f.eks Z123456
     private val IDENT_PATTERN = Pattern.compile("^[a-zA-Z][0-9]*")
     private val logger = LoggerFactory.getLogger(LdapService::class.java)
 
+    private lateinit var hentBrukerInformasjon: MetricsHelper.Metric
+
+    @PostConstruct
+    fun initMetrics() {
+        hentBrukerInformasjon = metricsHelper.init("hentBrukerInformasjon")
+    }
+
     override fun hentBrukerInformasjon(ident: String): BrukerInformasjon {
-        logger.info("Henter bruker-informasjon fra LDAP")
-        if (ident.isEmpty()) {
-            logger.warn("Brukerident mangler")
-            throw IllegalArgumentException("Brukerident mangler")
-        }
+        return hentBrukerInformasjon.measure {
+            logger.info("Henter bruker-informasjon fra LDAP")
+            if (ident.isEmpty()) {
+                logger.warn("Brukerident mangler")
+                throw IllegalArgumentException("Brukerident mangler")
+            }
 
-        // Unngår å søke etter fødselsnummer i AD
-        val matcher = IDENT_PATTERN.matcher(ident)
-        if (!matcher.matches()) {
-            logger.error("Identen: $ident er ikke i et format vi kan søke etter")
-            return BrukerInformasjon(ident, emptyList())
-        }
+            // Unngår å søke etter fødselsnummer i AD
+            val matcher = IDENT_PATTERN.matcher(ident)
+            if (!matcher.matches()) {
+                logger.error("Identen: $ident er ikke i et format vi kan søke etter")
+                return@measure BrukerInformasjon(ident, emptyList())
+            }
 
-        val result = ldapKlient.ldapSearch(ident)
-        if(result == null) {
-            logger.warn("Fant ingen oppslag i AD for ident: $ident")
-            return BrukerInformasjon(ident, emptyList())
-        }
+            val result = ldapKlient.ldapSearch(ident)
+            if (result == null) {
+                logger.warn("Fant ingen oppslag i AD for ident: $ident")
+                return@measure BrukerInformasjon(ident, emptyList())
+            }
 
-        val medlemAv = getMemberOf(result, ident)
-        return BrukerInformasjon(ident, medlemAv)
+            val medlemAv = getMemberOf(result, ident)
+            return@measure BrukerInformasjon(ident, medlemAv)
+        }
     }
 
     private fun getMemberOf(result: SearchResult, ident: String): List<String> {

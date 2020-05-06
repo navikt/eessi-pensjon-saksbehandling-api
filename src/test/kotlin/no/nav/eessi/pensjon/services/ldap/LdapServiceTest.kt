@@ -1,16 +1,18 @@
 package no.nav.eessi.pensjon.services.ldap
 
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers.anyString
-import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.doReturn
 import org.mockito.junit.jupiter.MockitoExtension
-import java.lang.IllegalArgumentException
-import javax.naming.directory.*
+import javax.naming.directory.BasicAttribute
+import javax.naming.directory.BasicAttributes
+import javax.naming.directory.SearchResult
 
 @ExtendWith(MockitoExtension::class)
 class LdapServiceTest {
@@ -18,9 +20,13 @@ class LdapServiceTest {
     @Mock
     lateinit var ldapKlient: LdapKlient
 
-    @InjectMocks
     lateinit var ldapService: LdapService
 
+    @BeforeEach
+    fun setUp(){
+       ldapService = LdapService(ldapKlient)
+        ldapService.initMetrics()
+    }
 
     @Test
     fun `gitt en bruker med medlemskap i flere grupper når etterspør memberOf så returner en liste av CN feltet for gruppene`() {

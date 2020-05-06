@@ -1,5 +1,6 @@
 package no.nav.eessi.pensjon.services
 
+
 import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.PlainJWT
 import com.unboundid.ldap.listener.InMemoryDirectoryServer
@@ -27,6 +28,9 @@ import org.springframework.web.client.DefaultResponseErrorHandler
 import org.springframework.web.client.RestTemplate
 import java.io.File
 import java.nio.charset.Charset
+import java.util.*
+import javax.naming.ldap.InitialLdapContext
+
 
 @ActiveProfiles("test")
 @Import(TokenGeneratorConfiguration::class)
@@ -110,7 +114,12 @@ open class BaseTest {
     }
 
     fun generateMockSaksbehandlerLdapService(): LdapService {
-        val ldapBrukeroppslag = LdapKlient()
+        val ldapContext = InitialLdapContext()
+        val ldapBrukeroppslag = LdapKlient(
+            Hashtable(),
+            ldapContext,
+            "OU=Users,OU=NAV,OU=BusinessUnits,"
+        )
 
         return LdapService(ldapBrukeroppslag)
     }
