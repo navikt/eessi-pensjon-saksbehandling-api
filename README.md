@@ -97,6 +97,14 @@ Enkelte interne artifakter har ikke komplette metadata i repo.adeo.no - noe som 
  - no.nav.tjenester:nav-person-v3-tjenestespesifikasjon
  ```
 
+## OWASP avhengighetssjekk
+
+(Pass på at du kan nå `ossindex.sonatype.org` og `nvd.nist.gov` gjennom evt proxy e.l.) 
+
+```
+./gradlew dependencyCheckAnalyze && open build/reports/dependency-check-report.html
+```
+
 ---
 
 # Henvendelser
