@@ -89,14 +89,6 @@ Dersom du er supertrygg på testene kan du forsøke en oppdatering av alle avhen
 ./gradlew useLatestVersions && ./gradlew useLatestVersionsCheck
 ```
 
-Enkelte interne artifakter har ikke komplette metadata i repo.adeo.no - noe som gir en advarsel:
-
-```
- Failed to determine the latest version for the following dependencies (use --info for details):
- - no.nav.meldinger.virksomhet:nav-virksomhet-varsel-v1-meldingsdefinisjon
- - no.nav.tjenester:nav-person-v3-tjenestespesifikasjon
- ```
-
 ## OWASP avhengighetssjekk
 
 (Pass på at du kan nå `ossindex.sonatype.org` og `nvd.nist.gov` gjennom evt proxy e.l.) 
