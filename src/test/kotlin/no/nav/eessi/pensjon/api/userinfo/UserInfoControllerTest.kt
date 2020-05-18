@@ -46,7 +46,7 @@ class UserInfoControllerTest : S3StorageBaseTest() {
             role ="BRUKER",
             allowed = true,
             expirationTime = 1531157178000,
-            features = mapOf("P5000_VISIBLE" to false)
+            features = mapOf("P5000_VISIBLE" to true)
         )
         assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), userInfoController.getUserInfo())
     }
@@ -76,7 +76,7 @@ class UserInfoControllerTest : S3StorageBaseTest() {
             role ="SAKSBEHANDLER",
             allowed = true,
             expirationTime = 1531157178000,
-            features = mapOf("P5000_VISIBLE" to false)
+            features = mapOf("P5000_VISIBLE" to true)
         )
         assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), userInfoController2.getUserInfo())
     }
