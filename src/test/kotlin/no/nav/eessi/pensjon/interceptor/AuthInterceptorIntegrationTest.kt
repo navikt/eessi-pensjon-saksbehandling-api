@@ -1,5 +1,6 @@
 package no.nav.eessi.pensjon.interceptor
 
+import no.nav.eessi.pensjon.security.sts.STSService
 import no.nav.eessi.pensjon.services.ldap.BrukerInformasjonService
 import no.nav.eessi.pensjon.services.ldap.LdapServiceMock
 import no.nav.eessi.pensjon.services.storage.StorageService
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.TestConfiguration
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Import
@@ -35,7 +37,10 @@ class AuthInterceptorIntegrationTest() {
     @LocalServerPort
     private lateinit var port: String
 
-   /**
+    @MockBean
+    lateinit var stsService: STSService
+
+    /**
     * For test kan man lage brukere som gir tilganger etter følgende regler
     * Saksbehandler X000000 angir
     *               |||||||

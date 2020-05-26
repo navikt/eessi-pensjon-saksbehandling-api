@@ -68,7 +68,7 @@ kafka.brokers.url: '{spring.embedded.kafka.brokers}'
 NAV_DOMAIN_URL: 'somedomain'
 VARSELPRODUKSJON.VARSLINGER.queuename: 'http://someurl:1245'
 LOGINSERVICE_HOSTURL: 'http://localhost'
-security-token-service-token.url: "http://localhost"
+securitytokenservice.url: "http://localhost"
 virksomhet.person.v3.endpointurl: "http://localhost"
 PENSJON_UTLAND_WS_ALLOWED_ORIGINS_URL: "http://localhost"
 eessi-pensjon-frontend-ui:

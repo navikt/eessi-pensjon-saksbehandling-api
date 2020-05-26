@@ -23,7 +23,9 @@ spec:
       value: https://isso-q.adeo.no:443/isso
     - name: EESSI_PENSJON_FRONTEND_UI_URL
       value: https://pensjon-utland-q.nav.no
-    - name: SECURITY_TOKEN_SERVICE_TOKEN_URL
+    - name: SECURITY_TOKEN_SERVICE_OPENID_CONFIGURATION_URL
+      value: https://security-token-service.nais.preprod.local/rest/v1/sts/.well-known/openid-configuration
+    - name: SECURITYTOKENSERVICE_URL
       value: https://security-token-service.nais.preprod.local/rest/v1/sts/token
     - name: EESSI_PENSJON_FRONTEND_API_FSS_CHANNEL_NAME
       value: Q2_EP_FEND_API_FSS
