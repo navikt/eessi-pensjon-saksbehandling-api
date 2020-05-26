@@ -63,6 +63,8 @@ spring:
         mechanism: PLAIN
         jaas.config: org.apache.kafka.common.security.plain.PlainLoginModule required username="${srvusername}" password="${srvpassword}";
 
+securityTokenService:
+  discoveryUrl: ${SECURITY_TOKEN_SERVICE_OPENID_CONFIGURATION_URL}
 
 cors:
   allowed: ${PENSJON_UTLAND_WS_ALLOWED_ORIGINS_URL}

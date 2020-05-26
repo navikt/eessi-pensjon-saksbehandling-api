@@ -5,7 +5,7 @@ import no.nav.eessi.pensjon.interceptor.OidcHeaderRequestInterceptor
 import no.nav.eessi.pensjon.logging.RequestIdHeaderInterceptor
 import no.nav.eessi.pensjon.logging.RequestResponseLoggerInterceptor
 import no.nav.eessi.pensjon.metrics.RequestCountInterceptor
-import no.nav.eessi.pensjon.security.sts.StsSystemOidcService
+import no.nav.eessi.pensjon.security.sts.STSService
 import no.nav.eessi.pensjon.security.sts.UsernameToOidcInterceptor
 import no.nav.security.oidc.context.OIDCRequestContextHolder
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,7 +24,7 @@ import org.springframework.web.client.RestTemplate
 class RestTemplateConfig(val restTemplateBuilder: RestTemplateBuilder,
                          val oidcRequestContextHolder: OIDCRequestContextHolder,
                          val registry: MeterRegistry,
-                         val securityTokenExchangeService: StsSystemOidcService
+                         val securityTokenExchangeService: STSService
 ) {
 
     @Value("\${eessi_pensjon_fagmodul_url}")
