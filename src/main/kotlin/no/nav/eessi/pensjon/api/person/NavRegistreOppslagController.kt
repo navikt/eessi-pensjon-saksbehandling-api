@@ -23,7 +23,6 @@ class NavRegistreOppslagController(val navRegistreOppslagService: NavRegistreOpp
     @GetMapping(value = ["/personinfo/{aktoerId}"], produces = [MediaType.APPLICATION_JSON_VALUE])
     fun getDocument(@PathVariable(required = true) aktoerId: String): ResponseEntity<String> {
         logger.info("Henter personinformasjon for $aktoerId")
-        navRegistreOppslagService.hentPersoninformasjon(aktoerId)
         return try{
             ResponseEntity.ok().body(mapAnyToJson(navRegistreOppslagService.hentPersoninformasjon(aktoerId)!!))
         }catch(pe: PersonInformasjonException){
