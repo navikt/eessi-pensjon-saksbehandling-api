@@ -78,4 +78,3 @@ ldap.provider:
 
 submitTopic: 'privat-eessipensjon-selvbetjeningsinfoMottatt-v1'
 S3_REGION: us-east-1
-requestsamlpolicy.path: "classpath:policy/requestSamlPolicy.xml"
