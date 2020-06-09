@@ -218,7 +218,7 @@ wrapper {
 
 // https://docs.gradle.org/current/userguide/jacoco_plugin.html
 jacoco {
-    toolVersion = "0.8.4"
+    toolVersion = "0.8.5"
 }
 
 jacocoTestReport {
