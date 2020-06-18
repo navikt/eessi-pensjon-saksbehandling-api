@@ -33,7 +33,7 @@ class UserInfoControllerTest : S3StorageBaseTest() {
         val usr =  UserInfoResponse(subject ="12345678910",
             role ="BRUKER",
             allowed = true,
-            expirationTime = 1531157178000,
+            expirationTime = 3531157178000,
             features = mapOf("P5000_VISIBLE" to true)
         )
         assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), userInfoController.getUserInfo())
@@ -45,7 +45,7 @@ class UserInfoControllerTest : S3StorageBaseTest() {
         val usr =  UserInfoResponse(subject ="12345678910",
             role ="BRUKER",
             allowed = true,
-            expirationTime = 1531157178000,
+            expirationTime = 3531157178000,
             features = mapOf("P5000_VISIBLE" to true)
         )
         assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), userInfoController.getUserInfo())
@@ -60,7 +60,7 @@ class UserInfoControllerTest : S3StorageBaseTest() {
         val usr =  UserInfoResponse(subject ="A123456",
             role ="SAKSBEHANDLER",
             allowed = true,
-            expirationTime = 1531157178000,
+            expirationTime = 3531157178000,
             features = mapOf("P5000_VISIBLE" to true)
         )
         assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), userInfoController2.getUserInfo())
@@ -75,7 +75,7 @@ class UserInfoControllerTest : S3StorageBaseTest() {
         val usr =  UserInfoResponse(subject ="A123456",
             role ="SAKSBEHANDLER",
             allowed = true,
-            expirationTime = 1531157178000,
+            expirationTime = 3531157178000,
             features = mapOf("P5000_VISIBLE" to true)
         )
         assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), userInfoController2.getUserInfo())
@@ -92,13 +92,13 @@ class UserInfoControllerTest : S3StorageBaseTest() {
         val usr =  UserInfoResponse(subject ="12345678910",
             role ="BRUKER",
             allowed = true,
-            expirationTime = 1531157178000,
+            expirationTime = 3531157178000,
             features = mapOf("P5000_VISIBLE" to true)
         )
         val result = userInfoController.getUserInfo()
         assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), result)
         val resultUserInfo = mapJsonToAny(result.body!!, typeRefs<UserInfoResponse>())
-        assertEquals(1531157178000, resultUserInfo.expirationTime)
+        assertEquals(3531157178000, resultUserInfo.expirationTime)
     }
 
 }

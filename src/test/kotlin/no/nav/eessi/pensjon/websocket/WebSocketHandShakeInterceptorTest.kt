@@ -1,8 +1,13 @@
 package no.nav.eessi.pensjon.websocket
 
+import com.nimbusds.jwt.JWTClaimsSet
+import com.nimbusds.jwt.PlainJWT
+import no.nav.eessi.pensjon.services.MockOIDCRequestContextHolder
 import no.nav.security.oidc.context.OIDCClaims
 import no.nav.security.oidc.context.OIDCRequestContextHolder
 import no.nav.security.oidc.context.OIDCValidationContext
+import no.nav.security.oidc.context.TokenContext
+import org.apache.commons.io.FileUtils
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
@@ -14,12 +19,33 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.server.ServerHttpResponse
 import org.springframework.http.server.ServletServerHttpRequest
 import org.springframework.web.socket.WebSocketHandler
+import java.io.File
+import java.nio.charset.Charset
 
 @ExtendWith(MockitoExtension::class)
 class WebSocketHandShakeInterceptorTest {
 
-    val oidcRequestContextHolder = mock(OIDCRequestContextHolder::class.java)
+    val oidcRequestContextHolder = generateMockContextHolder() // mock(OIDCRequestContextHolder::class.java)
     val webSocketHandShakeInterceptor = WebSocketHandShakeInterceptor(oidcRequestContextHolder)
+
+    fun generateMockContextHolder() = mockContextHolder("jwtExample.json")
+
+    fun mockContextHolder(fileName: String, issuer: String = "testIssuer"): OIDCRequestContextHolder {
+
+        val issuer = issuer
+        val idToken = "MockSubject"
+        val oidcContextHolder = MockOIDCRequestContextHolder()
+        val oidcContext = OIDCValidationContext()
+        val tokenContext = TokenContext(issuer, idToken)
+        val claimSet = JWTClaimsSet
+            .parse(FileUtils.readFileToString(File("src/test/resources/json/$fileName"), Charset.forName("UTF-8")))
+        val jwt = PlainJWT(claimSet)
+
+        oidcContext.addValidatedToken(issuer, tokenContext, OIDCClaims(jwt))
+        oidcContextHolder.setOIDCValidationContext(oidcContext)
+        return oidcContextHolder
+    }
+
 
     @Test
     fun `beforeHandshake returns true when given correct request`() {
@@ -29,17 +55,8 @@ class WebSocketHandShakeInterceptorTest {
         val wsHandler = mock(WebSocketHandler::class.java)
         val attributes = mutableMapOf<String, Any>()
 
-        val oidcValidationContext = mock(OIDCValidationContext::class.java)
-        val oidcClaims = mock(OIDCClaims::class.java)
-
         doReturn(HttpMethod.GET).`when`(request).method
         doReturn(HttpHeaders()).`when`(request).headers
-
-        doReturn(oidcValidationContext).`when`(oidcRequestContextHolder).oidcValidationContext
-        doReturn(true).`when`(oidcValidationContext).hasValidToken()
-        doReturn(listOf("MockIssuer")).`when`(oidcValidationContext).issuers
-        doReturn(oidcClaims).`when`(oidcValidationContext).getClaims(anyString())
-        doReturn("MockSubject").`when`(oidcClaims).subject
 
         assert(webSocketHandShakeInterceptor.beforeHandshake(request, response, wsHandler, attributes))
     }
@@ -52,20 +69,11 @@ class WebSocketHandShakeInterceptorTest {
         val wsHandler = mock(WebSocketHandler::class.java)
         val attributes = mutableMapOf<String, Any>()
 
-        val oidcValidationContext = mock(OIDCValidationContext::class.java)
-        val oidcClaims = mock(OIDCClaims::class.java)
-
         doReturn(HttpMethod.GET).`when`(request).method
         doReturn(HttpHeaders()).`when`(request).headers
 
-        doReturn(oidcValidationContext).`when`(oidcRequestContextHolder).oidcValidationContext
-        doReturn(true).`when`(oidcValidationContext).hasValidToken()
-        doReturn(listOf("MockIssuer")).`when`(oidcValidationContext).issuers
-        doReturn(oidcClaims).`when`(oidcValidationContext).getClaims(anyString())
-        doReturn("MockSubject").`when`(oidcClaims).subject
-
         webSocketHandShakeInterceptor.beforeHandshake(request, response, wsHandler, attributes)
-        assertEquals("MockSubject", attributes["subject"])
+        assertEquals("12345678910", attributes["subject"])
     }
 
 
@@ -77,9 +85,6 @@ class WebSocketHandShakeInterceptorTest {
         val wsHandler = mock(WebSocketHandler::class.java)
         val attributes = mutableMapOf<String, Any>()
 
-        val oidcValidationContext = mock(OIDCValidationContext::class.java)
-        val oidcClaims = mock(OIDCClaims::class.java)
-
         val requestHeaders = HttpHeaders()
         requestHeaders["sec-websocket-protocol"] = "v0.buc"
         val responseHeaders = HttpHeaders()
@@ -87,12 +92,6 @@ class WebSocketHandShakeInterceptorTest {
         doReturn(HttpMethod.GET).`when`(request).method
         doReturn(requestHeaders).`when`(request).headers
         doReturn(responseHeaders).`when`(response).headers
-
-        doReturn(oidcValidationContext).`when`(oidcRequestContextHolder).oidcValidationContext
-        doReturn(true).`when`(oidcValidationContext).hasValidToken()
-        doReturn(listOf("MockIssuer")).`when`(oidcValidationContext).issuers
-        doReturn(oidcClaims).`when`(oidcValidationContext).getClaims(anyString())
-        doReturn("MockSubject").`when`(oidcClaims).subject
 
         webSocketHandShakeInterceptor.beforeHandshake(request, response, wsHandler, attributes)
         assertEquals(listOf("v0.buc"), responseHeaders["sec-websocket-protocol"])
@@ -105,10 +104,6 @@ class WebSocketHandShakeInterceptorTest {
         val response = mock(ServerHttpResponse::class.java)
         val wsHandler = mock(WebSocketHandler::class.java)
         val attributes = mutableMapOf<String, Any>()
-
-        val oidcValidationContext = mock(OIDCValidationContext::class.java)
-
-        doReturn(oidcValidationContext).`when`(oidcRequestContextHolder).oidcValidationContext
 
         doReturn(HttpMethod.POST).`when`(request).method
         assertFalse(webSocketHandShakeInterceptor.beforeHandshake(request, response, wsHandler, attributes))
@@ -139,12 +134,6 @@ class WebSocketHandShakeInterceptorTest {
         val response = mock(ServerHttpResponse::class.java)
         val wsHandler = mock(WebSocketHandler::class.java)
         val attributes = mutableMapOf<String, Any>()
-
-        val oidcValidationContext = mock(OIDCValidationContext::class.java)
-
-        doReturn(HttpMethod.GET).`when`(request).method
-        doReturn(oidcValidationContext).`when`(oidcRequestContextHolder).oidcValidationContext
-        doReturn(false).`when`(oidcValidationContext).hasValidToken()
 
         assertFalse(webSocketHandShakeInterceptor.beforeHandshake(request, response, wsHandler, attributes))
     }

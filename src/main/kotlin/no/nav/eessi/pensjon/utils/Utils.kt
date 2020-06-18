@@ -7,6 +7,7 @@ import no.nav.security.oidc.context.OIDCClaims
 import no.nav.security.oidc.context.OIDCRequestContextHolder
 import no.nav.security.oidc.context.TokenContext
 import org.springframework.core.ParameterizedTypeReference
+import java.util.*
 
 inline fun <reified T : Any> typeRef(): ParameterizedTypeReference<T> = object : ParameterizedTypeReference<T>() {}
 inline fun <reified T : Any> typeRefs(): TypeReference<T> = object : TypeReference<T>() {}
@@ -41,9 +42,19 @@ fun getClaims(oidcRequestContextHolder: OIDCRequestContextHolder): OIDCClaims {
     val context = oidcRequestContextHolder.oidcValidationContext
     if(context.issuers.isEmpty())
         throw RuntimeException("No issuer found in context")
-    val issuer = context.issuers.first()
 
-    return context.getClaims(issuer)
+    val validIssuer = context.issuers.filterNot { issuer ->
+        val oidcClaims = context.getClaims(issuer)
+        oidcClaims.claimSet.expirationTime.before(Date())
+    }.map { it }
+
+
+    if (validIssuer.isNotEmpty()) {
+        val issuer = validIssuer.first()
+        return context.getClaims(issuer)
+    }
+    throw RuntimeException("No valid issuer found in context")
+
 }
 
 
