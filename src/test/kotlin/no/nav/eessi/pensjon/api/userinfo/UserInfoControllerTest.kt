@@ -34,7 +34,7 @@ class UserInfoControllerTest : S3StorageBaseTest() {
             role ="BRUKER",
             allowed = true,
             expirationTime = 3531157178000,
-            features = mapOf("P5000_VISIBLE" to true)
+            features = mapOf("P5000_VISIBLE" to true, "P_BUC_02_VISIBLE" to true)
         )
         assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), userInfoController.getUserInfo())
     }
@@ -46,7 +46,7 @@ class UserInfoControllerTest : S3StorageBaseTest() {
             role ="BRUKER",
             allowed = true,
             expirationTime = 3531157178000,
-            features = mapOf("P5000_VISIBLE" to true)
+            features = mapOf("P5000_VISIBLE" to true, "P_BUC_02_VISIBLE" to true)
         )
         assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), userInfoController.getUserInfo())
     }
@@ -61,7 +61,7 @@ class UserInfoControllerTest : S3StorageBaseTest() {
             role ="SAKSBEHANDLER",
             allowed = true,
             expirationTime = 3531157178000,
-            features = mapOf("P5000_VISIBLE" to true)
+            features = mapOf("P5000_VISIBLE" to true, "P_BUC_02_VISIBLE" to true)
         )
         assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), userInfoController2.getUserInfo())
     }
@@ -76,7 +76,7 @@ class UserInfoControllerTest : S3StorageBaseTest() {
             role ="SAKSBEHANDLER",
             allowed = true,
             expirationTime = 3531157178000,
-            features = mapOf("P5000_VISIBLE" to true)
+            features = mapOf("P5000_VISIBLE" to true, "P_BUC_02_VISIBLE" to true)
         )
         assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), userInfoController2.getUserInfo())
     }
@@ -93,7 +93,7 @@ class UserInfoControllerTest : S3StorageBaseTest() {
             role ="BRUKER",
             allowed = true,
             expirationTime = 3531157178000,
-            features = mapOf("P5000_VISIBLE" to true)
+            features = mapOf("P5000_VISIBLE" to true, "P_BUC_02_VISIBLE" to true)
         )
         val result = userInfoController.getUserInfo()
         assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), result)
