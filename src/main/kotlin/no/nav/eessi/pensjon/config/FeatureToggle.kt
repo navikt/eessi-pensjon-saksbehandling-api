@@ -21,7 +21,7 @@ class FeatureToggle {
     }
 
     private fun isQ2Env(): Boolean {
-        return environmentName.contains("q1", true)
+        return environmentName.contains("q2", true)
     }
 
     private fun isProductionEnv(): Boolean {
@@ -32,21 +32,22 @@ class FeatureToggle {
 
     fun getUIFeatures(): Map<String, Boolean> {
         return mapOf(
-            FeatureName.P5000_VISIBLE.name to true
+            FeatureName.P5000_VISIBLE.name to true,
+            FeatureName.P_BUC_02_VISIBLE.name to !isProductionEnv()
         )
     }
 
     fun getAPIFeatures(): Map<String, Boolean> {
         return mapOf(
             FeatureName.ENABLE_AUTH.name to isOnEnv(),
-            FeatureName.WHITELISTING.name to isOnEnv())
+            FeatureName.WHITELISTING.name to isOnEnv()
+        )
     }
-
-
 }
 
 enum class FeatureName {
     P5000_VISIBLE,
+    P_BUC_02_VISIBLE,
     ENABLE_AUTH,
     WHITELISTING,
 }
