@@ -10,8 +10,8 @@ import no.nav.eessi.pensjon.utils.mapAnyToJson
 import no.nav.eessi.pensjon.utils.errorBody
 import no.nav.eessi.pensjon.utils.getClaims
 import no.nav.eessi.pensjon.utils.successBody
-import no.nav.security.oidc.api.Protected
-import no.nav.security.oidc.context.OIDCRequestContextHolder
+import no.nav.security.token.support.core.api.Protected
+import no.nav.security.token.support.core.context.TokenValidationContextHolder
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -30,7 +30,7 @@ class ReceiveSubmissionController(
 
     val kafkaService: KafkaService,
     val storageService: StorageService,
-    val oidcRequestContextHolder: OIDCRequestContextHolder,
+    val oidcRequestContextHolder: TokenValidationContextHolder,
     val templateService: TemplateService,
     @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())) {
 

@@ -8,8 +8,8 @@ import no.nav.eessi.pensjon.services.ldap.BrukerInformasjon
 import no.nav.eessi.pensjon.services.ldap.BrukerInformasjonService
 import no.nav.eessi.pensjon.services.whitelist.WhitelistService
 import no.nav.eessi.pensjon.utils.getClaims
-import no.nav.security.oidc.context.OIDCClaims
-import no.nav.security.oidc.context.OIDCRequestContextHolder
+import no.nav.security.token.support.core.context.TokenValidationContextHolder
+import no.nav.security.token.support.core.jwt.JwtTokenClaims
 import org.slf4j.LoggerFactory
 import org.springframework.core.Ordered
 import org.springframework.http.HttpStatus
@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletResponse
 @Component
 class AuthInterceptor(private val ldapService: BrukerInformasjonService,
     private val authorisationService: AuthorisationService,
-    private val oidcRequestContextHolder: OIDCRequestContextHolder,
+    private val oidcRequestContextHolder: TokenValidationContextHolder,
     private val auditLogger: AuditLogger,
     private val whitelistService: WhitelistService) : HandlerInterceptor, Ordered {
 
@@ -53,7 +53,7 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
         return true
     }
 
-    fun sjekkForGyldigToken(): OIDCClaims {
+    fun sjekkForGyldigToken(): JwtTokenClaims {
         //kaster en 401 dersom ingen gyldig token finnes så UI kan redirekte til /login
         try {
             return getClaims(oidcRequestContextHolder)
@@ -72,16 +72,15 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
      *      o Brukere
      *      o BUC
      */
-    fun sjekkTilgangTilEessiPensjonTjeneste(oidcClaims: OIDCClaims): Boolean{
+    fun sjekkTilgangTilEessiPensjonTjeneste(oidcClaims: JwtTokenClaims): Boolean{
         val ident = oidcClaims.subject
-        val issueTime = oidcClaims.claimSet.issueTime
-        val expirationTime = oidcClaims.claimSet.expirationTime
+        val expirationTime = oidcClaims.expirationTime
         val brukerRolle = hentRolle(ident)
 
         // Bare saksbehandlere skal sjekkes om de har tilgang.
         // Skal borgere ha tilgang til api-fss?
         return if (Roller.SAKSBEHANDLER == brukerRolle) {
-            logger.info("Ident: $ident, Token issue time: $issueTime, expire: $expirationTime, Rolle: $brukerRolle")
+            logger.info("Ident: $ident,  expire: $expirationTime, Rolle: $brukerRolle")
             logger.debug("Henter ut brukerinformasjon fra AD/Ldap")
             val brukerInformasjon: BrukerInformasjon
             try {

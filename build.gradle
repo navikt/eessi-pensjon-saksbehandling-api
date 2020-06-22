@@ -5,7 +5,7 @@ buildscript {
         springfoxVersion = '2.9.2'
         jacksonVersion = '2.11.0'
         mockitoVersion = '3.3.3'
-        oidcTokenSupportVersion = '0.2.18'
+        oidcTokenSupportVersion = '1.1.6'
         logstashLogbackVersion = '6.3'
         pac4jVersion = '3.2.0'
         cxfVersion = '3.3.7'
@@ -151,8 +151,11 @@ dependencies {
     implementation("no.nav.eessi.pensjon:ep-metrics:0.4.0")
     
     // OIDC
-    implementation("no.nav.security:oidc-spring-support:${oidcTokenSupportVersion}")
-    implementation("no.nav.security:oidc-test-support:${oidcTokenSupportVersion}")
+    implementation("no.nav.security:token-validation-spring:${oidcTokenSupportVersion}")
+    implementation("no.nav.security:token-validation-jaxrs:${oidcTokenSupportVersion}")
+    implementation("no.nav.security:token-client-spring:${oidcTokenSupportVersion}")
+    implementation("no.nav.security:token-validation-test-support:${oidcTokenSupportVersion}")
+
     implementation("org.pac4j:spring-webmvc-pac4j:${pac4jVersion}")
     implementation("org.pac4j:pac4j-oidc:${pac4jVersion}")
     implementation("org.pac4j:pac4j-core:${pac4jVersion}")
@@ -161,7 +164,6 @@ dependencies {
     implementation("no.nav.eessi.pensjon:ep-security-sts:0.0.10")
 
     //mock
-    testImplementation("no.nav.security:oidc-test-support:${oidcTokenSupportVersion}")
     testImplementation("org.mockito:mockito-core:${mockitoVersion}")
     testImplementation("org.junit.jupiter:junit-jupiter:5.6.2")
     testImplementation("org.mockito:mockito-junit-jupiter:${mockitoVersion}")

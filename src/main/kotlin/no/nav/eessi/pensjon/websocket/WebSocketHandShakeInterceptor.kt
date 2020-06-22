@@ -1,6 +1,6 @@
 package no.nav.eessi.pensjon.websocket
 import no.nav.eessi.pensjon.utils.getClaims
-import no.nav.security.oidc.context.OIDCRequestContextHolder
+import no.nav.security.token.support.core.context.TokenValidationContextHolder
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpMethod
 import org.springframework.http.server.ServerHttpRequest
@@ -12,7 +12,7 @@ import org.springframework.web.socket.server.HandshakeFailureException
 import org.springframework.web.socket.server.HandshakeInterceptor
 import java.lang.Exception
 
-class WebSocketHandShakeInterceptor(private val oidcRequestContextHolder: OIDCRequestContextHolder): HandshakeInterceptor {
+class WebSocketHandShakeInterceptor(private val oidcRequestContextHolder: TokenValidationContextHolder): HandshakeInterceptor {
 
     private val logger = LoggerFactory.getLogger(HandshakeInterceptor::class.java)
 
@@ -21,7 +21,7 @@ class WebSocketHandShakeInterceptor(private val oidcRequestContextHolder: OIDCRe
     override fun beforeHandshake(request: ServerHttpRequest, response: ServerHttpResponse, wsHandler: WebSocketHandler, attributes: MutableMap<String, Any>): Boolean {
 
         return try {
-            if (request is ServletServerHttpRequest && request.method == HttpMethod.GET && oidcRequestContextHolder.oidcValidationContext.hasValidToken()) {
+            if (request is ServletServerHttpRequest && request.method == HttpMethod.GET && oidcRequestContextHolder.tokenValidationContext.hasValidToken()) {
                 logger.info("WebSocketHandShakeInterceptor >> ${getClaims(oidcRequestContextHolder).subject} VALID TOKEN")
                 attributes["subject"] = getClaims(oidcRequestContextHolder).subject
 

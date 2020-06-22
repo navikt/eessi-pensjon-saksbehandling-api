@@ -7,7 +7,7 @@ import no.nav.eessi.pensjon.logging.RequestResponseLoggerInterceptor
 import no.nav.eessi.pensjon.metrics.RequestCountInterceptor
 import no.nav.eessi.pensjon.security.sts.STSService
 import no.nav.eessi.pensjon.security.sts.UsernameToOidcInterceptor
-import no.nav.security.oidc.context.OIDCRequestContextHolder
+import no.nav.security.token.support.core.context.TokenValidationContextHolder
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.actuate.metrics.AutoTimer
@@ -23,7 +23,7 @@ import org.springframework.web.client.RestTemplate
 
 @Component
 class RestTemplateConfig(val restTemplateBuilder: RestTemplateBuilder,
-                         val oidcRequestContextHolder: OIDCRequestContextHolder,
+                         val oidcRequestContextHolder: TokenValidationContextHolder,
                          val registry: MeterRegistry,
                          val securityTokenExchangeService: STSService
 ) {

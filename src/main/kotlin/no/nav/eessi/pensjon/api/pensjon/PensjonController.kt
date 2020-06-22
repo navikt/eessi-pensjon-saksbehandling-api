@@ -2,7 +2,7 @@ package no.nav.eessi.pensjon.api.pensjon
 
 import io.swagger.annotations.ApiOperation
 import no.nav.eessi.pensjon.utils.errorBody
-import no.nav.security.oidc.api.Protected
+import no.nav.security.token.support.core.api.Protected
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.*

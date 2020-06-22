@@ -8,7 +8,7 @@ import no.nav.eessi.pensjon.services.fagmodul.NavRegistreOppslagService
 import no.nav.eessi.pensjon.services.fagmodul.PersonInformasjonException
 import no.nav.eessi.pensjon.utils.errorBody
 import no.nav.eessi.pensjon.utils.mapAnyToJson
-import no.nav.security.oidc.api.Protected
+import no.nav.security.token.support.core.api.Protected
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType

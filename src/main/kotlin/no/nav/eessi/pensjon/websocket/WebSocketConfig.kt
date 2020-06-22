@@ -1,6 +1,6 @@
 package no.nav.eessi.pensjon.websocket
 
-import no.nav.security.oidc.context.OIDCRequestContextHolder
+import no.nav.security.token.support.core.context.TokenValidationContextHolder
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
@@ -10,7 +10,7 @@ private val logger = LoggerFactory.getLogger(WebSocketConfigurer::class.java)
 
 @Configuration
 @EnableWebSocket
-class WebsocketConfiguration(private val oidcRequestContextHolder: OIDCRequestContextHolder) : WebSocketConfigurer {
+class WebsocketConfiguration(private val oidcRequestContextHolder: TokenValidationContextHolder) : WebSocketConfigurer {
 
     @Value("\${cors.allowed}")
     lateinit var allowed: String
