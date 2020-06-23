@@ -31,10 +31,17 @@ eessifagmodulservice:
 rina:
   url: "'http://example.com:8087'"
 
-no.nav.security.oidc.issuer.isso:
-  discoveryurl: "http://metadata"
-  acceptedaudience: "aud-localhost"
-  cookiename: "localhost-idtoken"
+no.nav.security:
+  oidc.issuer:
+    isso:
+      discoveryurl: "http://metadata"
+      acceptedaudience: "aud-localhost"
+      cookiename: "localhost-idtoken"
+  jwt.issuer:
+    iss-localhost:
+      discoveryurl: "http://metadata"
+      acceptedaudience: "aud-localhost"
+      cookiename: "localhost-idtoken"
 
 s3_url: 'http://objectstore.rook-ceph.svc.nais.local'
 S3_REGION: 'us-east-1'
