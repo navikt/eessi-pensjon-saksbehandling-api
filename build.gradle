@@ -94,6 +94,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude module: 'junit'
         exclude module: "mockito-core"
+        exclude module: "junit-vintage-engine"
     }
     implementation("org.springframework:spring-jms")
     // MQ
