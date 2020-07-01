@@ -20,16 +20,16 @@ jobs:
         with:
           java-version: 11
 
-      - name: 'Setter dato og commit variabel'
+      - name: 'Set date and commit hash'
         run: |
           export TZ=CET
           echo "::set-env name=DATE::$(date "+%Y-%m-%d--%H-%M-%S")"
           echo "::set-env name=COMMIT_HASH::$(git rev-parse HEAD)"
 
-      - name: 'Setter Image'
+      - name: 'Set image-tag'
         run: echo "::set-env name=IMAGE::docker.pkg.github.com/${{ github.repository }}/eessi-pensjon-saksbehandling-api:${{ env.DATE }}---${{ env.COMMIT_HASH }}"
 
-      - name: 'Bygg og publiser docker image'
+      - name: 'Build and publish docker image'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |

@@ -7,17 +7,14 @@ jobs:
     name: 'Deploy til Q1'
     runs-on: ubuntu-latest
     steps:
-      # GET version
-      - name: 'Get the version'
+      - name: 'Pull repo'
         uses: actions/checkout@v2
 
-      # Show IMAGE from Q2 deploy
-      - name: 'Vise image'
+      - name: 'Show image-tag'
         run: |
           echo "image-tag: ${{ github.event.client_payload.image }}"
 
-      # DEPLOYER TIL NAIS -Q1
-      - name: 'Deploy to NAIS Q1'
+      - name: 'Deploy to Q1'
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}

@@ -9,29 +9,24 @@ jobs:
     name: 'Build, deploy and tag'
     runs-on: ubuntu-latest
     steps:
-      # PULLER REPO
       - name: 'Pull repo'
         uses: actions/checkout@v1
 
-      # SETTER DATO OG COMMIT VARIABEL
-      - name: 'Setter dato og commit variabel'
+      - name: 'Set date and commit hash'
         run: |
           export TZ=CET
           echo "::set-env name=DATE::$(date "+%Y-%m-%d--%H-%M-%S")"
           echo "::set-env name=COMMIT_HASH::$(git rev-parse HEAD)"
 
-      # SETTER IMAGE VARIABEL
-      - name: 'Setter Image'
+      - name: 'Set image-tag'
         run: echo "::set-env name=IMAGE::docker.pkg.github.com/${{ github.repository }}/eessi-pensjon-saksbehandling-api:${{ env.DATE }}---${{ env.COMMIT_HASH }}"
 
-      # JAVA 11
       - name: 'Java 11'
         uses: actions/setup-java@v1.3.0
         with:
           java-version: 11
 
-      # BYGGER DOCKER CONTAINER
-      - name: 'Bygg og publiser docker image'
+      - name: 'Build and publish docker image'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -40,8 +35,7 @@ jobs:
           docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${{ secrets.GITHUB_TOKEN }}
           docker push ${{ env.IMAGE }}
 
-      # DEPLOYER TIL NAIS -Q2
-      - name: 'Deploy to NAIS Q2'
+      - name: 'Deploy to Q2'
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
@@ -50,12 +44,11 @@ jobs:
           VARS: nais/dev-fss-q2.json
           IMAGE: ${{ env.IMAGE }}
 
-       # OPPRETTER GIT TAG
-      - name: 'Opprett git tag'
+      - name: 'Create git-tag'
         run: |
           curl -v -s -X POST https://api.github.com/repos/navikt/eessi-pensjon-saksbehandling-api/git/refs -H "Authorization: token  ${{ secrets.GITHUB_TOKEN }}" -d '{ "ref": "refs/tags/${{ env.DATE }}---${{ env.COMMIT_HASH }}",  "sha": "${{ env.COMMIT_HASH }}" }'
 
-      - name: 'Repository Dispatch PROD'
+      - name: 'Dispatch deploy to PROD'
         uses: peter-evans/repository-dispatch@v1
         with:
           token: ${{ secrets.DISPATCH_TOKEN }}
@@ -63,7 +56,7 @@ jobs:
           event-type: deploy-prod
           client-payload: '{"image": "${{ env.IMAGE }}"}'
 
-      - name: 'Dispatch Deploy Q1'
+      - name: 'Dispatch deploy to Q1'
         uses: peter-evans/repository-dispatch@v1
         with:
           token: ${{ secrets.DISPATCH_TOKEN }}
