@@ -10,7 +10,6 @@ import no.nav.eessi.pensjon.security.sts.UsernameToOidcInterceptor
 import no.nav.security.oidc.context.OIDCRequestContextHolder
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.actuate.metrics.AutoTimer
 import org.springframework.boot.actuate.metrics.web.client.DefaultRestTemplateExchangeTagsProvider
 import org.springframework.boot.actuate.metrics.web.client.MetricsRestTemplateCustomizer
 import org.springframework.boot.web.client.RestTemplateBuilder
@@ -66,7 +65,7 @@ class RestTemplateConfig(val restTemplateBuilder: RestTemplateBuilder,
                         RequestCountInterceptor(meterRegistry),
                         RequestResponseLoggerInterceptor(),
                         OidcHeaderRequestInterceptor(oidcRequestContextHolder))
-                .customizers(MetricsRestTemplateCustomizer(registry, DefaultRestTemplateExchangeTagsProvider(), "eessipensjon_frontend-api_fagmodul", AutoTimer.ENABLED))
+                .customizers(MetricsRestTemplateCustomizer(registry, DefaultRestTemplateExchangeTagsProvider(), "eessipensjon_frontend-api_fagmodul"))
                 .build().apply {
                     requestFactory = BufferingClientHttpRequestFactory(SimpleClientHttpRequestFactory())
                 }
@@ -83,7 +82,7 @@ class RestTemplateConfig(val restTemplateBuilder: RestTemplateBuilder,
                         RequestCountInterceptor(meterRegistry),
                         RequestResponseLoggerInterceptor(),
                         UsernameToOidcInterceptor(securityTokenExchangeService))
-                .customizers(MetricsRestTemplateCustomizer(registry, DefaultRestTemplateExchangeTagsProvider(), "eessipensjon_frontend-api_fagmodulUntTo", AutoTimer.ENABLED))
+                .customizers(MetricsRestTemplateCustomizer(registry, DefaultRestTemplateExchangeTagsProvider(), "eessipensjon_frontend-api_fagmodulUntTo"))
                 .build().apply {
                     requestFactory = BufferingClientHttpRequestFactory(SimpleClientHttpRequestFactory())
                 }
