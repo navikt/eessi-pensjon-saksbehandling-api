@@ -45,7 +45,7 @@ class ArchitectureTest {
                 .layer("Listeners").definedBy("$root.listeners..")
                 .layer("Health").definedBy("$root.health..")
                 .layer("Metrics").definedBy("$root.metrics..")
-                .layer("Services").definedBy("$root.services..", "$root.personoppslag..")
+                .layer("Services").definedBy("$root.services..")
                 .layer("Config").definedBy("$root.config..")
                 .layer("Security").definedBy("$root.security..")
                 .layer("Interceptor").definedBy("$root.interceptor..")
@@ -58,7 +58,7 @@ class ArchitectureTest {
                 .whereLayer("Websockets").mayOnlyBeAccessedByLayers("Listeners")
                 .whereLayer("Services").mayOnlyBeAccessedByLayers("API", "Interceptor")
                 .whereLayer("Config").mayOnlyBeAccessedByLayers("API")
-                .whereLayer("Security").mayOnlyBeAccessedByLayers("Services", "Config")
+                .whereLayer("Security").mayOnlyBeAccessedByLayers("Config")
                 .whereLayer("Interceptor").mayOnlyBeAccessedByLayers("Config", "Logging")
                 .whereLayer("Logging").mayOnlyBeAccessedByLayers("API", "Config", "Interceptor", "Security")
                 //Verify rules
