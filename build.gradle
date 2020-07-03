@@ -74,7 +74,7 @@ compileTestKotlin {
     }
 }
 jar {
-    baseName = 'eessi-fagmodul-frontend'
+    archiveBaseName = 'eessi-fagmodul-frontend'
 }
 
 dependencies {

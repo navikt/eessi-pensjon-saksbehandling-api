@@ -1,6 +1,6 @@
 package no.nav.eessi.pensjon.api.person
 
-import no.nav.eessi.pensjon.services.aktoerregister.AktoerregisterService
+import no.nav.eessi.pensjon.personoppslag.aktoerregister.AktoerregisterService
 import no.nav.eessi.pensjon.services.fagmodul.NavRegistreOppslagService
 import no.nav.eessi.pensjon.services.fagmodul.PersonInformasjonException
 import no.nav.eessi.pensjon.utils.errorBody

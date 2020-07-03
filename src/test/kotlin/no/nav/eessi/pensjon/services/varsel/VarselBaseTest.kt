@@ -2,7 +2,7 @@
 //
 //import com.fasterxml.jackson.databind.ObjectMapper
 //import no.nav.eessi.pensjon.api.varsel.VarselController
-//import no.nav.eessi.pensjon.services.aktoerregister.AktoerregisterService
+//import no.nav.eessi.pensjon.personoppslag.aktoerregister.AktoerregisterService
 //import no.nav.eessi.pensjon.services.fagmodul.NavRegistreOppslagService
 //import no.nav.eessi.pensjon.services.storage.S3StorageBaseTest
 //import org.junit.jupiter.api.BeforeEach

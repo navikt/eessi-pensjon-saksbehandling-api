@@ -1,4 +1,4 @@
-package no.nav.eessi.pensjon.services.aktoerregister
+package no.nav.eessi.pensjon.personoppslag.aktoerregister
 
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doThrow
