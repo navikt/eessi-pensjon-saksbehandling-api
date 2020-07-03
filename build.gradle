@@ -85,6 +85,8 @@ dependencies {
 //  Se VarselService for årsak til utkommentering
 //  implementation('no.nav.meldinger.virksomhet:nav-virksomhet-varsel-v1-meldingsdefinisjon:1.1.1:jaxb')
 
+    // Personoppslag
+    implementation("no.nav.eessi.pensjon:ep-personoppslag:3.3.0")
 
     // Spring
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -127,7 +129,7 @@ dependencies {
     implementation("net.logstash.logback:logstash-logback-encoder:${logstashLogbackVersion}")
     configurations { all*.exclude group: 'commons-logging', module: 'commons-logging' }
     implementation group: 'org.slf4j', name: 'jcl-over-slf4j'
-    implementation("no.nav.eessi.pensjon:ep-logging:0.0.12")
+    implementation("no.nav.eessi.pensjon:ep-logging:0.0.17")
 
     // auditlogger syslog
     implementation("com.papertrailapp:logback-syslog4j:1.0.0")
@@ -147,7 +149,7 @@ dependencies {
 
     // Micrometer
     implementation("io.micrometer:micrometer-registry-prometheus")
-    implementation("no.nav.eessi.pensjon:ep-metrics:0.3.6")
+    implementation("no.nav.eessi.pensjon:ep-metrics:0.4.0")
     
     // OIDC
     implementation("no.nav.security:oidc-spring-support:${oidcTokenSupportVersion}")
@@ -157,7 +159,7 @@ dependencies {
     implementation("org.pac4j:pac4j-core:${pac4jVersion}")
 
     // STS
-    implementation("no.nav.eessi.pensjon:ep-security-sts:0.0.8")
+    implementation("no.nav.eessi.pensjon:ep-security-sts:0.0.10")
 
     //mock
     testImplementation("no.nav.security:oidc-test-support:${oidcTokenSupportVersion}")
