@@ -8,11 +8,11 @@ import org.springframework.http.client.ClientHttpRequestExecution
 import org.springframework.http.client.ClientHttpRequestInterceptor
 import org.springframework.http.client.ClientHttpResponse
 
-class OidcHeaderRequestInterceptor(private val oidcRequestContextHolder: TokenValidationContextHolder) : ClientHttpRequestInterceptor {
+class TokenHeaderRequestInterceptor(private val tokenValidationContextHolder: TokenValidationContextHolder) : ClientHttpRequestInterceptor {
 
     override fun intercept(request: HttpRequest, body: ByteArray, execution: ClientHttpRequestExecution): ClientHttpResponse {
         if (request.headers[HttpHeaders.AUTHORIZATION] == null) {
-            val oidcToken = getToken(oidcRequestContextHolder).tokenAsString
+            val oidcToken = getToken(tokenValidationContextHolder).tokenAsString
             request.headers[HttpHeaders.AUTHORIZATION] = "Bearer $oidcToken"
         }
         return execution.execute(request, body)

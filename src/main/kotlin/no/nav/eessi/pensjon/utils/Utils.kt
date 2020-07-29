@@ -6,7 +6,6 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.security.token.support.core.context.TokenValidationContextHolder
 import no.nav.security.token.support.core.jwt.JwtToken
 import no.nav.security.token.support.core.jwt.JwtTokenClaims
-import org.apache.wss4j.stax.validate.TokenContext
 import org.springframework.core.ParameterizedTypeReference
 import java.util.*
 
@@ -39,8 +38,8 @@ fun validateJson(json: String): Boolean {
     }
 }
 
-fun getClaims(oidcRequestContextHolder: TokenValidationContextHolder): JwtTokenClaims {
-    val context = oidcRequestContextHolder.tokenValidationContext
+fun getClaims(tokenValidationContextHolder: TokenValidationContextHolder): JwtTokenClaims {
+    val context = tokenValidationContextHolder.tokenValidationContext
     if(context.issuers.isEmpty())
         throw RuntimeException("No issuer found in context")
 
@@ -60,8 +59,8 @@ fun getClaims(oidcRequestContextHolder: TokenValidationContextHolder): JwtTokenC
 
 
 
-fun getToken(oidcRequestContextHolder: TokenValidationContextHolder): JwtToken {
-    val context = oidcRequestContextHolder.tokenValidationContext
+fun getToken(tokenValidationContextHolder: TokenValidationContextHolder): JwtToken {
+    val context = tokenValidationContextHolder.tokenValidationContext
     if(context.issuers.isEmpty())
         throw RuntimeException("No issuer found in context")
     val issuer = context.issuers.first()

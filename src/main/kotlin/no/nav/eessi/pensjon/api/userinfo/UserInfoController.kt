@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api")
 class UserInfoController(
     private val toggle: FeatureToggle,
-    private val oidcRequestContextHolder: TokenValidationContextHolder,
+    private val tokenValidationContextHolder: TokenValidationContextHolder,
     private val whitelistService: WhitelistService,
     @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())) {
 
@@ -40,11 +40,11 @@ class UserInfoController(
     @GetMapping("/userinfo")
     fun getUserInfo(): ResponseEntity <String> {
         logger.info("Henter userinfo")
-        val fnr = getClaims(oidcRequestContextHolder).subject
+        val fnr = getClaims(tokenValidationContextHolder).subject
         val role = getRole(fnr)
         val allowed = true //deprocated denne er alltid true ved bruk av authinterceptor
         val features = toggle.getUIFeatures()
-        val claims = getClaims(oidcRequestContextHolder)
+        val claims = getClaims(tokenValidationContextHolder)
         val expirationTime = claims.expirationTime.time
         return ResponseEntity.ok().body(mapAnyToJson(UserInfoResponse(fnr, role, allowed, expirationTime, features)))
     }
@@ -65,7 +65,7 @@ class UserInfoController(
             }
             toggle.getAPIFeatures().getValue(FeatureName.WHITELISTING.name) -> {
                 logger.info("Sjekker om brukeren er whitelistet")
-                val personIdentifier = getClaims(oidcRequestContextHolder).subject
+                val personIdentifier = getClaims(tokenValidationContextHolder).subject
                 whitelistService.isPersonWhitelisted(personIdentifier.toUpperCase())
             }
             else -> false

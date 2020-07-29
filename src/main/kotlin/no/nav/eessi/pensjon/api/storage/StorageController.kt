@@ -23,11 +23,11 @@ import javax.annotation.PostConstruct
 @RestController
 @RequestMapping("/api/storage")
 class StorageController(private val storage: StorageService,
-                        private val oidcRequestContextHolder: TokenValidationContextHolder,
+                        private val tokenValidationContextHolder: TokenValidationContextHolder,
                         @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())) {
 
     private val logger = LoggerFactory.getLogger(StorageController::class.java)
-  //  private val auditLogger = AuditLogger(oidcRequestContextHolder)
+    //private val auditLogger = AuditLogger(oidcRequestContextHolder)
 
     private lateinit var storeDocument: MetricsHelper.Metric
     private lateinit var getDocument: MetricsHelper.Metric

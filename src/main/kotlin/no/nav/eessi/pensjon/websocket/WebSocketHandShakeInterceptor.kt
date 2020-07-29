@@ -12,7 +12,7 @@ import org.springframework.web.socket.server.HandshakeFailureException
 import org.springframework.web.socket.server.HandshakeInterceptor
 import java.lang.Exception
 
-class WebSocketHandShakeInterceptor(private val oidcRequestContextHolder: TokenValidationContextHolder): HandshakeInterceptor {
+open class WebSocketHandShakeInterceptor(private val tokenValidationContextHolder: TokenValidationContextHolder): HandshakeInterceptor {
 
     private val logger = LoggerFactory.getLogger(HandshakeInterceptor::class.java)
 
@@ -21,9 +21,9 @@ class WebSocketHandShakeInterceptor(private val oidcRequestContextHolder: TokenV
     override fun beforeHandshake(request: ServerHttpRequest, response: ServerHttpResponse, wsHandler: WebSocketHandler, attributes: MutableMap<String, Any>): Boolean {
 
         return try {
-            if (request is ServletServerHttpRequest && request.method == HttpMethod.GET && oidcRequestContextHolder.tokenValidationContext.hasValidToken()) {
-                logger.info("WebSocketHandShakeInterceptor >> ${getClaims(oidcRequestContextHolder).subject} VALID TOKEN")
-                attributes["subject"] = getClaims(oidcRequestContextHolder).subject
+            if (request is ServletServerHttpRequest && request.method == HttpMethod.GET && hasValidToken()) {
+                logger.info("WebSocketHandShakeInterceptor >> ${getSubjectFromToken()} VALID TOKEN")
+                attributes["subject"] = getSubjectFromToken()
 
                 // For å støtte IE11 er vi nødt til å ha en "sec-websocket-protocol" header.
                 // Verdien av denne er nødt til å være det samme som vi mottar i requesten.
@@ -40,4 +40,8 @@ class WebSocketHandShakeInterceptor(private val oidcRequestContextHolder: TokenV
             false
         }
     }
+
+    open fun hasValidToken(): Boolean = tokenValidationContextHolder.tokenValidationContext.hasValidToken()
+
+    open fun getSubjectFromToken(): String = getClaims(tokenValidationContextHolder).subject
 }

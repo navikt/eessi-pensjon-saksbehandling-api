@@ -27,10 +27,9 @@ import javax.annotation.PostConstruct
 @RestController
 @RequestMapping("/api/submission")
 class ReceiveSubmissionController(
-
     val kafkaService: KafkaService,
     val storageService: StorageService,
-    val oidcRequestContextHolder: TokenValidationContextHolder,
+    val tokenValidationContextHolder: TokenValidationContextHolder,
     val templateService: TemplateService,
     @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())) {
 
@@ -58,7 +57,7 @@ class ReceiveSubmissionController(
     fun receiveSubmission(@PathVariable(required = true) page: String,
                           @RequestBody requestBody: SubmissionRequest) : ResponseEntity<String> {
 
-        val personIdentifier = getClaims(oidcRequestContextHolder).subject
+        val personIdentifier = getSubjectFromToken()
         val uuid = UUID.randomUUID().toString()
         logger.info("Sender inn endelig eessi-personinformasjon. $uuid")
 
@@ -100,7 +99,7 @@ class ReceiveSubmissionController(
 
         return kvittering_sendt_kafka.measure {
 
-            val personIdentifier = getClaims(oidcRequestContextHolder).subject
+            val personIdentifier = getSubjectFromToken()
             val receipt: Map<String, Any>
             val receiptJson: String
             val filename: String
@@ -188,4 +187,7 @@ class ReceiveSubmissionController(
         val dateString = ".*___${PINFO_SUBMISSION}___(.*)\\.json".toRegex().matchEntire(it)?.groups?.get(1)?.value
         LocalDateTime.parse(dateString, DateTimeFormatter.ISO_DATE_TIME)
     }
+
+    fun getSubjectFromToken(): String = getClaims(tokenValidationContextHolder).subject
+
 }

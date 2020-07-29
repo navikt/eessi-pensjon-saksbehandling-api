@@ -10,7 +10,7 @@ private val logger = LoggerFactory.getLogger(WebSocketConfigurer::class.java)
 
 @Configuration
 @EnableWebSocket
-class WebsocketConfiguration(private val oidcRequestContextHolder: TokenValidationContextHolder) : WebSocketConfigurer {
+class WebsocketConfiguration(private val tokenValidationContextHolder: TokenValidationContextHolder) : WebSocketConfigurer {
 
     @Value("\${cors.allowed}")
     lateinit var allowed: String
@@ -18,7 +18,7 @@ class WebsocketConfiguration(private val oidcRequestContextHolder: TokenValidati
     override fun registerWebSocketHandlers(registry: WebSocketHandlerRegistry) {
         registry.addHandler(SocketTextHandler(), "/bucUpdate").setAllowedOrigins(allowed).addInterceptors(
             WebSocketHandShakeInterceptor(
-                oidcRequestContextHolder
+                tokenValidationContextHolder
             )
         )
         logger.info("Added websocket endpoint /bucUpdate, for ${allowed} access only")

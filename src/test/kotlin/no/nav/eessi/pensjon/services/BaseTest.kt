@@ -6,8 +6,6 @@ import com.unboundid.ldap.listener.InMemoryDirectoryServerConfig
 import no.nav.eessi.pensjon.logging.AuditLogger
 import no.nav.eessi.pensjon.services.ldap.LdapKlient
 import no.nav.eessi.pensjon.services.ldap.LdapService
-import no.nav.security.token.support.core.context.TokenValidationContext
-import no.nav.security.token.support.core.context.TokenValidationContextHolder
 import no.nav.security.token.support.test.spring.TokenGeneratorConfiguration
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -65,26 +63,6 @@ open class BaseTest {
         }
     }
 
-//    fun generateMockSaksbehContextHolder() = mockContextHolder("jwtSaksbehandlerEksempel.json", "isso")
-//
-//    fun generateMockContextHolder() = mockContextHolder("jwtExample.json")
-
-//    fun mockContextHolder(fileName: String, issuer: String = "testIssuer"): OIDCRequestContextHolder {
-//
-//        val issuer = issuer
-//        val idToken = "testIdToken"
-//        val oidcContextHolder = MockOIDCRequestContextHolder()
-//        val oidcContext = OIDCValidationContext()
-//        val tokenContext = TokenContext(issuer, idToken)
-//        val claimSet = JWTClaimsSet
-//            .parse(FileUtils.readFileToString(File("src/test/resources/json/$fileName"), Charset.forName("UTF-8")))
-//        val jwt = PlainJWT(claimSet)
-//
-//        oidcContext.addValidatedToken(issuer, tokenContext, OIDCClaims(jwt))
-//        oidcContextHolder.setOIDCValidationContext(oidcContext)
-//        return oidcContextHolder
-//    }
-
     fun generateMockFagmodulRestTemplate(): RestTemplate {
 
         val fagmodulRestTemplate = RestTemplateBuilder()
@@ -117,24 +95,3 @@ open class BaseTest {
         return LdapService(ldapBrukeroppslag)
     }
 }
-
-//class MockOIDCRequestContextHolder : OIDCRequestContextHolder {
-//
-//    private lateinit var oidcValidationContext: OIDCValidationContext
-//
-//    override fun setOIDCValidationContext(oidcValidationContext: OIDCValidationContext?) {
-//        this.oidcValidationContext = oidcValidationContext!!
-//    }
-//
-//    override fun getRequestAttribute(name: String?): Any {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-//    }
-//
-//    override fun setRequestAttribute(name: String?, value: Any?) {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-//    }
-//
-//    override fun getOIDCValidationContext(): OIDCValidationContext {
-//        return this.oidcValidationContext
-//    }
-//}

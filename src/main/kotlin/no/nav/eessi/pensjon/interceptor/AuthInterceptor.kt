@@ -22,10 +22,10 @@ import javax.servlet.http.HttpServletResponse
 
 @Component
 class AuthInterceptor(private val ldapService: BrukerInformasjonService,
-    private val authorisationService: AuthorisationService,
-    private val oidcRequestContextHolder: TokenValidationContextHolder,
-    private val auditLogger: AuditLogger,
-    private val whitelistService: WhitelistService) : HandlerInterceptor, Ordered {
+                      private val authorisationService: AuthorisationService,
+                      private val tokenValidationContextHolder: TokenValidationContextHolder,
+                      private val auditLogger: AuditLogger,
+                      private val whitelistService: WhitelistService) : HandlerInterceptor, Ordered {
 
     private val logger = LoggerFactory.getLogger(AuthInterceptor::class.java)
     private val regexNavident  = Regex("^[a-zA-Z]\\d{6}$")
@@ -56,7 +56,7 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
     fun sjekkForGyldigToken(): JwtTokenClaims {
         //kaster en 401 dersom ingen gyldig token finnes så UI kan redirekte til /login
         try {
-            return getClaims(oidcRequestContextHolder)
+            return getClaims(tokenValidationContextHolder)
         } catch (rx: RuntimeException) {
             logger.info("Ingen gyldig token, kaster en $ugyldigToken Exception")
             throw TokenIkkeTilgjengeligException("Ingen gyldig token funnet")
