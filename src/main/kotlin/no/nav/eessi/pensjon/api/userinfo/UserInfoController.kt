@@ -10,6 +10,7 @@ import no.nav.eessi.pensjon.utils.getClaims
 import no.nav.eessi.pensjon.utils.mapAnyToJson
 import no.nav.security.token.support.core.api.Protected
 import no.nav.security.token.support.core.context.TokenValidationContextHolder
+import no.nav.security.token.support.core.jwt.JwtTokenClaims
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
@@ -40,11 +41,11 @@ class UserInfoController(
     @GetMapping("/userinfo")
     fun getUserInfo(): ResponseEntity <String> {
         logger.info("Henter userinfo")
-        val fnr = getClaims(tokenValidationContextHolder).subject
+        val fnr = getSubjectFromToken()
         val role = getRole(fnr)
         val allowed = true //deprocated denne er alltid true ved bruk av authinterceptor
         val features = toggle.getUIFeatures()
-        val claims = getClaims(tokenValidationContextHolder)
+        val claims = getClaims()
         val expirationTime = claims.expirationTime.time
         return ResponseEntity.ok().body(mapAnyToJson(UserInfoResponse(fnr, role, allowed, expirationTime, features)))
     }
@@ -71,7 +72,9 @@ class UserInfoController(
             else -> false
         }
     }
+    fun getSubjectFromToken(): String = getClaims(tokenValidationContextHolder).subject
 
+    fun getClaims(): JwtTokenClaims = getClaims(tokenValidationContextHolder)
 }
 
     /**
