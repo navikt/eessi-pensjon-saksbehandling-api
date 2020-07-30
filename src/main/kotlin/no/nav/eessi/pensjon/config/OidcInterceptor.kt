@@ -10,7 +10,6 @@ import org.pac4j.core.http.callback.NoParameterCallbackUrlResolver
 import org.pac4j.core.http.url.DefaultUrlResolver
 import org.pac4j.oidc.client.OidcClient
 import org.pac4j.oidc.config.OidcConfiguration
-import org.pac4j.oidc.profile.OidcProfile
 import org.pac4j.springframework.web.SecurityInterceptor
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -18,6 +17,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.util.UriComponentsBuilder
+import java.util.*
 
 
 private const val CALLBACK_URI = "/callback"
@@ -69,7 +69,7 @@ class OidcInterceptor {
             preferredJwsAlgorithm = JWSAlgorithm.RS256
         }
 
-        val oidcClient = OidcClient<OidcProfile, OidcConfiguration>(oidcConfiguration).apply {
+        val oidcClient = OidcClient<OidcConfiguration>(oidcConfiguration).apply {
             callbackUrlResolver = NoParameterCallbackUrlResolver()
             name = "OidcClient"
             urlResolver = object : DefaultUrlResolver(true) {
@@ -100,8 +100,8 @@ class OidcInterceptor {
                 }
             }
             setAuthorizationGenerator { context, profile ->
-                context.addResponseCookie(createCookie(cookieDomain, cookiename, profile.idTokenString))
-                profile
+                context.addResponseCookie(createCookie(cookieDomain, cookiename, profile.id))
+                Optional.of(profile)
             }
         }
         logger.debug("Created OidcClient: $oidcClient")

@@ -7,7 +7,7 @@ buildscript {
         mockitoVersion = '3.3.3'
         oidcTokenSupportVersion = '1.1.6'
         logstashLogbackVersion = '6.3'
-        pac4jVersion = '3.2.0'
+        pac4jVersion = '4.0.1'
         cxfVersion = '3.3.7'
         openhtmltopdfVersion = '1.0.0'
     }
