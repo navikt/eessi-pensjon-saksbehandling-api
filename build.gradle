@@ -89,6 +89,7 @@ dependencies {
     implementation("no.nav.eessi.pensjon:ep-personoppslag:5.1.2")
 
     // Spring
+    implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-aop")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation('org.springframework.boot:spring-boot-starter-websocket')
@@ -128,7 +129,7 @@ dependencies {
     implementation("net.logstash.logback:logstash-logback-encoder:${logstashLogbackVersion}")
     configurations { all*.exclude group: 'commons-logging', module: 'commons-logging' }
     implementation group: 'org.slf4j', name: 'jcl-over-slf4j'
-    implementation("no.nav.eessi.pensjon:ep-logging:0.0.18")
+    implementation("no.nav.eessi.pensjon:ep-logging:0.0.19")
 
     // auditlogger syslog
     implementation("com.papertrailapp:logback-syslog4j:1.0.0")

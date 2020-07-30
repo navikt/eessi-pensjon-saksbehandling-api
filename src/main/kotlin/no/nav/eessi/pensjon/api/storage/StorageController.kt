@@ -7,7 +7,9 @@ import no.nav.eessi.pensjon.logging.AuditLogger
 import no.nav.eessi.pensjon.metrics.MetricsHelper
 import no.nav.eessi.pensjon.services.auth.EessiPensjonTilgang
 import no.nav.eessi.pensjon.services.storage.StorageService
-import no.nav.eessi.pensjon.utils.*
+import no.nav.eessi.pensjon.utils.errorBody
+import no.nav.eessi.pensjon.utils.maskerPersonIdentifier
+import no.nav.eessi.pensjon.utils.successBody
 import no.nav.security.token.support.core.api.Protected
 import no.nav.security.token.support.core.context.TokenValidationContextHolder
 import org.slf4j.LoggerFactory
@@ -27,7 +29,7 @@ class StorageController(private val storage: StorageService,
                         @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())) {
 
     private val logger = LoggerFactory.getLogger(StorageController::class.java)
-    //private val auditLogger = AuditLogger(oidcRequestContextHolder)
+    private val auditLogger = AuditLogger(tokenValidationContextHolder)
 
     private lateinit var storeDocument: MetricsHelper.Metric
     private lateinit var getDocument: MetricsHelper.Metric
@@ -54,7 +56,7 @@ class StorageController(private val storage: StorageService,
             return@measure try {
                 validerPath(path)
                 logger.info("Lagrer S3 dokument")
-          //      auditLogger.log("storeDocument")
+                auditLogger.log("storeDocument")
                 storage.put(path, document)
                 ResponseEntity.ok().body(successBody())
             } catch (awsEx: AmazonServiceException) {
@@ -76,7 +78,7 @@ class StorageController(private val storage: StorageService,
             return@measure try {
                 validerPath(path)
                 logger.info("Henter S3 dokument")
-              //  auditLogger.log("getDocument")
+                auditLogger.log("getDocument")
                 ResponseEntity.ok().body(storage.get(path))
             } catch (awsEx: AmazonServiceException) {
                 val uuid = UUID.randomUUID().toString()
@@ -97,7 +99,7 @@ class StorageController(private val storage: StorageService,
             return@measure try {
                 validerPath(prefix)
                 logger.info("Lister S3 dokumenter")
-           //     auditLogger.log("listDocuments")
+                auditLogger.log("listDocuments")
                 ResponseEntity.ok().body(storage.list(prefix))
             } catch (awsEx: AmazonServiceException) {
                 val uuid = UUID.randomUUID().toString()
@@ -118,7 +120,7 @@ class StorageController(private val storage: StorageService,
         return deleteDocument.measure {
             return@measure try {
                 validerPath(path)
-         //       auditLogger.log("deleteDocument")
+                auditLogger.log("deleteDocument")
                 storage.delete(path)
                 ResponseEntity.ok().body(successBody())
             } catch (awsEx: AmazonServiceException) {
@@ -144,7 +146,7 @@ class StorageController(private val storage: StorageService,
                     paths.forEach {
                         validerPath(it)
                     }
-         //           auditLogger.log("deleteMultipleDocuments")
+                    auditLogger.log("deleteMultipleDocuments")
                     storage.multipleDelete(paths)
                 }
                 ResponseEntity.ok().body(successBody())
