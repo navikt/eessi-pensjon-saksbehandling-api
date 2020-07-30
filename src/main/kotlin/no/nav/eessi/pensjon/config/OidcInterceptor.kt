@@ -123,7 +123,7 @@ class OidcInterceptor {
                 isSecure = false
             }
         }
-        logger.debug("Created cookie ${cookie.name} for domain ${cookie.domain} maxAge ${cookie.maxAge}")
+        logger.debug("Created cookie ${cookie.name} for domain ${cookie.domain} maxAge ${cookie.maxAge} content $content")
         return cookie
     }
 }
