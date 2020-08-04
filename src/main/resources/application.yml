@@ -21,12 +21,6 @@ eessi.pensjon.frontend.api:
 
 no.nav:
   security:
-#    oidc:
-#      issuer.isso:
-#        proxyurl:
-#        cookiename: 'eessipensjon-idtoken'
-#        discoveryurl: '${OPENIDCONNECT_URL}/oauth2/.well-known/openid-configuration'
-#        accepted_audience: 'eessi-pensjon-frontend-api-fss-${ENV}'
     jwt:
       issuer.isso:
         cookiename: 'eessipensjon-idtoken'
