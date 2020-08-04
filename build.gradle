@@ -155,6 +155,7 @@ dependencies {
     implementation("no.nav.security:token-validation-spring:${oidcTokenSupportVersion}")
     implementation("no.nav.security:token-validation-jaxrs:${oidcTokenSupportVersion}")
     implementation("no.nav.security:token-client-spring:${oidcTokenSupportVersion}")
+    // Only used for starting up locally
     implementation("no.nav.security:token-validation-test-support:${oidcTokenSupportVersion}")
 
     implementation("org.pac4j:spring-webmvc-pac4j:${pac4jVersion}")
