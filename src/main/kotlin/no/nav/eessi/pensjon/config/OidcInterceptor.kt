@@ -35,10 +35,10 @@ class OidcInterceptor {
     @Value("\${isso.agent.password}")
     private lateinit var clientSecret: String
 
-    @Value("\${no.nav.security.oidc.issuer.isso.discoveryurl}")
+    @Value("\${no.nav.security.jwt.issuer.isso.discoveryurl}")
     private lateinit var discoveryUrl: String
 
-    @Value("\${no.nav.security.oidc.issuer.isso.cookiename}")
+    @Value("\${no.nav.security.jwt.issuer.isso.cookiename}")
     private lateinit var cookiename: String
 
     @Value("\${redirectscheme}")

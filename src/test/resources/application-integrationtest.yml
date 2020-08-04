@@ -32,13 +32,13 @@ rina:
   url: "'http://example.com:8087'"
 
 no.nav.security:
-  oidc.issuer:
-    isso:
-      discoveryurl: "http://metadata"
-      acceptedaudience: "aud-localhost"
-      cookiename: "localhost-idtoken"
+#  oidc.issuer:
+#    isso:
+#      discoveryurl: "http://metadata"
+#      acceptedaudience: "aud-localhost"
+#      cookiename: "localhost-idtoken"
   jwt.issuer:
-    iss-localhost:
+    isso:
       discoveryurl: "http://metadata"
       acceptedaudience: "aud-localhost"
       cookiename: "localhost-idtoken"

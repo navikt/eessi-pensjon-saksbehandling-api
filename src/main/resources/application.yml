@@ -19,16 +19,20 @@ eessi.pensjon.frontend.api:
     bucket.name: 'eessipensjon'
     personidentifier.separator: '___'
 
-#eessipen-eux-rina:
-#  url: 'http://eux-app/cpi'
-
 no.nav:
-  security.oidc:
-    issuer.isso:
-      proxyurl:
-      cookiename: 'eessipensjon-idtoken'
-      discoveryurl: '${OPENIDCONNECT_URL}/oauth2/.well-known/openid-configuration'
-      accepted_audience: 'eessi-pensjon-frontend-api-fss-${ENV}'
+  security:
+#    oidc:
+#      issuer.isso:
+#        proxyurl:
+#        cookiename: 'eessipensjon-idtoken'
+#        discoveryurl: '${OPENIDCONNECT_URL}/oauth2/.well-known/openid-configuration'
+#        accepted_audience: 'eessi-pensjon-frontend-api-fss-${ENV}'
+    jwt:
+      issuer.isso:
+        cookiename: 'eessipensjon-idtoken'
+        discoveryurl: '${OPENIDCONNECT_URL}/oauth2/.well-known/openid-configuration'
+        accepted_audience: 'eessi-pensjon-frontend-api-fss-${ENV}'
+
 
 isso.agentname: '${NAIS_APP_NAME}-${ENV}'
 
