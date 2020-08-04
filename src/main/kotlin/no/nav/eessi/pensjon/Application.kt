@@ -1,10 +1,10 @@
 package no.nav.eessi.pensjon
 
-import no.nav.security.spring.oidc.api.EnableOIDCTokenValidation
+import no.nav.security.token.support.spring.api.EnableJwtTokenValidation
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
-@EnableOIDCTokenValidation(ignore = ["org.springframework", "springfox.documentation", "org.pac4j.springframework.web.CallbackController", "no.nav.eessi.pensjon.health.DiagnosticsController"])
+@EnableJwtTokenValidation(ignore = ["org.springframework", "springfox.documentation", "org.pac4j.springframework.web.CallbackController", "no.nav.eessi.pensjon.health.DiagnosticsController"])
 @SpringBootApplication
 class Application
 

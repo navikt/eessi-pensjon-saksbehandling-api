@@ -4,7 +4,7 @@ import no.nav.eessi.pensjon.security.sts.STSService
 import no.nav.eessi.pensjon.services.ldap.BrukerInformasjonService
 import no.nav.eessi.pensjon.services.ldap.LdapServiceMock
 import no.nav.eessi.pensjon.services.storage.StorageService
-import no.nav.security.oidc.test.support.spring.TokenGeneratorConfiguration
+import no.nav.security.token.support.test.spring.TokenGeneratorConfiguration
 import org.apache.http.HttpStatus
 import org.apache.http.client.ResponseHandler
 import org.apache.http.client.methods.HttpDelete
@@ -31,7 +31,7 @@ private const val MOTTAK_TOPIC = "privat-eessipensjon-selvbetjeningsinfoMottatt-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = [ AuthInterceptorIntegrationTest.TestConfig::class])
 @ActiveProfiles("integrationtest")
 @Import(TokenGeneratorConfiguration::class)
-@EmbeddedKafka(controlledShutdown = true, topics = [SED_SENDT_TOPIC, SED_MOTTATT_TOPIC, MOTTAK_TOPIC], brokerProperties= ["log.dir=out/embedded-kafka"])
+@EmbeddedKafka(controlledShutdown = true, topics = [SED_SENDT_TOPIC, SED_MOTTATT_TOPIC, MOTTAK_TOPIC], brokerProperties= ["log.dir=out/embedded-kafka-integrationtest"])
 class AuthInterceptorIntegrationTest() {
 
     @LocalServerPort
@@ -457,7 +457,7 @@ class AuthInterceptorIntegrationTest() {
         }
 
         override fun delete(path: String) {
-            //nothing
+            //n‘othing
         }
 
         override fun multipleDelete(paths: List<String>) {

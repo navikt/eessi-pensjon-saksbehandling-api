@@ -3,9 +3,9 @@ package no.nav.eessi.pensjon.utils
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import no.nav.security.oidc.context.OIDCClaims
-import no.nav.security.oidc.context.OIDCRequestContextHolder
-import no.nav.security.oidc.context.TokenContext
+import no.nav.security.token.support.core.context.TokenValidationContextHolder
+import no.nav.security.token.support.core.jwt.JwtToken
+import no.nav.security.token.support.core.jwt.JwtTokenClaims
 import org.springframework.core.ParameterizedTypeReference
 import java.util.*
 
@@ -38,14 +38,14 @@ fun validateJson(json: String): Boolean {
     }
 }
 
-fun getClaims(oidcRequestContextHolder: OIDCRequestContextHolder): OIDCClaims {
-    val context = oidcRequestContextHolder.oidcValidationContext
+fun getClaims(tokenValidationContextHolder: TokenValidationContextHolder): JwtTokenClaims {
+    val context = tokenValidationContextHolder.tokenValidationContext
     if(context.issuers.isEmpty())
         throw RuntimeException("No issuer found in context")
 
     val validIssuer = context.issuers.filterNot { issuer ->
         val oidcClaims = context.getClaims(issuer)
-        oidcClaims.claimSet.expirationTime.before(Date())
+        oidcClaims.expirationTime.before(Date())
     }.map { it }
 
 
@@ -59,13 +59,13 @@ fun getClaims(oidcRequestContextHolder: OIDCRequestContextHolder): OIDCClaims {
 
 
 
-fun getToken(oidcRequestContextHolder: OIDCRequestContextHolder): TokenContext {
-    val context = oidcRequestContextHolder.oidcValidationContext
+fun getToken(tokenValidationContextHolder: TokenValidationContextHolder): JwtToken {
+    val context = tokenValidationContextHolder.tokenValidationContext
     if(context.issuers.isEmpty())
         throw RuntimeException("No issuer found in context")
     val issuer = context.issuers.first()
 
-    return context.getToken(issuer)
+    return context.getJwtToken(issuer)
 }
 
 fun errorBody(error: String?, uuid: String = "no-uuid"): String {

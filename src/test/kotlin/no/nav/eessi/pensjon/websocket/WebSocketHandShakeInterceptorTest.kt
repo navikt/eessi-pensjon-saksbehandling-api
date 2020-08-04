@@ -1,51 +1,31 @@
 package no.nav.eessi.pensjon.websocket
 
-import com.nimbusds.jwt.JWTClaimsSet
-import com.nimbusds.jwt.PlainJWT
-import no.nav.eessi.pensjon.services.MockOIDCRequestContextHolder
-import no.nav.security.oidc.context.OIDCClaims
-import no.nav.security.oidc.context.OIDCRequestContextHolder
-import no.nav.security.oidc.context.OIDCValidationContext
-import no.nav.security.oidc.context.TokenContext
-import org.apache.commons.io.FileUtils
+import com.nhaarman.mockitokotlin2.whenever
+import no.nav.security.token.support.spring.SpringTokenValidationContextHolder
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.Mockito.*
+import org.mockito.Mockito
+import org.mockito.Mockito.doReturn
+import org.mockito.Mockito.mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.server.ServerHttpResponse
 import org.springframework.http.server.ServletServerHttpRequest
 import org.springframework.web.socket.WebSocketHandler
-import java.io.File
-import java.nio.charset.Charset
 
 @ExtendWith(MockitoExtension::class)
 class WebSocketHandShakeInterceptorTest {
 
-    val oidcRequestContextHolder = generateMockContextHolder() // mock(OIDCRequestContextHolder::class.java)
-    val webSocketHandShakeInterceptor = WebSocketHandShakeInterceptor(oidcRequestContextHolder)
+    private lateinit var webSocketHandShakeInterceptor : WebSocketHandShakeInterceptor
 
-    fun generateMockContextHolder() = mockContextHolder("jwtExample.json")
-
-    fun mockContextHolder(fileName: String, issuer: String = "testIssuer"): OIDCRequestContextHolder {
-
-        val issuer = issuer
-        val idToken = "MockSubject"
-        val oidcContextHolder = MockOIDCRequestContextHolder()
-        val oidcContext = OIDCValidationContext()
-        val tokenContext = TokenContext(issuer, idToken)
-        val claimSet = JWTClaimsSet
-            .parse(FileUtils.readFileToString(File("src/test/resources/json/$fileName"), Charset.forName("UTF-8")))
-        val jwt = PlainJWT(claimSet)
-
-        oidcContext.addValidatedToken(issuer, tokenContext, OIDCClaims(jwt))
-        oidcContextHolder.setOIDCValidationContext(oidcContext)
-        return oidcContextHolder
+    @BeforeEach
+    fun setUp() {
+        webSocketHandShakeInterceptor = Mockito.spy(WebSocketHandShakeInterceptor(SpringTokenValidationContextHolder()))
     }
-
 
     @Test
     fun `beforeHandshake returns true when given correct request`() {
@@ -57,6 +37,8 @@ class WebSocketHandShakeInterceptorTest {
 
         doReturn(HttpMethod.GET).`when`(request).method
         doReturn(HttpHeaders()).`when`(request).headers
+        doReturn(true).whenever(webSocketHandShakeInterceptor).hasValidToken()
+        doReturn("12345678910").`when`(webSocketHandShakeInterceptor).getSubjectFromToken()
 
         assert(webSocketHandShakeInterceptor.beforeHandshake(request, response, wsHandler, attributes))
     }
@@ -71,6 +53,8 @@ class WebSocketHandShakeInterceptorTest {
 
         doReturn(HttpMethod.GET).`when`(request).method
         doReturn(HttpHeaders()).`when`(request).headers
+        doReturn(true).whenever(webSocketHandShakeInterceptor).hasValidToken()
+        doReturn("12345678910").`when`(webSocketHandShakeInterceptor).getSubjectFromToken()
 
         webSocketHandShakeInterceptor.beforeHandshake(request, response, wsHandler, attributes)
         assertEquals("12345678910", attributes["subject"])
@@ -92,6 +76,8 @@ class WebSocketHandShakeInterceptorTest {
         doReturn(HttpMethod.GET).`when`(request).method
         doReturn(requestHeaders).`when`(request).headers
         doReturn(responseHeaders).`when`(response).headers
+        doReturn(true).whenever(webSocketHandShakeInterceptor).hasValidToken()
+        doReturn("12345678910").`when`(webSocketHandShakeInterceptor).getSubjectFromToken()
 
         webSocketHandShakeInterceptor.beforeHandshake(request, response, wsHandler, attributes)
         assertEquals(listOf("v0.buc"), responseHeaders["sec-websocket-protocol"])

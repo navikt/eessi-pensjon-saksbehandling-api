@@ -7,9 +7,11 @@ import no.nav.eessi.pensjon.logging.AuditLogger
 import no.nav.eessi.pensjon.metrics.MetricsHelper
 import no.nav.eessi.pensjon.services.auth.EessiPensjonTilgang
 import no.nav.eessi.pensjon.services.storage.StorageService
-import no.nav.eessi.pensjon.utils.*
-import no.nav.security.oidc.api.Protected
-import no.nav.security.oidc.context.OIDCRequestContextHolder
+import no.nav.eessi.pensjon.utils.errorBody
+import no.nav.eessi.pensjon.utils.maskerPersonIdentifier
+import no.nav.eessi.pensjon.utils.successBody
+import no.nav.security.token.support.core.api.Protected
+import no.nav.security.token.support.core.context.TokenValidationContextHolder
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -23,11 +25,11 @@ import javax.annotation.PostConstruct
 @RestController
 @RequestMapping("/api/storage")
 class StorageController(private val storage: StorageService,
-                        private val oidcRequestContextHolder: OIDCRequestContextHolder,
+                        private val tokenValidationContextHolder: TokenValidationContextHolder,
                         @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())) {
 
     private val logger = LoggerFactory.getLogger(StorageController::class.java)
-    private val auditLogger = AuditLogger(oidcRequestContextHolder)
+    private val auditLogger = AuditLogger(tokenValidationContextHolder)
 
     private lateinit var storeDocument: MetricsHelper.Metric
     private lateinit var getDocument: MetricsHelper.Metric

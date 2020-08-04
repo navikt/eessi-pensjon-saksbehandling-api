@@ -3,14 +3,14 @@ package no.nav.eessi.pensjon.api.userinfo
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import no.nav.eessi.pensjon.config.FeatureName
 import no.nav.eessi.pensjon.config.FeatureToggle
-import no.nav.eessi.pensjon.logging.AuditLogger
 import no.nav.eessi.pensjon.metrics.MetricsHelper
 import no.nav.eessi.pensjon.services.auth.EessiPensjonTilgang
 import no.nav.eessi.pensjon.services.whitelist.WhitelistService
 import no.nav.eessi.pensjon.utils.getClaims
 import no.nav.eessi.pensjon.utils.mapAnyToJson
-import no.nav.security.oidc.api.Protected
-import no.nav.security.oidc.context.OIDCRequestContextHolder
+import no.nav.security.token.support.core.api.Protected
+import no.nav.security.token.support.core.context.TokenValidationContextHolder
+import no.nav.security.token.support.core.jwt.JwtTokenClaims
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
@@ -23,12 +23,11 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api")
 class UserInfoController(
     private val toggle: FeatureToggle,
-    private val oidcRequestContextHolder: OIDCRequestContextHolder,
+    private val tokenValidationContextHolder: TokenValidationContextHolder,
     private val whitelistService: WhitelistService,
     @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())) {
 
     private val logger = LoggerFactory.getLogger(UserInfoController::class.java)
-    private val auditLogger = AuditLogger(oidcRequestContextHolder)
 
     /**
      *  This endpoint is used to get the userinfo about the currently logged in requester.
@@ -42,12 +41,12 @@ class UserInfoController(
     @GetMapping("/userinfo")
     fun getUserInfo(): ResponseEntity <String> {
         logger.info("Henter userinfo")
-        val fnr = getClaims(oidcRequestContextHolder).subject
+        val fnr = getSubjectFromToken()
         val role = getRole(fnr)
         val allowed = true //deprocated denne er alltid true ved bruk av authinterceptor
         val features = toggle.getUIFeatures()
-        val jwtset = getClaims(oidcRequestContextHolder).claimSet
-        val expirationTime = jwtset.expirationTime.time
+        val claims = getClaims()
+        val expirationTime = claims.expirationTime.time
         return ResponseEntity.ok().body(mapAnyToJson(UserInfoResponse(fnr, role, allowed, expirationTime, features)))
     }
 
@@ -67,13 +66,15 @@ class UserInfoController(
             }
             toggle.getAPIFeatures().getValue(FeatureName.WHITELISTING.name) -> {
                 logger.info("Sjekker om brukeren er whitelistet")
-                val personIdentifier = getClaims(oidcRequestContextHolder).subject
+                val personIdentifier = getClaims(tokenValidationContextHolder).subject
                 whitelistService.isPersonWhitelisted(personIdentifier.toUpperCase())
             }
             else -> false
         }
     }
+    fun getSubjectFromToken(): String = getClaims(tokenValidationContextHolder).subject
 
+    fun getClaims(): JwtTokenClaims = getClaims(tokenValidationContextHolder)
 }
 
     /**

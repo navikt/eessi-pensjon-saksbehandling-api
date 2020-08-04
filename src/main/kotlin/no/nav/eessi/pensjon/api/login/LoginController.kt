@@ -1,8 +1,8 @@
 package no.nav.eessi.pensjon.api.login
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import no.nav.security.oidc.api.Unprotected
-import no.nav.security.oidc.test.support.spring.TokenGeneratorConfiguration
+import no.nav.security.token.support.core.api.Unprotected
+import no.nav.security.token.support.test.spring.TokenGeneratorConfiguration
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value

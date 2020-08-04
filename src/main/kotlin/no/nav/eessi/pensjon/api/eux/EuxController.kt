@@ -3,7 +3,7 @@ package no.nav.eessi.pensjon.api.eux
 import no.nav.eessi.pensjon.services.eux.EuxService
 import no.nav.eessi.pensjon.utils.errorBody
 import no.nav.eessi.pensjon.utils.successBody
-import no.nav.security.oidc.api.Protected
+import no.nav.security.token.support.core.api.Protected
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

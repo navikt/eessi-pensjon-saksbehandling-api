@@ -11,6 +11,7 @@ import no.nav.eessi.pensjon.services.BaseTest
 import no.nav.eessi.pensjon.services.ldap.LdapService
 import no.nav.eessi.pensjon.services.storage.amazons3.S3Storage
 import no.nav.eessi.pensjon.services.whitelist.WhitelistService
+import no.nav.security.token.support.spring.SpringTokenValidationContextHolder
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.mockito.Mockito
@@ -53,7 +54,7 @@ open class S3StorageBaseTest : BaseTest() {
                 "___"))
         whitelistService.setup()
 
-        storageController = Mockito.spy(StorageController(s3storageService, generateMockContextHolder()))
+        storageController = Mockito.spy(StorageController(s3storageService, SpringTokenValidationContextHolder()))
         storageController.initMetrics()
     }
 

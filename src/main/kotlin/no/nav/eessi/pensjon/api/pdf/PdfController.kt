@@ -2,7 +2,7 @@ package no.nav.eessi.pensjon.api.pdf
 
 import no.nav.eessi.pensjon.services.pdf.PDFRequest
 import no.nav.eessi.pensjon.services.pdf.PdfService
-import no.nav.security.oidc.api.Protected
+import no.nav.security.token.support.core.api.Protected
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping

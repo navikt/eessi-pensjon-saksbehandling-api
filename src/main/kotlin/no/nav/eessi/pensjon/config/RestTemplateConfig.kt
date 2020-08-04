@@ -1,15 +1,16 @@
 package no.nav.eessi.pensjon.config
 
 import io.micrometer.core.instrument.MeterRegistry
-import no.nav.eessi.pensjon.interceptor.OidcHeaderRequestInterceptor
+import no.nav.eessi.pensjon.interceptor.TokenHeaderRequestInterceptor
 import no.nav.eessi.pensjon.logging.RequestIdHeaderInterceptor
 import no.nav.eessi.pensjon.logging.RequestResponseLoggerInterceptor
 import no.nav.eessi.pensjon.metrics.RequestCountInterceptor
 import no.nav.eessi.pensjon.security.sts.STSService
 import no.nav.eessi.pensjon.security.sts.UsernameToOidcInterceptor
-import no.nav.security.oidc.context.OIDCRequestContextHolder
+import no.nav.security.token.support.core.context.TokenValidationContextHolder
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.actuate.metrics.AutoTimer
 import org.springframework.boot.actuate.metrics.web.client.DefaultRestTemplateExchangeTagsProvider
 import org.springframework.boot.actuate.metrics.web.client.MetricsRestTemplateCustomizer
 import org.springframework.boot.web.client.RestTemplateBuilder
@@ -22,7 +23,7 @@ import org.springframework.web.client.RestTemplate
 
 @Component
 class RestTemplateConfig(val restTemplateBuilder: RestTemplateBuilder,
-                         val oidcRequestContextHolder: OIDCRequestContextHolder,
+                         val tokenValidationContextHolder: TokenValidationContextHolder,
                          val registry: MeterRegistry,
                          val securityTokenExchangeService: STSService
 ) {
@@ -47,7 +48,7 @@ class RestTemplateConfig(val restTemplateBuilder: RestTemplateBuilder,
                 .additionalInterceptors(
                         RequestIdHeaderInterceptor(),
                         RequestCountInterceptor(meterRegistry),
-                        OidcHeaderRequestInterceptor(oidcRequestContextHolder),
+                        TokenHeaderRequestInterceptor(tokenValidationContextHolder),
                         RequestResponseLoggerInterceptor())
                 .build().apply {
                     requestFactory = BufferingClientHttpRequestFactory(SimpleClientHttpRequestFactory())
@@ -64,8 +65,8 @@ class RestTemplateConfig(val restTemplateBuilder: RestTemplateBuilder,
                         RequestIdHeaderInterceptor(),
                         RequestCountInterceptor(meterRegistry),
                         RequestResponseLoggerInterceptor(),
-                        OidcHeaderRequestInterceptor(oidcRequestContextHolder))
-                .customizers(MetricsRestTemplateCustomizer(registry, DefaultRestTemplateExchangeTagsProvider(), "eessipensjon_frontend-api_fagmodul"))
+                        TokenHeaderRequestInterceptor(tokenValidationContextHolder))
+                .customizers(MetricsRestTemplateCustomizer(registry, DefaultRestTemplateExchangeTagsProvider(), "eessipensjon_frontend-api_fagmodul",  AutoTimer.ENABLED))
                 .build().apply {
                     requestFactory = BufferingClientHttpRequestFactory(SimpleClientHttpRequestFactory())
                 }
@@ -82,7 +83,7 @@ class RestTemplateConfig(val restTemplateBuilder: RestTemplateBuilder,
                         RequestCountInterceptor(meterRegistry),
                         RequestResponseLoggerInterceptor(),
                         UsernameToOidcInterceptor(securityTokenExchangeService))
-                .customizers(MetricsRestTemplateCustomizer(registry, DefaultRestTemplateExchangeTagsProvider(), "eessipensjon_frontend-api_fagmodulUntTo"))
+                .customizers(MetricsRestTemplateCustomizer(registry, DefaultRestTemplateExchangeTagsProvider(), "eessipensjon_frontend-api_fagmodulUntTo",  AutoTimer.ENABLED))
                 .build().apply {
                     requestFactory = BufferingClientHttpRequestFactory(SimpleClientHttpRequestFactory())
                 }
