@@ -3,7 +3,6 @@ package no.nav.eessi.pensjon.api.person
 import no.nav.eessi.pensjon.personoppslag.aktoerregister.AktoerregisterService
 import no.nav.eessi.pensjon.personoppslag.aktoerregister.IdentGruppe
 import no.nav.eessi.pensjon.personoppslag.aktoerregister.NorskIdent
-import no.nav.eessi.pensjon.personoppslag.aktoerregister.Result
 import no.nav.eessi.pensjon.services.fagmodul.NavRegistreOppslagService
 import no.nav.eessi.pensjon.services.fagmodul.PersonInformasjonException
 import no.nav.eessi.pensjon.utils.errorBody
@@ -41,24 +40,24 @@ class NavRegistreOppslagController(val navRegistreOppslagService: NavRegistreOpp
                 logger.warn("Kall har blankt fnr")
                 ResponseEntity.badRequest().body("blankt fnr")
             } else {
-                when (val result = aktoerregisterService.hentGjeldendeIdentFraGruppe(IdentGruppe.AktoerId, NorskIdent(fnr))) {
-                    is Result.Found -> {
+                runCatching {
+                    aktoerregisterService.hentGjeldendeIdent(IdentGruppe.AktoerId, NorskIdent(fnr))
+                }.fold({ ident ->
+                    if (ident != null) {
                         logger.info("Returnerer gjeldende aktoerId for fnr")
-                        ResponseEntity.ok().body(result.value.id)
-                    }
-                    is Result.NotFound -> {
+                        ResponseEntity.ok().body(ident.id)
+                    } else {
                         logger.info("Fant ikke aktoerId for fnr")
                         ResponseEntity.notFound().build<String>()
                     }
-                    is Result.Failure -> {
-                        logger.error("Feil ved henting av AktoerId med ${result.cause} cause: ${result.cause.cause}", result.cause)
-                        if (result.cause.cause != null && result.cause.cause is HttpStatusCodeException) {
-                            val rootCause = result.cause.cause as HttpStatusCodeException
-                            ResponseEntity.status(rootCause.statusCode).body(rootCause.responseBodyAsString)
-                        } else {
-                            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result.cause.message)
-                        }
+                }, { exception: Throwable ->
+                    logger.error("Feil ved henting av AktoerId med $exception cause: ${exception.cause}", exception)
+                    if (exception.cause != null && exception.cause is HttpStatusCodeException) {
+                        val rootCause = exception.cause as HttpStatusCodeException
+                        ResponseEntity.status(rootCause.statusCode).body(rootCause.responseBodyAsString)
+                    } else {
+                        ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(exception.message)
                     }
-                }
+                })
             }
 }
