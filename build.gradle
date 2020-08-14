@@ -86,7 +86,7 @@ dependencies {
 //  implementation('no.nav.meldinger.virksomhet:nav-virksomhet-varsel-v1-meldingsdefinisjon:1.1.1:jaxb')
 
     // Personoppslag
-    implementation("no.nav.eessi.pensjon:ep-personoppslag:5.2.0")
+    implementation("no.nav.eessi.pensjon:ep-personoppslag:6.0.0")
 
     // Spring
     implementation("org.springframework.boot:spring-boot-starter-web")
