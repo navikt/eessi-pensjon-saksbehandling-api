@@ -14,7 +14,11 @@ class SedListener (private val socketTextHandler: SocketTextHandler) {
 
     private val logger = LoggerFactory.getLogger(SedListener::class.java)
 
-    @KafkaListener(topics = ["\${kafka.sedSendt.topic}"], groupId = "\${kafka.sedSendt.groupid}")
+    @KafkaListener(id="sakSendtListener",
+            idIsGroup = false,
+            topics = ["\${kafka.sedSendt.topic}"],
+            groupId = "\${kafka.sedSendt.groupid}",
+            autoStartup = "false")
     fun consumeSedSendt(hendelse: String) {
         try {
             val sedHendelse = SedHendelseModel.fromJson(hendelse)
@@ -31,7 +35,11 @@ class SedListener (private val socketTextHandler: SocketTextHandler) {
         }
     }
 
-    @KafkaListener(topics = ["\${kafka.sedMottatt.topic}"], groupId = "\${kafka.sedMottatt.groupid}")
+    @KafkaListener(id="sakMottattListener",
+            idIsGroup = false,
+            topics = ["\${kafka.sedMottatt.topic}"],
+            groupId = "\${kafka.sedMottatt.groupid}",
+            autoStartup = "false")
     fun consumeSedMottatt(hendelse: String) {
         try {
             val sedHendelse = SedHendelseModel.fromJson(hendelse)

@@ -1,14 +1,17 @@
-package no.nav.eessi.pensjon.services.kafka
+package no.nav.eessi.pensjon.config
 
 import org.apache.kafka.clients.CommonClientConfigs
 import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.common.config.SaslConfigs
 import org.apache.kafka.common.serialization.StringSerializer
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.ApplicationRunner
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.kafka.config.KafkaListenerEndpointRegistry
 import org.springframework.kafka.core.DefaultKafkaProducerFactory
 import org.springframework.kafka.core.KafkaTemplate
+import java.time.Duration
 
 @Configuration
 class KafkaConfig {
@@ -24,6 +27,19 @@ class KafkaConfig {
 
     @Value("\${srvpassword}")
     lateinit var password: String
+
+    @Bean
+    fun sedSendtAuthRetry(registry: KafkaListenerEndpointRegistry): ApplicationRunner? {
+        return ApplicationRunner {
+            val sedSendtListenerContainer = registry.getListenerContainer("sakSendtListener")
+            sedSendtListenerContainer.containerProperties.authorizationExceptionRetryInterval = Duration.ofSeconds(4L)
+            sedSendtListenerContainer.start()
+
+            val sedMottattListenerContainer = registry.getListenerContainer("sakMottattListener")
+            sedMottattListenerContainer.containerProperties.authorizationExceptionRetryInterval = Duration.ofSeconds(4L)
+            sedMottattListenerContainer.start()
+        }
+    }
 
     fun producerFactory(): DefaultKafkaProducerFactory<String, String> {
         val properties = mapOf<String, Any>(
