@@ -8,7 +8,7 @@
     </appender>
     <appender name="auditLogger" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>[%boldMagenta(%d{"yyyy-MM-dd'T'HH:mm:ss,SSSXXX", UTC}) %highlight(%level)] %red(%logger{20}) : %mdc - %m%n%xEx</pattern>
+            <pattern>[%boldMagenta(%d{"yyyy-MM-dd'T'HH:mm:ss,SSSXXX", UTC}) %highlight(%level)] %red(%logger{20}) : %m%n%xEx</pattern>
         </encoder>
     </appender>
 
