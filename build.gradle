@@ -79,7 +79,6 @@ jar {
 
 dependencies {
     // Tjenestespesifikasjoner
-    implementation("no.nav.tjenestespesifikasjoner:person-v3-tjenestespesifikasjon:1.2020.01.30-14.36-cdf257baea96")
     implementation("no.nav.tjenestespesifikasjoner:nav-fim-behandleJournal-v3-tjenestespesifikasjon:1.2020.01.30-14.36-cdf257baea96")
 
 //  Se VarselService for årsak til utkommentering
