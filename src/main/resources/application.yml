@@ -15,7 +15,6 @@ management:
 eessi.pensjon.frontend.api:
   varsel.tittel: 'Ny elektronisk løsning fra NAV'
   s3:
-    whitelist.key.ending: 'whitelisted'
     bucket.name: 'eessipensjon'
     personidentifier.separator: '___'
 

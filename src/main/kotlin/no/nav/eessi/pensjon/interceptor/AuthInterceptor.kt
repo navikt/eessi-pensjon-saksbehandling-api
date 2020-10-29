@@ -4,9 +4,7 @@ import no.nav.eessi.pensjon.logging.AuditLogger
 import no.nav.eessi.pensjon.services.auth.AdRolle
 import no.nav.eessi.pensjon.services.auth.AuthorisationService
 import no.nav.eessi.pensjon.services.auth.EessiPensjonTilgang
-import no.nav.eessi.pensjon.services.ldap.BrukerInformasjon
 import no.nav.eessi.pensjon.services.ldap.BrukerInformasjonService
-import no.nav.eessi.pensjon.services.whitelist.WhitelistService
 import no.nav.eessi.pensjon.utils.getClaims
 import no.nav.security.token.support.core.context.TokenValidationContextHolder
 import no.nav.security.token.support.core.jwt.JwtTokenClaims
@@ -24,20 +22,11 @@ import javax.servlet.http.HttpServletResponse
 class AuthInterceptor(private val ldapService: BrukerInformasjonService,
                       private val authorisationService: AuthorisationService,
                       private val tokenValidationContextHolder: TokenValidationContextHolder,
-                      private val auditLogger: AuditLogger,
-                      private val whitelistService: WhitelistService) : HandlerInterceptor, Ordered {
+                      private val auditLogger: AuditLogger) : HandlerInterceptor, Ordered {
 
     private val logger = LoggerFactory.getLogger(AuthInterceptor::class.java)
-    private val regexNavident  = Regex("^[a-zA-Z]\\d{6}$")
-    private val regexBorger = Regex("^\\d{11}$")
     private val ugyldigToken = "UNAUTHORIZED"
     private val avvistIdent = "FORBIDDEN"
-
-    enum class Roller {
-        SAKSBEHANDLER,
-        BRUKER,
-        UNKNOWN
-    }
 
     @Throws(Exception::class)
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
@@ -75,24 +64,15 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
     fun sjekkTilgangTilEessiPensjonTjeneste(oidcClaims: JwtTokenClaims): Boolean{
         val ident = oidcClaims.subject
         val expirationTime = oidcClaims.expirationTime
-        val brukerRolle = hentRolle(ident)
 
-        // Bare saksbehandlere skal sjekkes om de har tilgang.
-        // Skal borgere ha tilgang til api-fss?
-        return if (Roller.SAKSBEHANDLER == brukerRolle) {
-            logger.info("Ident: $ident,  expire: $expirationTime, Rolle: $brukerRolle")
+            logger.info("Ident: $ident,  expire: $expirationTime")
             logger.debug("Henter ut brukerinformasjon fra AD/Ldap")
-            val brukerInformasjon: BrukerInformasjon
-            try {
-                brukerInformasjon = ldapService.hentBrukerInformasjon(ident)
+            return try {
+                val brukerInformasjon = ldapService.hentBrukerInformasjon(ident)
                 logger.info("Ldap brukerinformasjon hentet")
                 logger.debug("Ldap brukerinfo: $brukerInformasjon")
-            } catch (ex: Exception) {
-                logger.error("Feil ved henting av ldap brukerinformasjon, prøver whitelistig s3", ex)
-                return sjekkWhitelisting(ident)
-            }
 
-            val adRoller = AdRolle.konverterAdRollerTilEnum(brukerInformasjon.medlemAv)
+                val adRoller = AdRolle.konverterAdRollerTilEnum(brukerInformasjon.medlemAv)
                 // Sjekk tilgang til EESSI-Pensjon
                 if( authorisationService.harTilgangTilEessiPensjon(adRoller).not() ) {
                     // Ikke tilgang til EESSI-Pensjon
@@ -102,29 +82,10 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
                 }
                 logger.debug("Saksbehandler tilgang til EESSI-Pensjon er i orden")
                 true
-        } else {
-            logger.debug("Borger/systembruker tilgang til EESSI-Pensjon alltid i orden")
-            true
-        }
-    }
-
-    //TODO Temp. denne skal fjernes etterhvert.
-    private fun sjekkWhitelisting(ident: String): Boolean {
-        logger.warn("Prøver å slå opp ident i whitelisting")
-        if (whitelistService.isPersonWhitelisted(ident)) {
-            logger.info("Godkjenner fra whitelisting")
-            return true
-        }
-        logger.warn("Bruker har ikke korrekt tilganger vi avviser med $avvistIdent")
-        throw AuthorisationIkkeTilgangTilEeessiPensjonException("Ikke tilgang til EESSI-Pensjon")
-    }
-
-    fun hentRolle(subject: String): Roller {
-        return when {
-            subject.matches(regexNavident) -> Roller.SAKSBEHANDLER
-            subject.matches(regexBorger) -> Roller.BRUKER
-            else -> Roller.UNKNOWN
-        }
+            } catch (ex: Exception) {
+                logger.error("Feil ved henting av ldap brukerinformasjon", ex)
+                throw AuthorisationIkkeTilgangTilEeessiPensjonException("Ikke tilgang til EESSI-Pensjon")
+            }
     }
 
     /**
@@ -140,8 +101,6 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
     override fun getOrder(): Int {
         return Ordered.LOWEST_PRECEDENCE
     }
-
-
 }
 
 

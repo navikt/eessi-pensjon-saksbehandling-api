@@ -53,14 +53,11 @@ eessi_pensjon_s3_crypto_password: "something"
 
 eessi.pensjon.frontend.api:
   s3:
-    whitelist.key.ending: 'whitelisted'
     bucket.name: 'eessipensjon'
     personidentifier.separator: '___'
 
 srvusername: 'someuser'
 srvpassword: 'somepass'
-
-eessi.pensjon.whitelist.users:
 
 NAIS_APP_NAME: 'eessi-pensjon-frontend-api-fss'
 
@@ -144,5 +141,3 @@ VIRKSOMHET_PERSON_V3_ENDPOINTURL: "http://localhost"
 VIRKSOMHET_PERSON_V3_WSDLURL: "http://localhost"
 #  feature toddle authInteceptor Q1 atm.
 ENV: "q1"
-
-whitelist_users: ""

@@ -12,7 +12,7 @@ import org.slf4j.MDC
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.messaging.Message
 
-class KafkaServiceTest() {
+class KafkaServiceTest {
 
     private val mockKafkaTemplate: KafkaTemplate<String, String> = Mockito.mock(KafkaTemplate::class.java) as KafkaTemplate<String, String>
     private val kafkaService = KafkaService(mockKafkaTemplate)

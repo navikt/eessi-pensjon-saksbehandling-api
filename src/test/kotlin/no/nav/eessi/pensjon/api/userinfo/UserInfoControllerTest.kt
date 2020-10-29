@@ -1,7 +1,6 @@
 package no.nav.eessi.pensjon.api.userinfo
 
 import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.whenever
 import com.nimbusds.jwt.JWTClaimsSet
 import no.nav.eessi.pensjon.config.FeatureToggle
 import no.nav.eessi.pensjon.services.storage.S3StorageBaseTest
@@ -27,12 +26,11 @@ class UserInfoControllerTest : S3StorageBaseTest() {
     fun mockSetup() {
         toggleMock = FeatureToggle()
         toggleMock.setCurrentEnv("q2")
-        userInfoController = Mockito.spy(UserInfoController(toggleMock, SpringTokenValidationContextHolder(), whitelistService))
+        userInfoController = Mockito.spy(UserInfoController(toggleMock, SpringTokenValidationContextHolder()))
     }
 
     @Test fun `Calling UserInfoController getUserInfo in Q2 returns OK response`() {
         toggleMock.setCurrentEnv("q2")
-        doReturn(true).whenever(userInfoController).checkWhitelist()
         createMockedToken()
         val usr =  UserInfoResponse(subject ="12345678910",
             role ="BRUKER",
@@ -48,7 +46,6 @@ class UserInfoControllerTest : S3StorageBaseTest() {
         toggleMock.setCurrentEnv("p")
 
         createMockedToken()
-        doReturn(true).whenever(userInfoController).checkWhitelist()
         val usr =  UserInfoResponse(subject ="12345678910",
             role ="BRUKER",
             allowed = true,
@@ -60,7 +57,6 @@ class UserInfoControllerTest : S3StorageBaseTest() {
 
     @Test fun `Calling UserInfoController getUserInfo saksbehandler in Q2 returns OK response`() {
         createMockedToken("A123456")
-        doReturn(true).whenever(userInfoController).checkWhitelist()
 
         val usr =  UserInfoResponse(subject ="A123456",
             role ="SAKSBEHANDLER",
@@ -74,7 +70,6 @@ class UserInfoControllerTest : S3StorageBaseTest() {
     @Test fun `Calling UserInfoController  getUserInfo saksbehandler in P returns OK response`() {
         createMockedToken("A123456")
         toggleMock.setCurrentEnv("p")
-        doReturn(true).whenever(userInfoController).checkWhitelist()
         val usr =  UserInfoResponse(subject ="A123456",
             role ="SAKSBEHANDLER",
             allowed = true,

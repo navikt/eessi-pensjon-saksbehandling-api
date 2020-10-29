@@ -52,13 +52,6 @@ then
     export OpenIdConnectAgent_password=$(cat /var/run/secrets/nais.io/appsecrets/OpenIdConnectAgent_password)
 fi
 
-echo "Sjekker whitelist_users"
-if test -f /var/run/secrets/nais.io/appsecrets/whitelist_users;
-then
-  echo "Setter whitelist_users"
-    export whitelist_users=$(cat /var/run/secrets/nais.io/appsecrets/whitelist_users)
-fi
-
 #Vault path
 #/secrets/credential/dev/eessi-pensjon-fss
 

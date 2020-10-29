@@ -39,8 +39,7 @@ class FeatureToggle {
 
     fun getAPIFeatures(): Map<String, Boolean> {
         return mapOf(
-            FeatureName.ENABLE_AUTH.name to isOnEnv(),
-            FeatureName.WHITELISTING.name to isOnEnv()
+            FeatureName.ENABLE_AUTH.name to isOnEnv()
         )
     }
 }
@@ -49,7 +48,6 @@ enum class FeatureName {
     P5000_VISIBLE,
     P_BUC_02_VISIBLE,
     ENABLE_AUTH,
-    WHITELISTING,
 }
 
 
