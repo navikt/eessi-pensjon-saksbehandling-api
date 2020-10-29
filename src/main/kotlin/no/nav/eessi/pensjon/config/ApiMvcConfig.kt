@@ -8,8 +8,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 @Configuration
-class ApiMvcConfig(private val toggle: FeatureToggle,
-               private val authInterceptor: AuthInterceptor,
+class ApiMvcConfig(private val authInterceptor: AuthInterceptor,
                private val securityInterceptor: SecurityInterceptor): WebMvcConfigurer {
 
     private val logger = LoggerFactory.getLogger(ApiMvcConfig::class.java)
@@ -17,14 +16,6 @@ class ApiMvcConfig(private val toggle: FeatureToggle,
     override fun addInterceptors(registry: InterceptorRegistry) {
         logger.debug("legger til TokenInterceptor")
         registry.addInterceptor(securityInterceptor).addPathPatterns("/openamlogin")
-
-        if (toggle.getAPIFeatures().getValue(FeatureName.ENABLE_AUTH.name)) {
-            logger.debug("legger til AuthInterceptor")
-            registry.addInterceptor(authInterceptor)
-        }
-
+        registry.addInterceptor(authInterceptor)
     }
-
-
-
 }
