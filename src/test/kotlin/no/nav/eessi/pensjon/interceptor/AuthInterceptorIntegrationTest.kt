@@ -265,51 +265,6 @@ class AuthInterceptorIntegrationTest() {
         Assertions.assertTrue(responseHentDokumenter != null)
     }
 
-
-    @Test
-    fun `Gitt at saksbehandler har rollen Alderspensjon, så skal det gis tilgang til EP (whitelisted)`() {
-        val request = HttpGet("http://localhost:$port/local/jwt?subject=A230067")
-
-        // When
-        val response = HttpClientBuilder.create().build().execute(request)
-        val token = String(response.entity.content.readBytes())
-
-        // Then
-        val getDocument = HttpGet("http://localhost:$port/api/whitelisted")
-        getDocument.setHeader("Authorization", "Bearer $token")
-
-        val handler: ResponseHandler<String> = BasicResponseHandler()
-
-        val responseGetDocument = HttpClientBuilder.create().build().execute(getDocument)
-        val body = handler.handleResponse(responseGetDocument)
-
-        Assertions.assertTrue(responseGetDocument != null)
-        Assertions.assertEquals("true", body)
-
-    }
-
-    @Test
-    fun `Gitt at uføre saksbehandler har rollen Uføre, så skal det gis tilgang til EP (whitelisted)`() {
-        val request = HttpGet("http://localhost:$port/local/jwt?subject=U230067")
-
-        // When
-        val response = HttpClientBuilder.create().build().execute(request)
-        val token = String(response.entity.content.readBytes())
-
-        // Then
-        val getDocument = HttpGet("http://localhost:$port/api/whitelisted")
-        getDocument.setHeader("Authorization", "Bearer $token")
-
-        val handler: ResponseHandler<String> = BasicResponseHandler()
-
-        val responseGetDocument = HttpClientBuilder.create().build().execute(getDocument)
-        val body = handler.handleResponse(responseGetDocument)
-
-        Assertions.assertTrue(responseGetDocument != null)
-        Assertions.assertEquals("true", body)
-
-    }
-
     @Test
     fun `Gitt at uføre saksbehandler har rollen Uføre men mangler pensjon-utland, så skal det ikke gis tilgang til EP`() {
         val request = HttpGet("http://localhost:$port/local/jwt?subject=U930067")
@@ -328,25 +283,6 @@ class AuthInterceptorIntegrationTest() {
         Assertions.assertEquals(HttpStatus.SC_FORBIDDEN, statusCode)
         Assertions.assertTrue(responseHentDokumenter != null)
 
-    }
-
-
-    @Test
-    fun `Gitt at saksbehandler ikke har rollen Alderspensjon, så skal det ikke gis tilgang til EP`() {
-        val request = HttpGet("http://localhost:$port/local/jwt?subject=Z000000")
-
-        // When
-        val response = HttpClientBuilder.create().build().execute(request)
-        val token = String(response.entity.content.readBytes())
-
-        // Then
-        val getDocument = HttpGet("http://localhost:$port/api/whitelisted")
-        getDocument.setHeader("Authorization", "Bearer $token")
-
-        val responseGetDocument = HttpClientBuilder.create().build().execute(getDocument)
-        val statusCode: Int = responseGetDocument.statusLine.statusCode
-
-        Assertions.assertEquals(HttpStatus.SC_FORBIDDEN, statusCode)
     }
 
     @Test
@@ -401,29 +337,6 @@ class AuthInterceptorIntegrationTest() {
         Assertions.assertEquals(HttpStatus.SC_FORBIDDEN, statusCode)
     }
 
-    @Test
-    fun `Gitt at det feiler ved oppslag av saksbehandler mot LDAP gis det tilgang til EP`() {
-        val request = HttpGet("http://localhost:$port/local/jwt?subject=X000000")
-
-        // When
-        val response = HttpClientBuilder.create().build().execute(request)
-        val token = String(response.entity.content.readBytes())
-
-        // Then
-        val getDocument = HttpGet("http://localhost:$port/api/userinfo")
-        getDocument.setHeader("Authorization", "Bearer $token")
-
-        val handler: ResponseHandler<String> = BasicResponseHandler()
-        val responseGetDocument = HttpClientBuilder.create().build().execute(getDocument)
-        val statusCode: Int = responseGetDocument.statusLine.statusCode
-
-        val body = handler.handleResponse(responseGetDocument)
-
-        Assertions.assertEquals(HttpStatus.SC_OK, statusCode)
-        Assertions.assertTrue(responseGetDocument != null)
-        Assertions.assertTrue(body.contains("X000000"))
-    }
-
     @TestConfiguration
     class TestConfig{
 
@@ -450,9 +363,6 @@ class AuthInterceptorIntegrationTest() {
         }
 
         override fun get(path: String): String? {
-            if (path == "X000000___whitelisted") {
-                return "$path.json"
-            }
             return ""
         }
 

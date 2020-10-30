@@ -8,9 +8,7 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder
 import io.findify.s3mock.S3Mock
 import no.nav.eessi.pensjon.api.storage.StorageController
 import no.nav.eessi.pensjon.services.BaseTest
-import no.nav.eessi.pensjon.services.ldap.LdapService
 import no.nav.eessi.pensjon.services.storage.amazons3.S3Storage
-import no.nav.eessi.pensjon.services.whitelist.WhitelistService
 import no.nav.security.token.support.spring.SpringTokenValidationContextHolder
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -23,8 +21,6 @@ open class S3StorageBaseTest : BaseTest() {
     lateinit var s3MockClient: AmazonS3
     lateinit var s3api: S3Mock
     lateinit var storageController : StorageController
-    lateinit var whitelistService: WhitelistService
-    lateinit var ldapService: LdapService
 
     @BeforeEach fun setup() {
         val s3Port = randomOpenPort()
@@ -47,12 +43,6 @@ open class S3StorageBaseTest : BaseTest() {
         s3storageService.env = "q1"
         s3storageService.passphrase = "something very vey tricky to hack"
         s3storageService.init()
-
-        whitelistService = Mockito.spy(WhitelistService(
-                s3storageService, listOf("someUser"),
-                "whitelisted",
-                "___"))
-        whitelistService.setup()
 
         storageController = Mockito.spy(StorageController(s3storageService, SpringTokenValidationContextHolder()))
         storageController.initMetrics()
