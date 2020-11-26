@@ -22,7 +22,8 @@ class FeatureToggle {
         return mapOf(
             FeatureName.P5000_VISIBLE.name to true,
             FeatureName.P_BUC_02_VISIBLE.name to true,
-            FeatureName.P_BUC_05_VISIBLE.name to !isProductionEnv()
+            FeatureName.P_BUC_05_VISIBLE.name to !isProductionEnv(),
+            FeatureName.P_BUC_10_VISIBLE.name to !isProductionEnv()
         )
     }
 }
@@ -31,6 +32,7 @@ enum class FeatureName {
     P5000_VISIBLE,
     P_BUC_02_VISIBLE,
     P_BUC_05_VISIBLE,
+    P_BUC_10_VISIBLE,
     ENABLE_AUTH,
     WHITELISTING,
 }
