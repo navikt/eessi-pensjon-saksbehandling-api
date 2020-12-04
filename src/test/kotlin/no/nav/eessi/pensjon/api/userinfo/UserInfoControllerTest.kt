@@ -37,9 +37,6 @@ class UserInfoControllerTest : S3StorageBaseTest() {
             allowed = true,
             expirationTime = EXPIRATION_TIME,
             features = mapOf(
-                    "P5000_VISIBLE" to true,
-                    "P_BUC_02_VISIBLE" to true,
-                    "P_BUC_05_VISIBLE" to true,
                     "P_BUC_10_VISIBLE" to true
             )
         )
@@ -56,9 +53,6 @@ class UserInfoControllerTest : S3StorageBaseTest() {
             allowed = true,
             expirationTime = EXPIRATION_TIME,
             features = mapOf(
-                    "P5000_VISIBLE" to true,
-                    "P_BUC_02_VISIBLE" to true,
-                    "P_BUC_05_VISIBLE" to false,
                     "P_BUC_10_VISIBLE" to false
             )
         )
@@ -73,9 +67,6 @@ class UserInfoControllerTest : S3StorageBaseTest() {
             allowed = true,
             expirationTime = EXPIRATION_TIME,
             features = mapOf(
-                    "P5000_VISIBLE" to true,
-                    "P_BUC_02_VISIBLE" to true,
-                    "P_BUC_05_VISIBLE" to true,
                     "P_BUC_10_VISIBLE" to true
             )
         )
@@ -90,9 +81,6 @@ class UserInfoControllerTest : S3StorageBaseTest() {
             allowed = true,
             expirationTime = EXPIRATION_TIME,
             features = mapOf(
-                    "P5000_VISIBLE" to true,
-                    "P_BUC_02_VISIBLE" to true,
-                    "P_BUC_05_VISIBLE" to false,
                     "P_BUC_10_VISIBLE" to false
             )
         )
@@ -113,9 +101,6 @@ class UserInfoControllerTest : S3StorageBaseTest() {
             allowed = true,
             expirationTime = EXPIRATION_TIME,
             features = mapOf(
-                    "P5000_VISIBLE" to true,
-                    "P_BUC_02_VISIBLE" to true,
-                    "P_BUC_05_VISIBLE" to true,
                     "P_BUC_10_VISIBLE" to true
             )
         )
