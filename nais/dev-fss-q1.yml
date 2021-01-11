@@ -14,7 +14,7 @@ spec:
     - name: PENSJON_UTLAND_WS_ALLOWED_ORIGINS_URL
       value: https://pensjon-utland-q1.nais.preprod.local
     - name: RINA_HOST_URL
-      value: rina-ss1-q.adeo.no
+      value: rina-ss3-q.adeo.no
     - name: S3_FSS_URL
       value: http://objectstore.rook-ceph.svc.nais.local
     - name: NAV_DOMAIN_URL
