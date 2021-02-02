@@ -20,7 +20,7 @@ class FeatureToggle {
 
     fun getUIFeatures(): Map<String, Boolean> {
         return mapOf(
-            FeatureName.P_BUC_10_VISIBLE.name to !isProductionEnv()
+            FeatureName.P_BUC_10_VISIBLE.name to true
         )
     }
 }

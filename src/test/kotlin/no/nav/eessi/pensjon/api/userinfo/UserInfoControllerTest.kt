@@ -53,7 +53,7 @@ class UserInfoControllerTest : S3StorageBaseTest() {
             allowed = true,
             expirationTime = EXPIRATION_TIME,
             features = mapOf(
-                    "P_BUC_10_VISIBLE" to false
+                    "P_BUC_10_VISIBLE" to true
             )
         )
         assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), userInfoController.getUserInfo())
@@ -81,7 +81,7 @@ class UserInfoControllerTest : S3StorageBaseTest() {
             allowed = true,
             expirationTime = EXPIRATION_TIME,
             features = mapOf(
-                    "P_BUC_10_VISIBLE" to false
+                    "P_BUC_10_VISIBLE" to true
             )
         )
         assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), userInfoController.getUserInfo())
