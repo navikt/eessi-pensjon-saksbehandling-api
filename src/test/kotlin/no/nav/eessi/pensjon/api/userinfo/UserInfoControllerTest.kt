@@ -36,9 +36,7 @@ class UserInfoControllerTest : S3StorageBaseTest() {
             role ="BRUKER",
             allowed = true,
             expirationTime = EXPIRATION_TIME,
-            features = mapOf(
-                    "P_BUC_10_VISIBLE" to true
-            )
+            features = mapOf()
         )
         assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), userInfoController.getUserInfo())
     }
@@ -52,9 +50,7 @@ class UserInfoControllerTest : S3StorageBaseTest() {
             role ="BRUKER",
             allowed = true,
             expirationTime = EXPIRATION_TIME,
-            features = mapOf(
-                    "P_BUC_10_VISIBLE" to true
-            )
+            features = mapOf()
         )
         assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), userInfoController.getUserInfo())
     }
@@ -66,9 +62,7 @@ class UserInfoControllerTest : S3StorageBaseTest() {
             role ="SAKSBEHANDLER",
             allowed = true,
             expirationTime = EXPIRATION_TIME,
-            features = mapOf(
-                    "P_BUC_10_VISIBLE" to true
-            )
+            features = mapOf()
         )
         assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), userInfoController.getUserInfo())
     }
@@ -80,9 +74,7 @@ class UserInfoControllerTest : S3StorageBaseTest() {
             role ="SAKSBEHANDLER",
             allowed = true,
             expirationTime = EXPIRATION_TIME,
-            features = mapOf(
-                    "P_BUC_10_VISIBLE" to true
-            )
+            features = mapOf()
         )
         assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), userInfoController.getUserInfo())
     }
@@ -100,9 +92,7 @@ class UserInfoControllerTest : S3StorageBaseTest() {
             role ="BRUKER",
             allowed = true,
             expirationTime = EXPIRATION_TIME,
-            features = mapOf(
-                    "P_BUC_10_VISIBLE" to true
-            )
+            features = mapOf()
         )
         val result = userInfoController.getUserInfo()
         assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), result)

@@ -19,14 +19,11 @@ class FeatureToggle {
     }
 
     fun getUIFeatures(): Map<String, Boolean> {
-        return mapOf(
-            FeatureName.P_BUC_10_VISIBLE.name to true
-        )
+        return mapOf()
     }
 }
 
 enum class FeatureName {
-    P_BUC_10_VISIBLE,
     ENABLE_AUTH,
     WHITELISTING,
 }
