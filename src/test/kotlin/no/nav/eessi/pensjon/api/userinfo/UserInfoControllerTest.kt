@@ -37,7 +37,7 @@ class UserInfoControllerTest : S3StorageBaseTest() {
             allowed = true,
             expirationTime = EXPIRATION_TIME,
             features = mapOf(
-                    "P5000_SOMMER_VISIBLE" to true
+                    "P5000_SUMMER_VISIBLE" to true
             )
         )
         assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), userInfoController.getUserInfo())
@@ -53,7 +53,7 @@ class UserInfoControllerTest : S3StorageBaseTest() {
             allowed = true,
             expirationTime = EXPIRATION_TIME,
             features = mapOf(
-                    "P5000_SOMMER_VISIBLE" to false
+                    "P5000_SUMMER_VISIBLE" to false
             )
         )
         assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), userInfoController.getUserInfo())
@@ -67,7 +67,7 @@ class UserInfoControllerTest : S3StorageBaseTest() {
             allowed = true,
             expirationTime = EXPIRATION_TIME,
             features = mapOf(
-                    "P5000_SOMMER_VISIBLE" to true
+                    "P5000_SUMMER_VISIBLE" to true
             )
         )
         assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), userInfoController.getUserInfo())
@@ -81,7 +81,7 @@ class UserInfoControllerTest : S3StorageBaseTest() {
             allowed = true,
             expirationTime = EXPIRATION_TIME,
             features = mapOf(
-                    "P5000_SOMMER_VISIBLE" to false
+                    "P5000_SUMMER_VISIBLE" to false
             )
         )
         assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), userInfoController.getUserInfo())
@@ -101,7 +101,7 @@ class UserInfoControllerTest : S3StorageBaseTest() {
             allowed = true,
             expirationTime = EXPIRATION_TIME,
             features = mapOf(
-                    "P5000_SOMMER_VISIBLE" to true
+                    "P5000_SUMMER_VISIBLE" to true
             )
         )
         val result = userInfoController.getUserInfo()
