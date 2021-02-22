@@ -146,7 +146,7 @@ dependencies {
     // Micrometer
     implementation("io.micrometer:micrometer-registry-prometheus")
     implementation("no.nav.eessi.pensjon:ep-metrics:0.4.2")
-    
+
     // OIDC
     implementation("no.nav.security:token-validation-spring:${oidcTokenSupportVersion}")
     implementation("no.nav.security:token-validation-jaxrs:${oidcTokenSupportVersion}")
@@ -159,7 +159,7 @@ dependencies {
     implementation("org.pac4j:pac4j-core:${pac4jVersion}")
 
     // STS
-    implementation("no.nav.eessi.pensjon:ep-security-sts:0.0.14")
+    implementation("no.nav.eessi.pensjon:ep-security-sts:0.0.15")
 
     //mock
     testImplementation("org.mockito:mockito-core:${mockitoVersion}")
@@ -207,12 +207,6 @@ repositories {
 wrapper {
     distributionType = Wrapper.DistributionType.ALL
 }
-
-//
-//bootRun {
-//    String activeProfile = System.properties['spring.profiles.active']
-//    systemProperty "spring.profiles.active", activeProfile
-//}
 
 // https://docs.gradle.org/current/userguide/jacoco_plugin.html
 jacoco {
