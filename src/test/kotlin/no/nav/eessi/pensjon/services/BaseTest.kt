@@ -73,17 +73,6 @@ open class BaseTest {
         return Mockito.spy(fagmodulRestTemplate)
     }
 
-
-    fun generateMockAktoerregisterRestTemplate(): RestTemplate {
-
-        val aktoerregisterRestTemplate = RestTemplateBuilder()
-            .rootUri(aktoerregisterUrl)
-            .errorHandler(DefaultResponseErrorHandler())
-            .additionalInterceptors()
-            .build()
-        return Mockito.spy(aktoerregisterRestTemplate)
-    }
-
     fun generateMockSaksbehandlerLdapService(): LdapService {
         val ldapContext = InitialLdapContext()
         val ldapBrukeroppslag = LdapKlient(

@@ -15,8 +15,6 @@ import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus
-import org.springframework.web.client.HttpClientErrorException
-import java.lang.RuntimeException
 
 internal class NavRegistreOppslagControllerTest {
 

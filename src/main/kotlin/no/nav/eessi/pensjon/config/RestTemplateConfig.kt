@@ -89,18 +89,4 @@ class RestTemplateConfig(val restTemplateBuilder: RestTemplateBuilder,
                 }
     }
 
-    @Bean
-    fun aktoerregisterRestTemplate(): RestTemplate {
-        return restTemplateBuilder
-                .rootUri(url)
-                .errorHandler(DefaultResponseErrorHandler())
-                .additionalInterceptors(
-                        RequestIdHeaderInterceptor(),
-                        RequestCountInterceptor(meterRegistry),
-                        RequestResponseLoggerInterceptor(),
-                        UsernameToOidcInterceptor(securityTokenExchangeService))
-                .build().apply {
-                    requestFactory = BufferingClientHttpRequestFactory(SimpleClientHttpRequestFactory())
-                }
-    }
 }
