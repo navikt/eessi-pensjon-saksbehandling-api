@@ -78,9 +78,6 @@ jar {
 }
 
 dependencies {
-    // Tjenestespesifikasjoner
-    implementation("no.nav.tjenestespesifikasjoner:nav-fim-behandleJournal-v3-tjenestespesifikasjon:1.2020.01.30-14.36-cdf257baea96")
-
 //  Se VarselService for årsak til utkommentering
 //  implementation('no.nav.meldinger.virksomhet:nav-virksomhet-varsel-v1-meldingsdefinisjon:1.1.1:jaxb')
 
@@ -195,15 +192,14 @@ dependencies {
 repositories {
     mavenCentral()
 
-    ["maven-release","tjenestespesifikasjoner","ep-metrics"].each { repo ->
-        String token = System.getenv("GITHUB_TOKEN") ?: project.findProperty("gpr.key")
-        if (!token) throw new NullPointerException("Missing token, you have to set GITHUB_TOKEN or gpr.key, see README")
-        maven {
-            url = uri("https://maven.pkg.github.com/navikt/$repo")
-            credentials {
-                username = "token"
-                password = token
-            }
+    String token = System.getenv("GITHUB_TOKEN") ?: project.findProperty("gpr.key")
+    if (!token) throw new NullPointerException("Missing token, you have to set GITHUB_TOKEN or gpr.key, see README")
+
+    maven {
+        url = uri("https://maven.pkg.github.com/navikt/maven-release")
+        credentials {
+            username = "token"
+            password = token
         }
     }
 }
