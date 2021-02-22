@@ -1,6 +1,5 @@
 package no.nav.eessi.pensjon.config
 
-import com.google.common.base.Predicates
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import springfox.documentation.builders.ApiInfoBuilder
@@ -18,11 +17,11 @@ class SwaggerConfig {
     @Bean
     fun api(): Docket {
         return Docket(DocumentationType.SWAGGER_2)
-                .apiInfo(metaData())
-                .select()
-                .apis(Predicates.not(RequestHandlerSelectors.basePackage("org.springframework.boot")))
-                .paths(PathSelectors.any())
-                .build()
+            .apiInfo(metaData())
+            .select()
+            .apis(RequestHandlerSelectors.basePackage("org.springframework.boot").negate())
+            .paths(PathSelectors.any())
+            .build()
     }
 
     private fun metaData(): ApiInfo {

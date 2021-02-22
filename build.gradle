@@ -2,7 +2,7 @@ buildscript {
     ext {
         kotlinVersion = '1.4.30'
         springBootVersion = '2.3.0.RELEASE'
-        springfoxVersion = '2.9.2'
+        springfoxVersion = '3.0.0'
         jacksonVersion = '2.11.0'
         mockitoVersion = '3.3.3'
         oidcTokenSupportVersion = '1.1.6'
