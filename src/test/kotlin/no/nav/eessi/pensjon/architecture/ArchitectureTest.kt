@@ -40,7 +40,7 @@ class ArchitectureTest {
     fun `Check architecture`() {
         Architectures.layeredArchitecture()
                 .layer("App").definedBy("$root")
-                .layer("API").definedBy("$root.api..")
+                .layer("API").definedBy("$root.api..", "$root.personoppslag..")
                 .layer("Websockets").definedBy("$root.websocket..")
                 .layer("Listeners").definedBy("$root.listeners..")
                 .layer("Health").definedBy("$root.health..")

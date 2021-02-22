@@ -118,6 +118,7 @@ ldap:
 EESSI_PENSJON_FAGMODUL_URL: "http://localhost"
 SPRING_PROFILES_ACTIVE: "test"
 RINA_HOST_URL: "http://localhost"
+PDL_URL: "http://localhost"
 
 EESSI_PENSJON_FRONTEND_UI_URL: "http://localhost"
 EESSIPEN_EUX_RINA_URL: "http://localhost"

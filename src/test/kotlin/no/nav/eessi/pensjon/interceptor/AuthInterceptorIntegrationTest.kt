@@ -1,5 +1,9 @@
 package no.nav.eessi.pensjon.interceptor
 
+import com.nhaarman.mockitokotlin2.withSettings
+import no.nav.eessi.pensjon.personoppslag.aktoerregister.AktoerregisterService
+import no.nav.eessi.pensjon.personoppslag.pdl.PersonService
+import no.nav.eessi.pensjon.personoppslag.personv3.PersonV3Service
 import no.nav.eessi.pensjon.security.sts.STSService
 import no.nav.eessi.pensjon.services.ldap.BrukerInformasjonService
 import no.nav.eessi.pensjon.services.ldap.LdapServiceMock
@@ -14,6 +18,7 @@ import org.apache.http.impl.client.HttpClientBuilder
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.mockito.Mockito.mock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -349,6 +354,15 @@ class AuthInterceptorIntegrationTest() {
         fun storage(): StorageService {
             return StorageServiceMock()
         }
+
+        @Bean
+        fun personService() = mock(PersonService::class.java, withSettings(lenient = true))
+
+        @Bean
+        fun aktoerregisterService() = mock(AktoerregisterService::class.java, withSettings(lenient = true))
+
+        @Bean
+        fun personV3Service() = mock(PersonV3Service::class.java, withSettings(lenient = true))
 
     }
 
