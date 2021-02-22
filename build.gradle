@@ -144,7 +144,7 @@ dependencies {
     implementation('org.jsoup:jsoup:1.12.1')
 
     // Amazon S3
-    implementation("com.amazonaws:aws-java-sdk-s3:1.11.703")
+    implementation("com.amazonaws:aws-java-sdk-s3:1.11.959")
 
     // Micrometer
     implementation("io.micrometer:micrometer-registry-prometheus")
