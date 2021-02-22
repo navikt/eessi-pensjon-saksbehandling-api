@@ -6,12 +6,9 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import org.springframework.core.io.DefaultResourceLoader
-import org.springframework.util.ResourceUtils
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.util.*
-import kotlin.collections.HashMap
 
 class PdfServiceTest : PdfBaseTest() {
 

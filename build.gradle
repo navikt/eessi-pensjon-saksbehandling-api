@@ -135,7 +135,7 @@ dependencies {
     implementation("org.syslog4j:syslog4j:0.9.30")
 
     // PDF box
-    implementation("org.apache.pdfbox:pdfbox:2.0.18")
+    implementation("org.apache.pdfbox:pdfbox:2.0.22")
     implementation("com.openhtmltopdf:openhtmltopdf-core:${openhtmltopdfVersion}")
     implementation("com.openhtmltopdf:openhtmltopdf-pdfbox:${openhtmltopdfVersion}")
     implementation("com.openhtmltopdf:openhtmltopdf-jsoup-dom-converter:${openhtmltopdfVersion}") // deprecated
