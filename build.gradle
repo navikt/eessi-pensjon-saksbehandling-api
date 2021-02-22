@@ -145,7 +145,7 @@ dependencies {
 
     // Micrometer
     implementation("io.micrometer:micrometer-registry-prometheus")
-    implementation("no.nav.eessi.pensjon:ep-metrics:0.4.0")
+    implementation("no.nav.eessi.pensjon:ep-metrics:0.4.2")
     
     // OIDC
     implementation("no.nav.security:token-validation-spring:${oidcTokenSupportVersion}")
