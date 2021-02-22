@@ -2,7 +2,6 @@ package no.nav.eessi.pensjon.services.eux
 
 import no.nav.eessi.pensjon.api.eux.EuxController
 import no.nav.eessi.pensjon.services.BaseTest
-import no.nav.eessi.pensjon.services.fagmodul.NavRegistreOppslagService
 import org.junit.jupiter.api.BeforeEach
 import org.mockito.Mockito
 import org.springframework.boot.web.client.RestTemplateBuilder
@@ -16,7 +15,6 @@ open class EuxBaseTest : BaseTest() {
     lateinit var mockFagmodulRestTemplate: RestTemplate
     lateinit var euxController : EuxController
     lateinit var euxService: EuxService
-    lateinit var navRegistreService: NavRegistreOppslagService
 
     @BeforeEach
     fun _init() {
@@ -33,7 +31,6 @@ open class EuxBaseTest : BaseTest() {
         mockEuxRestTemplate = generateMockEuxRestTemplate()
 
         mockFagmodulRestTemplate = generateMockFagmodulRestTemplate()
-        navRegistreService = Mockito.spy(NavRegistreOppslagService(mockFagmodulRestTemplate))
         euxService = Mockito.spy(EuxService(mockEuxRestTemplate))
         euxController = Mockito.spy(EuxController(euxService))
     }
