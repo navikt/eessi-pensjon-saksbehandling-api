@@ -2,7 +2,7 @@ buildscript {
     ext {
         kotlinVersion = '1.4.30'
         springBootVersion = '2.3.0.RELEASE'
-        springfoxVersion = '3.0.0'
+        springfoxVersion = '2.10.5'
         jacksonVersion = '2.11.0'
         mockitoVersion = '3.3.3'
         oidcTokenSupportVersion = '1.1.6'
@@ -123,6 +123,7 @@ dependencies {
     // Swagger
     implementation("io.springfox:springfox-swagger2:${springfoxVersion}")
     implementation("io.springfox:springfox-swagger-ui:${springfoxVersion}")
+    implementation("io.springfox:springfox-data-rest:${springfoxVersion}")
 
     // Logging
     implementation("net.logstash.logback:logstash-logback-encoder:${logstashLogbackVersion}")
