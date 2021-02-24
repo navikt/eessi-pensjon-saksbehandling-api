@@ -8,7 +8,7 @@ buildscript {
         oidcTokenSupportVersion = '1.1.6'
         logstashLogbackVersion = '6.3'
         pac4jVersion = '4.0.1'
-        cxfVersion = '3.3.7'
+        cxfVersion = '3.4.2'
         openhtmltopdfVersion = '1.0.0'
     }
     repositories {
@@ -86,11 +86,11 @@ dependencies {
     implementation("no.nav.eessi.pensjon:ep-personoppslag:7.0.7")
 
     // Spring
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.boot:spring-boot-starter-aop")
-    implementation("org.springframework.boot:spring-boot-starter-actuator")
-    implementation('org.springframework.boot:spring-boot-starter-websocket')
-    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+    implementation("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
+    implementation("org.springframework.boot:spring-boot-starter-aop:${springBootVersion}")
+    implementation("org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}")
+    implementation("org.springframework.boot:spring-boot-starter-websocket:${springBootVersion}")
+    testImplementation("org.springframework.boot:spring-boot-starter-test:${springBootVersion}") {
         exclude module: 'junit'
         exclude module: "mockito-core"
         exclude module: "junit-vintage-engine"
