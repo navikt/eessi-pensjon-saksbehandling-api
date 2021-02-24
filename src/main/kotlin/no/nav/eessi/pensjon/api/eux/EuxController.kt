@@ -1,8 +1,9 @@
 package no.nav.eessi.pensjon.api.eux
 
-import no.nav.eessi.pensjon.services.eux.EuxService
+import no.nav.eessi.pensjon.eux.EuxService
+import no.nav.eessi.pensjon.eux.model.buc.BucType
 import no.nav.eessi.pensjon.utils.errorBody
-import no.nav.eessi.pensjon.utils.successBody
+import no.nav.eessi.pensjon.utils.toJson
 import no.nav.security.token.support.core.api.Protected
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
@@ -27,10 +28,14 @@ class EuxController(private val euxService: EuxService) {
     }
 
     @GetMapping("/institutions/{buctype}/{countrycode}")
-    fun getInstitutionsWithCountry(@PathVariable(value = "buctype", required = true) bucType: String,
-            @PathVariable(value = "countrycode", required = false) landkode: String = ""): ResponseEntity<String> {
+    fun getInstitutionsWithCountry(
+        @PathVariable(value = "buctype") bucType: BucType,
+        @PathVariable(value = "countrycode", required = false) landkode: String = ""
+    ): ResponseEntity<String> {
         return try {
-            euxService.getInstitusjoner(bucType, landkode)
+            val institusjoner = euxService.hentInstitusjoner(bucType, landkode)
+
+            ResponseEntity.ok(institusjoner.toJson())
         } catch (sce: HttpStatusCodeException) {
             ResponseEntity.status(sce.statusCode).body(errorBody(sce.responseBodyAsString))
         } catch (ex: Exception) {
@@ -39,25 +44,13 @@ class EuxController(private val euxService: EuxService) {
     }
 
     @GetMapping("/countries/{buctype}")
-    fun getPaakobledeland(@PathVariable(value = "buctype", required = true) bucType: String): ResponseEntity<String> {
+    fun getPaakobledeland(@PathVariable(value = "buctype") bucType: BucType): ResponseEntity<String> {
         return try {
-            ResponseEntity.ok().body(euxService.getPaakobledeLand(bucType))
-        } catch (sce: HttpStatusCodeException) {
-            ResponseEntity.status(sce.statusCode).body(errorBody(sce.responseBodyAsString))
-        } catch (ex: Exception) {
-            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorBody(ex.message))
-        }
-    }
+            val paakobledeLand = euxService.hentInstitusjoner(bucType)
+                .map { it.landkode }
+                .distinct()
 
-    /**
-     *  Sender valgt NavSed på rina med valgt documentid og bucid, ut til eu/eøs, ny api kall til eux
-     */
-    @GetMapping("/send/{euxcaseid}/{documentid}")
-    fun sendSed(@PathVariable("euxcaseid", required = true) euxCaseId: String,
-                @PathVariable("documentid", required = true) documentid: String):  ResponseEntity<String> {
-        return try {
-            euxService.sendDocumentById(euxCaseId, documentid)
-            ResponseEntity.ok().body(successBody())
+            ResponseEntity.ok(paakobledeLand.toJson())
         } catch (sce: HttpStatusCodeException) {
             ResponseEntity.status(sce.statusCode).body(errorBody(sce.responseBodyAsString))
         } catch (ex: Exception) {

@@ -41,6 +41,7 @@ class ArchitectureTest {
         Architectures.layeredArchitecture()
                 .layer("App").definedBy("$root")
                 .layer("API").definedBy("$root.api..", "$root.personoppslag..")
+                .layer("Eux").definedBy("$root.eux..")
                 .layer("Websockets").definedBy("$root.websocket..")
                 .layer("Listeners").definedBy("$root.listeners..")
                 .layer("Health").definedBy("$root.health..")
@@ -58,9 +59,9 @@ class ArchitectureTest {
                 .whereLayer("Websockets").mayOnlyBeAccessedByLayers("Listeners")
                 .whereLayer("Services").mayOnlyBeAccessedByLayers("API", "Interceptor")
                 .whereLayer("Config").mayOnlyBeAccessedByLayers("API")
-                .whereLayer("Security").mayOnlyBeAccessedByLayers("Services", "Config")
+                .whereLayer("Security").mayOnlyBeAccessedByLayers("Services", "Config", "Eux")
                 .whereLayer("Interceptor").mayOnlyBeAccessedByLayers("Config", "Logging")
-                .whereLayer("Logging").mayOnlyBeAccessedByLayers("API", "Config", "Interceptor", "Security")
+                .whereLayer("Logging").mayOnlyBeAccessedByLayers("API", "Config", "Interceptor", "Security", "Eux")
                 //Verify rules
                 .check(classesToAnalyze)
     }

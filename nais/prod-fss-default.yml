@@ -41,7 +41,7 @@ spec:
       value: https://login.microsoftonline.com/navnob2c.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1A_idporten
     - name: LOGINSERVICE_AGENT_NAME
       value: 45104d6a-f5bc-4e8c-b352-4bbfc9381f25
-    - name: EESSIPEN_EUX_RINA_URL
+    - name: EUX_RINA_API_V1_URL
       value: https://eux-rina-api.nais.adeo.no/cpi
     - name: AKTOERREGISTER_API_V1_URL
       value: https://app.adeo.no/aktoerregister/api/v1

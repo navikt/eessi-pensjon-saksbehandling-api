@@ -1,11 +1,13 @@
 package no.nav.eessi.pensjon.models
 
+import no.nav.eessi.pensjon.eux.model.buc.BucType
+import no.nav.eessi.pensjon.eux.model.sed.SedType
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.nio.file.Files
 import java.nio.file.Paths
 
-class SedHendelseModelTest {
+internal class SedHendelseModelTest {
 
     @Test
     fun `Gitt en gyldig SEDSendt json når mapping så skal alle felter mappes`() {
