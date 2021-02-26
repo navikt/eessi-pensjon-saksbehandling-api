@@ -43,6 +43,8 @@ spec:
       value: 45104d6a-f5bc-4e8c-b352-4bbfc9381f25
     - name: EESSIPEN_EUX_RINA_URL
       value: https://eux-rina-api.nais.adeo.no/cpi
+    - name: EUX_RINA_API_V1_URL
+      value: https://eux-rina-api.nais.adeo.no/cpi
     - name: AKTOERREGISTER_API_V1_URL
       value: https://app.adeo.no/aktoerregister/api/v1
     - name: APPDYNAMICS_CONTROLLER_HOST_NAME
