@@ -1,10 +1,7 @@
 package no.nav.eessi.pensjon.api.person
 
-import no.nav.eessi.pensjon.personoppslag.aktoerregister.AktoerregisterService
-import no.nav.eessi.pensjon.personoppslag.aktoerregister.IdentGruppe
-import no.nav.eessi.pensjon.personoppslag.aktoerregister.NorskIdent
-import no.nav.eessi.pensjon.services.fagmodul.NavRegistreOppslagService
-import no.nav.eessi.pensjon.services.fagmodul.PersonInformasjonException
+import no.nav.eessi.pensjon.personoppslag.pdl.PersonService
+import no.nav.eessi.pensjon.personoppslag.pdl.model.AktoerId
 import no.nav.eessi.pensjon.utils.errorBody
 import no.nav.eessi.pensjon.utils.mapAnyToJson
 import no.nav.security.token.support.core.api.Protected
@@ -12,25 +9,42 @@ import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.HttpStatusCodeException
 
+/**
+ * Denne kontrolleren brukes av eessi-pensjon-selvbetjening-api
+ *
+ * Burde flyttes ut av dette prosjektet og over i et eget fss-prosjekt hvor det gir mer mening.
+ */
 @Protected
 @RestController
-class NavRegistreOppslagController(val navRegistreOppslagService: NavRegistreOppslagService,
-                                   val aktoerregisterService: AktoerregisterService) {
+class NavRegistreOppslagController(private val personService: PersonService) {
 
     private val logger = LoggerFactory.getLogger(NavRegistreOppslagController::class.java)
 
     @GetMapping(value = ["/personinfo/{aktoerId}"], produces = [MediaType.APPLICATION_JSON_VALUE])
     fun getDocument(@PathVariable(required = true) aktoerId: String): ResponseEntity<String> {
-        logger.info("Henter personinformasjon for $aktoerId")
-        return try{
-            ResponseEntity.ok().body(mapAnyToJson(navRegistreOppslagService.hentPersoninformasjon(aktoerId)!!))
-        }catch(pe: PersonInformasjonException){
-            logger.error("Klarte ikke å hente personinformasjon, ${pe.message}")
+        logger.info("Henter personinformasjon fra PDL for AkterId=$aktoerId")
+
+        return try {
+            val navn = personService.hentPerson(AktoerId(aktoerId))!!.navn!!
+
+            val person = Personinformasjon(
+                fulltNavn = navn.sammensattNavn,
+                fornavn = navn.fornavn,
+                mellomnavn = navn.mellomnavn,
+                etternavn = navn.etternavn
+            )
+
+            ResponseEntity.ok(mapAnyToJson(person))
+        } catch(ex: Exception) {
+            logger.error("Klarte ikke å hente personinformasjon fra PDL: ", ex)
+
             ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(errorBody("Klarte ikke å hente personinformasjon, ${pe.message}"))
+                .body(errorBody("Klarte ikke å hente personinformasjon, ${ex.message}"))
         }
     }
 
@@ -41,15 +55,10 @@ class NavRegistreOppslagController(val navRegistreOppslagService: NavRegistreOpp
                 ResponseEntity.badRequest().body("blankt fnr")
             } else {
                 runCatching {
-                    aktoerregisterService.hentGjeldendeIdent(IdentGruppe.AktoerId, NorskIdent(fnr))
+                    personService.hentAktorId(fnr)
                 }.fold({ ident ->
-                    if (ident != null) {
-                        logger.info("Returnerer gjeldende aktoerId for fnr")
-                        ResponseEntity.ok().body(ident.id)
-                    } else {
-                        logger.info("Fant ikke aktoerId for fnr")
-                        ResponseEntity.notFound().build<String>()
-                    }
+                    logger.info("Returnerer gjeldende aktoerId for fnr")
+                    ResponseEntity.ok(ident.id)
                 }, { exception: Throwable ->
                     logger.error("Feil ved henting av AktoerId med $exception cause: ${exception.cause}", exception)
                     if (exception.cause != null && exception.cause is HttpStatusCodeException) {
@@ -61,3 +70,10 @@ class NavRegistreOppslagController(val navRegistreOppslagService: NavRegistreOpp
                 })
             }
 }
+
+data class Personinformasjon(
+    var fulltNavn: String,
+    var fornavn: String,
+    var mellomnavn: String? = null,
+    var etternavn: String
+)

@@ -10,16 +10,12 @@ import org.springframework.web.client.RestTemplate
 open class FagmodulBaseTest : BaseTest() {
 
     lateinit var mockFagmodulRestTemplate: RestTemplate
-    lateinit var navRegistreOppslagService: NavRegistreOppslagService
     lateinit var pensjonController: PensjonController
 
 
     @BeforeEach
     fun _init() {
-
         mockFagmodulRestTemplate = generateMockFagmodulRestTemplate()
-        navRegistreOppslagService = Mockito.spy(NavRegistreOppslagService(mockFagmodulRestTemplate))
-        navRegistreOppslagService.initMetrics()
         pensjonController = Mockito.spy(PensjonController(mockFagmodulRestTemplate))
     }
 

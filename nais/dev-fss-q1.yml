@@ -15,6 +15,8 @@ spec:
       value: https://pensjon-utland-q1.nais.preprod.local
     - name: RINA_HOST_URL
       value: rina-ss3-q.adeo.no
+    - name: PDL_URL
+      value: https://pdl-api.nais.preprod.local/graphql
     - name: S3_FSS_URL
       value: http://objectstore.rook-ceph.svc.nais.local
     - name: NAV_DOMAIN_URL

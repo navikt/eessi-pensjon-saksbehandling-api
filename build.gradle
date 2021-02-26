@@ -76,14 +76,11 @@ jar {
 }
 
 dependencies {
-    // Tjenestespesifikasjoner
-    implementation("no.nav.tjenestespesifikasjoner:nav-fim-behandleJournal-v3-tjenestespesifikasjon:1.2020.01.30-14.36-cdf257baea96")
-
 //  Se VarselService for årsak til utkommentering
 //  implementation('no.nav.meldinger.virksomhet:nav-virksomhet-varsel-v1-meldingsdefinisjon:1.1.1:jaxb')
 
     // Personoppslag
-    implementation("no.nav.eessi.pensjon:ep-personoppslag:7.0.7")
+    implementation("no.nav.eessi.pensjon:ep-personoppslag:7.1.24")
 
     // Spring
     implementation("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
@@ -126,7 +123,7 @@ dependencies {
     implementation("net.logstash.logback:logstash-logback-encoder:${logstashLogbackVersion}")
     configurations { all*.exclude group: 'commons-logging', module: 'commons-logging' }
     implementation group: 'org.slf4j', name: 'jcl-over-slf4j'
-    implementation("no.nav.eessi.pensjon:ep-logging:1.0.6")
+    implementation("no.nav.eessi.pensjon:ep-logging:1.0.9")
 
     // auditlogger syslog
     implementation("com.papertrailapp:logback-syslog4j:1.0.0")
@@ -143,8 +140,8 @@ dependencies {
 
     // Micrometer
     implementation("io.micrometer:micrometer-registry-prometheus")
-    implementation("no.nav.eessi.pensjon:ep-metrics:0.4.0")
-    
+    implementation("no.nav.eessi.pensjon:ep-metrics:0.4.6")
+
     // OIDC
     implementation("no.nav.security:token-validation-spring:${oidcTokenSupportVersion}")
     implementation("no.nav.security:token-validation-jaxrs:${oidcTokenSupportVersion}")
@@ -157,7 +154,7 @@ dependencies {
     implementation("org.pac4j:pac4j-core:${pac4jVersion}")
 
     // STS
-    implementation("no.nav.eessi.pensjon:ep-security-sts:0.0.10")
+    implementation("no.nav.eessi.pensjon:ep-security-sts:0.0.16")
 
     //mock
     testImplementation("org.mockito:mockito-core:${mockitoVersion}")
@@ -190,15 +187,14 @@ dependencies {
 repositories {
     mavenCentral()
 
-    ["maven-release","tjenestespesifikasjoner","ep-metrics"].each { repo ->
-        String token = System.getenv("GITHUB_TOKEN") ?: project.findProperty("gpr.key")
-        if (!token) throw new NullPointerException("Missing token, you have to set GITHUB_TOKEN or gpr.key, see README")
-        maven {
-            url = uri("https://maven.pkg.github.com/navikt/$repo")
-            credentials {
-                username = "token"
-                password = token
-            }
+    String token = System.getenv("GITHUB_TOKEN") ?: project.findProperty("gpr.key")
+    if (!token) throw new NullPointerException("Missing token, you have to set GITHUB_TOKEN or gpr.key, see README")
+
+    maven {
+        url = uri("https://maven.pkg.github.com/navikt/maven-release")
+        credentials {
+            username = "token"
+            password = token
         }
     }
 }
