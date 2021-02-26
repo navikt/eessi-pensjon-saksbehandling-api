@@ -1,6 +1,5 @@
 package no.nav.eessi.pensjon.interceptor
 
-import no.nav.eessi.pensjon.logging.AuditLogger
 import no.nav.eessi.pensjon.services.auth.AdRolle
 import no.nav.eessi.pensjon.services.auth.AuthorisationService
 import no.nav.eessi.pensjon.services.auth.EessiPensjonTilgang
@@ -21,8 +20,8 @@ import javax.servlet.http.HttpServletResponse
 @Component
 class AuthInterceptor(private val ldapService: BrukerInformasjonService,
                       private val authorisationService: AuthorisationService,
-                      private val tokenValidationContextHolder: TokenValidationContextHolder,
-                      private val auditLogger: AuditLogger) : HandlerInterceptor, Ordered {
+                      private val tokenValidationContextHolder: TokenValidationContextHolder
+                      ) : HandlerInterceptor, Ordered {
 
     private val logger = LoggerFactory.getLogger(AuthInterceptor::class.java)
     private val ugyldigToken = "UNAUTHORIZED"
@@ -77,7 +76,6 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
                 if( authorisationService.harTilgangTilEessiPensjon(adRoller).not() ) {
                     // Ikke tilgang til EESSI-Pensjon
                     logger.warn("Bruker har ikke korrekt tilganger vi avviser med $avvistIdent")
-                    auditLogger.log("sjekkTilgangTilEessiPensjonTjeneste, INGEN TILGANG")
                     throw AuthorisationIkkeTilgangTilEeessiPensjonException("Du har ikke tilgang til EESSI-Pensjon")
                 }
                 logger.debug("Saksbehandler tilgang til EESSI-Pensjon er i orden")

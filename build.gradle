@@ -125,10 +125,6 @@ dependencies {
     implementation group: 'org.slf4j', name: 'jcl-over-slf4j'
     implementation("no.nav.eessi.pensjon:ep-logging:1.0.9")
 
-    // auditlogger syslog
-    implementation("com.papertrailapp:logback-syslog4j:1.0.0")
-    implementation("org.syslog4j:syslog4j:0.9.30")
-
     // PDF box
     implementation("org.apache.pdfbox:pdfbox:2.0.22")
     implementation("com.openhtmltopdf:openhtmltopdf-core:${openhtmltopdfVersion}")

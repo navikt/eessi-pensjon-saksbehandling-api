@@ -3,7 +3,6 @@ package no.nav.eessi.pensjon.services
 
 import com.unboundid.ldap.listener.InMemoryDirectoryServer
 import com.unboundid.ldap.listener.InMemoryDirectoryServerConfig
-import no.nav.eessi.pensjon.logging.AuditLogger
 import no.nav.eessi.pensjon.services.ldap.LdapKlient
 import no.nav.eessi.pensjon.services.ldap.LdapService
 import no.nav.security.token.support.test.spring.TokenGeneratorConfiguration
@@ -40,8 +39,6 @@ open class BaseTest {
 
     @Value("\${ldapServerPort}")
     lateinit var ldapServerPort: String
-
-    lateinit var auditLogger: AuditLogger
 
     @Test
     fun dummy() {

@@ -9,21 +9,6 @@
                 <includeCallerData>true</includeCallerData>
             </encoder>
         </appender>
-        <appender name="auditLogger" class="com.papertrailapp.logback.Syslog4jAppender">
-            <layout class="ch.qos.logback.classic.PatternLayout">
-                <pattern>[%d{"yyyy-MM-dd'T'HH:mm:ss,SSSXXX", UTC} %level] %logger{15} : %m%n%xEx</pattern>
-            </layout>
-            <syslogConfig class="org.productivity.java.syslog4j.impl.net.tcp.TCPNetSyslogConfig">
-                <host>audit.nais</host>
-                <port>6514</port>
-                <ident>eessi-pensjon-frontend-api-fss</ident>
-                <maxMessageLength>128000</maxMessageLength>
-            </syslogConfig>
-        </appender>
-
-        <logger level="INFO" name="auditLogger" additivity="false">
-            <appender-ref ref="auditLogger" />
-        </logger>
 
         <logger name="org" level="ERROR"/>
         <logger name="com" level="ERROR"/>
@@ -41,21 +26,6 @@
                 <includeCallerData>true</includeCallerData>
             </encoder>
         </appender>
-        <appender name="auditLogger" class="com.papertrailapp.logback.Syslog4jAppender">
-            <layout class="ch.qos.logback.classic.PatternLayout">
-                <pattern>[%d{"yyyy-MM-dd'T'HH:mm:ss,SSSXXX", UTC} %level] %logger{15} : %mdc - %m%n%xEx</pattern>
-            </layout>
-            <syslogConfig class="org.productivity.java.syslog4j.impl.net.tcp.TCPNetSyslogConfig">
-                <host>audit.nais</host>
-                <port>6514</port>
-                <ident>eessi-pensjon-frontend-api-fss</ident>
-                <maxMessageLength>128000</maxMessageLength>
-            </syslogConfig>
-        </appender>
-
-        <logger level="INFO" name="auditLogger" additivity="false">
-            <appender-ref ref="auditLogger" />
-        </logger>
 
         <logger name="org" level="INFO"/>
         <logger name="com" level="INFO"/>
