@@ -31,29 +31,11 @@ class RestTemplateConfig(val restTemplateBuilder: RestTemplateBuilder,
     @Value("\${eessi_pensjon_fagmodul_url}")
     lateinit var fagmodulUrl: String
 
-    @Value("\${eessipen-eux-rina.url}")
-    lateinit var euxrinaapi: String
-
     @Value("\${aktoerregister.api.v1.url}")
     lateinit var url: String
 
     @Autowired
     lateinit var meterRegistry: MeterRegistry
-
-    @Bean
-    fun euxRestTemplate(): RestTemplate {
-        return restTemplateBuilder
-                .rootUri(euxrinaapi)
-                .errorHandler(DefaultResponseErrorHandler())
-                .additionalInterceptors(
-                        RequestIdHeaderInterceptor(),
-                        RequestCountInterceptor(meterRegistry),
-                        TokenHeaderRequestInterceptor(tokenValidationContextHolder),
-                        RequestResponseLoggerInterceptor())
-                .build().apply {
-                    requestFactory = BufferingClientHttpRequestFactory(SimpleClientHttpRequestFactory())
-                }
-    }
 
     @Bean
     //denne skal benytte OidcHeaderRequestInterceptor for kall til fagmodulen osv.. som kan kalle direkte.
