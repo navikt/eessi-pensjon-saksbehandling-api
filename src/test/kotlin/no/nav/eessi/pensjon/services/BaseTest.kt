@@ -3,13 +3,13 @@ package no.nav.eessi.pensjon.services
 
 import com.unboundid.ldap.listener.InMemoryDirectoryServer
 import com.unboundid.ldap.listener.InMemoryDirectoryServerConfig
+import io.mockk.spyk
 import no.nav.eessi.pensjon.services.ldap.LdapKlient
 import no.nav.eessi.pensjon.services.ldap.LdapService
 import no.nav.security.token.support.test.spring.TokenGeneratorConfiguration
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.context.annotation.Import
@@ -67,7 +67,7 @@ open class BaseTest {
             .errorHandler(DefaultResponseErrorHandler())
             .additionalInterceptors()
             .build()
-        return Mockito.spy(fagmodulRestTemplate)
+        return spyk(fagmodulRestTemplate)
     }
 
     fun generateMockSaksbehandlerLdapService(): LdapService {

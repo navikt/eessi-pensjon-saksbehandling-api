@@ -1,30 +1,29 @@
 package no.nav.eessi.pensjon.interceptor
 
+import io.mockk.every
+import io.mockk.junit5.MockKExtension
+import io.mockk.mockk
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.doReturn
-import org.mockito.Mockito.mock
-import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.client.ClientHttpRequestExecution
 import org.springframework.mock.http.client.MockClientHttpResponse
 
-@ExtendWith(MockitoExtension::class)
+@ExtendWith(MockKExtension::class)
 class ApigwHeaderRequestInterceptorTest {
 
     val apigwHeaderRequestInterceptor = ApigwHeaderRequestInterceptor("MockApiKey")
 
     @Test
     fun `intercept adds x-nav-apiKey to header`() {
-        val request = mock(HttpRequest::class.java)
+        val request = mockk<HttpRequest>()
         val body = byteArrayOf()
-        val execution = mock(ClientHttpRequestExecution::class.java)
+        val execution = mockk<ClientHttpRequestExecution>()
 
-        doReturn(HttpHeaders()).`when`(request).headers
-        doReturn(MockClientHttpResponse(body, HttpStatus.OK)).`when`(execution).execute(any(), any())
+        every { request.headers } returns HttpHeaders()
+        every { execution.execute(any(), any()) } returns MockClientHttpResponse(body, HttpStatus.OK)
 
         apigwHeaderRequestInterceptor.intercept(request, body, execution)
 

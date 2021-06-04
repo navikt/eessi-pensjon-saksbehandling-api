@@ -4,15 +4,12 @@ import com.amazonaws.AmazonClientException
 import com.amazonaws.AmazonServiceException
 import com.amazonaws.services.s3.model.AmazonS3Exception
 import com.amazonaws.services.s3.model.ListObjectsV2Request
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.doThrow
-import com.nhaarman.mockitokotlin2.whenever
+import io.mockk.every
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import org.mockito.Mockito
 import java.time.LocalDateTime
 
 class StorageServiceTest : S3StorageBaseTest() {
@@ -21,7 +18,6 @@ class StorageServiceTest : S3StorageBaseTest() {
 
     @AfterEach
     fun cleanUpTest() {
-        Mockito.reset(s3storageService)
     }
 
     @Test
@@ -121,7 +117,7 @@ class StorageServiceTest : S3StorageBaseTest() {
         val expectedError = AmazonServiceException("errorMessage")
         expectedError.statusCode = 500
 
-        doThrow(expectedError).whenever(s3MockClient).listObjectsV2(any<ListObjectsV2Request>())
+        every { s3MockClient.listObjectsV2(any<ListObjectsV2Request>()) } throws expectedError
 
         assertThrows<AmazonClientException> {
             s3storageService.list(prefix)
@@ -162,7 +158,9 @@ class StorageServiceTest : S3StorageBaseTest() {
         val expectedError = AmazonServiceException("errorMessage")
         expectedError.statusCode = 500
 
-        doThrow(expectedError).whenever(s3MockClient).getObject(any<String>(), any<String>())
+        every { s3MockClient.getObject(any<String>(), any<String>())} throws expectedError
+
+
         assertThrows<AmazonClientException> {
             s3storageService.get(path1)
         }
@@ -207,7 +205,8 @@ class StorageServiceTest : S3StorageBaseTest() {
         val expectedError = AmazonServiceException("errorMessage")
         expectedError.statusCode = 500
 
-        doThrow(expectedError).whenever(s3MockClient).deleteObject(any<String>(), any<String>())
+        //doThrow(expectedError).whenever(s3MockClient).deleteObject(any<String>(), any<String>())
+        every { s3MockClient.deleteObject(any<String>(), any<String>()) } throws expectedError
 
         assertThrows<AmazonClientException> {
             s3storageService.delete(path1)
@@ -251,7 +250,8 @@ class StorageServiceTest : S3StorageBaseTest() {
         val expectedError = AmazonServiceException("errorMessage")
         expectedError.statusCode = 500
 
-        doThrow(expectedError).whenever(s3MockClient).putObject(any<String>(), any<String>(), any<String>())
+        //doThrow(expectedError).whenever(s3MockClient).putObject(any<String>(), any<String>(), any<String>())
+        every { s3MockClient.putObject(any(), any(), any<String>()) } throws expectedError
 
         assertThrows<AmazonClientException> {
             s3storageService.put(path1, content)

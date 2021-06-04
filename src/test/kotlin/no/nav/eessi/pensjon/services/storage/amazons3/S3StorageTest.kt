@@ -6,17 +6,17 @@ import com.amazonaws.client.builder.AwsClientBuilder
 import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.AmazonS3ClientBuilder
 import io.findify.s3mock.S3Mock
+import io.mockk.junit5.MockKExtension
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.junit.jupiter.MockitoExtension
 import java.net.ServerSocket
 import java.time.LocalDateTime
 
 
-@ExtendWith(MockitoExtension::class)
+@ExtendWith(MockKExtension::class)
 class S3StorageTest {
 
     private lateinit var storage: S3Storage

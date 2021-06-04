@@ -1,7 +1,8 @@
 package no.nav.eessi.pensjon.api.userinfo
 
-import com.nhaarman.mockitokotlin2.doReturn
 import com.nimbusds.jwt.JWTClaimsSet
+import io.mockk.every
+import io.mockk.spyk
 import no.nav.eessi.pensjon.config.FeatureToggle
 import no.nav.eessi.pensjon.services.storage.S3StorageBaseTest
 import no.nav.eessi.pensjon.utils.mapAnyToJson
@@ -12,7 +13,6 @@ import no.nav.security.token.support.spring.SpringTokenValidationContextHolder
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito
 import org.springframework.http.ResponseEntity
 import java.util.*
 
@@ -26,7 +26,7 @@ class UserInfoControllerTest : S3StorageBaseTest() {
     fun mockSetup() {
         toggleMock = FeatureToggle()
         toggleMock.setCurrentEnv("q2")
-        userInfoController = Mockito.spy(UserInfoController(toggleMock, SpringTokenValidationContextHolder()))
+        userInfoController = spyk(UserInfoController(toggleMock, SpringTokenValidationContextHolder()))
     }
 
     @Test fun `Calling UserInfoController getUserInfo in Q2 returns OK response`() {
@@ -117,10 +117,9 @@ class UserInfoControllerTest : S3StorageBaseTest() {
             .claim("http://example.com/is_root", true)
             .build()
         val twtToken = JwtTokenClaims(claimsSet)
-        Mockito.spy(twtToken)
+        spyk(twtToken)
 
-        doReturn(subject).`when`(userInfoController).getSubjectFromToken()
-        doReturn(twtToken).`when`(userInfoController).getClaims()
+        every { userInfoController.getSubjectFromToken() } returns subject
+        every { userInfoController.getClaims() } returns twtToken
     }
-
 }

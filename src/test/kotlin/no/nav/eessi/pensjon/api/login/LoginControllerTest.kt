@@ -1,28 +1,28 @@
 package no.nav.eessi.pensjon.api.login
 
-import com.nhaarman.mockitokotlin2.verify
+import io.mockk.impl.annotations.MockK
+import io.mockk.impl.annotations.SpyK
+import io.mockk.junit5.MockKExtension
+import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.Mock
-import org.mockito.Spy
-import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.mock.web.MockHttpServletResponse
 
-@ExtendWith(MockitoExtension::class)
+@ExtendWith(MockKExtension::class)
 class FssLoginControllerTest {
 
-    @Spy
-    lateinit var resp : MockHttpServletResponse
+    @SpyK
+    var resp = MockHttpServletResponse()
 
-    @Mock
-    lateinit var req : MockHttpServletRequest
+    @MockK
+    lateinit var req: MockHttpServletRequest
 
     lateinit var fssLoginController: LoginController
 
     @BeforeEach
-    fun before(){
+    fun before() {
         fssLoginController = LoginController()
         fssLoginController.appName = "eessi-pensjon-frontend-api-fss"
     }
@@ -35,7 +35,7 @@ class FssLoginControllerTest {
         fssLoginController.login(req, resp, "somewhere", "somecontext")
 
 
-        verify(resp).sendRedirect("https://eessi-pensjon-frontend-api-fss-q1.domain/openamlogin?redirect=somewhere&context=somecontext")
+        verify(atLeast = 1) { resp.sendRedirect("https://eessi-pensjon-frontend-api-fss-q1.domain/openamlogin?redirect=somewhere&context=somecontext") }
     }
 
     @Test
@@ -45,7 +45,7 @@ class FssLoginControllerTest {
 
         fssLoginController.login(req, resp, "somewhere", "somecontext")
 
-        verify(resp).sendRedirect("https://eessi-pensjon-frontend-api-fss-q2.domain/openamlogin?redirect=somewhere&context=somecontext")
+        verify(atLeast = 1) { resp.sendRedirect("https://eessi-pensjon-frontend-api-fss-q2.domain/openamlogin?redirect=somewhere&context=somecontext") }
     }
 
 
@@ -56,7 +56,7 @@ class FssLoginControllerTest {
 
         fssLoginController.login(req, resp, "somewhereelse", "somecontext")
 
-        verify(resp).sendRedirect("https://${fssLoginController.appName}.nais.adeo.no/openamlogin?redirect=somewhereelse&context=somecontext")
+        verify(atLeast = 1) { resp.sendRedirect("https://${fssLoginController.appName}.nais.adeo.no/openamlogin?redirect=somewhereelse&context=somecontext") }
     }
 
     @Test
@@ -66,6 +66,6 @@ class FssLoginControllerTest {
 
         fssLoginController.login(req, resp, "somewhereelse", "somecontext")
 
-        verify(resp).sendRedirect("https://${fssLoginController.appName}-q2.nais.preprod.local/openamlogin?redirect=somewhereelse&context=somecontext")
+        verify(atLeast = 1) { resp.sendRedirect("https://${fssLoginController.appName}-q2.nais.preprod.local/openamlogin?redirect=somewhereelse&context=somecontext") }
     }
 }
