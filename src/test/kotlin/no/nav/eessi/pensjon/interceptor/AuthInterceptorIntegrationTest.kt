@@ -1,6 +1,7 @@
 package no.nav.eessi.pensjon.interceptor
 
-import com.nhaarman.mockitokotlin2.withSettings
+import com.ninjasquad.springmockk.MockkBean
+import io.mockk.mockk
 import no.nav.eessi.pensjon.personoppslag.aktoerregister.AktoerregisterService
 import no.nav.eessi.pensjon.personoppslag.pdl.PersonService
 import no.nav.eessi.pensjon.personoppslag.personv3.PersonV3Service
@@ -18,10 +19,8 @@ import org.apache.http.impl.client.HttpClientBuilder
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import org.mockito.Mockito.mock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.TestConfiguration
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Import
@@ -42,8 +41,33 @@ class AuthInterceptorIntegrationTest() {
     @LocalServerPort
     private lateinit var port: String
 
-    @MockBean
+    @MockkBean(relaxed = true)
     lateinit var stsService: STSService
+
+    @TestConfiguration
+    class TestConfig{
+
+        @Bean
+        fun ldapService(): BrukerInformasjonService {
+            return LdapServiceMock()
+        }
+
+        @Bean
+        fun storage(): StorageService {
+            return StorageServiceMock()
+        }
+
+        @Bean
+        fun personService() = mockk<PersonService>(relaxed = true)
+
+        @Bean
+        fun aktoerregisterService() = mockk<AktoerregisterService>(relaxed = true)
+
+        @Bean
+        fun personV3Service() = mockk<PersonV3Service>(relaxed = true)
+
+    }
+
 
     /**
     * For test kan man lage brukere som gir tilganger etter følgende regler
@@ -340,30 +364,6 @@ class AuthInterceptorIntegrationTest() {
         val statusCode: Int = responseGetDocument.statusLine.statusCode
 
         Assertions.assertEquals(HttpStatus.SC_FORBIDDEN, statusCode)
-    }
-
-    @TestConfiguration
-    class TestConfig{
-
-        @Bean
-        fun ldapService(): BrukerInformasjonService {
-            return LdapServiceMock()
-        }
-
-        @Bean
-        fun storage(): StorageService {
-            return StorageServiceMock()
-        }
-
-        @Bean
-        fun personService() = mock(PersonService::class.java, withSettings(lenient = true))
-
-        @Bean
-        fun aktoerregisterService() = mock(AktoerregisterService::class.java, withSettings(lenient = true))
-
-        @Bean
-        fun personV3Service() = mock(PersonV3Service::class.java, withSettings(lenient = true))
-
     }
 
     //Mock StorageService da vi ikke skal teste selve s3 men kun tilgang eller ikke

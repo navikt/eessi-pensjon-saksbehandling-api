@@ -2,32 +2,30 @@ package no.nav.eessi.pensjon.websocket
 
 import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.nhaarman.mockitokotlin2.doNothing
+import io.mockk.every
+import io.mockk.impl.annotations.MockK
+import io.mockk.junit5.MockKExtension
+import io.mockk.justRun
+import io.mockk.mockk
+import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import org.mockito.Mockito.*
-import org.mockito.exceptions.base.MockitoException
-import org.mockito.junit.jupiter.MockitoExtension
-import org.springframework.web.socket.*
+import org.junit.jupiter.api.extension.ExtendWith
+import org.springframework.web.socket.CloseStatus
+import org.springframework.web.socket.TextMessage
+import org.springframework.web.socket.WebSocketSession
 
 
-@ExtendWith(MockitoExtension::class)
+@ExtendWith(MockKExtension::class)
 class SocketTextHandlerTest {
     private val mapper = ObjectMapper()
 
-
     val socketTextHandler = SocketTextHandler()
+
+    @MockK(relaxed = true)
     lateinit var mockWebSocketSession: WebSocketSession
-
-
-    @BeforeEach
-    fun setup() {
-        mockWebSocketSession = mock(WebSocketSession::class.java)
-    }
 
     @Test
     fun `handleTextMessage sets subscriptions in session attributes when it gets valid message`() {
@@ -38,8 +36,8 @@ class SocketTextHandlerTest {
 
         val textMessage = TextMessage(mockJson)
 
-        doReturn(mutableMapOf<String, Any>()).`when`(mockWebSocketSession).attributes
-        doNothing().`when`(mockWebSocketSession).sendMessage(any(WebSocketMessage::class.java))
+        every { mockWebSocketSession.attributes } returns mutableMapOf<String, Any>()
+        justRun { mockWebSocketSession.sendMessage(any()) }
 
         socketTextHandler.handleTextMessage(mockWebSocketSession, textMessage)
         assertEquals(subscribers, mockWebSocketSession.attributes["subscriptions"])
@@ -54,7 +52,7 @@ class SocketTextHandlerTest {
 
         val textMessage = TextMessage(mockJson)
 
-        doReturn(mutableMapOf<String, Any>()).`when`(mockWebSocketSession).attributes
+        every { mockWebSocketSession.attributes } returns mutableMapOf<String, Any>()
 
         socketTextHandler.handleTextMessage(mockWebSocketSession, textMessage)
         assertNull(mockWebSocketSession.attributes["subscriptions"])
@@ -75,8 +73,8 @@ class SocketTextHandlerTest {
 
         val textMessage = TextMessage(mockJson)
 
-        doReturn(mutableMapOf<String, Any>()).`when`(mockWebSocketSession).attributes
-        doThrow(MockitoException::class.java).`when`(mockWebSocketSession).sendMessage(any(WebSocketMessage::class.java))
+        every { mockWebSocketSession.attributes } returns mutableMapOf<String, Any>()
+        every { mockWebSocketSession.sendMessage(any()) } throws RuntimeException("")
 
         assertThrows<Exception> { socketTextHandler.handleTextMessage(mockWebSocketSession, textMessage) }
     }
@@ -101,25 +99,29 @@ class SocketTextHandlerTest {
 
         socketTextHandler.fasitEnvironmentName = "p"
 
-        val firstSession = mock(WebSocketSession::class.java)
-        val secondSession = mock(WebSocketSession::class.java)
-        val thirdSession = mock(WebSocketSession::class.java)
+        val firstSession = mockk<WebSocketSession>()
+        val secondSession = mockk<WebSocketSession>()
+        val thirdSession = mockk<WebSocketSession>()
 
-        doReturn(mutableMapOf<String, Any>()).`when`(firstSession).attributes
-        doReturn("firstSessionId").`when`(firstSession).id
-        doNothing().`when`(firstSession).sendMessage(any(WebSocketMessage::class.java))
+        every { firstSession.attributes } returns mutableMapOf<String, Any>()
+        every { firstSession.id } returns "firstSessionId"
+        justRun { firstSession.sendMessage(any()) }
+
         socketTextHandler.afterConnectionEstablished(firstSession)
         socketTextHandler.handleTextMessage(firstSession, firstSessionTextMessage)
 
-        doReturn(mutableMapOf<String, Any>()).`when`(secondSession).attributes
-        doReturn("secondSessionId").`when`(secondSession).id
-        doNothing().`when`(secondSession).sendMessage(any(WebSocketMessage::class.java))
+        every { secondSession.attributes } returns mutableMapOf<String, Any>()
+        every { secondSession.id } returns "secondSessionId"
+        justRun { secondSession.sendMessage(any()) }
+
+
         socketTextHandler.afterConnectionEstablished(secondSession)
         socketTextHandler.handleTextMessage(secondSession, secondSessionTextMessage)
 
-        doReturn(mutableMapOf<String, Any>()).`when`(thirdSession).attributes
-        doReturn("thirdSessionId").`when`(thirdSession).id
-        doNothing().`when`(thirdSession).sendMessage(any(WebSocketMessage::class.java))
+        every { thirdSession.attributes } returns mutableMapOf<String, Any>()
+        every { thirdSession.id } returns "thirdSessionId"
+        justRun { thirdSession.sendMessage(any()) }
+
         socketTextHandler.afterConnectionEstablished(thirdSession)
         socketTextHandler.handleTextMessage(thirdSession, thirdSessionTextMessage)
 
@@ -127,17 +129,20 @@ class SocketTextHandlerTest {
         socketTextHandler.alertSubscribers("mockCaseNumber1", "FirstSubject")
         socketTextHandler.alertSubscribers("mockCaseNumber2", "SecondSubject")
 
-        verify(firstSession).sendMessage(TextMessage("{ \"subscriptions\" : true }" ))
-        verify(firstSession).sendMessage(TextMessage("{\"bucUpdated\": {\"caseId\": \"mockCaseNumber1\"}}"))
-        verify(firstSession).sendMessage(TextMessage("{\"bucUpdated\": {\"caseId\": \"mockCaseNumber2\"}}"))
+        verify() { firstSession.sendMessage(TextMessage("{ \"subscriptions\" : true }")) }
+        verify() { firstSession.sendMessage(TextMessage("{\"bucUpdated\": {\"caseId\": \"mockCaseNumber1\"}}")) }
+        verify() { firstSession.sendMessage(TextMessage("{\"bucUpdated\": {\"caseId\": \"mockCaseNumber2\"}}")) }
 
-        verify(secondSession).sendMessage(TextMessage("{ \"subscriptions\" : true }" ))
-        verify(secondSession).sendMessage(TextMessage("{\"bucUpdated\": {\"caseId\": \"mockCaseNumber1\"}}"))
-        verify(secondSession, times(0)).sendMessage(TextMessage("{\"bucUpdated\": {\"caseId\": \"mockCaseNumber2\"}}"))
+        verify() { secondSession.sendMessage(TextMessage("{ \"subscriptions\" : true }")) }
+        verify() { secondSession.sendMessage(TextMessage("{\"bucUpdated\": {\"caseId\": \"mockCaseNumber1\"}}")) }
+        verify(exactly = 0) { secondSession.sendMessage(TextMessage("{\"bucUpdated\": {\"caseId\": \"mockCaseNumber2\"}}")) }
 
-        verify(thirdSession).sendMessage(TextMessage("{ \"subscriptions\" : true }" ))
-        verify(thirdSession, times(0)).sendMessage(TextMessage("{\"bucUpdated\": {\"caseId\": \"mockCaseNumber1\"}}"))
-        verify(thirdSession).sendMessage(TextMessage("{\"bucUpdated\": {\"caseId\": \"mockCaseNumber2\"}}"))
+        verify() { thirdSession.sendMessage(TextMessage("{ \"subscriptions\" : true }")) }
+        verify(exactly = 0) { thirdSession.sendMessage(TextMessage("{\"bucUpdated\": {\"caseId\": \"mockCaseNumber1\"}}")) }
+        verify() { thirdSession.sendMessage(TextMessage("{\"bucUpdated\": {\"caseId\": \"mockCaseNumber2\"}}")) }
+
+
+
     }
 
     @Test
@@ -154,11 +159,12 @@ class SocketTextHandlerTest {
 
         socketTextHandler.fasitEnvironmentName = "p"
 
-        val session = mock(WebSocketSession::class.java)
+        val session = mockk<WebSocketSession>()
 
-        doReturn(mutableMapOf<String, Any>()).`when`(session).attributes
-        doReturn("sessionId").`when`(session).id
-        doNothing().`when`(session).sendMessage(any(WebSocketMessage::class.java))
+        every { session.attributes } returns mutableMapOf<String, Any>()
+        every { session.id } returns "sessionId"
+        justRun { session.sendMessage(any()) }
+
         socketTextHandler.afterConnectionEstablished(session)
         socketTextHandler.handleTextMessage(session, textMessage)
         socketTextHandler.afterConnectionClosed(session, CloseStatus.NORMAL)
@@ -167,9 +173,10 @@ class SocketTextHandlerTest {
         socketTextHandler.alertSubscribers("mockCaseNumber1", "FirstSubject")
         socketTextHandler.alertSubscribers("mockCaseNumber2", "SecondSubject")
 
-        verify(session).sendMessage(TextMessage("{ \"subscriptions\" : true }" ))
-        verify(session, times(0)).sendMessage(TextMessage("{\"bucUpdated\": {\"caseId\": \"mockCaseNumber1\"}}"))
-        verify(session, times(0)).sendMessage(TextMessage("{\"bucUpdated\": {\"caseId\": \"mockCaseNumber2\"}}"))
+        verify { session.sendMessage(TextMessage("{ \"subscriptions\" : true }")) }
+        verify(exactly = 0) { session.sendMessage(TextMessage("{\"bucUpdated\": {\"caseId\": \"mockCaseNumber1\"}}")) }
+        verify(exactly = 0) { session.sendMessage(TextMessage("{\"bucUpdated\": {\"caseId\": \"mockCaseNumber2\"}}")) }
+
     }
 
 }

@@ -6,13 +6,13 @@ import com.amazonaws.client.builder.AwsClientBuilder
 import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.AmazonS3ClientBuilder
 import io.findify.s3mock.S3Mock
+import io.mockk.spyk
 import no.nav.eessi.pensjon.api.storage.StorageController
 import no.nav.eessi.pensjon.services.BaseTest
 import no.nav.eessi.pensjon.services.storage.amazons3.S3Storage
 import no.nav.security.token.support.spring.SpringTokenValidationContextHolder
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
-import org.mockito.Mockito
 import java.net.ServerSocket
 
 open class S3StorageBaseTest : BaseTest() {
@@ -36,15 +36,15 @@ open class S3StorageBaseTest : BaseTest() {
                 .build()
         s3Client.createBucket("eessipensjon")
 
-        s3MockClient = Mockito.spy(s3Client)
+        s3MockClient = spyk(s3Client)
 
-        s3storageService =  Mockito.spy(S3Storage(s3MockClient))
+        s3storageService =  spyk(S3Storage(s3MockClient))
         s3storageService.bucketname = "eessipensjon"
         s3storageService.env = "q1"
         s3storageService.passphrase = "something very vey tricky to hack"
         s3storageService.init()
 
-        storageController = Mockito.spy(StorageController(s3storageService, SpringTokenValidationContextHolder()))
+        storageController = spyk(StorageController(s3storageService, SpringTokenValidationContextHolder()))
         storageController.initMetrics()
     }
 

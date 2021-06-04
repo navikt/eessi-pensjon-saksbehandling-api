@@ -1,20 +1,20 @@
 package no.nav.eessi.pensjon.services.kafka
 
-import com.nhaarman.mockitokotlin2.argumentCaptor
-import com.nhaarman.mockitokotlin2.doNothing
-import com.nhaarman.mockitokotlin2.doReturn
+import io.mockk.every
+import io.mockk.justRun
+import io.mockk.mockk
+import io.mockk.slot
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito
 import org.slf4j.MDC
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.messaging.Message
 
 class KafkaServiceTest {
 
-    private val mockKafkaTemplate: KafkaTemplate<String, String> = Mockito.mock(KafkaTemplate::class.java) as KafkaTemplate<String, String>
+    private var mockKafkaTemplate: KafkaTemplate<String, String> = mockk(relaxed = true)
     private val kafkaService = KafkaService(mockKafkaTemplate)
 
     @AfterEach
@@ -29,42 +29,45 @@ class KafkaServiceTest {
 
     @Test
     fun `KafkaService sets topic based on submissionReceivedTopicPrefix and topicPostfix`() {
-        val argumentCaptor = argumentCaptor<String>()
-        doNothing().`when`(mockKafkaTemplate).defaultTopic = argumentCaptor.capture()
-        assertEquals(0, argumentCaptor.allValues.size)
+
+        val captureSlot  = slot<String>()
+        justRun { mockKafkaTemplate.defaultTopic = capture(captureSlot) }
 
         kafkaService.submissionReceivedTopicPrefix = "privat-eessipensjon-selvbetjeningsinfoMottatt"
         kafkaService.topicPostfix = "q2"
         kafkaService.publishSubmissionReceivedEvent("Payload")
 
-        assertEquals("privat-eessipensjon-selvbetjeningsinfoMottatt-q2", argumentCaptor.firstValue)
+        assertEquals("privat-eessipensjon-selvbetjeningsinfoMottatt-q2", captureSlot.captured)
     }
 
     @Test
     fun `KafkaService adds x_request_id header to sent message if present in MDC`() {
-        val argumentCaptor = argumentCaptor<Message<String>>()
 
         kafkaService.submissionReceivedTopicPrefix = "privat-eessipensjon-selvbetjeningsinfoMottatt"
         kafkaService.topicPostfix = "q2"
         MDC.put(kafkaService.X_REQUEST_ID, "mockRequestId")
-        doReturn(null).`when`(mockKafkaTemplate).send(argumentCaptor.capture())
-        kafkaService.publishSubmissionReceivedEvent("Payload")
 
-        assertEquals("mockRequestId", argumentCaptor.firstValue.headers["x_request_id"])
-        assertEquals("Payload", argumentCaptor.firstValue.payload)
+        var captureSlot = slot<Message<String>>()
+
+        every { mockKafkaTemplate.send(capture(captureSlot)) } returns mockk()
+        kafkaService.publishSubmissionReceivedEvent("Payload")
+        assertEquals("mockRequestId", captureSlot.captured.headers["x_request_id"])
+        assertEquals("Payload", captureSlot.captured.payload)
+
     }
 
     @Test
     fun `KafkaService does not add x_request_id header to sent message if not present in MDC`() {
-        val argumentCaptor = argumentCaptor<Message<String>>()
+        var captor = slot<Message<String>>()
 
         kafkaService.submissionReceivedTopicPrefix = "privat-eessipensjon-selvbetjeningsinfoMottatt"
         kafkaService.topicPostfix = "q2"
-        doReturn(null).`when`(mockKafkaTemplate).send(argumentCaptor.capture())
+        every { mockKafkaTemplate.send(capture(captor)) } returns mockk()
+
         kafkaService.publishSubmissionReceivedEvent("Payload")
 
-        assertEquals(null, argumentCaptor.firstValue.headers["x_request_id"])
-        assertEquals("Payload", argumentCaptor.firstValue.payload)
+        assertEquals(null, captor.captured.headers["x_request_id"])
+        assertEquals("Payload", captor.captured.payload)
     }
 
 }

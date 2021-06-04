@@ -1,11 +1,10 @@
 package no.nav.eessi.pensjon.services.pdf
 
+import io.mockk.spyk
 import no.nav.eessi.pensjon.api.pdf.PdfController
 import no.nav.eessi.pensjon.services.BaseTest
-
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito
 
 open class PdfBaseTest : BaseTest() {
 
@@ -15,9 +14,9 @@ open class PdfBaseTest : BaseTest() {
 
     @BeforeEach
     fun _init() {
-        pdfService = Mockito.spy(PdfService())
-        templateService = Mockito.spy(TemplateService())
-        pdfController = Mockito.spy(PdfController(pdfService))
+        pdfService = spyk(PdfService())
+        templateService = spyk(TemplateService())
+        pdfController = spyk(PdfController(pdfService))
     }
 
     @Test

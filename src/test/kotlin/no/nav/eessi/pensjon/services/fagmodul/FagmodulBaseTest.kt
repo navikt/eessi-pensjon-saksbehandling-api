@@ -1,10 +1,10 @@
 package no.nav.eessi.pensjon.services.fagmodul
 
+import io.mockk.spyk
 import no.nav.eessi.pensjon.api.pensjon.PensjonController
 import no.nav.eessi.pensjon.services.BaseTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito
 import org.springframework.web.client.RestTemplate
 
 open class FagmodulBaseTest : BaseTest() {
@@ -16,7 +16,7 @@ open class FagmodulBaseTest : BaseTest() {
     @BeforeEach
     fun _init() {
         mockFagmodulRestTemplate = generateMockFagmodulRestTemplate()
-        pensjonController = Mockito.spy(PensjonController(mockFagmodulRestTemplate))
+        pensjonController = spyk(PensjonController(mockFagmodulRestTemplate))
     }
 
     @Test

@@ -1,15 +1,12 @@
 package no.nav.eessi.pensjon.api.login
 
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.eq
-import com.nhaarman.mockitokotlin2.whenever
+import io.mockk.every
+import io.mockk.spyk
 import no.nav.eessi.pensjon.services.BaseTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito
 import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
@@ -21,7 +18,6 @@ import java.net.URLEncoder
 
 
 class LoginControllerMockTest : BaseTest() {
-
 
     var loginController = LoginController()
     var localLoginController = LocalLoginController()
@@ -60,7 +56,7 @@ class LoginControllerMockTest : BaseTest() {
         request.scheme = "http"
 
         localLoginController.port = "8888"
-        localLoginController.localRestTemplate =  Mockito.spy(
+        localLoginController.localRestTemplate =  spyk(
                 RestTemplateBuilder()
                 .rootUri("http://localhost:8888")
                 .build())
@@ -70,11 +66,13 @@ class LoginControllerMockTest : BaseTest() {
 
         val mockCookieResponse = ResponseEntity("{\"name\":\"localhost-idtoken\",\"value\":\"eyJraWQiOiJsb2NhbGhvc3Qtc2lnbmVyIiwidHlwIjoiSldUIiwiYWxnIjoiUlMyNTYifQ.eyJzdWIiOiIxMjM0NTY3ODkxMCIsImF1ZCI6ImF1ZC1sb2NhbGhvc3QiLCJhY3IiOiJMZXZlbDQiLCJ2ZXIiOiIxLjAiLCJuYmYiOjE1NDk2Mjg1OTksImF1dGhfdGltZSI6MTU0OTYyODU5OSwiaXNzIjoiaXNzLWxvY2FsaG9zdCIsImV4cCI6MjMyNzIyODU5OSwibm9uY2UiOiJteU5vbmNlIiwiaWF0IjoxNTQ5NjI4NTk5LCJqdGkiOiI1MjBmOTI4Ny1lZjI5LTRhMWEtOWUwZC02OTExYzdjMTY0YzQifQ.GmOIJoYsSNvoOa1OQVtNeaSts3AjW4fE6rRae3lB2xNEZMhsRJIHtJqU3QxBRDqiGidKYkIGKFjaueqyPiPf1vZFmPQnu0Ul8yXzKJz4TvtiAfqW4fwEgvPXHAgrlVji-zAwpXa_QNmTN_xXJnFzbqAqC5K2r5hP6BvxkmdAWsOmVSDrUooHIqcO6GB0BtDv1xZ1yI1AZuFb8U5WmRWRVlxuTCTdLWgK_BRpclmfF4oGILomkLQaCEY0BD2PvdOwv73UIPZR_tkNec6FAjjLsEOFbmEZR5esYN8pyT94LqV6YJsjwzyCpT0bVZe0-BHWq2d3xKcrzuCsYJemkxk9IQ\",\"version\":0,\"comment\":null,\"domain\":\"localhost\",\"maxAge\":-1,\"path\":\"/\",\"secure\":false,\"httpOnly\":false}", HttpStatus.OK)
 
-        doReturn(mockCookieResponse).whenever(localLoginController.localRestTemplate)!!.exchange(
+        every {
+            localLoginController.localRestTemplate!!.exchange(
                 eq("/local/cookie"),
                 eq(HttpMethod.GET),
                 any<HttpEntity<*>>(),
                 eq(String::class.java))
+        } returns mockCookieResponse
 
         localLoginController.login(request, response, redirectTo)
 
