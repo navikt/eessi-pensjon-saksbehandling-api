@@ -19,9 +19,7 @@ open class PensjonControllerTest: FagmodulBaseTest() {
 
     @AfterEach
     fun cleanUpTest() {
-        //MockK.reset(mockFagmodulRestTemplate)
     }
-
 
     @Test
     fun `hentPensjonSakType returns result from fagmodul when 200 OK`() {
@@ -31,13 +29,6 @@ open class PensjonControllerTest: FagmodulBaseTest() {
                 "    \"sakType\": \"ALDER\"\n" +
                 "}"
 
-/*        doReturn(
-            ResponseEntity(responseFromFagmodul, HttpStatus.OK))
-            .`when`(mockFagmodulRestTemplate).exchange(
-                eq("/pensjon/saktype/$SAK_ID/$AKTOER_ID"),
-                any(),
-                any(),
-                eq(String::class.java))*/
         every { (mockFagmodulRestTemplate).exchange(
             eq("/pensjon/saktype/$SAK_ID/$AKTOER_ID"),
             any(),
@@ -56,17 +47,6 @@ open class PensjonControllerTest: FagmodulBaseTest() {
     @Test
     fun `hentPensjonSakType returns 404 NOT FOUND when 404 from fagmodul`() {
 
-/*        doThrow(HttpClientErrorException.
-            create(HttpStatus.NOT_FOUND,
-                HttpStatus.NOT_FOUND.reasonPhrase,
-                HttpHeaders.EMPTY,
-                ByteArray(0),
-                null))
-            .`when`(mockFagmodulRestTemplate).exchange(
-                eq("/pensjon/saktype/$SAK_ID/$AKTOER_ID"),
-                any(),
-                any(),
-                eq(String::class.java))*/
         every { mockFagmodulRestTemplate.exchange(
             eq("/pensjon/saktype/$SAK_ID/$AKTOER_ID"),
             any(),
@@ -84,18 +64,6 @@ open class PensjonControllerTest: FagmodulBaseTest() {
 
     @Test
     fun `gitt 500 feil når kall til hentPensjonSakType så returner 500 feil ut av controlleren `() {
-
-/*        doThrow(HttpClientErrorException.
-            create(HttpStatus.BAD_REQUEST,
-                HttpStatus.BAD_REQUEST.reasonPhrase,
-                HttpHeaders.EMPTY,
-                ByteArray(0),
-                null))
-            .`when`(mockFagmodulRestTemplate).exchange(
-                eq("/pensjon/saktype/$SAK_ID/$AKTOER_ID"),
-                any(),
-                any(),
-                eq(String::class.java))*/
 
         every { mockFagmodulRestTemplate.exchange(
             eq("/pensjon/saktype/$SAK_ID/$AKTOER_ID"),

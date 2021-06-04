@@ -50,7 +50,6 @@ internal class ReceiveSubmissionControllerTest {
         val submissionRequestJson = DefaultResourceLoader().getResource(
             "classpath:json/submissionE207.json").file.readText()
         val submissionRequest = jacksonObjectMapper().readValue(submissionRequestJson, SubmissionRequest::class.java)
-        //doReturn("12345678910").`when`(controller).getSubjectFromToken()
         every { controller.getSubjectFromToken() } returns "12345678910"
 
         // Når

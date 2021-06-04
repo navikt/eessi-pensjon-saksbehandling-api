@@ -119,10 +119,6 @@ class UserInfoControllerTest : S3StorageBaseTest() {
         val twtToken = JwtTokenClaims(claimsSet)
         spyk(twtToken)
 
-/*
-        doReturn(subject).`when`(userInfoController).getSubjectFromToken()
-        doReturn(twtToken).`when`(userInfoController).getClaims()
-*/
         every { userInfoController.getSubjectFromToken() } returns subject
         every { userInfoController.getClaims() } returns twtToken
     }

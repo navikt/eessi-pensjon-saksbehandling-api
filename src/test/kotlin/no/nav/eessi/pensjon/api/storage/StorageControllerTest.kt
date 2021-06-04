@@ -41,7 +41,6 @@ class StorageControllerTest : S3StorageBaseTest() {
         val expectedError = AmazonServiceException("errorMessage")
         expectedError.statusCode = 500
 
-        //doThrow(expectedError).whenever(s3storageService).put(path, document)
         every { s3storageService.put(path, document) } throws expectedError
         val generatedResponse = storageController.storeDocument(path, document)
         val generatedBody = mapper.readTree(generatedResponse.body)
@@ -86,7 +85,6 @@ class StorageControllerTest : S3StorageBaseTest() {
         val expectedError = AmazonServiceException("errorMessage")
         expectedError.statusCode = 500
 
-        //doThrow(expectedError).whenever(s3storageService).get(path)
         every {s3storageService.get(path)  } throws expectedError
         val generatedResponse = storageController.getDocument(path)
         val generatedBody = mapper.readTree(generatedResponse.body)
@@ -135,7 +133,6 @@ class StorageControllerTest : S3StorageBaseTest() {
         val expectedError = AmazonServiceException("errorMessage")
         expectedError.statusCode = 500
 
-        //doThrow(expectedError).whenever(s3storageService).list(path)
         every {s3storageService.list(path)  } throws expectedError
         val generatedResponse = storageController.listDocuments(path)
         val generatedBody = mapper.readTree(generatedResponse.body!!.get(0))
@@ -189,7 +186,6 @@ class StorageControllerTest : S3StorageBaseTest() {
         val expectedError = AmazonServiceException("errorMessage")
         expectedError.statusCode = 500
 
-        //doThrow(expectedError).whenever(s3storageService).delete(path1)
         every {s3storageService.delete(path1)  } throws expectedError
         val generatedResponse = storageController.deleteDocument(path1)
         val generatedBody = ObjectMapper().readTree(generatedResponse.body)
