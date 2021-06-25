@@ -13,6 +13,7 @@ import no.nav.eessi.pensjon.utils.toJson
 import no.nav.eessi.pensjon.utils.typeRefs
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 internal class EuxControllerTest {
@@ -29,9 +30,14 @@ internal class EuxControllerTest {
 
     @Test
     fun `Calling euxController|getRinaURL handler returns correct URL`() {
+        euxController.environmentName = "q2"
         euxController.rinaUrl = "localhost"
         val generatedResponse = euxController.getRinaURL()
         assertEquals(generatedResponse.body?.get("rinaUrl") as String, "https://localhost/portal/#/caseManagement/")
+
+        euxController.environmentName = "q1"
+        val generatedResponseQ1 = euxController.getRinaURL()
+        assertEquals(generatedResponseQ1.body?.get("rinaUrl") as String, "https://localhost/portal_new/case-management/")
 
         verify(exactly = 0) { mockService.hentInstitusjoner(any(), any()) }
     }

@@ -22,8 +22,14 @@ class EuxController(private val euxService: EuxService) {
     @Value("\${rina_host.url}")
     lateinit var rinaUrl: String
 
+    @Value("\${ENV}")
+    lateinit var environmentName: String
+
     @GetMapping("/rinaurl")
     fun getRinaURL(): ResponseEntity<Map<String, String>> {
+        if (environmentName == "q1") {
+            return ResponseEntity.ok(mapOf("rinaUrl" to "https://$rinaUrl/portal_new/case-management/"))
+        }
         return ResponseEntity.ok(mapOf("rinaUrl" to "https://$rinaUrl/portal/#/caseManagement/"))
     }
 
