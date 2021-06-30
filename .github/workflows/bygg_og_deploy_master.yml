@@ -45,13 +45,13 @@ jobs:
           IMAGE: ${{ env.IMAGE }}
 
       - name: 'Deploy to Q2 teamnamespace'
-          uses: nais/deploy/actions/deploy@v1
-          env:
-            APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-            CLUSTER: dev-fss
-            RESOURCE: nais/dev-fss-q2-teamnamespace.yml
-            VARS: nais/dev-fss-q2-teamnamespace.json
-            IMAGE: ${{ env.IMAGE }}
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: dev-fss
+          RESOURCE: nais/dev-fss-q2-teamnamespace.yml
+          VARS: nais/dev-fss-q2-teamnamespace.json
+          IMAGE: ${{ env.IMAGE }}
 
       - name: 'Create git-tag'
         run: |
