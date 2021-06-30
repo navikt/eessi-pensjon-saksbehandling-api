@@ -2,7 +2,7 @@ kind: Application
 apiVersion: nais.io/v1alpha1
 metadata:
   name: eessi-pensjon-frontend-api-fss
-  namespace: default
+  namespace: eessipensjon
   labels:
     team: eessipensjon
 spec:

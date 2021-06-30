@@ -2,7 +2,7 @@ kind: Application
 apiVersion: nais.io/v1alpha1
 metadata:
   name: eessi-pensjon-frontend-api-fss
-  namespace: q2
+  namespace: eessipensjon
   labels:
     team: eessipensjon
 spec:
@@ -12,9 +12,9 @@ spec:
     - name: SPRING_PROFILES_ACTIVE
       value: test,fss
     - name: PENSJON_UTLAND_WS_ALLOWED_ORIGINS_URL
-      value: https://pensjon-utland-q2.nais.preprod.local
+      value: https://pensjon-utland-q1.nais.preprod.local
     - name: RINA_HOST_URL
-      value: rina-ss1-q.adeo.no
+      value: rina-ss3-q.adeo.no
     - name: PDL_URL
       value: https://pdl-api.nais.preprod.local/graphql
     - name: S3_FSS_URL
@@ -24,13 +24,13 @@ spec:
     - name: OPENIDCONNECT_URL
       value: https://isso-q.adeo.no:443/isso
     - name: EESSI_PENSJON_FRONTEND_UI_URL
-      value: https://pensjon-utland-q.nav.no
+      value: https://pensjon-utland-q1.nav.no
     - name: SECURITY_TOKEN_SERVICE_OPENID_CONFIGURATION_URL
       value: https://security-token-service.nais.preprod.local/rest/v1/sts/.well-known/openid-configuration
     - name: SECURITYTOKENSERVICE_URL
       value: https://security-token-service.nais.preprod.local/rest/v1/sts/token
     - name: EESSI_PENSJON_FRONTEND_API_FSS_CHANNEL_NAME
-      value: Q2_EP_FEND_API_FSS
+      value: Q1_EP_FEND_API_FSS
     - name: EESSI_PENSJON_FRONTEND_API_FSS_CHANNEL_QUEUEMANAGER
       value: mq://b27apvl057.preprod.local:1413/MQLCLIENT01
     - name: VARSELPRODUKSJON_VARSLINGER_QUEUENAME
@@ -42,13 +42,13 @@ spec:
     - name: LOGINSERVICE_AGENT_NAME
       value: 0090b6e1-ffcc-4c37-bc21-049f7d1f0fe5
     - name: EUX_RINA_API_V1_URL
-      value: https://eux-rina-api-q2.nais.preprod.local/cpi
+      value: https://eux-rina-api-q1.nais.preprod.local/cpi
     - name: AKTOERREGISTER_API_V1_URL
-      value: https://app-q2.adeo.no/aktoerregister/api/v1
+      value: https://app-q1.adeo.no/aktoerregister/api/v1
     - name: EESSI_PENSJON_FRONTEND_API_FSS_OIDC_ISSUERURL
       value: https://isso-q.adeo.no:443/isso/oauth2
     - name: EESSI_PENSJON_FRONTEND_API_FSS_OIDC_AGENTNAME
-      value: eessi-pensjon-frontend-api-fss-q2
+      value: eessi-pensjon-frontend-api-fss-q1
     - name: EESSI_PENSJON_FRONTEND_API_FSS_OIDC_HOSTURL
       value: https://isso-q.adeo.no:443/isso
     - name: EESSI_PENSJON_FRONTEND_API_FSS_OIDC_JWKSURL
@@ -56,7 +56,7 @@ spec:
     - name: KAFKA_BOOTSTRAP_SERVERS_URL
       value: SSL://b27apvl00045.preprod.local:8443,SSL://b27apvl00046.preprod.local:8443,SSL://b27apvl00047.preprod.local:8443
     - name: VIRKSOMHET_PERSON_V3_ENDPOINTURL
-      value: https://wasapp-q2.adeo.no/tpsws/ws/Person/v3
+      value: https://wasapp-q1.adeo.no/tpsws/ws/Person/v3
     - name: LDAP_USER_BASEDN
       value: ou=NAV,ou=BusinessUnits,dc=preprod,dc=local
     - name: LDAP_SERVICEUSER_BASEDN
@@ -66,7 +66,7 @@ spec:
     - name: LDAP_BASEDN
       value: dc=preprod,dc=local
     - name: LDAP_URL
-      value: ldaps://ldapgw.preprod.local:636
+      value: ldaps://ldapgw.preprod.local
     - name: EESSI_PENSJON_FRONTEND_API_S3_CREDS_USERNAME
       value: 879WUUD2HMZ041GBNN4B
     - name: LDAP_USER_BASEDN
@@ -78,14 +78,14 @@ spec:
     - name: LDAP_BASEDN
       value: dc=preprod,dc=local
     - name: ENV
-      value: q2
+      value: q1
     - name: KAFKA_SEDSENDT_TOPIC
-      value: eessi-basis-sedSendt-v1-q2
+      value: eessi-basis-sedSendt-v1-q1
     - name: KAFKA_SEDMOTTATT_TOPIC
-      value: eessi-basis-sedMottatt-v1-q2
+      value: eessi-basis-sedMottatt-v1-q1
   image: {{ image }}
   ingresses:
-    - https://eessi-pensjon-frontend-api-fss-q2.nais.preprod.local
+    - https://eessi-pensjon-frontend-api-fss-q1.nais.preprod.local
   liveness:
     path: /internal/isalive
     port: 8080
