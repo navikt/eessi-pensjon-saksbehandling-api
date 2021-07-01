@@ -27,7 +27,7 @@ no.nav:
         accepted_audience: 'eessi-pensjon-frontend-api-fss-${ENV}'
 
 
-isso.agentname: '${NAIS_APP_NAME}'
+#isso.agentname: '${NAIS_APP_NAME}'
 
 http.proxy.parametername: 'dontuse.proxy'
 redirectscheme: 'https'

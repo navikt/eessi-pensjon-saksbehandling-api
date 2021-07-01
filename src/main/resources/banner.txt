@@ -9,7 +9,7 @@
 
                -=<>=- Electronic Exchange of Social Security Information  -=<>=-
 
-    isso.agentname                  : ${isso.agentname}
+    app nam,e                       : ${NAIS_APP_NAME}
     Frontend-UI                     : ${eessi-pensjon-frontend-ui.url}
     s3_url                          : ${s3_fss_url}
 

@@ -29,8 +29,8 @@ class OidcInterceptor {
 
     private val logger = LoggerFactory.getLogger(OidcInterceptor::class.java)
 
-    @Value("\${isso.agentname}")
-    private lateinit var clientId: String
+//    @Value("\${isso.agentname}")
+//    private lateinit var clientId: String
 
     @Value("\${isso.agent.password}")
     private lateinit var clientSecret: String
@@ -44,6 +44,9 @@ class OidcInterceptor {
     @Value("\${redirectscheme}")
     private lateinit var redirectScheme: String
 
+    @Value("\${ENV}")
+    private lateinit var environmentName: String
+
     @Value("\${NAIS_APP_NAME}")
     lateinit var appName: String
 
@@ -56,9 +59,8 @@ class OidcInterceptor {
 
     @Bean
     fun config(): Config {
-
         val oidcConfiguration = OidcConfiguration().apply {
-            clientId = this@OidcInterceptor.clientId
+            clientId = if (environmentName == "p") "$appName-p" else appName  // this@OidcInterceptor.clientId
             secret = clientSecret
             isUseNonce = true
             discoveryURI = discoveryUrl
