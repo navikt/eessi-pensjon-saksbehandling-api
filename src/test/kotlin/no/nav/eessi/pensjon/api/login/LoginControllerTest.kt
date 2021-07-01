@@ -24,25 +24,21 @@ class FssLoginControllerTest {
     @BeforeEach
     fun before() {
         fssLoginController = LoginController()
-        fssLoginController.appName = "eessi-pensjon-frontend-api-fss"
     }
 
     @Test
     fun `Given a login attempt in FSS zone When environment is q1 Then redirect to fss without namespace`() {
-        fssLoginController.fasitEnvironmentName = "q1"
+        fssLoginController.appName = "eessi-pensjon-frontend-api-fss-q1"
         fssLoginController.navDomain = "domain"
-
         fssLoginController.login(req, resp, "somewhere", "somecontext")
-
 
         verify(atLeast = 1) { resp.sendRedirect("https://eessi-pensjon-frontend-api-fss-q1.domain/openamlogin?redirect=somewhere&context=somecontext") }
     }
 
     @Test
     fun `Given a login attempt in FSS zone When environment is q2 Then redirect to fss without namespace`() {
-        fssLoginController.fasitEnvironmentName = "q2"
+        fssLoginController.appName = "eessi-pensjon-frontend-api-fss-q2"
         fssLoginController.navDomain = "domain"
-
         fssLoginController.login(req, resp, "somewhere", "somecontext")
 
         verify(atLeast = 1) { resp.sendRedirect("https://eessi-pensjon-frontend-api-fss-q2.domain/openamlogin?redirect=somewhere&context=somecontext") }
@@ -51,9 +47,8 @@ class FssLoginControllerTest {
 
     @Test
     fun `Given a login attempt in FSS zone When environment is p Then redirect to adeo`() {
-        fssLoginController.fasitEnvironmentName = "p"
+        fssLoginController.appName = "eessi-pensjon-frontend-api-fss"
         fssLoginController.navDomain = "nais.adeo.no"
-
         fssLoginController.login(req, resp, "somewhereelse", "somecontext")
 
         verify(atLeast = 1) { resp.sendRedirect("https://${fssLoginController.appName}.nais.adeo.no/openamlogin?redirect=somewhereelse&context=somecontext") }
@@ -61,11 +56,10 @@ class FssLoginControllerTest {
 
     @Test
     fun `Given a login attempt in FSS zone When environment is preprod Then redirect to preprod`() {
-        fssLoginController.fasitEnvironmentName = "q2"
+        fssLoginController.appName = "eessi-pensjon-frontend-api-fss-q2"
         fssLoginController.navDomain = "nais.preprod.local"
-
         fssLoginController.login(req, resp, "somewhereelse", "somecontext")
 
-        verify(atLeast = 1) { resp.sendRedirect("https://${fssLoginController.appName}-q2.nais.preprod.local/openamlogin?redirect=somewhereelse&context=somecontext") }
+        verify(atLeast = 1) { resp.sendRedirect("https://${fssLoginController.appName}.nais.preprod.local/openamlogin?redirect=somewhereelse&context=somecontext") }
     }
 }

@@ -60,9 +60,9 @@ class LocalLoginController {
 class LoginController {
 
     val logger: Logger = LoggerFactory.getLogger(LoginController::class.java)
-
-    @Value("\${ENV}")
-    lateinit var fasitEnvironmentName: String
+//
+//    @Value("\${ENV}")
+//    lateinit var fasitEnvironmentName: String
 
     @Value("\${NAIS_APP_NAME}")
     lateinit var appName: String
@@ -77,16 +77,16 @@ class LoginController {
               @RequestParam("redirect") redirectTo: String,
               @RequestParam("context", required = false) context: String) {
 
-        var environmentPostfix = "-$fasitEnvironmentName"
-
-        // Det settes nå kun dfault i prod, namespace brukes i alle andre miljø
-        if (fasitEnvironmentName.contains("p", true)) {
-            environmentPostfix = ""
-        }
+//        var environmentPostfix = "-$fasitEnvironmentName"
+//
+//        // Det settes nå kun dfault i prod, namespace brukes i alle andre miljø
+//        if (fasitEnvironmentName.contains("p", true)) {
+//            environmentPostfix = ""
+//        }
 
         val encodedContext = URLEncoder.encode(context, "UTF-8")
-        logger.debug("Redirecting to: https://$appName$environmentPostfix.$navDomain/openamlogin?redirect=$redirectTo&context=$encodedContext")
-        httpServletResponse.sendRedirect("https://$appName$environmentPostfix.$navDomain/openamlogin?redirect=$redirectTo&context=$encodedContext")
+        logger.debug("Redirecting to: https://$appName.$navDomain/openamlogin?redirect=$redirectTo&context=$encodedContext")
+        httpServletResponse.sendRedirect("https://$appName.$navDomain/openamlogin?redirect=$redirectTo&context=$encodedContext")
     }
 
     @Unprotected

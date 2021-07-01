@@ -29,8 +29,7 @@ class LoginControllerMockTest : BaseTest() {
         request.serverName = "pensjon-utland-t.nav.no"
         request.scheme = "http"
 
-        loginController.fasitEnvironmentName = "q2"
-        loginController.appName = "eessi-pensjon-frontend-api-fss"
+        loginController.appName = "eessi-pensjon-frontend-api-fss-q2"
         loginController.navDomain = "nais.preprod.local"
         request.serverName = "pensjon-utland-t.nav.no"
         request.scheme = "http"
