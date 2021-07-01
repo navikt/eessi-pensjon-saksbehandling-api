@@ -1,4 +1,4 @@
 {
   "serviceuserkv": "/serviceuser/data/dev/srveessipensjon",
-  "appsecrets": "/kv/preprod/fss/eessi-pensjon-frontend-api-fss/q1"
+  "appsecrets": "/kv/preprod/fss/eessi-pensjon-frontend-api-fss-q1/eessipensjon"
 }
