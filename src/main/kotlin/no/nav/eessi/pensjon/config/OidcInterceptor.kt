@@ -44,8 +44,8 @@ class OidcInterceptor {
     @Value("\${redirectscheme}")
     private lateinit var redirectScheme: String
 
-    @Value("\${ENV}")
-    private lateinit var environmentName: String
+    @Value("\${NAIS_APP_NAME}")
+    lateinit var appName: String
 
     private var cookieDomain: String = "localhost"
 
@@ -78,16 +78,15 @@ class OidcInterceptor {
                     var computed = super.compute(url, context)
 
                     // TODO: This is dumb. But it works. Better hope loginservice comes to FSS soon so we can get rid of this whole pile of shit
-                    logger.debug("env: $environmentName")
+                    logger.debug("appName: $appName")
                     if(!computed.contains("http://localhost")) {
                         if (discoveryUrl.contains("isso-q")) {
                             // We are in a test-environment
-                            var environmentPostfix = "-$environmentName"
-                            computed = "https://eessi-pensjon-frontend-api-fss$environmentPostfix.nais.preprod.local/callback"
+                            computed = "https://$appName.nais.preprod.local/callback"
                             cookieDomain = "nais.preprod.local"
                         } else {
                             // We are in production
-                            computed = "https://eessi-pensjon-frontend-api-fss.nais.adeo.no/callback"
+                            computed = "https://$appName.nais.adeo.no/callback"
                             cookieDomain = "nais.adeo.no"
                         }
                     } else {
