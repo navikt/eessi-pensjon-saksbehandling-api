@@ -128,7 +128,7 @@ dependencies {
     implementation("no.nav.eessi.pensjon:ep-logging:1.0.9")
 
     // PDF box
-    implementation("org.apache.pdfbox:pdfbox:2.0.22")
+    implementation("org.apache.pdfbox:pdfbox:2.0.24")
     implementation("com.openhtmltopdf:openhtmltopdf-core:${openhtmltopdfVersion}")
     implementation("com.openhtmltopdf:openhtmltopdf-pdfbox:${openhtmltopdfVersion}")
     implementation('org.jsoup:jsoup:1.13.1')
