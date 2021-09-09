@@ -36,12 +36,9 @@ open class LdapKlient(
             }
             logger.warn("Ident: $ident ikke funnet")
             return null
-        } catch (lee: LimitExceededException) {
-            logger.error("En teknisk feil oppstod ved søk etter: $ident i LDAP", lee)
-            throw lee
-        } catch (ne: NamingException) {
-            logger.error("En teknisk feil oppstod ved søk etter: $ident i LDAP", ne)
-            throw ne
+        }  catch (ex: Exception) {
+            logger.error("En teknisk feil oppstod ved søk etter: $ident i LDAP", ex)
+            throw ex
         }
     }
 }
