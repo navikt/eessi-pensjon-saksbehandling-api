@@ -31,11 +31,11 @@ class KafkaConfig {
     @Bean
     fun sedSendtAuthRetry(registry: KafkaListenerEndpointRegistry): ApplicationRunner? {
         return ApplicationRunner {
-            val sedSendtListenerContainer = registry.getListenerContainer("sakSendtListener")
+            val sedSendtListenerContainer = registry.getListenerContainer("sakSendtListener") ?: throw RuntimeException("Klarte ikke å starte sedSendtListener")
             sedSendtListenerContainer.containerProperties.authorizationExceptionRetryInterval = Duration.ofSeconds(4L)
             sedSendtListenerContainer.start()
 
-            val sedMottattListenerContainer = registry.getListenerContainer("sakMottattListener")
+            val sedMottattListenerContainer = registry.getListenerContainer("sakMottattListener") ?: throw RuntimeException("Klarte ikke å starte sedMottattListener")
             sedMottattListenerContainer.containerProperties.authorizationExceptionRetryInterval = Duration.ofSeconds(4L)
             sedMottattListenerContainer.start()
         }
