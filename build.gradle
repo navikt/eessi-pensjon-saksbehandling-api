@@ -73,9 +73,6 @@ jar {
 }
 
 dependencies {
-//  Se VarselService for årsak til utkommentering
-//  implementation('no.nav.meldinger.virksomhet:nav-virksomhet-varsel-v1-meldingsdefinisjon:1.1.1:jaxb')
-
     // Personoppslag
     implementation("no.nav.eessi.pensjon:ep-personoppslag:8.0.16")
 

@@ -1,6 +1,6 @@
 FROM navikt/java:11-appdynamics
 
-COPY build/libs/eessi-pensjon-frontend-api-fss*.jar /app/app.jar
+COPY build/libs/eessi-pensjon-frontend-api-fss.jar /app/app.jar
 
 COPY nais/export-vault-secrets.sh /init-scripts/
 
