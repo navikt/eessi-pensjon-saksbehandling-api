@@ -16,7 +16,7 @@ spec:
     - name: RINA_HOST_URL
       value: rina-ss1-q.adeo.no
     - name: PDL_URL
-      value: https://pdl-api.nais.preprod.local/graphql
+      value: https://pdl-api.dev-fss.nais.io/graphql
     - name: S3_FSS_URL
       value: http://objectstore.rook-ceph.svc.nais.local
     - name: NAV_DOMAIN_URL
