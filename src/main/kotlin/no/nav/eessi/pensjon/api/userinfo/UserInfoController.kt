@@ -36,11 +36,10 @@ class UserInfoController(
         logger.info("Henter userinfo")
         val fnr = getSubjectFromToken()
         val role = getRole(fnr)
-        val allowed = true //deprocated denne er alltid true ved bruk av authinterceptor
-        val features = toggle.getUIFeatures()
+        val features = toggle.getUIFeatures(fnr)
         val claims = getClaims()
         val expirationTime = claims.expirationTime.time
-        return ResponseEntity.ok().body(mapAnyToJson(UserInfoResponse(fnr, role, allowed, expirationTime, features)))
+        return ResponseEntity.ok().body(mapAnyToJson(UserInfoResponse(fnr, role, expirationTime, features)))
     }
 
     fun getSubjectFromToken(): String = getClaims(tokenValidationContextHolder).subject
@@ -68,7 +67,6 @@ class UserInfoController(
 data class UserInfoResponse(
     val subject: String,
     val role: String,
-    val allowed: Boolean,
     val expirationTime: Long,
     val features: Map<String, Boolean>
 )

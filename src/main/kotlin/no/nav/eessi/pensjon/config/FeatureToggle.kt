@@ -6,6 +6,19 @@ import org.springframework.stereotype.Component
 @Component
 class FeatureToggle {
 
+    private val listOfUsers = listOf(
+    "K157734",
+    "I123103",
+    "S122793",
+    "R107597",
+    "I135684",
+    "B151417",
+    "L124884",
+    "H145594",
+    "K105134",
+    "B101331",
+    "S128848")
+
     @Value("\${ENV}")
     private lateinit var environmentName: String
 
@@ -18,10 +31,16 @@ class FeatureToggle {
         return environmentName.contains("p", true)
     }
 
-    fun getUIFeatures(): Map<String, Boolean> {
+    fun getUIFeatures(fnr: String): Map<String, Boolean> {
         return mapOf(
-            FeatureName.P5000_SUMMER_VISIBLE.name to !isProductionEnv()
+            FeatureName.P5000_SUMMER_VISIBLE.name to fetureToggleP5000(fnr)
         )
+    }
+
+    fun fetureToggleP5000(fnr: String) : Boolean {
+        return if (isProductionEnv() && fnr.uppercase() in listOfUsers) {
+            true
+        } else !isProductionEnv()
     }
 }
 
@@ -30,5 +49,6 @@ enum class FeatureName {
     ENABLE_AUTH,
     WHITELISTING,
 }
+
 
 

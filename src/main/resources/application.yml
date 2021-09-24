@@ -10,7 +10,12 @@ management:
     web.exposure.include: '*'
     export.prometheus.enabled: true
     prometheus.enabled: true
-  metrics.web.server.auto-time-requests: true
+  metrics:
+    web:
+      server:
+        request:
+          autotime:
+            enabled: true
 
 eessi.pensjon.frontend.api:
   varsel.tittel: 'Ny elektronisk løsning fra NAV'

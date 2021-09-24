@@ -2,7 +2,6 @@ package no.nav.eessi.pensjon.interceptor
 
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.mockk
-import no.nav.eessi.pensjon.personoppslag.pdl.PersonService
 import no.nav.eessi.pensjon.personoppslag.pdl.model.AktoerId
 import no.nav.eessi.pensjon.security.sts.STSService
 import no.nav.eessi.pensjon.services.ldap.BrukerInformasjonService
@@ -55,9 +54,6 @@ class AuthInterceptorIntegrationTest() {
         fun storage(): StorageService {
             return StorageServiceMock()
         }
-
-        @Bean
-        fun personService() = mockk<PersonService>(relaxed = true)
 
         @Bean
         fun aktoerService() = mockk<AktoerId>(relaxed = true)
