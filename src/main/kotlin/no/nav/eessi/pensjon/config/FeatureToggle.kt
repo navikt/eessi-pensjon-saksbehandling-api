@@ -33,7 +33,7 @@ class FeatureToggle {
 
     fun getUIFeatures(fnr: String): Map<String, Boolean> {
         return mapOf(
-            FeatureName.P5000_SUMMER_VISIBLE.name to fetureToggleP5000(fnr)
+            FeatureName.P5000_SUMMER_VISIBLE.name to true
         )
     }
 
