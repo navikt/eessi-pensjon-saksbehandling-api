@@ -58,66 +58,6 @@ class UserInfoControllerTest : S3StorageBaseTest() {
         assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), userInfoController.getUserInfo())
     }
 
-    // Denne testen er midlertidig for P5000
-    @Test fun `Calling UserInfoController getUserInfo in P reading not a selected user returns OK response`() {
-        toggleMock.setCurrentEnv("P")
-        createMockedToken("P107265")
-        val usr =  UserInfoResponse(
-            subject ="P107265",
-            role ="SAKSBEHANDLER",
-            expirationTime = EXPIRATION_TIME,
-            features = mapOf(
-                "P5000_SUMMER_VISIBLE" to false
-            )
-        )
-        assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), userInfoController.getUserInfo())
-    }
-
-
-    @Test fun `Calling UserInfoController getUserInfo in P returns OK response`() {
-        toggleMock.setCurrentEnv("p")
-
-        createMockedToken()
-        val usr =  UserInfoResponse(
-            subject ="12345678910",
-            role ="BRUKER",
-            expirationTime = EXPIRATION_TIME,
-            features = mapOf(
-                    "P5000_SUMMER_VISIBLE" to false
-            )
-        )
-        assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), userInfoController.getUserInfo())
-    }
-
-    @Test fun `Calling UserInfoController getUserInfo saksbehandler in Q2 returns OK response`() {
-        createMockedToken("A123456")
-
-        val usr =  UserInfoResponse(
-            subject ="A123456",
-            role ="SAKSBEHANDLER",
-            expirationTime = EXPIRATION_TIME,
-            features = mapOf(
-                    "P5000_SUMMER_VISIBLE" to true
-            )
-        )
-        assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), userInfoController.getUserInfo())
-    }
-
-    @Test fun `Calling UserInfoController  getUserInfo saksbehandler in P returns OK response`() {
-        createMockedToken("A123456")
-        toggleMock.setCurrentEnv("p")
-        val usr =  UserInfoResponse(
-            subject ="A123456",
-            role ="SAKSBEHANDLER",
-            expirationTime = EXPIRATION_TIME,
-            features = mapOf(
-                    "P5000_SUMMER_VISIBLE" to false
-            )
-        )
-        assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), userInfoController.getUserInfo())
-    }
-
-
     @Test fun `Calling UserInfoController|getRole`() {
         assertEquals("BRUKER", getRole("12345678910"))
         assertEquals("SAKSBEHANDLER", getRole("Z123456"))
