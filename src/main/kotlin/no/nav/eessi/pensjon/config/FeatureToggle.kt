@@ -33,7 +33,8 @@ class FeatureToggle {
 
     fun getUIFeatures(fnr: String): Map<String, Boolean> {
         return mapOf(
-            FeatureName.P5000_SUMMER_VISIBLE.name to true
+            FeatureName.P5000_SUMMER_VISIBLE.name to true,
+            FeatureName.X010_X009_VISIBLE.name to !isProductionEnv()
         )
     }
 
@@ -46,6 +47,7 @@ class FeatureToggle {
 
 enum class FeatureName {
     P5000_SUMMER_VISIBLE,
+    X010_X009_VISIBLE,
     ENABLE_AUTH,
     WHITELISTING,
 }
