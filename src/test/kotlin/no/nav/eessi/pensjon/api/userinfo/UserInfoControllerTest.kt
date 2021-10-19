@@ -54,7 +54,7 @@ class UserInfoControllerTest : S3StorageBaseTest() {
             expirationTime = EXPIRATION_TIME,
             features = mapOf(
                 "P5000_SUMMER_VISIBLE" to true,
-                "X010_X009_VISIBLE" to false
+                "X010_X009_VISIBLE" to true
             )
         )
         assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), userInfoController.getUserInfo())
