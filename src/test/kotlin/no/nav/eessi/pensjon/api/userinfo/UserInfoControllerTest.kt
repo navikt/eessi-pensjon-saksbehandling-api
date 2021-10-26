@@ -38,24 +38,26 @@ class UserInfoControllerTest : S3StorageBaseTest() {
             expirationTime = EXPIRATION_TIME,
             features = mapOf(
                     "P5000_SUMMER_VISIBLE" to true,
+                    "P5000_UPDATES_VISIBLE" to true,
                     "X010_X009_VISIBLE" to true
-            )
+            ),
         )
         assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), userInfoController.getUserInfo())
     }
 
     // Denne testen er midlertidig for P5000
-    @Test fun `Calling UserInfoController getUserInfo in P reading selected users returns OK response`() {
+    @Test fun `Calling UserInfoController getUserInfo in P reading selected users returns `() {
         toggleMock.setCurrentEnv("P")
-        createMockedToken("H145594")
+        createMockedToken("S028848")
         val usr =  UserInfoResponse(
-            subject ="H145594",
+            subject ="S028848",
             role ="SAKSBEHANDLER",
             expirationTime = EXPIRATION_TIME,
             features = mapOf(
                 "P5000_SUMMER_VISIBLE" to true,
+                "P5000_UPDATES_VISIBLE" to false,
                 "X010_X009_VISIBLE" to true
-            )
+            ),
         )
         assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), userInfoController.getUserInfo())
     }
@@ -74,8 +76,9 @@ class UserInfoControllerTest : S3StorageBaseTest() {
             expirationTime = EXPIRATION_TIME,
             features = mapOf(
                 "P5000_SUMMER_VISIBLE" to true,
+                "P5000_UPDATES_VISIBLE" to true,
                 "X010_X009_VISIBLE" to true
-            )
+            ),
         )
         val result = userInfoController.getUserInfo()
         assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), result)
