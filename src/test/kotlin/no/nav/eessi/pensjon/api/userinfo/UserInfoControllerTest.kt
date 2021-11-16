@@ -39,7 +39,8 @@ class UserInfoControllerTest : S3StorageBaseTest() {
             features = mapOf(
                     "P5000_SUMMER_VISIBLE" to true,
                     "P5000_UPDATES_VISIBLE" to true,
-                    "X010_X009_VISIBLE" to true
+                    "X010_X009_VISIBLE" to true,
+                    "ADMIN_NOTIFICATION_MESSAGE" to true
             ),
         )
         assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), userInfoController.getUserInfo())
@@ -56,7 +57,8 @@ class UserInfoControllerTest : S3StorageBaseTest() {
             features = mapOf(
                 "P5000_SUMMER_VISIBLE" to true,
                 "P5000_UPDATES_VISIBLE" to false,
-                "X010_X009_VISIBLE" to true
+                "X010_X009_VISIBLE" to true,
+                "ADMIN_NOTIFICATION_MESSAGE" to false
             ),
         )
         assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), userInfoController.getUserInfo())
@@ -77,7 +79,8 @@ class UserInfoControllerTest : S3StorageBaseTest() {
             features = mapOf(
                 "P5000_SUMMER_VISIBLE" to true,
                 "P5000_UPDATES_VISIBLE" to true,
-                "X010_X009_VISIBLE" to true
+                "X010_X009_VISIBLE" to true,
+                "ADMIN_NOTIFICATION_MESSAGE" to true
             ),
         )
         val result = userInfoController.getUserInfo()

@@ -28,7 +28,8 @@ class FeatureToggle {
         return mapOf(
             FeatureName.P5000_SUMMER_VISIBLE.name to true,
             FeatureName.P5000_UPDATES_VISIBLE.name to featureToggleP5000Updates(fnr),
-            FeatureName.X010_X009_VISIBLE.name to true
+            FeatureName.X010_X009_VISIBLE.name to true,
+            FeatureName.ADMIN_NOTIFICATION_MESSAGE.name to featureToggleP5000Updates(fnr)
         )
     }
 
@@ -37,9 +38,14 @@ class FeatureToggle {
 }
 
 enum class FeatureName {
+    // P5000 tables visibility
     P5000_SUMMER_VISIBLE,
+    // X010/X009 visibility
     X010_X009_VISIBLE,
+    // New P5000 features visibility
     P5000_UPDATES_VISIBLE,
+    // Administrate the notification message that shows up when EP page loads
+    ADMIN_NOTIFICATION_MESSAGE,
     ENABLE_AUTH,
     WHITELISTING,
 }
