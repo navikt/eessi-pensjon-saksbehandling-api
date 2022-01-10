@@ -147,7 +147,7 @@ dependencies {
     implementation("org.pac4j:pac4j-core:${pac4jVersion}")
 
     // STS
-    implementation("no.nav.eessi.pensjon:ep-security-sts:0.0.17")
+    implementation("no.nav.eessi.pensjon:ep-security-sts:0.0.16")
 
     //mock
     testImplementation("org.junit.jupiter:junit-jupiter:5.7.1")
