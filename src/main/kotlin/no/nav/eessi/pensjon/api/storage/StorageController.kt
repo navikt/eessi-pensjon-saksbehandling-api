@@ -90,10 +90,10 @@ class StorageController(private val storage: StorageService,
     @EessiPensjonTilgang
     @Timed("s3.list")
     @GetMapping("/list/{prefix}")
-    fun listDocuments(@PathVariable(required = true) prefix: String): ResponseEntity<List<String>> {
+    fun listDocuments(@PathVariable(required = false) prefix: String?): ResponseEntity<List<String>> {
         return listDocuments.measure {
             return@measure try {
-                validerPath(prefix)
+                //validerPath(prefix)
                 logger.info("Lister S3 dokumenter")
                 ResponseEntity.ok().body(storage.list(prefix))
             } catch (awsEx: AmazonServiceException) {
