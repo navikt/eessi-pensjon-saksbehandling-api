@@ -88,7 +88,7 @@ class S3Storage(private val s3: AmazonS3) : StorageService {
      *
      * @param path
      */
-    override fun list(path: String): List<String> {
+    override fun list(path: String?): List<String> {
         return try {
             val list = mutableListOf<String>()
             val listObjectsRequest = populerListObjectRequest(path)
