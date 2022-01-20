@@ -2,7 +2,12 @@ package no.nav.eessi.pensjon.services.storage.amazons3
 
 import com.amazonaws.AmazonServiceException
 import com.amazonaws.services.s3.AmazonS3
-import com.amazonaws.services.s3.model.*
+import com.amazonaws.services.s3.model.BucketVersioningConfiguration
+import com.amazonaws.services.s3.model.CannedAccessControlList
+import com.amazonaws.services.s3.model.CreateBucketRequest
+import com.amazonaws.services.s3.model.ListObjectsV2Request
+import com.amazonaws.services.s3.model.S3Object
+import com.amazonaws.services.s3.model.SetBucketVersioningConfigurationRequest
 import no.nav.eessi.pensjon.services.storage.StorageService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -88,7 +93,7 @@ class S3Storage(private val s3: AmazonS3) : StorageService {
      *
      * @param path
      */
-    override fun list(path: String?): List<String> {
+    override fun list(path: String): List<String> {
         return try {
             val list = mutableListOf<String>()
             val listObjectsRequest = populerListObjectRequest(path)

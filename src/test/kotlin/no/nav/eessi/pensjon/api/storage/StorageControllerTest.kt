@@ -20,7 +20,7 @@ class StorageControllerTest : S3StorageBaseTest() {
     }
 
     @Test
-    fun `Calling storageController|storeDocument returns OK response`() {
+    fun `Calling storageController storeDocument returns OK response`() {
 
         val path = "12345678910___path___123"
         val document = "document.json"
@@ -33,7 +33,7 @@ class StorageControllerTest : S3StorageBaseTest() {
     }
 
     @Test
-    fun `Calling storageController|storeDocument returns error response`() {
+    fun `Calling storageController storeDocument returns error response`() {
 
         val path = "12345678910___path___123"
         val document = "document.json"
@@ -52,7 +52,7 @@ class StorageControllerTest : S3StorageBaseTest() {
     }
 
     @Test
-    fun `Calling storageController|getDocument returns OK response with existing file`() {
+    fun `Calling storageController getDocument returns OK response with existing file`() {
 
         val path = "12345678910___path___123"
         val document = "document.json"
@@ -67,7 +67,7 @@ class StorageControllerTest : S3StorageBaseTest() {
     }
 
     @Test
-    fun `Calling storageController|getDocument returns 404 response with non-existing file`() {
+    fun `Calling storageController getDocument returns 404 response with non-existing file`() {
 
         val path = "12345678910___nopath___123"
 
@@ -79,7 +79,7 @@ class StorageControllerTest : S3StorageBaseTest() {
     }
 
     @Test
-    fun `Calling storageController|getDocument returns error response with storage error`() {
+    fun `Calling storageController getDocument returns error response with storage error`() {
 
         val path = "12345678910___nopath___123"
         val expectedError = AmazonServiceException("errorMessage")
@@ -97,7 +97,7 @@ class StorageControllerTest : S3StorageBaseTest() {
     }
 
     @Test
-    fun `Calling storageController|listDocuments with matching prefix on staged storage returns non-empty list`() {
+    fun `Calling storageController listDocuments with matching prefix on staged storage returns non-empty list`() {
 
         val path1 = "12345678910___path___123"
         val path2 = "12345678910___path___123"
@@ -115,7 +115,7 @@ class StorageControllerTest : S3StorageBaseTest() {
     }
 
     @Test
-    fun `Calling storageController|listDocuments with prefix on empty storage returns empty list`() {
+    fun `Calling storageController listDocuments with prefix on empty storage returns empty list`() {
 
         val prefix = "12345678910___path"
 
@@ -127,7 +127,7 @@ class StorageControllerTest : S3StorageBaseTest() {
     }
 
     @Test
-    fun `Calling storageController|listDocument returns error response with storage error`() {
+    fun `Calling storageController listDocument returns error response with storage error`() {
 
         val path = "12345678910___nopath___123"
         val expectedError = AmazonServiceException("errorMessage")
@@ -144,7 +144,7 @@ class StorageControllerTest : S3StorageBaseTest() {
     }
 
     @Test
-    fun `Calling storageController|deleteDocument on staged storage returns OK`() {
+    fun `Calling storageController deleteDocument on staged storage returns OK`() {
 
         val path1 = "12345678910___path___123"
         val document = "document.json"
@@ -163,7 +163,7 @@ class StorageControllerTest : S3StorageBaseTest() {
     }
 
     @Test
-    fun `Calling storageController|deleteDocument on empty storage returns OK`() {
+    fun `Calling storageController deleteDocument on empty storage returns OK`() {
 
         val path1 = "12345678910___path___123"
 
@@ -179,7 +179,7 @@ class StorageControllerTest : S3StorageBaseTest() {
     }
 
     @Test
-    fun `Calling storageController|deleteDocument returns error response with storage error`() {
+    fun `Calling storageController deleteDocument returns error response with storage error`() {
 
         val path1 = "12345678910___path___123"
 
