@@ -95,8 +95,15 @@ class StorageController(private val storage: StorageService,
 
     @EessiPensjonTilgang
     @Timed("s3.list")
+    @GetMapping("/list")
+    fun listAll(): ResponseEntity<List<String>> {
+        return listDocuments("")
+    }
+
+    @EessiPensjonTilgang
+    @Timed("s3.list")
     @GetMapping("/list/{prefix}")
-    fun listDocuments(@PathVariable(required = false) prefix: String = ""): ResponseEntity<List<String>> {
+    fun listDocuments(@PathVariable(required = true) prefix: String): ResponseEntity<List<String>> {
         return listDocuments.measure {
             return@measure try {
                 //validerPath(prefix)
