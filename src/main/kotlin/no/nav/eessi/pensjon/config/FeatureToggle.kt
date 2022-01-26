@@ -8,8 +8,8 @@ class FeatureToggle {
 
     private val listeFagfolkEllerSaksbehandlere = listOf(
         "S128848",
-        "K105134"
-        //"B101331"
+        "K105134",
+        "B101331"
     )
 
     @Value("\${ENV}")
