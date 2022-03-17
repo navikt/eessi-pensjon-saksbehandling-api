@@ -3,6 +3,7 @@ package no.nav.eessi.pensjon.interceptor
 import io.mockk.every
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.http.HttpHeaders
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.client.ClientHttpRequestExecution
 import org.springframework.mock.http.client.MockClientHttpResponse
 
+@Disabled
 @ExtendWith(MockKExtension::class)
 class ApigwHeaderRequestInterceptorTest {
 
