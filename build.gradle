@@ -4,7 +4,7 @@ buildscript {
         springBootVersion = '2.5.3'
         springfoxVersion = '3.0.0'
         jacksonVersion = '2.12.1'
-        oidcTokenSupportVersion = '1.3.8'
+        tokenSupportVersion = '1.3.9'
         logstashLogbackVersion = '6.6'
         pac4jVersion = '4.0.1'
         cxfVersion = '3.4.2'
@@ -135,12 +135,11 @@ dependencies {
     implementation("io.micrometer:micrometer-registry-prometheus")
     implementation("no.nav.eessi.pensjon:ep-metrics:0.4.9")
 
-    // OIDC
-    implementation("no.nav.security:token-validation-spring:${oidcTokenSupportVersion}")
-    implementation("no.nav.security:token-validation-jaxrs:${oidcTokenSupportVersion}")
-    implementation("no.nav.security:token-client-spring:${oidcTokenSupportVersion}")
-    // Only used for starting up locally
-    implementation("no.nav.security:token-validation-test-support:${oidcTokenSupportVersion}")
+    //auth
+    implementation("no.nav.security:token-client-spring:${tokenSupportVersion}")
+    implementation("no.nav.security:token-validation-spring:${tokenSupportVersion}")
+    implementation("no.nav.security:token-validation-jaxrs:${tokenSupportVersion}")
+    implementation("no.nav.security:token-validation-test-support:${tokenSupportVersion}")
 
     implementation("org.pac4j:spring-webmvc-pac4j:${pac4jVersion}")
     implementation("org.pac4j:pac4j-oidc:${pac4jVersion}")

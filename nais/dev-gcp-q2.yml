@@ -6,6 +6,16 @@ metadata:
   labels:
     team: eessipensjon
 spec:
+  azure:
+    sidecar:
+      enabled: true
+      autoLogin: true
+      errorPath: "/errorlogon"
+    application:
+      enabled: true
+      claims:
+        extra:
+          - NAVident
   env:
     - name: EESSI_PENSJON_FAGMODUL_URL
       value: http://eessi-pensjon-fagmodul/
