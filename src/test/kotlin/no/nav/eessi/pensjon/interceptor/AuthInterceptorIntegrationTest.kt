@@ -1,7 +1,5 @@
 package no.nav.eessi.pensjon.interceptor
 
-import io.mockk.mockk
-import no.nav.eessi.pensjon.personoppslag.pdl.model.AktoerId
 import no.nav.eessi.pensjon.services.ldap.BrukerInformasjonService
 import no.nav.eessi.pensjon.services.ldap.LdapServiceMock
 import no.nav.eessi.pensjon.services.storage.StorageService
@@ -54,9 +52,6 @@ class AuthInterceptorIntegrationTest() {
         fun storage(): StorageService {
             return StorageServiceMock()
         }
-
-        @Bean
-        fun aktoerService() = mockk<AktoerId>(relaxed = true)
 
     }
 
