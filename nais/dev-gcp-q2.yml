@@ -6,8 +6,8 @@ metadata:
   labels:
     team: eessipensjon
 spec:
-  envFrom:
-    - secret: api-dev #secret name in Google Secret Manager
+#  envFrom:
+#    - secret: saksbehandlingApi-dev #secret name in Google Secret Manager
   azure:
     sidecar:
       enabled: true
