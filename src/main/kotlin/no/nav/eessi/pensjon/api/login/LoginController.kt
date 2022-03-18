@@ -1,5 +1,38 @@
 package no.nav.eessi.pensjon.api.login
 
+import no.nav.security.token.support.core.api.Unprotected
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Controller
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestParam
+import java.net.URLEncoder
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
+
+@Controller
+class LoginController {
+
+    val logger: Logger = LoggerFactory.getLogger(LoginController::class.java)
+
+    @Unprotected
+    @GetMapping("/login")
+    fun login(httpServletRequest: HttpServletRequest,
+              httpServletResponse: HttpServletResponse,
+              @RequestParam("redirect") redirectTo: String,
+              @RequestParam("context", required = false) context: String) {
+
+        val redir = "https://app.ingress/oauth2/login?redirect=$redirectTo"
+
+
+        val encodedContext = URLEncoder.encode(context, "UTF-8")
+        logger.debug("Redirecter til: $redir")
+//        httpServletResponse.sendRedirect("https://$appName.$navDomain/openamlogin?redirect=$redirectTo&context=$encodedContext")
+        httpServletResponse.sendRedirect(redir)
+    }
+
+}
+
 //@Profile("local")
 //@Controller
 //@Import(TokenGeneratorConfiguration::class)
@@ -34,45 +67,5 @@ package no.nav.eessi.pensjon.api.login
 //    }
 //}
 //
-//@Controller
-//class LoginController {
-//
-//    val logger: Logger = LoggerFactory.getLogger(LoginController::class.java)
-////
-////    @Value("\${ENV}")
-////    lateinit var fasitEnvironmentName: String
-//
-//    @Value("\${NAIS_APP_NAME}")
-//    lateinit var appName: String
-//
-//    @Value("\${NAV_DOMAIN_URL}")
-//    lateinit var navDomain: String
-//
-//    @Unprotected
-//    @GetMapping("/login")
-//    fun login(httpServletRequest: HttpServletRequest,
-//              httpServletResponse: HttpServletResponse,
-//              @RequestParam("redirect") redirectTo: String,
-//              @RequestParam("context", required = false) context: String) {
-//
-////        var environmentPostfix = "-$fasitEnvironmentName"
-////
-////        // Det settes nå kun dfault i prod, namespace brukes i alle andre miljø
-////        if (fasitEnvironmentName.contains("p", true)) {
-////            environmentPostfix = ""
-////        }
-//
-//        val encodedContext = URLEncoder.encode(context, "UTF-8")
-//        logger.debug("Redirecting to: https://$appName.$navDomain/openamlogin?redirect=$redirectTo&context=$encodedContext")
-//        httpServletResponse.sendRedirect("https://$appName.$navDomain/openamlogin?redirect=$redirectTo&context=$encodedContext")
-//    }
-//
-//    @Unprotected
-//    @GetMapping("/openamlogin")
-//    fun openamlogin(httpServletResponse: HttpServletResponse, @RequestParam("redirect") redirectTo: String, @RequestParam("context", required = false) context: String) {
-//        logger.debug("Redirecting back to frontend: $redirectTo$context")
-//        httpServletResponse.setHeader(HttpHeaders.LOCATION, "$redirectTo$context")
-//        httpServletResponse.status = HttpStatus.FOUND.value()
-//    }
-//}
-//
+
+
