@@ -17,7 +17,7 @@ spec:
           withState: ANY
         uniformBucketLevelAccess: true
   envFrom:
-    - secret: saksbehandlingApi-dev #secret name in Google Secret Manager
+    - secret: saksbehandlingapi-dev #secret name in Google Secret Manager
   azure:
     sidecar:
       enabled: true
