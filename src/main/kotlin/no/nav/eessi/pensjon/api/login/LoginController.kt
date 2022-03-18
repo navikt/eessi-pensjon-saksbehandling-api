@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
-import java.net.URLEncoder
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
@@ -27,12 +26,12 @@ class LoginController {
     @GetMapping("/login")
     fun login(httpServletRequest: HttpServletRequest,
               httpServletResponse: HttpServletResponse,
-              @RequestParam("redirect") redirectTo: String,
-              @RequestParam("context", required = false) context: String?) {
+              @RequestParam("redirect", required = true) redirectTo: String) {
 
-        val encodedContext = URLEncoder.encode(context, "UTF-8")
+//        @RequestParam("context", required = false) context: String?
+//        val encodedContext = URLEncoder.encode(context, "UTF-8")
 
-        val apppath = "https://$appName.$navDomain"
+        val apppath = "$appName.$navDomain"
         val redir = "https://$apppath/oauth2/login?redirect=$redirectTo"
 
         logger.debug("Redirecter til: $redir")
