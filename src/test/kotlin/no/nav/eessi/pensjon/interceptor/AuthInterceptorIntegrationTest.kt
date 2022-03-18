@@ -1,7 +1,5 @@
 package no.nav.eessi.pensjon.interceptor
 
-import no.nav.eessi.pensjon.services.ldap.BrukerInformasjonService
-import no.nav.eessi.pensjon.services.ldap.LdapServiceMock
 import no.nav.eessi.pensjon.services.storage.StorageService
 import no.nav.security.token.support.test.spring.TokenGeneratorConfiguration
 import org.apache.http.HttpStatus
@@ -42,11 +40,6 @@ class AuthInterceptorIntegrationTest() {
 
     @TestConfiguration
     class TestConfig{
-
-        @Bean
-        fun ldapService(): BrukerInformasjonService {
-            return LdapServiceMock()
-        }
 
         @Bean
         fun storage(): StorageService {

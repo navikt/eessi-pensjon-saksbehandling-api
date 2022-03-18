@@ -3,8 +3,6 @@ package no.nav.eessi.pensjon.services
 
 import com.unboundid.ldap.listener.InMemoryDirectoryServer
 import com.unboundid.ldap.listener.InMemoryDirectoryServerConfig
-import no.nav.eessi.pensjon.services.ldap.LdapKlient
-import no.nav.eessi.pensjon.services.ldap.LdapService
 import no.nav.security.token.support.test.spring.TokenGeneratorConfiguration
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -14,8 +12,6 @@ import org.springframework.context.annotation.Import
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit.jupiter.SpringExtension
-import java.util.*
-import javax.naming.ldap.InitialLdapContext
 
 
 @ActiveProfiles("test")
@@ -50,14 +46,4 @@ open class BaseTest {
         }
     }
 
-    fun generateMockSaksbehandlerLdapService(): LdapService {
-        val ldapContext = InitialLdapContext()
-        val ldapBrukeroppslag = LdapKlient(
-            Hashtable(),
-            ldapContext,
-            "OU=Users,OU=NAV,OU=BusinessUnits,"
-        )
-
-        return LdapService(ldapBrukeroppslag)
-    }
 }
