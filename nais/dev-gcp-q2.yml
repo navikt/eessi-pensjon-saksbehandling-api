@@ -120,14 +120,3 @@ spec:
     requests:
       cpu: 400m
       memory: 1024Mi
-  vault:
-    enabled: true
-    paths:
-      - kvPath: {{serviceuserkv}}
-        mountPath: /var/run/secrets/nais.io/srveessipensjon
-      - kvPath: {{appsecrets}}
-        mountPath: /var/run/secrets/nais.io/appsecrets
-      - kvPath: credential/data/dev/eessi-pensjon-fss
-        mountPath: /var/run/secrets/nais.io/appcredentials
-      - kvPath: /apikey/appdynamics/dev
-        mountPath: /var/run/secrets/nais.io/vault
