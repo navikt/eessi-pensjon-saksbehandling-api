@@ -10,7 +10,6 @@ import no.nav.eessi.pensjon.utils.errorBody
 import no.nav.eessi.pensjon.utils.maskerPersonIdentifier
 import no.nav.eessi.pensjon.utils.successBody
 import no.nav.security.token.support.core.api.Protected
-import no.nav.security.token.support.core.context.TokenValidationContextHolder
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -30,7 +29,6 @@ import javax.annotation.PostConstruct
 @RestController
 @RequestMapping("/api/storage")
 class StorageController(private val storage: StorageService,
-                        private val tokenValidationContextHolder: TokenValidationContextHolder,
                         @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())) {
 
     private val logger = LoggerFactory.getLogger(StorageController::class.java)

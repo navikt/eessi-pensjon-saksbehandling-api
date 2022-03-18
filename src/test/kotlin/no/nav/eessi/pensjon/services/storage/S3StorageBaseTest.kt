@@ -10,7 +10,6 @@ import io.mockk.spyk
 import no.nav.eessi.pensjon.api.storage.StorageController
 import no.nav.eessi.pensjon.services.BaseTest
 import no.nav.eessi.pensjon.services.storage.amazons3.S3Storage
-import no.nav.security.token.support.spring.SpringTokenValidationContextHolder
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import java.net.ServerSocket
@@ -44,7 +43,7 @@ open class S3StorageBaseTest : BaseTest() {
         s3storageService.passphrase = "something very vey tricky to hack"
         s3storageService.init()
 
-        storageController = spyk(StorageController(s3storageService, SpringTokenValidationContextHolder()))
+        storageController = spyk(StorageController(s3storageService))
         storageController.initMetrics()
     }
 
