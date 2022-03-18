@@ -23,13 +23,13 @@ eessi.pensjon.frontend.api:
     bucket.name: 'eessipensjon'
     personidentifier.separator: '___'
 
-no.nav:
-  security:
-    jwt:
-      issuer.isso:
-        cookiename: 'eessipensjon-idtoken'
-        discoveryurl: '${OPENIDCONNECT_URL}/oauth2/.well-known/openid-configuration'
-        accepted_audience: 'eessi-pensjon-frontend-api-fss-${ENV}'
+#no.nav:
+#  security:
+#    jwt:
+#      issuer.isso:
+#        cookiename: 'eessipensjon-idtoken'
+#        discoveryurl: '${OPENIDCONNECT_URL}/oauth2/.well-known/openid-configuration'
+#        accepted_audience: 'eessi-pensjon-frontend-api-fss-${ENV}'
 
 
 #isso.agentname: '${NAIS_APP_NAME}'
@@ -78,5 +78,4 @@ ldap.provider:
   group-search-base=OU: "NAV,OU=BusinessUnits"
 #PENSJON_UTLAND_WS_ALLOWED_ORIGINS_URL: "http://someorigin"
 
-submitTopic: 'privat-eessipensjon-selvbetjeningsinfoMottatt-v1'
 S3_REGION: us-east-1
