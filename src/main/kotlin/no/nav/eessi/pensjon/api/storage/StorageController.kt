@@ -3,9 +3,9 @@ package no.nav.eessi.pensjon.api.storage
 import com.amazonaws.AmazonServiceException
 import io.micrometer.core.annotation.Timed
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry
+import no.nav.eessi.pensjon.gcp.GcpStorageService
 import no.nav.eessi.pensjon.metrics.MetricsHelper
 import no.nav.eessi.pensjon.services.auth.EessiPensjonTilgang
-import no.nav.eessi.pensjon.services.storage.StorageService
 import no.nav.eessi.pensjon.utils.errorBody
 import no.nav.eessi.pensjon.utils.maskerPersonIdentifier
 import no.nav.eessi.pensjon.utils.successBody
@@ -28,7 +28,7 @@ import javax.annotation.PostConstruct
 @Protected
 @RestController
 @RequestMapping("/api/storage")
-class StorageController(private val storage: StorageService,
+class StorageController(private val storage: GcpStorageService,
                         @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())) {
 
     private val logger = LoggerFactory.getLogger(StorageController::class.java)
@@ -58,7 +58,7 @@ class StorageController(private val storage: StorageService,
             return@measure try {
                 validerPath(path)
                 logger.info("Lagrer S3 dokument")
-                storage.put(path, document)
+                storage.lagre(path, document)
                 ResponseEntity.ok().body(successBody())
             } catch (awsEx: AmazonServiceException) {
                 val uuid = UUID.randomUUID().toString()
@@ -79,7 +79,7 @@ class StorageController(private val storage: StorageService,
             return@measure try {
                 validerPath(path)
                 logger.info("Henter S3 dokument")
-                ResponseEntity.ok().body(storage.get(path))
+                ResponseEntity.ok().body(storage.hent(path))
             } catch (awsEx: AmazonServiceException) {
                 val uuid = UUID.randomUUID().toString()
                 ResponseEntity.status(HttpStatus.valueOf(awsEx.statusCode)).body(errorBody(awsEx.errorMessage, uuid))
@@ -126,7 +126,7 @@ class StorageController(private val storage: StorageService,
         return deleteDocument.measure {
             return@measure try {
                 validerPath(path)
-                storage.delete(path)
+                storage.slett(path)
                 ResponseEntity.ok().body(successBody())
             } catch (awsEx: AmazonServiceException) {
                 val uuid = UUID.randomUUID().toString()
@@ -139,31 +139,31 @@ class StorageController(private val storage: StorageService,
         }
     }
 
-    @EessiPensjonTilgang
-    @Timed("s3.delete")
-    @DeleteMapping("/multiple/{path}")
-    fun deleteMultipleDocuments(@PathVariable(required = true) path: String): ResponseEntity<String> {
-        return deleteMultipleDocuments.measure {
-            return@measure try {
-                validerPath(path)
-                val paths = storage.list(path)
-                if (!paths.isEmpty()) {
-                    paths.forEach {
-                        validerPath(it)
-                    }
-                    storage.multipleDelete(paths)
-                }
-                ResponseEntity.ok().body(successBody())
-            } catch (awsEx: AmazonServiceException) {
-                val uuid = UUID.randomUUID().toString()
-                ResponseEntity.status(HttpStatus.valueOf(awsEx.statusCode)).body(errorBody(awsEx.errorMessage, uuid))
-            } catch (ex: Exception) {
-                val uuid = UUID.randomUUID().toString()
-                ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(errorBody("Klarte ikke å slette s3 dokumenter", uuid))
-            }
-        }
-    }
+//    @EessiPensjonTilgang
+//    @Timed("s3.delete")
+//    @DeleteMapping("/multiple/{path}")
+//    fun deleteMultipleDocuments(@PathVariable(required = true) path: String): ResponseEntity<String> {
+//        return deleteMultipleDocuments.measure {
+//            return@measure try {
+//                validerPath(path)
+//                val paths = storage.list(path)
+//                if (!paths.isEmpty()) {
+//                    paths.forEach {
+//                        validerPath(it)
+//                    }
+//                    storage.multipleDelete(paths)
+//                }
+//                ResponseEntity.ok().body(successBody())
+//            } catch (awsEx: AmazonServiceException) {
+//                val uuid = UUID.randomUUID().toString()
+//                ResponseEntity.status(HttpStatus.valueOf(awsEx.statusCode)).body(errorBody(awsEx.errorMessage, uuid))
+//            } catch (ex: Exception) {
+//                val uuid = UUID.randomUUID().toString()
+//                ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                    .body(errorBody("Klarte ikke å slette s3 dokumenter", uuid))
+//            }
+//        }
+//    }
 
     private fun validerPath(path: String) {
         if (path.isEmpty()) {

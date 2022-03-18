@@ -4,7 +4,6 @@ import com.nimbusds.jwt.JWTClaimsSet
 import io.mockk.every
 import io.mockk.spyk
 import no.nav.eessi.pensjon.config.FeatureToggle
-import no.nav.eessi.pensjon.services.storage.S3StorageBaseTest
 import no.nav.eessi.pensjon.utils.mapAnyToJson
 import no.nav.eessi.pensjon.utils.mapJsonToAny
 import no.nav.eessi.pensjon.utils.typeRefs
@@ -16,7 +15,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.http.ResponseEntity
 import java.util.*
 
-class UserInfoControllerTest : S3StorageBaseTest() {
+class UserInfoControllerTest {
     private lateinit var toggleMock: FeatureToggle
     private lateinit var userInfoController: UserInfoController
 

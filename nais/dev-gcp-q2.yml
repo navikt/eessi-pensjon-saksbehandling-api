@@ -6,8 +6,18 @@ metadata:
   labels:
     team: eessipensjon
 spec:
-#  envFrom:
-#    - secret: saksbehandlingApi-dev #secret name in Google Secret Manager
+  gcp:
+    buckets:
+      - name: eessi-pensjon-saksbehandling-api-dev
+        retentionPeriodDays: 30
+        lifecycleCondition:
+          age: 7
+          createdBefore: 2020-01-01
+          numNewerVersions: 2
+          withState: ANY
+        uniformBucketLevelAccess: true
+  envFrom:
+    - secret: saksbehandlingApi-dev #secret name in Google Secret Manager
   azure:
     sidecar:
       enabled: true
@@ -27,7 +37,9 @@ spec:
   webproxy: true
   env:
     - name: SPRING_PROFILES_ACTIVE
-      value: test,fss
+      value: test
+    - name: GCP_BUCKET_NAME
+      value: eessi-pensjon-saksbehandling-api-dev
     - name: PENSJON_UTLAND_WS_ALLOWED_ORIGINS_URL
       value: https://pensjon-utland-q2.nais.preprod.local
     - name: RINA_HOST_URL

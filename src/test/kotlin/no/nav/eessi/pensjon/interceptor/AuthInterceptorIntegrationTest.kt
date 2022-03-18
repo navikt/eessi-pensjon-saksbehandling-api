@@ -1,6 +1,7 @@
 package no.nav.eessi.pensjon.interceptor
 
-import no.nav.eessi.pensjon.services.storage.StorageService
+import io.mockk.mockk
+import no.nav.eessi.pensjon.gcp.GcpStorageService
 import no.nav.security.token.support.test.spring.TokenGeneratorConfiguration
 import org.apache.http.HttpStatus
 import org.apache.http.client.ResponseHandler
@@ -35,15 +36,12 @@ class AuthInterceptorIntegrationTest() {
     @LocalServerPort
     private lateinit var port: String
 
-//    @MockkBean(relaxed = true)
-//    lateinit var stsService: STSService
-
     @TestConfiguration
     class TestConfig{
 
         @Bean
-        fun storage(): StorageService {
-            return StorageServiceMock()
+        fun storage(): GcpStorageService {
+            return mockk()
         }
 
     }
@@ -344,30 +342,6 @@ class AuthInterceptorIntegrationTest() {
         val statusCode: Int = responseGetDocument.statusLine.statusCode
 
         Assertions.assertEquals(HttpStatus.SC_FORBIDDEN, statusCode)
-    }
-
-    //Mock StorageService da vi ikke skal teste selve s3 men kun tilgang eller ikke
-    private class StorageServiceMock: StorageService {
-        override fun list(path: String): List<String> {
-            return listOf("")
-        }
-
-        override fun put(path: String, content: String) {
-            //nothing
-        }
-
-        override fun get(path: String): String? {
-            return ""
-        }
-
-        override fun delete(path: String) {
-            //n‘othing
-        }
-
-        override fun multipleDelete(paths: List<String>) {
-            //nothing
-        }
-
     }
 
 }

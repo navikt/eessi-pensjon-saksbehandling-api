@@ -9,6 +9,7 @@ buildscript {
         pac4jVersion = '4.0.1'
         cxfVersion = '3.4.2'
         openhtmltopdfVersion = '1.0.0'
+        gcpStorageVersion = '2.0.1'
     }
     repositories {
         mavenCentral()
@@ -120,6 +121,10 @@ dependencies {
     implementation("com.openhtmltopdf:openhtmltopdf-core:${openhtmltopdfVersion}")
     implementation("com.openhtmltopdf:openhtmltopdf-pdfbox:${openhtmltopdfVersion}")
     implementation('org.jsoup:jsoup:1.13.1')
+
+    //GCP
+    implementation("com.google.cloud:google-cloud-storage:$gcpStorageVersion")
+    implementation(platform("com.google.cloud:libraries-bom:23.0.0"))
 
     // Amazon S3
     implementation("com.amazonaws:aws-java-sdk-s3:1.11.959")
