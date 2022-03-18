@@ -73,11 +73,6 @@ jar {
 }
 
 dependencies {
-    // Personoppslag
-    implementation("no.nav.eessi.pensjon:ep-personoppslag:8.0.21")
-
-    // Eux
-    implementation("no.nav.eessi.pensjon:ep-eux:1.1.52")
 
     // Spring
     implementation("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
@@ -90,8 +85,6 @@ dependencies {
         exclude module: "junit-vintage-engine"
     }
     implementation("org.springframework:spring-jms")
-    // MQ
-    //implementation("com.ibm.mq:com.ibm.mq.allclient:9.2.1.0")
 
     // Messaging
     implementation("org.springframework:spring-websocket")
@@ -144,9 +137,6 @@ dependencies {
     implementation("org.pac4j:spring-webmvc-pac4j:${pac4jVersion}")
     implementation("org.pac4j:pac4j-oidc:${pac4jVersion}")
     implementation("org.pac4j:pac4j-core:${pac4jVersion}")
-
-    // STS
-    //implementation("no.nav.eessi.pensjon:ep-security-sts:0.0.16")
 
     //mock
     testImplementation("org.junit.jupiter:junit-jupiter:5.7.1")
