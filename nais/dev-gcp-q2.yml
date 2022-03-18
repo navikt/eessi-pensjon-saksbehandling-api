@@ -16,9 +16,14 @@ spec:
       claims:
         extra:
           - NAVident
+  accessPolicy:
+    inbound:
+      rules:
+        - application: eessi-pensjon-frontend-ui-fss
+          namespace: eessipensjon
+          cluster: dev-fss
+  webproxy: true
   env:
-    - name: EESSI_PENSJON_FAGMODUL_URL
-      value: http://eessi-pensjon-fagmodul/
     - name: SPRING_PROFILES_ACTIVE
       value: test,fss
     - name: PENSJON_UTLAND_WS_ALLOWED_ORIGINS_URL
@@ -35,10 +40,6 @@ spec:
       value: https://isso-q.adeo.no:443/isso
     - name: EESSI_PENSJON_FRONTEND_UI_URL
       value: https://pensjon-utland-q.nav.no
-    - name: SECURITY_TOKEN_SERVICE_OPENID_CONFIGURATION_URL
-      value: https://security-token-service.nais.preprod.local/rest/v1/sts/.well-known/openid-configuration
-    - name: SECURITYTOKENSERVICE_URL
-      value: https://security-token-service.nais.preprod.local/rest/v1/sts/token
     - name: EESSI_PENSJON_FRONTEND_API_FSS_CHANNEL_NAME
       value: Q2_EP_FEND_API_FSS
     - name: EESSI_PENSJON_FRONTEND_API_FSS_CHANNEL_QUEUEMANAGER
@@ -95,7 +96,7 @@ spec:
       value: eessi-basis-sedMottatt-v1-q2
   image: {{ image }}
   ingresses:
-    - https://eessi-pensjon-frontend-api-fss-q2.nais.preprod.local
+    - https://eessi-pensjon-frontend-api-fss-q2.dev.intern.nav.no
   liveness:
     path: /internal/isalive
     port: 8080
