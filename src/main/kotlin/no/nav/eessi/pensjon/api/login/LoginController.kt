@@ -3,6 +3,7 @@ package no.nav.eessi.pensjon.api.login
 import no.nav.security.token.support.core.api.Unprotected
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -15,20 +16,29 @@ class LoginController {
 
     val logger: Logger = LoggerFactory.getLogger(LoginController::class.java)
 
+    @Value("\${NAIS_APP_NAME}")
+    lateinit var appName: String
+
+    @Value("\${NAV_DOMAIN_URL}")
+    lateinit var navDomain: String
+
+
     @Unprotected
     @GetMapping("/login")
     fun login(httpServletRequest: HttpServletRequest,
               httpServletResponse: HttpServletResponse,
               @RequestParam("redirect") redirectTo: String,
-              @RequestParam("context", required = false) context: String) {
-
-        val redir = "https://app.ingress/oauth2/login?redirect=$redirectTo"
-
+              @RequestParam("context", required = false) context: String?) {
 
         val encodedContext = URLEncoder.encode(context, "UTF-8")
+
+        val apppath = "https://$appName.$navDomain"
+        val redir = "https://$apppath/oauth2/login?redirect=$redirectTo"
+
         logger.debug("Redirecter til: $redir")
-//        httpServletResponse.sendRedirect("https://$appName.$navDomain/openamlogin?redirect=$redirectTo&context=$encodedContext")
+
         httpServletResponse.sendRedirect(redir)
+
     }
 
 }

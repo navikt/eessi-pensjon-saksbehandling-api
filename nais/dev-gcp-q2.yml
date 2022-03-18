@@ -49,7 +49,7 @@ spec:
     - name: S3_FSS_URL
       value: http://objectstore.rook-ceph.svc.nais.local
     - name: NAV_DOMAIN_URL
-      value: nais.preprod.local
+      value: dev.intern.nav.no
     - name: OPENIDCONNECT_URL
       value: https://isso-q.adeo.no:443/isso
     - name: EESSI_PENSJON_FRONTEND_UI_URL
