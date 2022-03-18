@@ -91,7 +91,7 @@ dependencies {
     }
     implementation("org.springframework:spring-jms")
     // MQ
-    implementation("com.ibm.mq:com.ibm.mq.allclient:9.2.1.0")
+    //implementation("com.ibm.mq:com.ibm.mq.allclient:9.2.1.0")
 
     // Messaging
     implementation("org.springframework:spring-websocket")

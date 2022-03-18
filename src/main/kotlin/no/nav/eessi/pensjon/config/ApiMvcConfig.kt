@@ -15,6 +15,6 @@ class ApiMvcConfig(private val authInterceptor: AuthInterceptor): WebMvcConfigur
     override fun addInterceptors(registry: InterceptorRegistry) {
         logger.debug("legger til TokenInterceptor")
         //registry.addInterceptor(securityInterceptor).addPathPatterns("/openamlogin")
-        registry.addInterceptor(authInterceptor)
+       // registry.addInterceptor(authInterceptor)
     }
 }
