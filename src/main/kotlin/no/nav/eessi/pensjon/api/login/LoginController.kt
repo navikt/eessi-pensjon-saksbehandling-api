@@ -32,7 +32,7 @@ class LoginController {
 //        val encodedContext = URLEncoder.encode(context, "UTF-8")
 
         val apppath = "$appName.$navDomain"
-        val redir = "https://$apppath/oauth2/login?redirect=$redirectTo"
+        val redir = "https://pensjon-utland-q2.nais.preprod.local/_/s"
 
         logger.debug("Redirecter til: $redir")
 
