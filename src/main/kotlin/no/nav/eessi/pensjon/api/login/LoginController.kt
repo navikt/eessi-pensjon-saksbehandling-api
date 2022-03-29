@@ -76,12 +76,18 @@ class LoginController {
               httpServletResponse: HttpServletResponse,
               @RequestParam("redirect") redirectTo: String,
               @RequestParam("context", required = false) context: String) {
+        
+        var newUrl = httpServletRequest.getScheme() + "://" +
+                httpServletRequest.getServerName() +
+                "/oauth2/login?redirect=" +
+                URLEncoder.encode(
+                    httpServletRequest.getScheme() + "://" +
+                    httpServletRequest.getServerName() +
+                    "/logincallback?redirect=" + redirectTo + context
+                , "UTF-8")
 
-        httpServletResponse.sendRedirect(
-            httpServletResponse.getContextPath() +
-             "/oauth2/login?redirect=" +
-             httpServletResponse.getContextPath() +
-              "/logincallback" + URLEncoder.encode("?redirect=" + redirectTo + context, "UTF-8"))
+        logger.debug("Redirecting to login: $newUrl")
+        httpServletResponse.sendRedirect(newUrl)
     }
 
     @Unprotected
