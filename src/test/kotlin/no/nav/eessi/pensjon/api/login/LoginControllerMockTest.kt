@@ -35,7 +35,7 @@ class LoginControllerMockTest : BaseTest() {
         loginController.login(request, response, redirectTo, context)
 
         val generatedResponse = response.getHeader("Location")
-        val expectedResponse = "http://eessi-pensjon-frontend-api-fss-q2.nais.preprod.local/oauth2/login?redirect=http%3A%2F%2Feessi-pensjon-frontend-api-fss-q2.nais.preprod.local%2Flogincallback%3Fredirect%3Dhttp%3A%2F%2Fpensjon-utland-t.nav.no%2F_%2F"
+        val expectedResponse = "https://eessi-pensjon-frontend-api-fss-q2.nais.preprod.local/oauth2/login?redirect=https%3A%2F%2Feessi-pensjon-frontend-api-fss-q2.nais.preprod.local%2Flogincallback%3Fredirect%3Dhttp%3A%2F%2Fpensjon-utland-t.nav.no%2F_%2F"
 
         assertEquals(response.status, 302)
         assertEquals(expectedResponse, generatedResponse)
