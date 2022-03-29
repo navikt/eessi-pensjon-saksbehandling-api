@@ -2,7 +2,6 @@ package no.nav.eessi.pensjon.api.login
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import no.nav.security.token.support.core.api.Unprotected
-import no.nav.security.token.support.test.spring.TokenGeneratorConfiguration
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -22,47 +21,10 @@ import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-@Profile("local")
-@Controller
-@Import(TokenGeneratorConfiguration::class)
-class LocalLoginController {
-
-    val logger: Logger = LoggerFactory.getLogger(LocalLoginController::class.java)
-    var localRestTemplate : RestTemplate? = null
-
-    @Value("\${server.port}")
-    lateinit var port: String
-
-    @Unprotected
-    @GetMapping("/locallogin")
-    fun login(httpServletRequest: HttpServletRequest, httpServletResponse: HttpServletResponse, @RequestParam("redirect") redirectTo: String) {
-        if (localRestTemplate == null) {
-            localRestTemplate = RestTemplateBuilder()
-                    .rootUri("http://localhost:$port")
-                    .build()
-        }
-        val cookieResult = localRestTemplate!!.exchange(
-                "/local/cookie",
-                HttpMethod.GET,
-                HttpEntity("", HttpHeaders()),
-                String::class.java)
-
-        val body = ObjectMapper().readTree(cookieResult.body)
-        val cookie = Cookie(body.get("name").textValue(), body.get("value").textValue())
-
-        logger.debug("Redirecting back to frontend: $redirectTo")
-        httpServletResponse.addCookie(cookie)
-        httpServletResponse.sendRedirect(redirectTo)
-    }
-}
-
 @Controller
 class LoginController {
 
     val logger: Logger = LoggerFactory.getLogger(LoginController::class.java)
-//
-//    @Value("\${ENV}")
-//    lateinit var fasitEnvironmentName: String
 
     @Value("\${NAIS_APP_NAME}")
     lateinit var appName: String
@@ -76,18 +38,12 @@ class LoginController {
               httpServletResponse: HttpServletResponse,
               @RequestParam("redirect") redirectTo: String,
               @RequestParam("context", required = false) context: String) {
-        
-        var newUrl = httpServletRequest.getScheme() + "://" +
-                httpServletRequest.getServerName() +
-                "/oauth2/login?redirect=" +
-                URLEncoder.encode(
-                    httpServletRequest.getScheme() + "://" +
-                    httpServletRequest.getServerName() +
-                    "/logincallback?redirect=" + redirectTo + context
-                , "UTF-8")
 
-        logger.debug("Redirecting to login: $newUrl")
-        httpServletResponse.sendRedirect(newUrl)
+        var callbackUrl = "https://${appName}.${navDomain}/logincallback?redirect=" + redirectTo + context
+        var redirectUrl = "https://${appName}.${navDomain}/oauth2/login?redirect=" + URLEncoder.encode(callbackUrl, "UTF-8")
+
+        logger.debug("Redirecting to login: $redirectUrl")
+        httpServletResponse.sendRedirect(redirectUrl)
     }
 
     @Unprotected

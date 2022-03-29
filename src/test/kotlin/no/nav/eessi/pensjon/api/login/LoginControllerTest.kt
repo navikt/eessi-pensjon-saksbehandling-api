@@ -32,7 +32,7 @@ class FssLoginControllerTest {
         fssLoginController.navDomain = "domain"
         fssLoginController.login(req, resp, "somewhere", "somecontext")
 
-        verify(atLeast = 1) { resp.sendRedirect("https://eessi-pensjon-frontend-api-fss-q1.domain/openamlogin?redirect=somewhere&context=somecontext") }
+        verify(atLeast = 1) { resp.sendRedirect("https://eessi-pensjon-frontend-api-fss-q1.domain/oauth2/login?redirect=https%3A%2F%2Feessi-pensjon-frontend-api-fss-q1.domain%2Flogincallback%3Fredirect%3Dsomewheresomecontext") }
     }
 
     @Test
@@ -41,7 +41,7 @@ class FssLoginControllerTest {
         fssLoginController.navDomain = "domain"
         fssLoginController.login(req, resp, "somewhere", "somecontext")
 
-        verify(atLeast = 1) { resp.sendRedirect("https://eessi-pensjon-frontend-api-fss-q2.domain/openamlogin?redirect=somewhere&context=somecontext") }
+        verify(atLeast = 1) { resp.sendRedirect("https://eessi-pensjon-frontend-api-fss-q2.domain/oauth2/login?redirect=https%3A%2F%2Feessi-pensjon-frontend-api-fss-q2.domain%2Flogincallback%3Fredirect%3Dsomewheresomecontext") }
     }
 
 
@@ -49,17 +49,17 @@ class FssLoginControllerTest {
     fun `Given a login attempt in FSS zone When environment is p Then redirect to adeo`() {
         fssLoginController.appName = "eessi-pensjon-frontend-api-fss"
         fssLoginController.navDomain = "nais.adeo.no"
-        fssLoginController.login(req, resp, "somewhereelse", "somecontext")
+        fssLoginController.login(req, resp, "somewhere", "somecontext")
 
-        verify(atLeast = 1) { resp.sendRedirect("https://${fssLoginController.appName}.nais.adeo.no/openamlogin?redirect=somewhereelse&context=somecontext") }
+        verify(atLeast = 1) { resp.sendRedirect("https://${fssLoginController.appName}.nais.adeo.no/oauth2/login?redirect=https%3A%2F%2F${fssLoginController.appName}.nais.adeo.no%2Flogincallback%3Fredirect%3Dsomewheresomecontext") }
     }
 
     @Test
     fun `Given a login attempt in FSS zone When environment is preprod Then redirect to preprod`() {
         fssLoginController.appName = "eessi-pensjon-frontend-api-fss-q2"
         fssLoginController.navDomain = "nais.preprod.local"
-        fssLoginController.login(req, resp, "somewhereelse", "somecontext")
+        fssLoginController.login(req, resp, "somewhere", "somecontext")
 
-        verify(atLeast = 1) { resp.sendRedirect("https://${fssLoginController.appName}.nais.preprod.local/openamlogin?redirect=somewhereelse&context=somecontext") }
+        verify(atLeast = 1) { resp.sendRedirect("https://${fssLoginController.appName}.nais.preprod.local/oauth2/login?redirect=https%3A%2F%2F${fssLoginController.appName}.nais.preprod.local%2Flogincallback%3Fredirect%3Dsomewheresomecontext") }
     }
 }
