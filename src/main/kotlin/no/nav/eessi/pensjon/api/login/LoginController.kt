@@ -77,23 +77,18 @@ class LoginController {
               @RequestParam("redirect") redirectTo: String,
               @RequestParam("context", required = false) context: String) {
 
-//        var environmentPostfix = "-$fasitEnvironmentName"
-//
-//        // Det settes nå kun dfault i prod, namespace brukes i alle andre miljø
-//        if (fasitEnvironmentName.contains("p", true)) {
-//            environmentPostfix = ""
-//        }
-
-        val encodedContext = URLEncoder.encode(context, "UTF-8")
-        logger.debug("Redirecting to: https://$appName.$navDomain/openamlogin?redirect=$redirectTo&context=$encodedContext")
-        httpServletResponse.sendRedirect("https://$appName.$navDomain/openamlogin?redirect=$redirectTo&context=$encodedContext")
+        httpServletResponse.sendRedirect(
+            httpServletResponse.getContextPath() +
+             "/oauth2/login?redirect=" +
+             httpServletResponse.getContextPath() +
+              "/logincallback" + URLEncoder.encode("?redirect=" + redirectTo + context, "UTF-8"))
     }
 
     @Unprotected
-    @GetMapping("/openamlogin")
-    fun openamlogin(httpServletResponse: HttpServletResponse, @RequestParam("redirect") redirectTo: String, @RequestParam("context", required = false) context: String) {
-        logger.debug("Redirecting back to frontend: $redirectTo$context")
-        httpServletResponse.setHeader(HttpHeaders.LOCATION, "$redirectTo$context")
+    @GetMapping("/logincallback")
+    fun openamlogin(httpServletResponse: HttpServletResponse, @RequestParam("redirect") redirect: String) {
+        logger.debug("Redirecting back to frontend: $redirect")
+        httpServletResponse.setHeader(HttpHeaders.LOCATION, "$redirect")
         httpServletResponse.status = HttpStatus.FOUND.value()
     }
 }
