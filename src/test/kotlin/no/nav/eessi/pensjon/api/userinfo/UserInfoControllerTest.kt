@@ -11,10 +11,12 @@ import no.nav.security.token.support.core.jwt.JwtTokenClaims
 import no.nav.security.token.support.spring.SpringTokenValidationContextHolder
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.http.ResponseEntity
 import java.util.*
 
+@Disabled
 class UserInfoControllerTest {
     private lateinit var toggleMock: FeatureToggle
     private lateinit var userInfoController: UserInfoController
