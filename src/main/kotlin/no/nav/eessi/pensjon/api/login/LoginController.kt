@@ -24,47 +24,30 @@ class LoginController {
     @Value("\${NAV_DOMAIN_URL}")
     lateinit var navDomain: String
 
-
-//    @Unprotected
-//    @GetMapping("/login")
-//    fun login(httpServletRequest: HttpServletRequest,
-//              httpServletResponse: HttpServletResponse,
-//              @RequestParam("redirect", required = true) redirectTo: String) {
-//
-//        httpServletRequest.headerNames
-////        @RequestParam("context", required = false) context: String?
-////        val encodedContext = URLEncoder.encode(context, "UTF-8")
-//
-//        val apppath = "$appName.$navDomain"
-//        val redir = "https://$apppath/oauth2/login?redirect=$redirectTo"
-//
-////        https://pensjon-utland-q2.nais.preprod.local?aktoerId=2953297351855&sakId=22955439&kravId=42501017&vedtakId=42791092
-//
-//        logger.debug("Redirecter til: $redir")
-//
-//        httpServletResponse.sendRedirect(redir)
-//
-//
-//    }
-
-//    @Unprotected
-//    @GetMapping("/callback")
-//    fun callback(httpServletRequest: HttpServletRequest,
-//                 httpServletResponse: HttpServletResponse,
-//                 @RequestParam("redirect", required = true) redirectTo: String) {
-//
-//        val callbackurl = "https://pensjon-utland-q2.nais.preprod.local?$redirectTo"
-//        httpServletResponse.sendRedirect(callbackurl)
-//
-//
-//    }
-
     @Unprotected
     @GetMapping("/blah")
     fun login(httpServletRequest: HttpServletRequest,
               httpServletResponse: HttpServletResponse) {
-        httpServletResponse.sendRedirect("https://pensjon-utland-q2.dev.intern.nav.no/api/userinfo")
+
+        val apiUserinfo = "https://${appName}.${navDomain}/api/userinfo"
+        httpServletResponse.sendRedirect(apiUserinfo)
+//        httpServletResponse.sendRedirect("https://pensjon-utland-q2.dev.intern.nav.no/frontend/userinfo")
     }
+
+    @Unprotected
+    @GetMapping("/login2")
+    fun login2(httpServletRequest: HttpServletRequest,
+              httpServletResponse: HttpServletResponse,
+              @RequestParam("redirect", required = false) redirectTo: String?,
+              @RequestParam("context", required = false) context: String?) {
+
+        val redirectUrl = "https://${appName}.${navDomain}/oauth2/login?redirect=/blah"
+        logger.debug("Redirecting to login: $redirectUrl")
+
+        httpServletResponse.sendRedirect(redirectUrl)
+
+    }
+
 
     @Unprotected
     @GetMapping("/login")
