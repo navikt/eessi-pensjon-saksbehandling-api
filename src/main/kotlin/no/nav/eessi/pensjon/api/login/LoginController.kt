@@ -69,7 +69,7 @@ class LoginController {
      //        https://pensjon-utland-q2.nais.preprod.local?aktoerId=2953297351855&sakId=22955439&kravId=42501017&vedtakId=42791092
 
 
-        val callbackUrl = "https://${appName}.${navDomain}/logincallback?redirect=" + redirectTo + context
+        val callbackUrl = "https://${appName}.${navDomain}/logincallback"//?redirect=" + redirectTo + context
         val redirectUrl = "https://${appName}.${navDomain}/oauth2/login?redirect=" + URLEncoder.encode(callbackUrl, "UTF-8")
 
         logger.debug("Redirecting to login: $redirectUrl")
