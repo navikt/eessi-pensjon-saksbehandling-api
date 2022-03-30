@@ -1,6 +1,5 @@
 package no.nav.eessi.pensjon.api.login
 
-import no.nav.security.token.support.core.api.Protected
 import no.nav.security.token.support.core.api.Unprotected
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -60,11 +59,11 @@ class LoginController {
 //
 //    }
 
-    @Protected
+    @Unprotected
     @GetMapping("/blah")
     fun login(httpServletRequest: HttpServletRequest,
               httpServletResponse: HttpServletResponse) {
-        httpServletResponse.sendRedirect("https://pensjon-utland-q2.dev.intern.nav.no/")
+        httpServletResponse.sendRedirect("https://pensjon-utland-q2.dev.intern.nav.no/api/userinfo")
     }
 
     @Unprotected
@@ -74,8 +73,8 @@ class LoginController {
               @RequestParam("redirect") redirectTo: String,
               @RequestParam("context", required = false) context: String) {
 
-     //        https://pensjon-utland-q2.nais.preprod.local?aktoerId=2953297351855&sakId=22955439&kravId=42501017&vedtakId=42791092
-
+        //        https://pensjon-utland-q2.nais.preprod.local?aktoerId=2953297351855&sakId=22955439&kravId=42501017&vedtakId=42791092
+        //        https://pensjon-utland-q2.dev.intern.nav.no?aktoerId=2953297351855&sakId=22955439&kravId=42501017&vedtakId=42791092
 
         val callbackUrl = "/logincallback"//?redirect=" + redirectTo + context
         val redirectUrl = "https://${appName}.${navDomain}/oauth2/login?redirect=" + URLEncoder.encode(callbackUrl, "UTF-8")
@@ -94,40 +93,4 @@ class LoginController {
     }
 
 }
-
-//@Profile("local")
-//@Controller
-//@Import(TokenGeneratorConfiguration::class)
-//class LocalLoginController {
-//
-//    val logger: Logger = LoggerFactory.getLogger(LocalLoginController::class.java)
-//    var localRestTemplate : RestTemplate? = null
-//
-//    @Value("\${server.port}")
-//    lateinit var port: String
-//
-//    @Unprotected
-//    @GetMapping("/locallogin")
-//    fun login(httpServletRequest: HttpServletRequest, httpServletResponse: HttpServletResponse, @RequestParam("redirect") redirectTo: String) {
-//        if (localRestTemplate == null) {
-//            localRestTemplate = RestTemplateBuilder()
-//                    .rootUri("http://localhost:$port")
-//                    .build()
-//        }
-//        val cookieResult = localRestTemplate!!.exchange(
-//                "/local/cookie",
-//                HttpMethod.GET,
-//                HttpEntity("", HttpHeaders()),
-//                String::class.java)
-//
-//        val body = ObjectMapper().readTree(cookieResult.body)
-//        val cookie = Cookie(body.get("name").textValue(), body.get("value").textValue())
-//
-//        logger.debug("Redirecting back to frontend: $redirectTo")
-//        httpServletResponse.addCookie(cookie)
-//        httpServletResponse.sendRedirect(redirectTo)
-//    }
-//}
-//
-
 
