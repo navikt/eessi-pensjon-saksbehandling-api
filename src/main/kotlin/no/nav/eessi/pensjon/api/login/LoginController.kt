@@ -1,5 +1,6 @@
 package no.nav.eessi.pensjon.api.login
 
+import no.nav.security.token.support.core.api.Protected
 import no.nav.security.token.support.core.api.Unprotected
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -58,6 +59,13 @@ class LoginController {
 //
 //
 //    }
+
+    @Protected
+    @GetMapping("/blah")
+    fun login(httpServletRequest: HttpServletRequest,
+              httpServletResponse: HttpServletResponse) {
+        httpServletResponse.sendRedirect("https://pensjon-utland-q2.dev.intern.nav.no/")
+    }
 
     @Unprotected
     @GetMapping("/login")
