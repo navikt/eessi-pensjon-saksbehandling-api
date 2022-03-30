@@ -2,6 +2,7 @@ package no.nav.eessi.pensjon.api.login
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import no.nav.security.token.support.core.api.Unprotected
+import no.nav.security.token.support.test.spring.TokenGeneratorConfiguration
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -21,10 +22,47 @@ import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
+@Profile("local")
+@Controller
+@Import(TokenGeneratorConfiguration::class)
+class LocalLoginController {
+
+    val logger: Logger = LoggerFactory.getLogger(LocalLoginController::class.java)
+    var localRestTemplate : RestTemplate? = null
+
+    @Value("\${server.port}")
+    lateinit var port: String
+
+    @Unprotected
+    @GetMapping("/locallogin")
+    fun login(httpServletRequest: HttpServletRequest, httpServletResponse: HttpServletResponse, @RequestParam("redirect") redirectTo: String) {
+        if (localRestTemplate == null) {
+            localRestTemplate = RestTemplateBuilder()
+                    .rootUri("http://localhost:$port")
+                    .build()
+        }
+        val cookieResult = localRestTemplate!!.exchange(
+                "/local/cookie",
+                HttpMethod.GET,
+                HttpEntity("", HttpHeaders()),
+                String::class.java)
+
+        val body = ObjectMapper().readTree(cookieResult.body)
+        val cookie = Cookie(body.get("name").textValue(), body.get("value").textValue())
+
+        logger.debug("Redirecting back to frontend: $redirectTo")
+        httpServletResponse.addCookie(cookie)
+        httpServletResponse.sendRedirect(redirectTo)
+    }
+}
+
 @Controller
 class LoginController {
 
     val logger: Logger = LoggerFactory.getLogger(LoginController::class.java)
+//
+//    @Value("\${ENV}")
+//    lateinit var fasitEnvironmentName: String
 
     @Value("\${NAIS_APP_NAME}")
     lateinit var appName: String
@@ -39,18 +77,23 @@ class LoginController {
               @RequestParam("redirect") redirectTo: String,
               @RequestParam("context", required = false) context: String) {
 
-        var callbackUrl = "https://${appName}.${navDomain}/logincallback?redirect=" + redirectTo + context
-        var redirectUrl = "https://${appName}.${navDomain}/oauth2/login?redirect=" + URLEncoder.encode(callbackUrl, "UTF-8")
+//        var environmentPostfix = "-$fasitEnvironmentName"
+//
+//        // Det settes nå kun dfault i prod, namespace brukes i alle andre miljø
+//        if (fasitEnvironmentName.contains("p", true)) {
+//            environmentPostfix = ""
+//        }
 
-        logger.debug("Redirecting to login: $redirectUrl")
-        httpServletResponse.sendRedirect(redirectUrl)
+        val encodedContext = URLEncoder.encode(context, "UTF-8")
+        logger.debug("Redirecting to: https://$appName.$navDomain/openamlogin?redirect=$redirectTo&context=$encodedContext")
+        httpServletResponse.sendRedirect("https://$appName.$navDomain/openamlogin?redirect=$redirectTo&context=$encodedContext")
     }
 
     @Unprotected
-    @GetMapping("/logincallback")
-    fun openamlogin(httpServletResponse: HttpServletResponse, @RequestParam("redirect") redirect: String) {
-        logger.debug("Redirecting back to frontend: $redirect")
-        httpServletResponse.setHeader(HttpHeaders.LOCATION, "$redirect")
+    @GetMapping("/openamlogin")
+    fun openamlogin(httpServletResponse: HttpServletResponse, @RequestParam("redirect") redirectTo: String, @RequestParam("context", required = false) context: String) {
+        logger.debug("Redirecting back to frontend: $redirectTo$context")
+        httpServletResponse.setHeader(HttpHeaders.LOCATION, "$redirectTo$context")
         httpServletResponse.status = HttpStatus.FOUND.value()
     }
 }

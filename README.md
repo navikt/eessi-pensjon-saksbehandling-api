@@ -45,6 +45,20 @@ Run in your IDE the `Application.kt` file with VM options `-Dspring.profiles.act
 
 It will start the service in port 8080.
 
+### Aurthentication as localhost
+
+In order to get a local authenticated token that allows your local instances able to interact with other
+services, you need to point your browser to:
+
+      http://localhost:{port}/locallogin?redirect={redirectUrl}
+
+The common case where you have the frontend-ui running on localhost:3000 and the frontend-api
+running on localhost:8080, then visit:
+
+       http://localhost:8080/locallogin?redirect=http://localhost:3000
+
+And the frontend will load with an authentication cookie for subject 12345678910
+
 ### Production
 
 Same as development
