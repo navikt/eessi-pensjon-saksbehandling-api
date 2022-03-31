@@ -25,7 +25,6 @@ class LoginController {
     @Value("\${NAV_DOMAIN_URL}")
     lateinit var navDomain: String
 
-    @Protected
     @GetMapping("/")
     fun login(request: HttpServletRequest): String {
 
