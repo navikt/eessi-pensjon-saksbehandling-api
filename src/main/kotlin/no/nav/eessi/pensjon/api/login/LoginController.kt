@@ -1,5 +1,6 @@
 package no.nav.eessi.pensjon.api.login
 
+import no.nav.security.token.support.core.api.Protected
 import no.nav.security.token.support.core.api.Unprotected
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -24,14 +25,10 @@ class LoginController {
     @Value("\${NAV_DOMAIN_URL}")
     lateinit var navDomain: String
 
-    @Unprotected
-    @GetMapping("/blah")
-    fun login(httpServletRequest: HttpServletRequest,
-              httpServletResponse: HttpServletResponse) {
-
-        val apiUserinfo = "https://${appName}.${navDomain}/api/userinfo"
-        httpServletResponse.sendRedirect(apiUserinfo)
-//        httpServletResponse.sendRedirect("https://pensjon-utland-q2.dev.intern.nav.no/frontend/userinfo")
+    @Protected
+    @GetMapping("/")
+    fun login(): String {
+        return "Parabens you have entered a secure endpoint in api"
     }
 
     @Unprotected
