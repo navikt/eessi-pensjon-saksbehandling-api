@@ -27,8 +27,11 @@ class LoginController {
 
     @Protected
     @GetMapping("/")
-    fun login(): String {
-        return "Parabens you have entered a secure endpoint in api"
+    fun login(request: HttpServletRequest): String {
+
+        logger.debug("accesstoken før: ${request.getHeader("AUTHORIZATION")}")
+
+        return request.getHeader("AUTHORIZATION")
     }
 
     @Unprotected
