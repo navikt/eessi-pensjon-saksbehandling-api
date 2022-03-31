@@ -1,7 +1,7 @@
 no.nav.security.jwt:
   issuer.aad:
     discoveryurl: ${AZURE_APP_WELL_KNOWN_URL}
-    accepted_audience: ${AZURE_APP_CLIENT_ID}
+    accepted_audience: ${AZUREAD-FRONTEND-UI-APPLICATION-ID}
   client:
     registration:
       proxy-credentials:

@@ -92,6 +92,9 @@ spec:
       value: eessi-basis-sedSendt-v1-q2
     - name: KAFKA_SEDMOTTATT_TOPIC
       value: eessi-basis-sedMottatt-v1-q2
+    - name: AZUREAD-FRONTEND-UI-APPLICATION-ID
+      value: 9731620d-5ac9-45f8-8e40-1f38ed8e10d1
+
   image: {{ image }}
   ingresses:
     - https://eessi-pensjon-frontend-api-fss-q2.dev.intern.nav.no
