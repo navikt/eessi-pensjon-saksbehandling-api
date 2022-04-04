@@ -90,6 +90,8 @@ spec:
       value: eessi-basis-sedMottatt-v1-q2
     - name: AZUREAD-FRONTEND-UI-APPLICATION-ID
       value: 9731620d-5ac9-45f8-8e40-1f38ed8e10d1
+    - name: AZURE_APP_PROXY_CLIENT_ID
+      value: dev-fss.eessipensjon.eessi-pensjon-onprem-proxy-q2
 
   image: {{ image }}
   ingresses:
