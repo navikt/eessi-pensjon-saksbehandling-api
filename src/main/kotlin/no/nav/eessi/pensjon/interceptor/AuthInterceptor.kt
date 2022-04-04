@@ -5,6 +5,7 @@ import no.nav.eessi.pensjon.services.auth.AdRolle
 import no.nav.eessi.pensjon.services.auth.AuthorisationService
 import no.nav.eessi.pensjon.services.auth.EessiPensjonTilgang
 import no.nav.eessi.pensjon.utils.getClaims
+import no.nav.eessi.pensjon.utils.getToken
 import no.nav.eessi.pensjon.utils.mapJsonToAny
 import no.nav.eessi.pensjon.utils.typeRefs
 import no.nav.security.token.support.core.context.TokenValidationContextHolder
@@ -40,11 +41,16 @@ class AuthInterceptor(private val proxyOAuthRestTemplate: RestTemplate,
             val eessiPensjonTilgang = handler.getMethodAnnotation(EessiPensjonTilgang::class.java)
             if (eessiPensjonTilgang != null) {
                 val oidcClaims = sjekkForGyldigToken()
+                logger.debug("gcp azureToken: ${getTokens()}")
                 return sjekkTilgangTilEessiPensjonTjeneste(oidcClaims)
             }
         }
         return true
     }
+
+    fun getTokens(): String = getToken(tokenValidationContextHolder).tokenAsString ?: "Unknown"
+
+    fun getSubjectFromToken() = getClaims(tokenValidationContextHolder).get("NAVident")?.toString() ?: "Unknown"
 
     fun sjekkForGyldigToken(): JwtTokenClaims {
         //kaster en 401 dersom ingen gyldig token finnes så UI kan redirekte til /login
@@ -66,7 +72,8 @@ class AuthInterceptor(private val proxyOAuthRestTemplate: RestTemplate,
      *      o BUC
      */
     fun sjekkTilgangTilEessiPensjonTjeneste(oidcClaims: JwtTokenClaims): Boolean{
-        val ident = oidcClaims.subject
+        val ident = getSubjectFromToken()
+//        val ident = oidcClaims.subject
         val expirationTime = oidcClaims.expirationTime
 
             logger.info("Ident: $ident,  expire: $expirationTime")
