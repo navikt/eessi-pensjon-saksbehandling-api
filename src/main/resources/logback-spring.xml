@@ -30,7 +30,7 @@
         <logger name="org" level="INFO"/>
         <logger name="com" level="INFO"/>
         <logger name="no.nav" level="DEBUG"/>
-        <logger name="no.nav.security" level="DEBUG"/>
+        <logger name="no.nav.security" level="ERROR"/>
 
         <root level="info">
             <appender-ref ref="stdout_json"/>
