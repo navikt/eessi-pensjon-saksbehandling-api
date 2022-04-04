@@ -1,7 +1,0 @@
-#no.nav:
-#  security.oidc:
-#    issuer.loginservice:
-#      proxyurl: 'http://webproxy-nais.nav.no:8088'
-#      cookiename: 'selvbetjening-idtoken'
-#      discoveryurl: '${LOGINSERVICE_HOSTURL}'
-#      accepted_audience: '${LOGINSERVICE_AGENT_NAME}'

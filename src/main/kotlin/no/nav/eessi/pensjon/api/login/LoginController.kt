@@ -1,6 +1,5 @@
 package no.nav.eessi.pensjon.api.login
 
-import no.nav.security.token.support.core.api.Protected
 import no.nav.security.token.support.core.api.Unprotected
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -40,7 +39,7 @@ class LoginController {
               @RequestParam("redirect", required = false) redirectTo: String?,
               @RequestParam("context", required = false) context: String?) {
 
-        val redirectUrl = "https://${appName}.${navDomain}/oauth2/login?redirect=/blah"
+        val redirectUrl = "https://${appName}.${navDomain}/oauth2/login?redirect=/api/userinfo"
         logger.debug("Redirecting to login: $redirectUrl")
 
         httpServletResponse.sendRedirect(redirectUrl)
