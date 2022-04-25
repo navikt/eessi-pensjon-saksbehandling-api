@@ -48,8 +48,6 @@ spec:
       value: https://isso-q.adeo.no:443/isso
     - name: EESSI_PENSJON_FRONTEND_UI_URL
       value: https://pensjon-utland-q.nav.no
-    - name: VARSELPRODUKSJON_VARSLINGER_QUEUENAME
-      value: QA.Q_TRASH.QUEUE
     - name: KAFKA_BROKERS_URL
       value: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443
     - name: LOGINSERVICE_HOSTURL
