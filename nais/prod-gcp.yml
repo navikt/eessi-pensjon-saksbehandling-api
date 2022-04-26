@@ -1,7 +1,7 @@
 kind: Application
 apiVersion: nais.io/v1alpha1
 metadata:
-  name: eessi-pensjon-frontend-api-fss
+  name: eessi-pensjon-saksbehandling-api
   namespace: eessipensjon
   labels:
     team: eessipensjon
@@ -34,58 +34,31 @@ spec:
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: prod
+    - name: ENV
+      value: p
     - name: GCP_BUCKET_NAME
       value: eessi-pensjon-saksbehandling-api
     - name: PENSJON_UTLAND_WS_ALLOWED_ORIGINS_URL
       value: https://pensjon-utland.nais.adeo.no
-    - name: RINA_HOST_URL
-      value: rina-ss1.adeo.no
     - name: PDL_URL
       value: https://pdl-api.nais.adeo.no/graphql
-    - name: NAV_DOMAIN_URL
-      value: intern.nav.no
-    - name: OPENIDCONNECT_URL
-      value: https://isso.adeo.no:443/isso
-    - name: EESSI_PENSJON_FRONTEND_UI_URL
-      value: https://pensjon-utland.nav.no
     - name: KAFKA_BROKERS_URL
       value: a01apvl00145.adeo.no:8443,a01apvl00146.adeo.no:8443,a01apvl00147.adeo.no:8443,a01apvl00148.adeo.no:8443,a01apvl00149.adeo.no:8443,a01apvl00150.adeo.no:8443
-    - name: LOGINSERVICE_HOSTURL
-      value: https://login.microsoftonline.com/navnob2c.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1A_idporten
-    - name: LOGINSERVICE_AGENT_NAME
-      value: 0090b6e1-ffcc-4c37-bc21-049f7d1f0fe5
-    - name: EUX_RINA_API_V1_URL
-      value: https://eux-rina-api.nais.adeo.no/cpi
-    - name: AKTOERREGISTER_API_V1_URL
-      value: https://app.adeo.no/aktoerregister/api/v1
-    - name: EESSI_PENSJON_FRONTEND_API_FSS_OIDC_ISSUERURL
-      value: https://isso.adeo.no:443/isso/oauth2
-    - name: EESSI_PENSJON_FRONTEND_API_FSS_OIDC_AGENTNAME
-      value: eessi-pensjon-frontend-api-fss-p
-    - name: EESSI_PENSJON_FRONTEND_API_FSS_OIDC_HOSTURL
-      value: https://isso.adeo.no:443/isso
-    - name: EESSI_PENSJON_FRONTEND_API_FSS_OIDC_JWKSURL
-      value: https://isso.adeo.no:443/isso/oauth2/connect/jwk_uri
     - name: KAFKA_BOOTSTRAP_SERVERS_URL
       value: SASL_SSL://a01apvl00145.adeo.no:8443,SASL_SSL://a01apvl00146.adeo.no:8443,SASL_SSL://a01apvl00147.adeo.no:8443,SASL_SSL://a01apvl00149.adeo.no:8443
-    - name: VIRKSOMHET_PERSON_V3_ENDPOINTURL
-      value: https://wasapp.adeo.no/tpsws/ws/Person/v3
     - name: EESSI_PEN_ONPREM_PROXY_URL
       value: https://eessi-pensjon-onprem-proxy.prod-fss-pub.nais.io
-    - name: ENV
-      value: p
     - name: KAFKA_SEDSENDT_TOPIC
       value: eessi-basis-sedSendt-v1
     - name: KAFKA_SEDMOTTATT_TOPIC
       value: eessi-basis-sedMottatt-v1
-    - name: AZUREAD-FRONTEND-UI-APPLICATION-ID
-      value: XXXX_YYYY_MAA_HENTES_FRA_PORTAL
     - name: AZURE_APP_PROXY_CLIENT_ID
       value: prod-fss.eessipensjon.eessi-pensjon-onprem-proxy
 
   image: {{ image }}
   ingresses:
     - https://eessi-pensjon-frontend-api-fss.intern.nav.no
+    - https://eessi-pensjon-saksbehandling-api.intern.nav.no
   liveness:
     path: /internal/isalive
     port: 8080

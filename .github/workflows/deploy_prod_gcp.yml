@@ -1,0 +1,25 @@
+name: Deploy PROD GCP
+on:
+  repository_dispatch:
+    types: [deploy-prod-gcp]
+jobs:
+  tag_deploy_q1:
+    name: 'Deploy til PROD GCP'
+    runs-on: ubuntu-latest
+    steps:
+      # GET version
+      - name: 'Get the version'
+        uses: actions/checkout@v2
+
+      # Show IMAGE from DEV deploy
+      - name: 'Vise image'
+        run: |
+          echo "image-tag: ${{ github.event.client_payload.image }}"
+
+      - name: 'NAIS-deploy to PROD GCP'
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: prod-gcp
+          RESOURCE: nais/prod-gcp.yml
+          IMAGE: ${{ github.event.client_payload.image }}
