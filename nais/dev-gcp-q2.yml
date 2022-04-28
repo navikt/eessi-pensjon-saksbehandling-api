@@ -27,7 +27,7 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: eessi-pensjon-frontend-ui-fss-q2
+        - application: eessi-pensjon-frontend-ui-q2
           namespace: eessipensjon
           cluster: dev-gcp
   webproxy: true
@@ -39,7 +39,7 @@ spec:
     - name: GCP_BUCKET_NAME
       value: eessi-pensjon-saksbehandling-api-dev
     - name: PENSJON_UTLAND_WS_ALLOWED_ORIGINS_URL
-      value: https://pensjon-utland-q2.nais.preprod.local
+      value: https://pensjon-utland-q2.dev.intern.nav.no
     - name: PDL_URL
       value: https://pdl-api.dev-fss.nais.io/graphql
     - name: KAFKA_BROKERS_URL
@@ -57,7 +57,7 @@ spec:
 
   image: {{ image }}
   ingresses:
-    - https://eessi-pensjon-frontend-api-fss-q2.dev.intern.nav.no
+    - https://eessi-pensjon-frontend-api-q2.dev.intern.nav.no
     - https://eessi-pensjon-saksbehandling-api-q2.dev.intern.nav.no
   liveness:
     path: /internal/isalive
