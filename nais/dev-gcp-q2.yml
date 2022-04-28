@@ -41,7 +41,7 @@ spec:
     - name: PENSJON_UTLAND_WS_ALLOWED_ORIGINS_URL
       value: https://pensjon-utland-q2.dev.intern.nav.no
     - name: PDL_URL
-      value: https://pdl-api.dev-fss.nais.io/graphql
+      value: https://pdl-api.dev-fss-pub.nais.io/graphql
     - name: KAFKA_BROKERS_URL
       value: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443
     - name: KAFKA_BOOTSTRAP_SERVERS_URL
