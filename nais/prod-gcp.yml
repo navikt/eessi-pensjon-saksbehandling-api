@@ -27,7 +27,7 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: eessi-pensjon-frontend-ui-fss
+        - application: eessi-pensjon-frontend-ui
           namespace: eessipensjon
           cluster: prod-gcp
   webproxy: true
