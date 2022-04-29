@@ -27,9 +27,9 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: eessi-pensjon-frontend-ui-fss
+        - application: eessi-pensjon-frontend-ui
           namespace: eessipensjon
-          cluster: prod-gcp.
+          cluster: prod-gcp
   webproxy: true
   env:
     - name: SPRING_PROFILES_ACTIVE
@@ -39,9 +39,7 @@ spec:
     - name: GCP_BUCKET_NAME
       value: eessi-pensjon-saksbehandling-api-prod
     - name: PENSJON_UTLAND_WS_ALLOWED_ORIGINS_URL
-      value: https://pensjon-utland.nais.adeo.no
-    - name: PDL_URL
-      value: https://pdl-api.nais.adeo.no/graphql
+      value: https://pensjon-utland.intern.nav.no
     - name: KAFKA_BROKERS_URL
       value: a01apvl00145.adeo.no:8443,a01apvl00146.adeo.no:8443,a01apvl00147.adeo.no:8443,a01apvl00148.adeo.no:8443,a01apvl00149.adeo.no:8443,a01apvl00150.adeo.no:8443
     - name: KAFKA_BOOTSTRAP_SERVERS_URL
@@ -57,7 +55,7 @@ spec:
 
   image: {{ image }}
   ingresses:
-    - https://eessi-pensjon-frontend-api-fss.intern.nav.no
+    - https://eessi-pensjon-frontend-api.intern.nav.no
     - https://eessi-pensjon-saksbehandling-api.intern.nav.no
   liveness:
     path: /internal/isalive
