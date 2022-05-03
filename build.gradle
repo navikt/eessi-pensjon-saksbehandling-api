@@ -26,6 +26,8 @@ plugins {
     id 'se.patrikerdes.use-latest-versions' version '0.2.13'
     id "org.owasp.dependencycheck" version "6.5.0.1"
     id 'com.adarshr.test-logger' version '2.1.1'
+    id "org.sonarqube" version "3.3"
+    id 'jacoco'
 }
 
 assert JavaVersion.current().isJava11Compatible(): "Java 11 or newer is required"
@@ -175,6 +177,20 @@ dependencies {
     implementation("org.springframework.security:spring-security-ldap")
     implementation("com.unboundid:unboundid-ldapsdk")
 }
+
+// https://docs.gradle.org/current/userguide/jacoco_plugin.html
+jacoco {
+    toolVersion = "0.8.8"
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+    }
+}
+
+tasks.sonarqube.dependsOn tasks["jacocoTestReport"]
+
 
 repositories {
     mavenCentral()
