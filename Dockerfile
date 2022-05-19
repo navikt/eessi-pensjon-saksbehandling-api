@@ -1,6 +1,6 @@
-FROM navikt/java:11-appdynamics
+FROM navikt/java:17-appdynamics
 
-COPY build/libs/eessi-pensjon-frontend-api-fss.jar /app/app.jar
+COPY build/libs/eessi-pensjon-saksbehandling-api.jar /app/app.jar
 
 ENV APPD_NAME eessi-pensjon
 ENV APPD_TIER saksbehandling-api

@@ -1,6 +1,8 @@
 package no.nav.eessi.pensjon.interceptor
 
+/*
 import io.mockk.mockk
+import net.shibboleth.utilities.java.support.httpclient.HttpClientBuilder
 import no.nav.eessi.pensjon.gcp.GcpStorageService
 import no.nav.security.token.support.test.spring.TokenGeneratorConfiguration
 import org.apache.http.HttpStatus
@@ -47,7 +49,8 @@ class AuthInterceptorIntegrationTest() {
     }
 
 
-    /**
+    */
+/**
     * For test kan man lage brukere som gir tilganger etter følgende regler
     * Saksbehandler X000000 angir
     *               |||||||
@@ -65,12 +68,15 @@ class AuthInterceptorIntegrationTest() {
     *               | ------------- 2 gir tilgang til utland
     *               |
     *                -------------- Saksbehandler på: A Alderspensjon, U Uføre
-    */
+    *//*
 
-    /**
+
+    */
+/**
      * Klargjør token for kall av EESSI-Pensjon tjeneste med
      * tilgangskontroll på seg.
-     */
+     *//*
+
 
     fun setKallTilGetDocument(brukerId: String, testfil: String): HttpGet{
         // Given
@@ -87,13 +93,15 @@ class AuthInterceptorIntegrationTest() {
         return getDocument
     }
 
-    /**
+    */
+/**
      * Saksbehandler med
      *      o ikke tilgang til EESSI-Pensjon
      *
      *
      * lag kopi av denne og bruk den for put, samt legg til tester for ok og ikkeok
-     */
+     *//*
+
     @Test
     fun `Gitt at saksbehandler har ikke roller til å få tilgang til utland SÅ skal det kastes 403` (){
         val brukerId = "Z000000"
@@ -106,7 +114,8 @@ class AuthInterceptorIntegrationTest() {
         }
     }
 
-    /**
+    */
+/**
      * Saksbehandler med
      *      o Tilgang til EESSI-Pensjon
      *      o Ikke behandle uføresaker
@@ -120,7 +129,8 @@ class AuthInterceptorIntegrationTest() {
      *      o med en bruker som
      *          o ikke er NAV-ansatt
      *          o ingen adressesperre
-     */
+     *//*
+
     @Test
     fun `Gitt at saksbehandler har har rollene Saksbehandler og Utland SÅ skal det gis tilgang til å hente fil fra s3` (){
 
@@ -346,3 +356,4 @@ class AuthInterceptorIntegrationTest() {
 
 }
 
+*/

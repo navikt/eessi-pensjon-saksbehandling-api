@@ -1,15 +1,13 @@
 buildscript {
     ext {
-        kotlinVersion = '1.5.21'
-        springBootVersion = '2.6.6'
-        springfoxVersion = '3.0.0'
-        jacksonVersion = '2.12.1'
+        kotlinVersion = '1.6.21'
+        springBootVersion = '2.6.7'
+        jacksonVersion = '2.13.3'
         tokenSupportVersion = '1.3.9'
         logstashLogbackVersion = '6.6'
-        pac4jVersion = '4.0.1'
-        cxfVersion = '3.4.2'
-        openhtmltopdfVersion = '1.0.0'
-        gcpStorageVersion = '2.0.1'
+        pac4jVersion = '5.4.3'
+        cxfVersion = '3.5.2'
+        gcpStorageVersion = '2.6.1'
     }
     repositories {
         mavenCentral()
@@ -30,8 +28,6 @@ plugins {
     id "org.sonarqube" version "3.3"
     id 'jacoco'
 }
-
-assert JavaVersion.current().isJava11Compatible(): "Java 11 or newer is required"
 
 apply plugin: 'kotlin'
 apply plugin: 'kotlin-spring'
@@ -54,25 +50,27 @@ test {
 
 group = 'no.nav.eessi'
 
+assert JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17): "Java 17 or newer is required"
+
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 compileKotlin {
     kotlinOptions {
         freeCompilerArgs = ["-Xjsr305=strict"]
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
 }
 compileTestKotlin {
     kotlinOptions {
         freeCompilerArgs = ["-Xjsr305=strict"]
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
 }
 jar {
-    archiveBaseName = 'eessi-fagmodul-frontend'
+    archiveBaseName = 'eessi-pensjon-saksbehandling-api'
 }
 
 dependencies {
@@ -107,29 +105,15 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
     implementation("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
 
-    // Swagger
-    implementation("io.springfox:springfox-swagger2:${springfoxVersion}")
-    implementation("io.springfox:springfox-swagger-ui:${springfoxVersion}")
-    implementation("io.springfox:springfox-data-rest:${springfoxVersion}")
-
     // Logging
     implementation("net.logstash.logback:logstash-logback-encoder:${logstashLogbackVersion}")
     configurations { all*.exclude group: 'commons-logging', module: 'commons-logging' }
     implementation group: 'org.slf4j', name: 'jcl-over-slf4j'
     implementation("no.nav.eessi.pensjon:ep-logging:1.0.16")
 
-    // PDF box
-    implementation("org.apache.pdfbox:pdfbox:2.0.24")
-    implementation("com.openhtmltopdf:openhtmltopdf-core:${openhtmltopdfVersion}")
-    implementation("com.openhtmltopdf:openhtmltopdf-pdfbox:${openhtmltopdfVersion}")
-    implementation('org.jsoup:jsoup:1.13.1')
-
     //GCP
     implementation("com.google.cloud:google-cloud-storage:$gcpStorageVersion")
     implementation(platform("com.google.cloud:libraries-bom:23.0.0"))
-
-    // Amazon S3
-    implementation("com.amazonaws:aws-java-sdk-s3:1.11.959")
 
     // Micrometer
     implementation("io.micrometer:micrometer-registry-prometheus")
@@ -141,22 +125,20 @@ dependencies {
     implementation("no.nav.security:token-validation-jaxrs:${tokenSupportVersion}")
     implementation("no.nav.security:token-validation-test-support:${tokenSupportVersion}")
 
+/*
     implementation("org.pac4j:spring-webmvc-pac4j:${pac4jVersion}")
+*/
     implementation("org.pac4j:pac4j-oidc:${pac4jVersion}")
     implementation("org.pac4j:pac4j-core:${pac4jVersion}")
 
     //mock
-    testImplementation("org.junit.jupiter:junit-jupiter:5.7.1")
-    testImplementation 'io.findify:s3mock_2.13:0.2.6'
+    testImplementation('org.junit.jupiter:junit-jupiter:5.8.2')
 
-    testImplementation("io.mockk:mockk:1.11.0")
-    testImplementation("com.ninja-squad:springmockk:3.0.1")
+    testImplementation('io.mockk:mockk:1.12.4')
+    testImplementation('com.ninja-squad:springmockk:3.1.1')
 
     // Architecture tests
-    testImplementation 'com.tngtech.archunit:archunit:0.17.0'
-
-    // Allows for variable expiration-date of each cache-entry
-    implementation("net.jodah:expiringmap:0.5.9")
+    testImplementation 'com.tngtech.archunit:archunit:0.23.1'
 
     // Apache CXF
     implementation("org.apache.cxf:cxf-spring-boot-starter-jaxws:${cxfVersion}")
