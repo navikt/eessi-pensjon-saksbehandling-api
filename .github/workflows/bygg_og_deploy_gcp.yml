@@ -3,7 +3,7 @@ name: Bygg og deploy Q2
 on:
   push:
     branches:
-      - gcp
+      - master
 jobs:
   tag_build_and_deploy:
     name: 'Build, deploy and tag'
@@ -17,6 +17,7 @@ jobs:
           export TZ=CET
           echo "DATE=$(date "+%Y-%m-%d--%H-%M-%S")" >> $GITHUB_ENV
           echo "COMMIT_HASH=$(git rev-parse HEAD)" >> $GITHUB_ENV
+
       - name: 'Set image-tag'
         run: echo "IMAGE=docker.pkg.github.com/${{ github.repository }}/eessi-pensjon-saksbehandling-api:${{ env.DATE }}---${{ env.COMMIT_HASH }}" >> $GITHUB_ENV
 
@@ -33,6 +34,7 @@ jobs:
           docker build --tag ${{ env.IMAGE }} .
           docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${{ secrets.GITHUB_TOKEN }}
           docker push ${{ env.IMAGE }}
+
       - name: 'Deploy to Q2 GCP'
         uses: nais/deploy/actions/deploy@v1
         env:
@@ -44,6 +46,7 @@ jobs:
       - name: 'Create git-tag'
         run: |
           curl -v -s -X POST https://api.github.com/repos/navikt/eessi-pensjon-saksbehandling-api/git/refs -H "Authorization: token  ${{ secrets.GITHUB_TOKEN }}" -d '{ "ref": "refs/tags/${{ env.DATE }}---${{ env.COMMIT_HASH }}",  "sha": "${{ env.COMMIT_HASH }}" }'
+
       - name: 'Dispatch deploy to PROD GCP'
         uses: peter-evans/repository-dispatch@v1
         with:

@@ -1,14 +1,15 @@
 buildscript {
     ext {
         kotlinVersion = '1.5.21'
-        springBootVersion = '2.5.3'
+        springBootVersion = '2.6.6'
         springfoxVersion = '3.0.0'
         jacksonVersion = '2.12.1'
-        oidcTokenSupportVersion = '1.3.8'
+        tokenSupportVersion = '1.3.9'
         logstashLogbackVersion = '6.6'
         pac4jVersion = '4.0.1'
         cxfVersion = '3.4.2'
         openhtmltopdfVersion = '1.0.0'
+        gcpStorageVersion = '2.0.1'
     }
     repositories {
         mavenCentral()
@@ -75,11 +76,6 @@ jar {
 }
 
 dependencies {
-    // Personoppslag
-    implementation("no.nav.eessi.pensjon:ep-personoppslag:8.0.21")
-
-    // Eux
-    implementation("no.nav.eessi.pensjon:ep-eux:1.1.52")
 
     // Spring
     implementation("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
@@ -92,8 +88,6 @@ dependencies {
         exclude module: "junit-vintage-engine"
     }
     implementation("org.springframework:spring-jms")
-    // MQ
-    implementation("com.ibm.mq:com.ibm.mq.allclient:9.2.1.0")
 
     // Messaging
     implementation("org.springframework:spring-websocket")
@@ -122,7 +116,7 @@ dependencies {
     implementation("net.logstash.logback:logstash-logback-encoder:${logstashLogbackVersion}")
     configurations { all*.exclude group: 'commons-logging', module: 'commons-logging' }
     implementation group: 'org.slf4j', name: 'jcl-over-slf4j'
-    implementation("no.nav.eessi.pensjon:ep-logging:1.0.10")
+    implementation("no.nav.eessi.pensjon:ep-logging:1.0.16")
 
     // PDF box
     implementation("org.apache.pdfbox:pdfbox:2.0.24")
@@ -130,26 +124,26 @@ dependencies {
     implementation("com.openhtmltopdf:openhtmltopdf-pdfbox:${openhtmltopdfVersion}")
     implementation('org.jsoup:jsoup:1.13.1')
 
+    //GCP
+    implementation("com.google.cloud:google-cloud-storage:$gcpStorageVersion")
+    implementation(platform("com.google.cloud:libraries-bom:23.0.0"))
+
     // Amazon S3
     implementation("com.amazonaws:aws-java-sdk-s3:1.11.959")
 
     // Micrometer
     implementation("io.micrometer:micrometer-registry-prometheus")
     implementation("no.nav.eessi.pensjon:ep-metrics:0.4.9")
-
-    // OIDC
-    implementation("no.nav.security:token-validation-spring:${oidcTokenSupportVersion}")
-    implementation("no.nav.security:token-validation-jaxrs:${oidcTokenSupportVersion}")
-    implementation("no.nav.security:token-client-spring:${oidcTokenSupportVersion}")
-    // Only used for starting up locally
-    implementation("no.nav.security:token-validation-test-support:${oidcTokenSupportVersion}")
+    implementation("no.nav.eessi.pensjon:ep-eux:1.1.62")
+    //auth
+    implementation("no.nav.security:token-client-spring:${tokenSupportVersion}")
+    implementation("no.nav.security:token-validation-spring:${tokenSupportVersion}")
+    implementation("no.nav.security:token-validation-jaxrs:${tokenSupportVersion}")
+    implementation("no.nav.security:token-validation-test-support:${tokenSupportVersion}")
 
     implementation("org.pac4j:spring-webmvc-pac4j:${pac4jVersion}")
     implementation("org.pac4j:pac4j-oidc:${pac4jVersion}")
     implementation("org.pac4j:pac4j-core:${pac4jVersion}")
-
-    // STS
-    implementation("no.nav.eessi.pensjon:ep-security-sts:0.0.16")
 
     //mock
     testImplementation("org.junit.jupiter:junit-jupiter:5.7.1")

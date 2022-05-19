@@ -3,6 +3,7 @@ package no.nav.eessi.pensjon.api.userinfo
 import no.nav.eessi.pensjon.config.FeatureToggle
 import no.nav.eessi.pensjon.services.auth.EessiPensjonTilgang
 import no.nav.eessi.pensjon.utils.getClaims
+import no.nav.eessi.pensjon.utils.getToken
 import no.nav.eessi.pensjon.utils.mapAnyToJson
 import no.nav.security.token.support.core.api.Protected
 import no.nav.security.token.support.core.context.TokenValidationContextHolder
@@ -33,7 +34,7 @@ class UserInfoController(
     @EessiPensjonTilgang
     @GetMapping("/userinfo")
     fun getUserInfo(): ResponseEntity <String> {
-        logger.info("Henter userinfo")
+        logger.info("Henter userinfo: ${getTokens()}")
         val fnr = getSubjectFromToken()
         val role = getRole(fnr)
         val features = toggle.getUIFeatures(fnr)
@@ -42,7 +43,11 @@ class UserInfoController(
         return ResponseEntity.ok().body(mapAnyToJson(UserInfoResponse(fnr, role, expirationTime, features)))
     }
 
-    fun getSubjectFromToken(): String = getClaims(tokenValidationContextHolder).subject
+    fun getTokens(): String = getToken(tokenValidationContextHolder).tokenAsString ?: "Unknown"
+
+    fun getSubjectFromToken() = getClaims(tokenValidationContextHolder).get("NAVident")?.toString() ?: "Unknown"
+
+//    fun getSubjectFromToken(): String = getClaims(tokenValidationContextHolder).subject
 
     fun getClaims(): JwtTokenClaims = getClaims(tokenValidationContextHolder)
 }

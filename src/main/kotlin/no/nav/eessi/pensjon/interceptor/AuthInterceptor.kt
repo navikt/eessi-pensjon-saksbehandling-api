@@ -1,24 +1,30 @@
 package no.nav.eessi.pensjon.interceptor
 
+import no.nav.eessi.pensjon.models.BrukerInformasjon
 import no.nav.eessi.pensjon.services.auth.AdRolle
 import no.nav.eessi.pensjon.services.auth.AuthorisationService
 import no.nav.eessi.pensjon.services.auth.EessiPensjonTilgang
-import no.nav.eessi.pensjon.services.ldap.BrukerInformasjonService
 import no.nav.eessi.pensjon.utils.getClaims
+import no.nav.eessi.pensjon.utils.getToken
+import no.nav.eessi.pensjon.utils.mapJsonToAny
+import no.nav.eessi.pensjon.utils.typeRefs
 import no.nav.security.token.support.core.context.TokenValidationContextHolder
 import no.nav.security.token.support.core.jwt.JwtTokenClaims
 import org.slf4j.LoggerFactory
 import org.springframework.core.Ordered
+import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.web.bind.annotation.ResponseStatus
+import org.springframework.web.client.RestTemplate
 import org.springframework.web.method.HandlerMethod
 import org.springframework.web.servlet.HandlerInterceptor
+import org.springframework.web.util.UriComponentsBuilder
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 @Component
-class AuthInterceptor(private val ldapService: BrukerInformasjonService,
+class AuthInterceptor(private val proxyOAuthRestTemplate: RestTemplate,
                       private val authorisationService: AuthorisationService,
                       private val tokenValidationContextHolder: TokenValidationContextHolder
                       ) : HandlerInterceptor, Ordered {
@@ -35,11 +41,16 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
             val eessiPensjonTilgang = handler.getMethodAnnotation(EessiPensjonTilgang::class.java)
             if (eessiPensjonTilgang != null) {
                 val oidcClaims = sjekkForGyldigToken()
+                logger.debug("gcp azureToken: ${getTokens()}")
                 return sjekkTilgangTilEessiPensjonTjeneste(oidcClaims)
             }
         }
         return true
     }
+
+    fun getTokens(): String = getToken(tokenValidationContextHolder).tokenAsString ?: "Unknown"
+
+    fun getSubjectFromToken() = getClaims(tokenValidationContextHolder).get("NAVident")?.toString() ?: "Unknown"
 
     fun sjekkForGyldigToken(): JwtTokenClaims {
         //kaster en 401 dersom ingen gyldig token finnes så UI kan redirekte til /login
@@ -61,13 +72,14 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
      *      o BUC
      */
     fun sjekkTilgangTilEessiPensjonTjeneste(oidcClaims: JwtTokenClaims): Boolean{
-        val ident = oidcClaims.subject
+        val ident = getSubjectFromToken()
+//        val ident = oidcClaims.subject
         val expirationTime = oidcClaims.expirationTime
 
             logger.info("Ident: $ident,  expire: $expirationTime")
             logger.debug("Henter ut brukerinformasjon fra AD/Ldap")
             return try {
-                val brukerInformasjon = ldapService.hentBrukerInformasjon(ident)
+                val brukerInformasjon = hentBrukerinformasjon(ident)
                 logger.info("Ldap brukerinformasjon hentet")
                 logger.debug("Ldap brukerinfo: $brukerInformasjon")
 
@@ -84,6 +96,20 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
                 logger.error("Feil ved henting av ldap brukerinformasjon", ex)
                 throw AuthorisationIkkeTilgangTilEeessiPensjonException("Ikke tilgang til EESSI-Pensjon")
             }
+    }
+
+    fun hentBrukerinformasjon(navident: String) : BrukerInformasjon {
+        val path = "/brukerinfo/{navident}"
+        val uriParams = mapOf("navident" to navident)
+        val builder = UriComponentsBuilder.fromUriString(path).buildAndExpand(uriParams)
+
+        val response = proxyOAuthRestTemplate.exchange(builder.toUriString(),
+            HttpMethod.GET,
+            null,
+            String::class.java)
+
+        val body = response.body ?: throw Exception("Feiler ved innhenting av navident")
+        return mapJsonToAny(body, typeRefs())
     }
 
     /**

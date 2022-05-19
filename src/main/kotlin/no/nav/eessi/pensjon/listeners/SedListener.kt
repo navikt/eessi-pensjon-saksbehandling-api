@@ -48,11 +48,12 @@ class SedListener (private val socketTextHandler: SocketTextHandler) {
                 socketTextHandler.alertSubscribers(sedHendelse.rinaSakId, sedHendelse.navBruker)
             }
         } catch (jsonParseException: JsonParseException) {
-            logger.error("Error when parsing outgoing sedMottatt Json", jsonParseException)
+            logger.error("Error when parsing outgoing sedMottatt JSON", jsonParseException)
             throw jsonParseException
         } catch(exception: Exception){
             logger.error("Error when handling incoming sedMottatt event", exception)
             throw exception
         }
     }
+
 }

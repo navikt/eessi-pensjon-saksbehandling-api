@@ -1,4 +1,4 @@
-package no.nav.eessi.pensjon.services.ldap
+package no.nav.eessi.pensjon.models
 
 
 data class BrukerInformasjon(

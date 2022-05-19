@@ -12,18 +12,9 @@
     app nam,e                       : ${NAIS_APP_NAME}
     Frontend-UI                     : ${eessi-pensjon-frontend-ui.url}
     s3_url                          : ${s3_fss_url}
-
-    Nav Tokensupport loginservice   : ${no.nav.security.oidc.issuer.loginservice.discoveryurl}
-
-    Nav Tokensupport isso           : ${no.nav.security.oidc.issuer.isso.discoveryurl}
-    Nav Tokensupport accept         : ${no.nav.security.oidc.issuer.isso.accepted_audience}
-
-    Eessi Fagmodulservice           : ${eessifagmodulservice.url}
     Essi pensjon fagmodul url       : ${eessi-pensjon-fagmodul.url}
     Essi eux rina api               : ${eessipen-eux-rina.url}
     Rina Host                       : ${rina_host.url}
-    pensjon-mottak_channel          : ${submitTopic}
-    varselservice                   : ${VARSELPRODUKSJON.VARSLINGER.queuename}
 
 
 ===================================================================================================

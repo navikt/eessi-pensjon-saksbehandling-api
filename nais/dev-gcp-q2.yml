@@ -1,91 +1,64 @@
 kind: Application
 apiVersion: nais.io/v1alpha1
 metadata:
-  name: eessi-pensjon-frontend-api-q2
+  name: eessi-pensjon-saksbehandling-api-q2
   namespace: eessipensjon
   labels:
     team: eessipensjon
 spec:
+  gcp:
+    buckets:
+      - name: eessi-pensjon-saksbehandling-api-dev
+        retentionPeriodDays: 30
+        lifecycleCondition:
+          age: 7
+          createdBefore: 2020-01-01
+          numNewerVersions: 2
+          withState: ANY
+        uniformBucketLevelAccess: true
+  envFrom:
+    - secret: saksbehandlingapi-dev #secret name in Google Secret Manager
+  azure:
+    application:
+      enabled: true
+      claims:
+        extra:
+          - NAVident
+  accessPolicy:
+    inbound:
+      rules:
+        - application: eessi-pensjon-frontend-ui-q2
+          namespace: eessipensjon
+          cluster: dev-gcp
+  webproxy: true
   env:
-    - name: EESSI_PENSJON_FAGMODUL_URL
-      value: http://eessi-pensjon-fagmodul/
     - name: SPRING_PROFILES_ACTIVE
-      value: test,fss
-    - name: PENSJON_UTLAND_WS_ALLOWED_ORIGINS_URL
-      value: https://pensjon-utland-q2.nais.preprod.local
-    - name: RINA_HOST_URL
-      value: rina-ss1-q.adeo.no
-    - name: PDL_URL
-      value: https://pdl-api.dev-fss.nais.io/graphql
-    - name: S3_FSS_URL
-      value: http://objectstore.rook-ceph.svc.nais.local
-    - name: NAV_DOMAIN_URL
-      value: nais.preprod.local
-    - name: OPENIDCONNECT_URL
-      value: https://isso-q.adeo.no:443/isso
-    - name: EESSI_PENSJON_FRONTEND_UI_URL
-      value: https://pensjon-utland-q.nav.no
-    - name: SECURITY_TOKEN_SERVICE_OPENID_CONFIGURATION_URL
-      value: https://security-token-service.nais.preprod.local/rest/v1/sts/.well-known/openid-configuration
-    - name: SECURITYTOKENSERVICE_URL
-      value: https://security-token-service.nais.preprod.local/rest/v1/sts/token
-    - name: EESSI_PENSJON_FRONTEND_API_FSS_CHANNEL_NAME
-      value: Q2_EP_FEND_API_FSS
-    - name: EESSI_PENSJON_FRONTEND_API_FSS_CHANNEL_QUEUEMANAGER
-      value: mq://b27apvl057.preprod.local:1413/MQLCLIENT01
-    - name: VARSELPRODUKSJON_VARSLINGER_QUEUENAME
-      value: QA.Q_TRASH.QUEUE
-    - name: KAFKA_BROKERS_URL
-      value: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443
-    - name: LOGINSERVICE_HOSTURL
-      value: https://login.microsoftonline.com/NAVtestB2C.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1A_idporten_ver1
-    - name: LOGINSERVICE_AGENT_NAME
-      value: 0090b6e1-ffcc-4c37-bc21-049f7d1f0fe5
-    - name: EUX_RINA_API_V1_URL
-      value: https://eux-rina-api-q2.nais.preprod.local/cpi
-    - name: AKTOERREGISTER_API_V1_URL
-      value: https://app-q2.adeo.no/aktoerregister/api/v1
-    - name: EESSI_PENSJON_FRONTEND_API_FSS_OIDC_ISSUERURL
-      value: https://isso-q.adeo.no:443/isso/oauth2
-    - name: EESSI_PENSJON_FRONTEND_API_FSS_OIDC_AGENTNAME
-      value: eessi-pensjon-frontend-api-fss-q2
-    - name: EESSI_PENSJON_FRONTEND_API_FSS_OIDC_HOSTURL
-      value: https://isso-q.adeo.no:443/isso
-    - name: EESSI_PENSJON_FRONTEND_API_FSS_OIDC_JWKSURL
-      value: https://isso-q.adeo.no:443/isso/oauth2/connect/jwk_uri
-    - name: KAFKA_BOOTSTRAP_SERVERS_URL
-      value: SSL://b27apvl00045.preprod.local:8443,SSL://b27apvl00046.preprod.local:8443,SSL://b27apvl00047.preprod.local:8443
-    - name: VIRKSOMHET_PERSON_V3_ENDPOINTURL
-      value: https://wasapp-q2.adeo.no/tpsws/ws/Person/v3
-    - name: LDAP_USER_BASEDN
-      value: ou=NAV,ou=BusinessUnits,dc=preprod,dc=local
-    - name: LDAP_SERVICEUSER_BASEDN
-      value: ou=ServiceAccounts,dc=preprod,dc=local
-    - name: LDAP_DOMAIN
-      value: PREPROD.LOCAL
-    - name: LDAP_BASEDN
-      value: dc=preprod,dc=local
-    - name: LDAP_URL
-      value: ldaps://ldapgw.preprod.local:636
-    - name: EESSI_PENSJON_FRONTEND_API_S3_CREDS_USERNAME
-      value: 879WUUD2HMZ041GBNN4B
-    - name: LDAP_USER_BASEDN
-      value: ou=NAV,ou=BusinessUnits,dc=preprod,dc=local
-    - name: LDAP_SERVICEUSER_BASEDN
-      value: ou=ServiceAccounts,dc=preprod,dc=local
-    - name: LDAP_DOMAIN
-      value: PREPROD.LOCAL
-    - name: LDAP_BASEDN
-      value: dc=preprod,dc=local
+      value: test
     - name: ENV
       value: q2
+    - name: GCP_BUCKET_NAME
+      value: eessi-pensjon-saksbehandling-api-dev
+    - name: PENSJON_UTLAND_WS_ALLOWED_ORIGINS_URL
+      value: https://pensjon-utland-q2.dev.intern.nav.no
+    - name: PDL_URL
+      value: https://pdl-api.dev-fss-pub.nais.io/graphql
+    - name: KAFKA_BROKERS_URL
+      value: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443
+    - name: KAFKA_BOOTSTRAP_SERVERS_URL
+      value: SSL://b27apvl00045.preprod.local:8443,SSL://b27apvl00046.preprod.local:8443,SSL://b27apvl00047.preprod.local:8443
+    - name: EESSI_PEN_ONPREM_PROXY_URL
+      value: https://eessi-pensjon-onprem-proxy-q2.dev-fss-pub.nais.io
     - name: KAFKA_SEDSENDT_TOPIC
       value: eessi-basis-sedSendt-v1-q2
     - name: KAFKA_SEDMOTTATT_TOPIC
       value: eessi-basis-sedMottatt-v1-q2
+    - name: AZURE_APP_PROXY_CLIENT_ID
+      value: dev-fss.eessipensjon.eessi-pensjon-onprem-proxy-q2
+
   image: {{ image }}
   ingresses:
-    - https://eessi-pensjon-frontend-api-fss-q2.nais.preprod.local
+    - https://eessi-pensjon-frontend-api-q2.dev.intern.nav.no
+    - https://eessi-pensjon-saksbehandling-api-q2.dev.intern.nav.no
   liveness:
     path: /internal/isalive
     port: 8080
@@ -102,21 +75,3 @@ spec:
     min: 1
     max: 1
     cpuThresholdPercentage: 50
-  resources:
-    limits:
-      cpu: "4"
-      memory: 4096Mi
-    requests:
-      cpu: 400m
-      memory: 1024Mi
-  vault:
-    enabled: true
-    paths:
-      - kvPath: {{serviceuserkv}}
-        mountPath: /var/run/secrets/nais.io/srveessipensjon
-      - kvPath: {{appsecrets}}
-        mountPath: /var/run/secrets/nais.io/appsecrets
-      - kvPath: credential/data/dev/eessi-pensjon-fss
-        mountPath: /var/run/secrets/nais.io/appcredentials
-      - kvPath: /apikey/appdynamics/dev
-        mountPath: /var/run/secrets/nais.io/vault

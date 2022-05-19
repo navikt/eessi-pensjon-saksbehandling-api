@@ -1,74 +1,73 @@
 package no.nav.eessi.pensjon.config
 
-import io.micrometer.core.instrument.MeterRegistry
-import no.nav.eessi.pensjon.interceptor.TokenHeaderRequestInterceptor
 import no.nav.eessi.pensjon.logging.RequestIdHeaderInterceptor
 import no.nav.eessi.pensjon.logging.RequestResponseLoggerInterceptor
-import no.nav.eessi.pensjon.metrics.RequestCountInterceptor
-import no.nav.eessi.pensjon.security.sts.STSService
-import no.nav.eessi.pensjon.security.sts.UsernameToOidcInterceptor
-import no.nav.security.token.support.core.context.TokenValidationContextHolder
-import org.springframework.beans.factory.annotation.Autowired
+import no.nav.security.token.support.client.core.ClientProperties
+import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenService
+import no.nav.security.token.support.client.spring.ClientConfigurationProperties
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.actuate.metrics.AutoTimer
-import org.springframework.boot.actuate.metrics.web.client.DefaultRestTemplateExchangeTagsProvider
-import org.springframework.boot.actuate.metrics.web.client.MetricsRestTemplateCustomizer
 import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
+import org.springframework.http.HttpRequest
 import org.springframework.http.client.BufferingClientHttpRequestFactory
+import org.springframework.http.client.ClientHttpRequestExecution
+import org.springframework.http.client.ClientHttpRequestInterceptor
 import org.springframework.http.client.SimpleClientHttpRequestFactory
-import org.springframework.stereotype.Component
 import org.springframework.web.client.DefaultResponseErrorHandler
 import org.springframework.web.client.RestTemplate
+import java.time.Duration
 
-@Component
-class RestTemplateConfig(val restTemplateBuilder: RestTemplateBuilder,
-                         val tokenValidationContextHolder: TokenValidationContextHolder,
-                         val registry: MeterRegistry,
-                         val securityTokenExchangeService: STSService
+
+@Configuration
+@Profile("prod", "test")
+class RestTemplateConfig(
+    private val clientConfigurationProperties: ClientConfigurationProperties,
+    private val oAuth2AccessTokenService: OAuth2AccessTokenService
 ) {
 
-    @Value("\${eessi_pensjon_fagmodul_url}")
-    lateinit var fagmodulUrl: String
-
-    @Value("\${aktoerregister.api.v1.url}")
-    lateinit var url: String
-
-    @Autowired
-    lateinit var meterRegistry: MeterRegistry
+    @Value("\${EESSI_PEN_ONPREM_PROXY_URL}")
+    lateinit var proxyUrl: String
 
     @Bean
-    //denne skal benytte OidcHeaderRequestInterceptor for kall til fagmodulen osv.. som kan kalle direkte.
-    fun fagmodulRestTemplate(): RestTemplate {
-        return restTemplateBuilder
-                .rootUri(fagmodulUrl)
-                .errorHandler(DefaultResponseErrorHandler())
-                .additionalInterceptors(
-                        RequestIdHeaderInterceptor(),
-                        RequestCountInterceptor(meterRegistry),
-                        RequestResponseLoggerInterceptor(),
-                        TokenHeaderRequestInterceptor(tokenValidationContextHolder))
-                .customizers(MetricsRestTemplateCustomizer(registry, DefaultRestTemplateExchangeTagsProvider(), "eessipensjon_frontend-api_fagmodul",  AutoTimer.ENABLED))
-                .build().apply {
-                    requestFactory = BufferingClientHttpRequestFactory(SimpleClientHttpRequestFactory())
-                }
+    fun proxyOAuthRestTemplate() = restTemplate(proxyUrl, bearerTokenInterceptor(clientProperties("proxy-credentials"), oAuth2AccessTokenService))
+
+
+    private fun restTemplate(url: String, tokenIntercetor: ClientHttpRequestInterceptor?) : RestTemplate {
+        return RestTemplateBuilder()
+            .rootUri(url)
+            .errorHandler(DefaultResponseErrorHandler())
+            .setReadTimeout(Duration.ofSeconds(120))
+            .setConnectTimeout(Duration.ofSeconds(120))
+            .additionalInterceptors(
+                RequestIdHeaderInterceptor(),
+                RequestResponseLoggerInterceptor(),
+                tokenIntercetor
+            )
+            .build().apply {
+                requestFactory = BufferingClientHttpRequestFactory(
+                    SimpleClientHttpRequestFactory()
+                    .apply { setOutputStreaming(false) }
+                )
+            }
     }
 
-    @Bean
-    //denne skal benytte UntToOidcInterceptor for kall til fagmodulen på veiene av noen som ikke kan kalle direkte.
-    fun fagmodulUntToRestTemplate(): RestTemplate {
-        return restTemplateBuilder
-                .rootUri(fagmodulUrl)
-                .errorHandler(DefaultResponseErrorHandler())
-                .additionalInterceptors(
-                        RequestIdHeaderInterceptor(),
-                        RequestCountInterceptor(meterRegistry),
-                        RequestResponseLoggerInterceptor(),
-                        UsernameToOidcInterceptor(securityTokenExchangeService))
-                .customizers(MetricsRestTemplateCustomizer(registry, DefaultRestTemplateExchangeTagsProvider(), "eessipensjon_frontend-api_fagmodulUntTo",  AutoTimer.ENABLED))
-                .build().apply {
-                    requestFactory = BufferingClientHttpRequestFactory(SimpleClientHttpRequestFactory())
-                }
+    private fun clientProperties(oAuthKey: String): ClientProperties = clientConfigurationProperties.registration[oAuthKey]
+        ?: throw RuntimeException("could not find oauth2 client config for $oAuthKey")
+
+    private fun bearerTokenInterceptor(
+        clientProperties: ClientProperties,
+        oAuth2AccessTokenService: OAuth2AccessTokenService
+    ): ClientHttpRequestInterceptor? {
+        return ClientHttpRequestInterceptor { request: HttpRequest, body: ByteArray?, execution: ClientHttpRequestExecution ->
+            val response = oAuth2AccessTokenService.getAccessToken(clientProperties)
+            request.headers.setBearerAuth(response.accessToken)
+//            val tokenChunks = response.accessToken.split(".")
+//            val tokenBody =  tokenChunks[1]
+//            logger.info("subject: " + JWTClaimsSet.parse(Base64.getDecoder().decode(tokenBody).decodeToString()).subject)
+            execution.execute(request, body!!)
+        }
     }
 
 }
