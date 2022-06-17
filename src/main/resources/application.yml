@@ -1,3 +1,17 @@
+kafka:
+  sedSendt:
+    topic: ${KAFKA_SEDSENDT_TOPIC}
+    groupid: eessi-pensjon-saksbehandling-group
+  sedMottatt:
+    topic: ${KAFKA_SEDMOTTATT_TOPIC}
+    groupid: eessi-pensjon-saksbehandling-group
+  keystore.path: ${KAFKA_KEYSTORE_PATH:}
+  truststore.path: ${KAFKA_TRUSTSTORE_PATH:}
+  credstore.password: ${KAFKA_CREDSTORE_PASSWORD:}
+  brokers: ${KAFKA_BROKERS:localhost:9092}
+  onprem:
+    bootstrap.servers: ${KAFKA_BOOTSTRAP_SERVERS_URL}
+
 no.nav.security.jwt:
   issuer.aad:
     discoveryurl: ${AZURE_APP_WELL_KNOWN_URL}
@@ -40,34 +54,6 @@ eessi.pensjon.frontend.api:
 
 http.proxy.parametername: 'dontuse.proxy'
 redirectscheme: 'https'
-
-kafka:
-  sedSendt:
-    topic: ${KAFKA_SEDSENDT_TOPIC}
-    groupid: eessi-pensjon-saksbehandling-group
-  sedMottatt:
-    topic: ${KAFKA_SEDMOTTATT_TOPIC}
-    groupid: eessi-pensjon-saksbehandling-group
-
-#Spring
-spring:
-  jmx.enabled: false
-  jackson:
-    serialization:
-      write_dates_as_timestamps: false
-  kafka:
-    listener:
-      ack-mode: record
-    consumer:
-      enable-auto-commit: false
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS_URL}
-    properties:
-      security.protocol: SASL_SSL
-      key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value.deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      sasl:
-        mechanism: PLAIN
-        jaas.config: org.apache.kafka.common.security.plain.PlainLoginModule required username="${srvusername}" password="${srvpassword}";
 
 securityTokenService:
   discoveryUrl: ${SECURITY_TOKEN_SERVICE_OPENID_CONFIGURATION_URL}
