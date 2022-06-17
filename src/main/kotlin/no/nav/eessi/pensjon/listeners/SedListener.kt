@@ -16,7 +16,6 @@ class SedListener (private val socketTextHandler: SocketTextHandler) {
 
     @KafkaListener(
         containerFactory = "sedKafkaListenerContainerFactory",
-        idIsGroup = false,
         topics = ["\${kafka.sedSendt.topic}"],
         groupId = "\${kafka.sedSendt.groupid}"
     )
@@ -38,7 +37,6 @@ class SedListener (private val socketTextHandler: SocketTextHandler) {
 
     @KafkaListener(
         containerFactory="sedKafkaListenerContainerFactory",
-        idIsGroup = false,
         topics = ["\${kafka.sedMottatt.topic}"],
         groupId = "\${kafka.sedMottatt.groupid}",
     )
