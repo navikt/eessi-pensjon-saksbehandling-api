@@ -44,10 +44,6 @@ spec:
       value: https://pensjon-utland-q2.dev.intern.nav.no
     - name: PDL_URL
       value: https://pdl-api.dev-fss-pub.nais.io/graphql
-    - name: KAFKA_BROKERS_URL
-      value: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443
-    - name: KAFKA_BOOTSTRAP_SERVERS_URL
-      value: SSL://b27apvl00045.preprod.local:8443,SSL://b27apvl00046.preprod.local:8443,SSL://b27apvl00047.preprod.local:8443
     - name: EESSI_PEN_ONPREM_PROXY_URL
       value: https://eessi-pensjon-onprem-proxy-q2.dev-fss-pub.nais.io
     - name: KAFKA_SEDSENDT_TOPIC
