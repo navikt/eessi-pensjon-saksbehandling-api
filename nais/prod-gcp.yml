@@ -42,16 +42,12 @@ spec:
       value: eessi-pensjon-saksbehandling-api-prod
     - name: PENSJON_UTLAND_WS_ALLOWED_ORIGINS_URL
       value: https://pensjon-utland.intern.nav.no
-    - name: KAFKA_BROKERS_URL
-      value: a01apvl00145.adeo.no:8443,a01apvl00146.adeo.no:8443,a01apvl00147.adeo.no:8443,a01apvl00148.adeo.no:8443,a01apvl00149.adeo.no:8443,a01apvl00150.adeo.no:8443
-    - name: KAFKA_BOOTSTRAP_SERVERS_URL
-      value: SASL_SSL://a01apvl00145.adeo.no:8443,SASL_SSL://a01apvl00146.adeo.no:8443,SASL_SSL://a01apvl00147.adeo.no:8443,SASL_SSL://a01apvl00149.adeo.no:8443
     - name: EESSI_PEN_ONPREM_PROXY_URL
       value: https://eessi-pensjon-onprem-proxy.prod-fss-pub.nais.io
     - name: KAFKA_SEDSENDT_TOPIC
-      value: eessi-basis-sedSendt-v1
+      value: eessibasis.sedsendt-v1
     - name: KAFKA_SEDMOTTATT_TOPIC
-      value: eessi-basis-sedMottatt-v1
+      value: eessibasis.sedmottatt-v1
     - name: AZURE_APP_PROXY_CLIENT_ID
       value: prod-fss.eessipensjon.eessi-pensjon-onprem-proxy
 
