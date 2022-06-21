@@ -1,7 +1,4 @@
-FROM navikt/java:17-appdynamics
+FROM navikt/java:17
 
 COPY build/libs/eessi-pensjon-saksbehandling-api.jar /app/app.jar
 
-ENV APPD_NAME eessi-pensjon
-ENV APPD_TIER saksbehandling-api
-ENV APPD_ENABLED true
