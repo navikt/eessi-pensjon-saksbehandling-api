@@ -3,7 +3,7 @@ on:
   repository_dispatch:
     types: [deploy-prod-gcp]
 jobs:
-  tag_deploy_q1:
+  deploy_prod:
     name: 'Deploy til PROD GCP'
     runs-on: ubuntu-latest
     steps:
