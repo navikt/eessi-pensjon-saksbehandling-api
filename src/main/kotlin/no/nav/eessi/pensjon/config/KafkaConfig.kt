@@ -3,7 +3,6 @@ package no.nav.eessi.pensjon.config
 
 import org.apache.kafka.clients.CommonClientConfigs
 import org.apache.kafka.clients.consumer.ConsumerConfig
-import org.apache.kafka.common.config.SaslConfigs
 import org.apache.kafka.common.config.SslConfigs
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.springframework.beans.factory.annotation.Value
@@ -25,7 +24,7 @@ class KafkaConfig(
     @param:Value("\${kafka.keystore.path}") private val keystorePath: String,
     @param:Value("\${kafka.credstore.password}") private val credstorePassword: String,
     @param:Value("\${kafka.truststore.path}") private val truststorePath: String,
-    @param:Value("\${kafka.brokers}") private val aivenBootstrapServers: String,
+    @param:Value("\${kafka.brokers}") private val bootstrapServers: String,
     @param:Value("\${kafka.security.protocol}") private val securityProtocol: String,
     ) {
 
@@ -43,7 +42,7 @@ class KafkaConfig(
         val configMap: MutableMap<String, Any> = HashMap()
         populerCommonConfig(configMap)
         configMap[ConsumerConfig.CLIENT_ID_CONFIG] = "eessi-pensjon-saksbehandling-api"
-        configMap[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = aivenBootstrapServers
+        configMap[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = bootstrapServers
         configMap[ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG] = false
         configMap[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = "earliest"
         configMap[ConsumerConfig.MAX_POLL_RECORDS_CONFIG] = 1
