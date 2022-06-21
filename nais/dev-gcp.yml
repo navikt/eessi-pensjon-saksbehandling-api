@@ -42,6 +42,8 @@ spec:
       value: eessi-pensjon-saksbehandling-api-dev
     - name: PENSJON_UTLAND_WS_ALLOWED_ORIGINS_URL
       value: https://pensjon-utland-q2.dev.intern.nav.no
+    - name: PDL_URL
+      value: https://pdl-api.dev-fss-pub.nais.io/graphql
     - name: EESSI_PEN_ONPREM_PROXY_URL
       value: https://eessi-pensjon-onprem-proxy-q2.dev-fss-pub.nais.io
     - name: KAFKA_SEDSENDT_TOPIC
