@@ -22,6 +22,8 @@ no.nav.security.jwt:
           client-jwk: ${AZURE_APP_JWK}
           client-auth-method: private_key_jwt
 
+METRICS_REQUESTFILTER_ENABLE: true
+
 server:
   port: 8080
   tomcat:
