@@ -30,7 +30,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          ./gradlew build
+          ./gradlew build --stacktrace
           docker build --tag ${{ env.IMAGE }} .
           docker login ghcr.io -u ${GITHUB_REPOSITORY} -p ${{ secrets.GITHUB_TOKEN }}
           docker push ${{ env.IMAGE }}
