@@ -131,9 +131,10 @@ dependencies {
     implementation("org.pac4j:pac4j-oidc:${pac4jVersion}")
     implementation("org.pac4j:pac4j-core:${pac4jVersion}")
 
-    //mock
-    testImplementation('org.junit.jupiter:junit-jupiter:5.8.2')
+    testImplementation(platform("org.junit:junit-bom:5.8.2"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
 
+    //mock
     testImplementation('io.mockk:mockk:1.12.4')
     testImplementation('com.ninja-squad:springmockk:3.1.1')
 
