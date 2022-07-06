@@ -73,7 +73,6 @@ class AuthInterceptor(private val proxyOAuthRestTemplate: RestTemplate,
      */
     fun sjekkTilgangTilEessiPensjonTjeneste(oidcClaims: JwtTokenClaims): Boolean{
         val ident = getSubjectFromToken()
-//        val ident = oidcClaims.subject
         val expirationTime = oidcClaims.expirationTime
 
             logger.info("Ident: $ident,  expire: $expirationTime")

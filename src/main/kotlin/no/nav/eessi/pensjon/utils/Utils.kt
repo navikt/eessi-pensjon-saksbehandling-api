@@ -21,10 +21,7 @@ fun getClaims(tokenValidationContextHolder: TokenValidationContextHolder): JwtTo
         return context.getClaims(issuer)
     }
     throw RuntimeException("No valid issuer found in context")
-
 }
-
-
 
 fun getToken(tokenValidationContextHolder: TokenValidationContextHolder): JwtToken {
     val context = tokenValidationContextHolder.tokenValidationContext
@@ -61,7 +58,6 @@ fun maskerPersonIdentifier(paths: List<String>): String {
         maskerPersonIdentifier(path)
     }.joinToString ( separator= "," )
 }
-
 
 fun filterPensionSedAndSort(sedList: List<String>): List<String> {
     if (sedList.isNotEmpty()) {

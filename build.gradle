@@ -125,9 +125,6 @@ dependencies {
     implementation("no.nav.security:token-validation-jaxrs:${tokenSupportVersion}")
     implementation("no.nav.security:token-validation-test-support:${tokenSupportVersion}")
 
-/*
-    implementation("org.pac4j:spring-webmvc-pac4j:${pac4jVersion}")
-*/
     implementation("org.pac4j:pac4j-oidc:${pac4jVersion}")
     implementation("org.pac4j:pac4j-core:${pac4jVersion}")
 

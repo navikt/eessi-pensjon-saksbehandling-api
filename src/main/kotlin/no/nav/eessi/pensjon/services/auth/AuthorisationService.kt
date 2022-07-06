@@ -21,7 +21,6 @@ class AuthorisationService {
      */
 
     fun harTilgangTilEessiPensjon(roller: List<AdRolle>): Boolean {
-        //logger.debug("Følgende roller MÅ ident ha for å få tilgang til EP:" + Tilgang.EESSI_PENSJON.grupper.toString())
 
         val tilgangGenerell = roller.containsAll( Tilgang.EESSI_PENSJON.grupper )
         logger.debug("tilgangGenerell: $tilgangGenerell")
