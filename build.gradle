@@ -63,9 +63,6 @@ compileTestKotlin {
         jvmTarget = "17"
     }
 }
-jar {
-    archiveBaseName = 'eessi-pensjon-saksbehandling-api'
-}
 
 dependencies {
 
