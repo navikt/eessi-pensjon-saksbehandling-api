@@ -77,25 +77,9 @@ Import the downloaded certificate into cacerts, save it (if you don't have permi
 
 ## Oppdatere avhengigheter
 
-Sjekke om man har utdaterte avhengigheter (forsøker å unngå milestones og beta-versjoner):
+Det er viktig at man holder avhengigheter oppdatert for å unngå sikkerhetshull.
 
-```
-./gradlew dependencyUpdates
-```
-
-Dersom du er supertrygg på testene kan du forsøke en oppdatering av alle avhengighetene:
-
-```
-./gradlew useLatestVersions && ./gradlew useLatestVersionsCheck
-```
-
-## OWASP avhengighetssjekk
-
-(Pass på at du kan nå `ossindex.sonatype.org` og `nvd.nist.gov` gjennom evt proxy e.l.) 
-
-```
-./gradlew dependencyCheckAnalyze && open build/reports/dependency-check-report.html
-```
+Se mer dokumentasjon rundt dette her: [Oppgradere avhengigheter](https://github.com/navikt/eessi-pensjon/blob/master/docs/dev/oppgradere_avhengigheter.md).
 
 ## SonarQube m/JaCoCo
 
