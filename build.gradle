@@ -7,7 +7,7 @@ buildscript {
         tokenSupportVersion = '1.3.19'
         logstashLogbackVersion = '7.2'
         pac4jVersion = '5.4.3'
-        cxfVersion = '3.5.2'
+        cxfVersion = '3.5.3'
         gcpStorageVersion = '2.6.1'
     }
     repositories {
