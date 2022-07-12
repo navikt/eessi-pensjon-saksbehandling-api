@@ -8,7 +8,6 @@ buildscript {
         logstashLogbackVersion = '7.2'
         pac4jVersion = '5.4.3'
         cxfVersion = '3.5.3'
-        gcpStorageVersion = '2.6.1'
     }
     repositories {
         mavenCentral()
@@ -109,8 +108,8 @@ dependencies {
     implementation("no.nav.eessi.pensjon:ep-logging:1.0.28")
 
     //GCP
-    implementation("com.google.cloud:google-cloud-storage:$gcpStorageVersion")
     implementation(platform("com.google.cloud:libraries-bom:23.0.0"))
+    implementation("com.google.cloud:google-cloud-storage")
 
     // Micrometer
     implementation("io.micrometer:micrometer-registry-prometheus")
