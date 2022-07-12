@@ -108,7 +108,7 @@ dependencies {
     implementation("no.nav.eessi.pensjon:ep-logging:1.0.28")
 
     //GCP
-    implementation(platform("com.google.cloud:libraries-bom:23.0.0"))
+    implementation(platform("com.google.cloud:libraries-bom:26.0.0"))
     implementation("com.google.cloud:google-cloud-storage")
 
     // Micrometer
