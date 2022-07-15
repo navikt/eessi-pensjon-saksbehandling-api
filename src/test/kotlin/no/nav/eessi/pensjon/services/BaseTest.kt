@@ -26,10 +26,6 @@ open class BaseTest {
     @Value("\${ldapServerPort}")
     lateinit var ldapServerPort: String
 
-    @Test
-    fun dummy() {
-    }
-
     companion object {
         @BeforeAll
         @JvmStatic
