@@ -3,14 +3,14 @@ package no.nav.eessi.pensjon.websocket
 import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.web.socket.CloseStatus
 import org.springframework.web.socket.TextMessage
-import java.io.IOException
 import org.springframework.web.socket.WebSocketSession
 import org.springframework.web.socket.handler.TextWebSocketHandler
-import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Value
+import java.io.IOException
 import java.util.concurrent.ConcurrentHashMap
 
 @Component
@@ -19,7 +19,7 @@ class SocketTextHandler : TextWebSocketHandler() {
     @Value("\${ENV}")
     lateinit var fasitEnvironmentName: String
 
-    private val logger = LoggerFactory.getLogger(TextWebSocketHandler::class.java)
+    private val logger = LoggerFactory.getLogger(SocketTextHandler::class.java)
     private val mapper = ObjectMapper()
 
     companion object {

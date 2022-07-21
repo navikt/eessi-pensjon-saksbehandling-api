@@ -10,11 +10,10 @@ import org.springframework.lang.Nullable
 import org.springframework.web.socket.WebSocketHandler
 import org.springframework.web.socket.server.HandshakeFailureException
 import org.springframework.web.socket.server.HandshakeInterceptor
-import java.lang.Exception
 
 open class WebSocketHandShakeInterceptor(private val tokenValidationContextHolder: TokenValidationContextHolder): HandshakeInterceptor {
 
-    private val logger = LoggerFactory.getLogger(HandshakeInterceptor::class.java)
+    private val logger = LoggerFactory.getLogger(WebSocketHandShakeInterceptor::class.java)
 
     override fun afterHandshake(request: ServerHttpRequest, response: ServerHttpResponse, wsHandler: WebSocketHandler, @Nullable exception: Exception?){}
 
