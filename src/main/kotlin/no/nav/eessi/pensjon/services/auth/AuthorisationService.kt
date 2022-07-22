@@ -59,7 +59,7 @@ class AuthorisationService {
     fun harTilgangTilPesysSak(roller: List<AdRolle>, pesysSakstype: PesysSakstype?): Boolean {
 
         if (pesysSakstype == null){
-            throw AuthorisationUkjentSakstypeException("Ukjent sakstype fra PESYS: $pesysSakstype")
+            throw AuthorisationUkjentSakstypeException("Ukjent sakstype fra PESYS")
         }
 
         return when (pesysSakstype) {
