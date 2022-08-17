@@ -65,7 +65,7 @@ class UserInfoControllerTest {
         assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), userInfoController.getUserInfo())
     }
 
-    @Test fun `Calling UserInfoController|getRole`() {
+    @Test fun `Calling UserInfoController getRole`() {
         assertEquals("BRUKER", getRole("12345678910"))
         assertEquals("SAKSBEHANDLER", getRole("Z123456"))
         assertEquals("UNKNOWN", getRole("ZZZ"))
