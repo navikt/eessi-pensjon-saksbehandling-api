@@ -6,7 +6,7 @@ buildscript {
         jacksonVersion = '2.13.3'
         tokenSupportVersion = '2.1.3'
         logstashLogbackVersion = '7.2'
-        pac4jVersion = '5.4.4'
+        pac4jVersion = '5.4.5'
         cxfVersion = '3.5.3'
     }
     repositories {
