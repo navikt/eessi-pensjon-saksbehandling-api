@@ -1,6 +1,5 @@
 buildscript {
     ext {
-        kotlinVersion = '1.7.10'
         springBootVersion = '2.7.3'
         springKafkaVersion = '2.9.0'
         jacksonVersion = '2.13.4'
@@ -9,24 +8,14 @@ buildscript {
         pac4jVersion = '5.4.6'
         cxfVersion = '3.5.3'
     }
-    repositories {
-        mavenCentral()
-    }
 }
 
 plugins {
-    id "org.jetbrains.kotlin.jvm" version "$kotlinVersion"
-    id "org.jetbrains.kotlin.plugin.spring" version "$kotlinVersion"
-    id "org.jetbrains.kotlin.plugin.allopen" version "$kotlinVersion"
     id "org.springframework.boot" version "$springBootVersion"
     id "io.spring.dependency-management" version "1.0.13.RELEASE"
-    id 'com.github.ben-manes.versions' version '0.42.0'
-    id 'se.patrikerdes.use-latest-versions' version '0.2.18'
-    id "org.owasp.dependencycheck" version "7.1.2"
-    id 'com.adarshr.test-logger' version '3.2.0'
-    id "org.sonarqube" version "3.4.0.2513"
-    id 'jacoco'
 }
+
+apply from: "https://raw.githubusercontent.com/navikt/ep-script-plugins/release-0.2.0/ep-module.gradle"
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
@@ -34,7 +23,6 @@ tasks.withType(JavaCompile) {
 
 test {
     systemProperty "file.encoding", "utf-8"
-    useJUnitPlatform()
 
     testLogging {
         events "passed", "skipped", "failed", "standardOut", "standardError"
@@ -42,28 +30,6 @@ test {
 }
 
 group = 'no.nav.eessi'
-
-assert JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17): "Java 17 or newer is required"
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
-}
-
-compileKotlin {
-    kotlinOptions {
-        freeCompilerArgs = ["-Xjsr305=strict"]
-        jvmTarget = "17"
-        allWarningsAsErrors = true
-    }
-}
-compileTestKotlin {
-    kotlinOptions {
-        freeCompilerArgs = ["-Xjsr305=strict"]
-        jvmTarget = "17"
-        allWarningsAsErrors = true
-    }
-}
 
 dependencies {
 
@@ -100,7 +66,6 @@ dependencies {
     // Kotlin
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:${jacksonVersion}")
 
-    implementation(platform("org.jetbrains.kotlin:kotlin-bom:$kotlinVersion"))
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
 
     // Logging
@@ -148,46 +113,4 @@ dependencies {
     implementation("org.springframework.ldap:spring-ldap-core")
     implementation("org.springframework.security:spring-security-ldap")
     implementation("com.unboundid:unboundid-ldapsdk")
-}
-
-// https://docs.gradle.org/current/userguide/jacoco_plugin.html
-jacoco {
-    toolVersion = "0.8.8"
-}
-
-jacocoTestReport {
-    reports {
-        xml.enabled true
-    }
-}
-
-tasks.sonarqube.dependsOn tasks["jacocoTestReport"]
-
-
-repositories {
-    mavenCentral()
-
-    String token = System.getenv("GITHUB_TOKEN") ?: project.findProperty("gpr.key")
-    if (!token) throw new NullPointerException("Missing token, you have to set GITHUB_TOKEN or gpr.key, see README")
-
-    maven {
-        url = uri("https://maven.pkg.github.com/navikt/maven-release")
-        credentials {
-            username = "token"
-            password = token
-        }
-    }
-}
-
-wrapper {
-    distributionType = Wrapper.DistributionType.ALL
-}
-
-/* https://github.com/ben-manes/gradle-versions-plugin */
-dependencyUpdates {
-    rejectVersionIf {
-        ['alpha', 'beta', 'rc', 'cr', 'm', 'preview', 'pr']
-                .any { qualifier -> it.candidate.version ==~ /(?i).*[.-]${qualifier}[.\d-]*/}
-    }
-    revision = 'release'
 }
