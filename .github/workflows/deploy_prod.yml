@@ -1,22 +1,21 @@
-name: Deploy PROD GCP
+name: Deploy PROD
 on:
   repository_dispatch:
-    types: [deploy-prod-gcp]
+    types: [deploy-prod]
+
 jobs:
   deploy_prod:
-    name: 'Deploy til PROD GCP'
+    name: 'Deploy til PROD'
     runs-on: ubuntu-latest
     steps:
-      # GET version
-      - name: 'Get the version'
-        uses: actions/checkout@v2
+      - name: 'Pull repo'
+        uses: actions/checkout@v3
 
-      # Show IMAGE from DEV deploy
       - name: 'Vise image'
         run: |
           echo "image-tag: ${{ github.event.client_payload.image }}"
 
-      - name: 'NAIS-deploy to PROD GCP'
+      - name: 'NAIS-deploy to PROD'
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
