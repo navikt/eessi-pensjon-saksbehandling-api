@@ -10,7 +10,7 @@ jobs:
     name: 'Bygg, publiser, deploy DEV, tag og dispatch deploy til PROD'
     runs-on: ubuntu-latest
     env:
-      package: eessi-pensjon-prefill
+      package: eessi-pensjon-saksbehandling-api
     steps:
       - name: 'Pull repo'
         uses: actions/checkout@v3
