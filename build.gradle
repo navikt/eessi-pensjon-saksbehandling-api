@@ -12,7 +12,7 @@ buildscript {
 
 plugins {
     id "org.springframework.boot" version "$springBootVersion"
-    id "io.spring.dependency-management" version "1.0.13.RELEASE"
+    id "io.spring.dependency-management" version "1.0.14.RELEASE"
 }
 
 apply from: "https://raw.githubusercontent.com/navikt/ep-script-plugins/release-0.3.0/ep-module.gradle"
