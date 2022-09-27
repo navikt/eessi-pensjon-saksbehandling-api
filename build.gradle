@@ -15,7 +15,7 @@ plugins {
     id "io.spring.dependency-management" version "1.0.14.RELEASE"
 }
 
-apply from: "https://raw.githubusercontent.com/navikt/ep-script-plugins/release-0.3.0/ep-module.gradle"
+apply from: "https://raw.githubusercontent.com/navikt/ep-script-plugins/release-0.4.0/ep-module.gradle"
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
