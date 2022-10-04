@@ -1,6 +1,10 @@
+.gradle/
+/build/
+/out/
+/codemr
+!gradle/wrapper/gradle-wrapper.jar
+
 .idea
-.gradle
+*.iws
 *.iml
-.DS_Store
-/build
-out/
+*.ipr
