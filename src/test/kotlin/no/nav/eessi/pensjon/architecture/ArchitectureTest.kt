@@ -4,6 +4,7 @@ import com.tngtech.archunit.core.domain.JavaClasses
 import com.tngtech.archunit.core.importer.ClassFileImporter
 import com.tngtech.archunit.core.importer.ImportOption
 import com.tngtech.archunit.library.Architectures
+import com.tngtech.archunit.library.Architectures.layeredArchitecture
 import com.tngtech.archunit.library.dependencies.SlicesRuleDefinition.slices
 import no.nav.eessi.pensjon.Application
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -25,11 +26,12 @@ class ArchitectureTest {
         @JvmStatic
         fun `extract classes`() {
             classesToAnalyze = ClassFileImporter()
-                .withImportOption(ImportOption.DoNotIncludeTests())
-                .withImportOption(ImportOption.DoNotIncludeJars())
-                .importPackages(root)
-            assertTrue(classesToAnalyze.size > 10, "Sanity check on no. of classes to analyze")
-            assertTrue(classesToAnalyze.size < 300, "Sanity check on no. of classes to analyze")
+                .withImportOptions(listOf(
+                    ImportOption.DoNotIncludeTests(),
+                    ImportOption.DoNotIncludeJars())
+                ).importPackages(root)
+
+            assertTrue(classesToAnalyze.size in 10..300, "Sanity check on no. of classes to analyze (is ${classesToAnalyze.size})")
         }
     }
 
@@ -41,7 +43,8 @@ class ArchitectureTest {
 
     @Test
     fun `Check architecture`() {
-        Architectures.layeredArchitecture()
+        layeredArchitecture()
+            .consideringOnlyDependenciesInAnyPackage(root)
                 .layer("App").definedBy("$root")
                 .layer("API").definedBy("$root.api..", "$root.personoppslag..")
                 .layer("Listeners").definedBy("$root.listeners..")
