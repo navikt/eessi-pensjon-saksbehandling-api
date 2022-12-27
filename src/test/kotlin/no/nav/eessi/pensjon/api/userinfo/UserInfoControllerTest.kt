@@ -6,7 +6,6 @@ import io.mockk.spyk
 import no.nav.eessi.pensjon.config.FeatureToggle
 import no.nav.eessi.pensjon.utils.mapAnyToJson
 import no.nav.eessi.pensjon.utils.mapJsonToAny
-import no.nav.eessi.pensjon.utils.typeRefs
 import no.nav.security.token.support.core.jwt.JwtTokenClaims
 import no.nav.security.token.support.spring.SpringTokenValidationContextHolder
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -86,7 +85,7 @@ class UserInfoControllerTest {
         )
         val result = userInfoController.getUserInfo()
         assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), result)
-        val resultUserInfo = mapJsonToAny(result.body!!, typeRefs<UserInfoResponse>())
+        val resultUserInfo = mapJsonToAny<UserInfoResponse>(result.body!!)
         assertEquals(EXPIRATION_TIME, resultUserInfo.expirationTime)
     }
 

@@ -32,14 +32,6 @@ fun getToken(tokenValidationContextHolder: TokenValidationContextHolder): JwtTok
     return context.getJwtToken(issuer)
 }
 
-fun errorBody(error: String?, uuid: String = "no-uuid"): String {
-    return "{\"success\": false, \n \"error\": \"$error\", \"uuid\": \"$uuid\"}"
-}
-
-fun successBody(): String {
-    return "{\"success\": true}"
-}
-
 /**
  * Maskerer fnr/dnr i en S3 key
  *

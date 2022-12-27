@@ -7,7 +7,6 @@ import no.nav.eessi.pensjon.services.auth.EessiPensjonTilgang
 import no.nav.eessi.pensjon.utils.getClaims
 import no.nav.eessi.pensjon.utils.getToken
 import no.nav.eessi.pensjon.utils.mapJsonToAny
-import no.nav.eessi.pensjon.utils.typeRefs
 import no.nav.security.token.support.core.context.TokenValidationContextHolder
 import no.nav.security.token.support.core.jwt.JwtTokenClaims
 import org.slf4j.LoggerFactory
@@ -108,7 +107,7 @@ class AuthInterceptor(private val proxyOAuthRestTemplate: RestTemplate,
             String::class.java)
 
         val body = response.body ?: throw Exception("Feiler ved innhenting av navident")
-        return mapJsonToAny(body, typeRefs())
+        return mapJsonToAny(body)
     }
 
     /**
