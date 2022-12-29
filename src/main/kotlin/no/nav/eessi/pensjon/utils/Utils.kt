@@ -57,8 +57,3 @@ fun filterPensionSedAndSort(sedList: List<String>): List<String> {
     }
     return sedList
 }
-
-fun <E> List<E>.toJson(): String {
-    return mapAnyToJson(this)
-}
-
