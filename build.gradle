@@ -73,7 +73,7 @@ dependencies {
     implementation("net.logstash.logback:logstash-logback-encoder:${logstashLogbackVersion}")
     configurations { all*.exclude group: 'commons-logging', module: 'commons-logging' }
     implementation group: 'org.slf4j', name: 'jcl-over-slf4j'
-    implementation("no.nav.eessi.pensjon:ep-logging:1.1.12")
+    implementation("no.nav.eessi.pensjon:ep-logging:1.1.13")
 
     //GCP
     implementation(platform("com.google.cloud:libraries-bom:26.3.0"))
