@@ -1,0 +1,23 @@
+ENV: Q1
+AZURE_APP_WELL_KNOWN_URL: http://localhost:${mock-oauth2-server.port}/aad/.well-known/openid-configuration
+AZURE_OPENID_CONFIG_TOKEN_ENDPOINT: http://localhost:1111/v2.0/token
+AUTHORIZATION_URL: http://localhost:1111/v2.0/authorize
+METRICS_REQUESTFILTER_ENABLE: true
+CORS:
+  allowed: "http://localhost"
+
+no.nav.security.jwt:
+  issuer.aad:
+    discoveryurl: ${AZURE_APP_WELL_KNOWN_URL}
+    accepted_audience: ${AZURE_APP_CLIENT_ID}
+  client:
+    registration:
+      proxy-credentials:
+        token-endpoint-url: ${AZURE_APP_WELL_KNOWN_URL}
+        grant-type: client_credentials
+
+        authentication:
+          client-id: dummy-client-id
+          client-secret: dummy-secret
+          client-auth-method: client_secret_basic
+
