@@ -20,7 +20,7 @@ open class WebSocketHandShakeInterceptor(private val tokenValidationContextHolde
     override fun beforeHandshake(request: ServerHttpRequest, response: ServerHttpResponse, wsHandler: WebSocketHandler, attributes: MutableMap<String, Any>): Boolean {
 
         return try {
-            if (request is ServletServerHttpRequest && request.method == HttpMethod.GET && hasValidToken()) {
+            if (request is ServletServerHttpRequest && request.method.name() == HttpMethod.GET.name() && hasValidToken()) {
                 logger.info("WebSocketHandShakeInterceptor >> ${getSubjectFromToken()} VALID TOKEN")
                 attributes["subject"] = getSubjectFromToken()
 

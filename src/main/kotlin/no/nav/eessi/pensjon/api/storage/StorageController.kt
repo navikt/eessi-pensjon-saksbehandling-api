@@ -3,6 +3,7 @@ package no.nav.eessi.pensjon.api.storage
 import com.google.cloud.storage.StorageException
 import io.micrometer.core.annotation.Timed
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry
+import jakarta.annotation.PostConstruct
 import no.nav.eessi.pensjon.gcp.GcpStorageService
 import no.nav.eessi.pensjon.metrics.MetricsHelper
 import no.nav.eessi.pensjon.services.auth.EessiPensjonTilgang
@@ -23,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.util.*
-import javax.annotation.PostConstruct
 
 @Protected
 @RestController

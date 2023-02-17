@@ -1,5 +1,7 @@
 package no.nav.eessi.pensjon.interceptor
 
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 import no.nav.eessi.pensjon.models.BrukerInformasjon
 import no.nav.eessi.pensjon.services.auth.AdRolle
 import no.nav.eessi.pensjon.services.auth.AuthorisationService
@@ -19,8 +21,6 @@ import org.springframework.web.client.RestTemplate
 import org.springframework.web.method.HandlerMethod
 import org.springframework.web.servlet.HandlerInterceptor
 import org.springframework.web.util.UriComponentsBuilder
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
 
 @Component
 class AuthInterceptor(private val proxyOAuthRestTemplate: RestTemplate,

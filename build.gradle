@@ -1,9 +1,9 @@
 buildscript {
     ext {
-        springBootVersion = '2.7.5'
-        springKafkaVersion = '2.9.2'
+        springBootVersion = '3.0.2'
+        springKafkaVersion = '3.0.2'
         jacksonVersion = '2.14.1'
-        tokenSupportVersion = '2.1.8'
+        tokenSupportVersion = '3.0.3'
         logstashLogbackVersion = '7.2'
         pac4jVersion = '5.7.0'
         cxfVersion = '3.5.5'
@@ -36,7 +36,6 @@ dependencies {
     // Spring-boot BOM-fil spesifiserer versjoner for Spring Boot-avhengigheter
     implementation(platform("org.springframework.boot:spring-boot-dependencies:${springBootVersion}"))
     implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.yaml:snakeyaml:1.33") // Pga https://security.snyk.io/package/maven/org.yaml:snakeyaml
     implementation("org.springframework.boot:spring-boot-starter-aop")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-websocket")
@@ -45,9 +44,10 @@ dependencies {
         exclude module: "mockito-core"
         exclude module: "junit-vintage-engine"
     }
+    implementation("org.yaml:snakeyaml:1.33") // Pga https://security.snyk.io/package/maven/org.yaml:snakeyaml
 
     // Spring Framework BOM-fil overstyrer så vi får siste patch-versjon av Spring Framework
-    implementation(platform("org.springframework:spring-framework-bom:5.3.23"))
+    implementation(platform("org.springframework:spring-framework-bom:6.0.4"))
 
     implementation("org.springframework:spring-jms")
 
@@ -73,7 +73,6 @@ dependencies {
     implementation("net.logstash.logback:logstash-logback-encoder:${logstashLogbackVersion}")
     configurations { all*.exclude group: 'commons-logging', module: 'commons-logging' }
     implementation group: 'org.slf4j', name: 'jcl-over-slf4j'
-    implementation("no.nav.eessi.pensjon:ep-logging:1.1.16")
 
     //GCP
     implementation(platform("com.google.cloud:libraries-bom:26.5.0"))
@@ -81,8 +80,12 @@ dependencies {
 
     // Micrometer
     implementation("io.micrometer:micrometer-registry-prometheus:1.10.2")
-    implementation("no.nav.eessi.pensjon:ep-metrics:1.0.11")
-    implementation("no.nav.eessi.pensjon:ep-eux:1.4.19")
+
+    //ep-libs
+    implementation("no.nav.eessi.pensjon:ep-logging:2.0.1")
+    implementation("no.nav.eessi.pensjon:ep-metrics:2.0.0")
+    implementation("no.nav.eessi.pensjon:ep-eux:2.0.1")
+
     //auth
     implementation("no.nav.security:token-client-spring:${tokenSupportVersion}")
     implementation("no.nav.security:token-validation-spring:${tokenSupportVersion}")
@@ -102,11 +105,6 @@ dependencies {
     // Architecture tests
     testImplementation 'com.tngtech.archunit:archunit:1.0.1'
 
-    // Apache CXF
-    implementation("org.apache.cxf:cxf-spring-boot-starter-jaxws:${cxfVersion}")
-    implementation("org.apache.cxf:cxf-rt-ws-security:${cxfVersion}")
-    implementation('org.jvnet.jaxb2_commons:jaxb2-basics-runtime:1.11.1')
-
     // Kafka
     testImplementation "org.springframework.kafka:spring-kafka-test:$springKafkaVersion"
 
@@ -114,4 +112,7 @@ dependencies {
     implementation("org.springframework.ldap:spring-ldap-core")
     implementation("org.springframework.security:spring-security-ldap")
     implementation("com.unboundid:unboundid-ldapsdk")
+
+    // Test - token-validation-spring-test dependencies
+    testImplementation("no.nav.security:token-validation-spring-test:$tokenSupportVersion")
 }

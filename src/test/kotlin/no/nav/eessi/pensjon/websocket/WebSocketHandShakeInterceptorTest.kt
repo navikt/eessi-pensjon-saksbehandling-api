@@ -1,5 +1,6 @@
 package no.nav.eessi.pensjon.websocket
 
+import io.mockk.MockKStubScope
 import io.mockk.every
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
@@ -119,7 +120,7 @@ class WebSocketHandShakeInterceptorTest {
         val wsHandler = mockk<WebSocketHandler>()
         val attributes = mutableMapOf<String, Any>()
 
-        every { request.method } returns null
+        every { request.method } returns HttpMethod.POST
 
         assertFalse(webSocketHandShakeInterceptor.beforeHandshake(request, response, wsHandler, attributes))
     }
