@@ -79,7 +79,7 @@ dependencies {
     implementation("com.google.cloud:google-cloud-storage")
 
     // Micrometer
-    implementation("io.micrometer:micrometer-registry-prometheus:1.10.2")
+    implementation("io.micrometer:micrometer-registry-prometheus:1.10.4")
 
     //ep-libs
     implementation("no.nav.eessi.pensjon:ep-logging:2.0.1")
