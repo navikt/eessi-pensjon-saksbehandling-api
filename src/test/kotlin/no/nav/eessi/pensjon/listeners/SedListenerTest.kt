@@ -1,10 +1,11 @@
 package no.nav.eessi.pensjon.listeners
 
-import com.fasterxml.jackson.core.JsonParseException
 import io.mockk.every
 import io.mockk.junit5.MockKExtension
 import io.mockk.spyk
 import io.mockk.verify
+import no.nav.eessi.pensjon.shared.person.Fodselsnummer
+import no.nav.eessi.pensjon.utils.JsonException
 import no.nav.eessi.pensjon.websocket.SocketTextHandler
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -21,12 +22,12 @@ class SedListenerTest {
     @Test
     fun `consumeSedSendt calls SocketTextHandler-alertSubScribers on valid json`() {
         sedListener.consumeSedSendt(String(Files.readAllBytes(Paths.get("src/test/resources/sed/P_BUC_01.json"))))
-        verify { socketTextHandler.alertSubscribers("147729", "12378945601") }
+        verify { socketTextHandler.alertSubscribers("147729", Fodselsnummer.fra("12378945601")) }
     }
 
     @Test
     fun `consumeSedSendt throws JsonParseException on invalid json`() {
-        assertThrows<JsonParseException> { sedListener.consumeSedSendt("]\\{)))notValidJson:::.") }
+        assertThrows<JsonException> { sedListener.consumeSedSendt("]\\{)))notValidJson:::.") }
     }
 
     @Test
@@ -38,12 +39,12 @@ class SedListenerTest {
     @Test
     fun `consumeSedMottatt calls SocketTextHandler-alertSubScribers on valid json`() {
         sedListener.consumeSedMottatt(String(Files.readAllBytes(Paths.get("src/test/resources/sed/P_BUC_01.json"))))
-        verify { socketTextHandler.alertSubscribers("147729", "12378945601") }
+        verify { socketTextHandler.alertSubscribers("147729", Fodselsnummer.fra("12378945601")) }
     }
 
     @Test
     fun `consumeSedMottatt throws JsonParseException on invalid json`() {
-        assertThrows<JsonParseException> { sedListener.consumeSedMottatt("]\\{)))notValidJson:::.") }
+        assertThrows<JsonException> { sedListener.consumeSedMottatt("]\\{)))notValidJson:::.") }
     }
 
     @Test

@@ -3,6 +3,7 @@ package no.nav.eessi.pensjon.websocket
 import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
+import no.nav.eessi.pensjon.shared.person.Fodselsnummer
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
@@ -57,12 +58,12 @@ class SocketTextHandler : TextWebSocketHandler() {
         }
     }
 
-    fun filterSessionsByBruker (navBruker: String): MutableList<WebSocketSession> {
+    fun filterSessionsByBruker (navBruker: Fodselsnummer): MutableList<WebSocketSession> {
         logger.debug("Filtering " + sessions.size + "sessions for navBruker " + navBruker)
         return sessions
             .filter { it.value.attributes["subscriptions"] != null }
             .filter { it.value.attributes["subscriptions"] is List<*> }
-            .filter { (it.value.attributes["subscriptions"] as List<*>).contains(navBruker) }
+            .filter { (it.value.attributes["subscriptions"] as List<*>).contains(navBruker.value) }
             .values.toMutableList()
     }
 
@@ -76,7 +77,7 @@ class SocketTextHandler : TextWebSocketHandler() {
         sessions.remove(session.id)
     }
 
-    fun alertSubscribers(caseId: String, subject: String? = null) {
+    fun alertSubscribers(caseId: String, subject: Fodselsnummer? = null) {
         try {
             if(subject != null){
                 val subscribers = filterSessionsByBruker(subject)

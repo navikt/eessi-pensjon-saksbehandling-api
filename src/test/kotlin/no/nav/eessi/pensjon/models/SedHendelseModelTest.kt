@@ -1,7 +1,10 @@
 package no.nav.eessi.pensjon.models
 
 import no.nav.eessi.pensjon.eux.model.BucType.P_BUC_01
+import no.nav.eessi.pensjon.eux.model.SedHendelse
 import no.nav.eessi.pensjon.eux.model.SedType
+import no.nav.eessi.pensjon.shared.person.Fodselsnummer
+import no.nav.eessi.pensjon.utils.mapAnyToJson
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.nio.file.Files
@@ -12,7 +15,7 @@ internal class SedHendelseModelTest {
     @Test
     fun `Gitt en gyldig SEDSendt json når mapping så skal alle felter mappes`() {
         val sedSendtJson = String(Files.readAllBytes(Paths.get("src/test/resources/sed/P_BUC_01.json")))
-        val sedHendelse = SedHendelseModel.fromJson(sedSendtJson)
+        val sedHendelse = SedHendelse.fromJson(sedSendtJson)
         assertEquals(sedHendelse.id, 1869L)
         assertEquals(sedHendelse.sedId, "P2000_b12e06dda2c7474b9998c7139c841646_2")
         assertEquals(sedHendelse.sektorKode, "P")
@@ -24,6 +27,6 @@ internal class SedHendelseModelTest {
         assertEquals(sedHendelse.rinaDokumentId, "b12e06dda2c7474b9998c7139c841646")
         assertEquals(sedHendelse.rinaDokumentVersjon, "2")
         assertEquals(sedHendelse.sedType, SedType.P2000)
-        assertEquals(sedHendelse.navBruker, "12378945601")
+        assertEquals( sedHendelse.navBruker, Fodselsnummer.fra("12378945601"))
     }
 }

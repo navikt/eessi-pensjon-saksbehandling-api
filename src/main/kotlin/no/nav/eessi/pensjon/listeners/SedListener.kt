@@ -1,7 +1,7 @@
 package no.nav.eessi.pensjon.listeners
 
 import com.fasterxml.jackson.core.JsonParseException
-import no.nav.eessi.pensjon.models.SedHendelseModel
+import no.nav.eessi.pensjon.eux.model.SedHendelse
 import no.nav.eessi.pensjon.websocket.SocketTextHandler
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Description
@@ -21,7 +21,7 @@ class SedListener (private val socketTextHandler: SocketTextHandler) {
     )
     fun consumeSedSendt(hendelse: String) {
         try {
-            val sedHendelse = SedHendelseModel.fromJson(hendelse)
+            val sedHendelse = SedHendelse.fromJson(hendelse)
             if(sedHendelse.sektorKode == "P") {
                 logger.info("Innkommet sedSendt hendelse med rinaSakId " + sedHendelse.rinaSakId)
                 socketTextHandler.alertSubscribers(sedHendelse.rinaSakId, sedHendelse.navBruker)
@@ -42,7 +42,7 @@ class SedListener (private val socketTextHandler: SocketTextHandler) {
     )
     fun consumeSedMottatt(hendelse: String) {
         try {
-            val sedHendelse = SedHendelseModel.fromJson(hendelse)
+            val sedHendelse = SedHendelse.fromJson(hendelse)
             if(sedHendelse.sektorKode == "P") {
                 logger.info("Innkommet sedMottatt hendelse")
                 socketTextHandler.alertSubscribers(sedHendelse.rinaSakId, sedHendelse.navBruker)
