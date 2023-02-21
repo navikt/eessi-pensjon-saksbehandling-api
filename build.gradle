@@ -75,7 +75,7 @@ dependencies {
     implementation group: 'org.slf4j', name: 'jcl-over-slf4j'
 
     //GCP
-    implementation(platform("com.google.cloud:libraries-bom:26.5.0"))
+    implementation(platform("com.google.cloud:libraries-bom:26.8.0"))
     implementation("com.google.cloud:google-cloud-storage")
 
     // Micrometer
