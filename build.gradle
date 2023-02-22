@@ -109,8 +109,8 @@ dependencies {
     testImplementation "org.springframework.kafka:spring-kafka-test:$springKafkaVersion"
 
     // LDAP
-    implementation("org.springframework.ldap:spring-ldap-core")
-    implementation("org.springframework.security:spring-security-ldap")
+    implementation("org.springframework.ldap:spring-ldap-core:3.0.1")
+    implementation("org.springframework.security:spring-security-ldap:6.0.2")
     implementation("com.unboundid:unboundid-ldapsdk")
 
     // Test - token-validation-spring-test dependencies
