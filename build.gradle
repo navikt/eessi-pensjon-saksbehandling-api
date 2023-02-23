@@ -4,7 +4,6 @@ buildscript {
         springKafkaVersion = '3.0.3'
         jacksonVersion = '2.14.2'
         tokenSupportVersion = '3.0.3'
-        logstashLogbackVersion = '7.2'
         pac4jVersion = '5.7.0'
         cxfVersion = '3.5.5'
     }
@@ -64,7 +63,7 @@ dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
 
     // Logging
-    implementation("net.logstash.logback:logstash-logback-encoder:${logstashLogbackVersion}")
+    implementation("net.logstash.logback:logstash-logback-encoder:7.3")
     configurations { all*.exclude group: 'commons-logging', module: 'commons-logging' }
     implementation group: 'org.slf4j', name: 'jcl-over-slf4j'
 
