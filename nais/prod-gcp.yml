@@ -24,6 +24,9 @@ spec:
     application:
       enabled: true
       claims:
+        groups:
+          - id: 49d708e9-c141-4a01-9be9-aa539c48f1d2 #Tilgang til 0000-ga-eessi-clerk-pensjon
+          - id: fedabd32-4cab-4307-ad69-ea24edc69790 #Tilgang til 0000-ga-eessi-clerk-ufore
         extra:
           - NAVident
   accessPolicy:
