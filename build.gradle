@@ -49,12 +49,6 @@ dependencies {
     // Spring Framework BOM-fil overstyrer så vi får siste patch-versjon av Spring Framework
     implementation(platform("org.springframework:spring-framework-bom:6.0.5"))
 
-    implementation("org.springframework:spring-jms")
-
-    // Messaging
-    implementation("org.springframework:spring-websocket")
-    implementation("org.springframework:spring-messaging")
-
     // Kafka
     implementation("org.springframework.kafka:spring-kafka:$springKafkaVersion")
 
@@ -91,9 +85,6 @@ dependencies {
     implementation("no.nav.security:token-validation-spring:${tokenSupportVersion}")
     implementation("no.nav.security:token-validation-jaxrs:${tokenSupportVersion}")
     implementation("no.nav.security:token-validation-test-support:2.0.5")
-
-    implementation("org.pac4j:pac4j-oidc:${pac4jVersion}")
-    implementation("org.pac4j:pac4j-core:${pac4jVersion}")
 
     testImplementation(platform("org.junit:junit-bom:5.9.2"))
     testImplementation("org.junit.jupiter:junit-jupiter")
