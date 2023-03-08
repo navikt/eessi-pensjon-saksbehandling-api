@@ -69,7 +69,7 @@ dependencies {
 
     //GCP
     implementation(platform("com.google.cloud:libraries-bom:26.9.0"))
-    implementation("com.google.cloud:google-cloud-storage:2.19.0")
+    implementation("com.google.cloud:google-cloud-storage:2.20.1")
 
     // Micrometer
     implementation("io.micrometer:micrometer-registry-prometheus:1.10.4")
