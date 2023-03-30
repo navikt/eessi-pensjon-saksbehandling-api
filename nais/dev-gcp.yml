@@ -36,10 +36,8 @@ spec:
           namespace: eessipensjon
           cluster: dev-gcp
     outbound:
-      rules:
-        - application: eessi-pensjon-onprem-proxy-q2
-          namespace: eessipensjon
-          cluster: dev-fss
+      external:
+        - host: eessi-pensjon-onprem-proxy-q2.dev-fss-pub.nais.io
   webproxy: true
   env:
     - name: SPRING_PROFILES_ACTIVE
