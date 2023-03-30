@@ -35,6 +35,11 @@ spec:
         - application: eessi-pensjon-frontend-ui-q2
           namespace: eessipensjon
           cluster: dev-gcp
+    outbound:
+      rules:
+        - application: eessi-pensjon-onprem-proxy-q2
+          namespace: eessipensjon
+          cluster: dev-fss
   webproxy: true
   env:
     - name: SPRING_PROFILES_ACTIVE
