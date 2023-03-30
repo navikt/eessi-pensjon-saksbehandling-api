@@ -35,6 +35,9 @@ spec:
         - application: eessi-pensjon-frontend-ui
           namespace: eessipensjon
           cluster: prod-gcp
+    outbound:
+      external:
+        - host: eessi-pensjon-onprem-proxy.prod-fss-pub.nais.io
   webproxy: true
   env:
     - name: SPRING_PROFILES_ACTIVE
