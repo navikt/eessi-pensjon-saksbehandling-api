@@ -2,7 +2,7 @@ buildscript {
     ext {
         springBootVersion = '3.1.0'
         springKafkaVersion = '3.0.7'
-        jacksonVersion = '2.15.1'
+        jacksonModuleKotlinVersion = '2.15.1'
         tokenSupportVersion = '3.0.12'
         pac4jVersion = '5.7.0'
         cxfVersion = '3.5.5'
@@ -55,10 +55,10 @@ dependencies {
     implementation("org.apache.cxf:cxf-spring-boot-starter-jaxws:${cxfVersion}")
     implementation("org.apache.cxf:cxf-rt-ws-security:${cxfVersion}")
 
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonVersion}")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonModuleKotlinVersion}")
 
     // Kotlin
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:${jacksonVersion}")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:${jacksonModuleKotlinVersion}")
 
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
 
