@@ -68,8 +68,9 @@ dependencies {
     implementation group: 'org.slf4j', name: 'jcl-over-slf4j'
 
     //GCP
-    implementation(platform("com.google.cloud:libraries-bom:26.18.0"))
-    implementation("com.google.cloud:google-cloud-storage:2.23.0")
+    implementation(platform("com.google.cloud:libraries-bom:26.19.0"))
+    implementation("com.google.cloud:google-cloud-storage")
+    implementation 'com.google.guava:guava:31.1-jre' // "-jre" for Java 8 or higher,https://github.com/google/guava/issues/6612
 
     // Micrometer
     implementation("io.micrometer:micrometer-registry-prometheus:1.11.1")
