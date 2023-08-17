@@ -73,7 +73,7 @@ dependencies {
     implementation 'com.google.guava:guava:32.1.2-jre' // "-jre" for Java 8 or higher,https://github.com/google/guava/issues/6612
 
     // Micrometer
-    implementation("io.micrometer:micrometer-registry-prometheus:1.11.2")
+    implementation("io.micrometer:micrometer-registry-prometheus:1.11.3")
 
     //ep-libs
     implementation("no.nav.eessi.pensjon:ep-logging:2.1.19")
