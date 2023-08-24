@@ -51,3 +51,5 @@ jobs:
 
       - name: 'Echo Image Name'
         run: echo "### Image Name ${{ env.DOCKER_METADATA_OUTPUT_TAGS }}" >> $GITHUB_STEP_SUMMARY
+      - name: 'Echo Image Name'
+        run: echo "### Image Name ${{ env.DOCKER_METADATA_OUTPUT_TAGS }}" >> $GITHUB_STEP_SUMMARY
