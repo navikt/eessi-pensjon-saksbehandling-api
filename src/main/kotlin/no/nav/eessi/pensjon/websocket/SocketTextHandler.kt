@@ -81,7 +81,7 @@ class SocketTextHandler : TextWebSocketHandler() {
         try {
             if(subject != null){
                 val subscribers = filterSessionsByBruker(subject)
-                logger.info("Alerting " + subscribers.size + " subscribers that caseId " + caseId + " updated for subject " + subject)
+                logger.info("Alerting " + subscribers.size + " subscribers that caseId " + caseId)
                 subscribers.map { session ->
                     session.sendMessage(TextMessage("{\"bucUpdated\": {\"caseId\": \"$caseId\"}}"))
                 }
