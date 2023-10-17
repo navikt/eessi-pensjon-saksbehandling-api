@@ -75,7 +75,7 @@ dependencies {
 
     //ep-libs
     implementation("no.nav.eessi.pensjon:ep-logging:2.1.34")
-    implementation("no.nav.eessi.pensjon:ep-metrics:2.0.36")
+    implementation("no.nav.eessi.pensjon:ep-metrics:2.0.39")
     implementation("no.nav.eessi.pensjon:ep-eux:2.1.54")
 
     //auth
