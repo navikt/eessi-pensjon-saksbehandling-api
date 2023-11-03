@@ -3,7 +3,6 @@ package no.nav.eessi.pensjon.api.storage
 import com.google.cloud.storage.StorageException
 import io.micrometer.core.annotation.Timed
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry
-import jakarta.annotation.PostConstruct
 import no.nav.eessi.pensjon.gcp.GcpStorageService
 import no.nav.eessi.pensjon.metrics.MetricsHelper
 import no.nav.eessi.pensjon.services.auth.EessiPensjonTilgang
@@ -16,13 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import java.util.*
 
 @Protected
@@ -39,15 +32,13 @@ class StorageController(private val storage: GcpStorageService,
     private lateinit var deleteDocument: MetricsHelper.Metric
     private lateinit var deleteMultipleDocuments: MetricsHelper.Metric
 
-    @PostConstruct
-    fun initMetrics() {
+    init {
         storeDocument = metricsHelper.init("storeDocument")
         getDocument = metricsHelper.init("getDocument")
         listDocuments = metricsHelper.init("listDocuments")
         deleteDocument = metricsHelper.init("deleteDocument")
         deleteMultipleDocuments = metricsHelper.init("deleteMultipleDocuments")
     }
-
 
     @EessiPensjonTilgang
     @Timed("s3.put")
