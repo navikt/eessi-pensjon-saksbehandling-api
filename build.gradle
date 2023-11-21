@@ -76,7 +76,7 @@ dependencies {
     //ep-libs
     implementation("no.nav.eessi.pensjon:ep-logging:2.1.38")
     implementation("no.nav.eessi.pensjon:ep-metrics:2.0.44")
-    implementation("no.nav.eessi.pensjon:ep-eux:2.1.76")
+    implementation("no.nav.eessi.pensjon:ep-eux:2.1.80")
 
     //auth
     implementation("no.nav.security:token-client-spring:${tokenSupportVersion}")
