@@ -28,7 +28,7 @@ test {
     }
 }
 
-group = 'no.nav.eessi'
+group = 'no.nav.eessi.pensjon'
 
 dependencies {
 
