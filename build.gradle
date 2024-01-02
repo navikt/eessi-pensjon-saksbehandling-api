@@ -1,5 +1,6 @@
 buildscript {
     ext {
+        kotlinVersion = '1.9.22'
         springBootVersion = '3.1.5'
         springKafkaVersion = '3.0.12'
         jacksonModuleKotlinVersion = '2.16.1'
@@ -12,6 +13,9 @@ buildscript {
 plugins {
     id "org.springframework.boot" version "$springBootVersion"
     id "io.spring.dependency-management" version "1.1.4"
+    id "org.jetbrains.kotlin.jvm" version "$kotlinVersion"
+    id "org.jetbrains.kotlin.plugin.spring" version "$kotlinVersion"
+    id "org.jetbrains.kotlin.plugin.allopen" version "$kotlinVersion"
 }
 
 apply from: "buildSrc/ep-module.gradle"
