@@ -53,9 +53,7 @@ class RestTemplateConfig(
             )
             .build().apply {
                 requestFactory = BufferingClientHttpRequestFactory(
-                    SimpleClientHttpRequestFactory()
-                    .apply { setOutputStreaming(false) }
-                )
+                    SimpleClientHttpRequestFactory())
             }
     }
 
