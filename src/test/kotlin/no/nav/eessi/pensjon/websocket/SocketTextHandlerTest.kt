@@ -130,8 +130,8 @@ class SocketTextHandlerTest {
         socketTextHandler.alertSubscribers("mockCaseNumber1", Fodselsnummer.fra("01516634630"))
         socketTextHandler.alertSubscribers("mockCaseNumber2", Fodselsnummer.fra("02526634630"))
 
-        verify() { firstSession.sendMessage(TextMessage("{ \"subscriptions\" : true }")) }
-        verify() { firstSession.sendMessage(TextMessage("{\"bucUpdated\": {\"caseId\": \"mockCaseNumber1\"}}")) }
+        verify { firstSession.sendMessage(TextMessage("{ \"subscriptions\" : true }")) }
+        verify { firstSession.sendMessage(TextMessage("{\"bucUpdated\": {\"caseId\": \"mockCaseNumber1\"}}")) }
 //        verify() { firstSession.sendMessage(TextMessage("{\"bucUpdated\": {\"caseId\": \"mockCaseNumber2\"}}")) }
 //
 //        verify() { secondSession.sendMessage(TextMessage("{ \"subscriptions\" : true }")) }
