@@ -20,7 +20,7 @@ plugins {
 
 apply from: "buildSrc/ep-module.gradle"
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
 
@@ -69,7 +69,7 @@ dependencies {
     // Logging
     implementation("net.logstash.logback:logstash-logback-encoder:7.4")
     configurations { all*.exclude group: 'commons-logging', module: 'commons-logging' }
-    implementation group: 'org.slf4j', name: 'jcl-over-slf4j'
+    implementation("org.slf4j:jcl-over-slf4j:2.0.11")
 
     //GCP
     implementation("com.google.cloud:google-cloud-storage:2.30.1")
