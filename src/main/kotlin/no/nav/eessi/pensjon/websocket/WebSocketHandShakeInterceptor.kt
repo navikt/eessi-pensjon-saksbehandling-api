@@ -40,7 +40,7 @@ open class WebSocketHandShakeInterceptor(private val tokenValidationContextHolde
         }
     }
 
-    open fun hasValidToken(): Boolean = tokenValidationContextHolder.tokenValidationContext.hasValidToken()
+    open fun hasValidToken(): Boolean = tokenValidationContextHolder.getTokenValidationContext().hasValidToken()
 
     open fun getSubjectFromToken(): String = getClaims(tokenValidationContextHolder).subject
 }

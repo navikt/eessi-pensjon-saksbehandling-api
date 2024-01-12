@@ -21,6 +21,8 @@ import org.springframework.web.client.RestTemplate
 import org.springframework.web.method.HandlerMethod
 import org.springframework.web.servlet.HandlerInterceptor
 import org.springframework.web.util.UriComponentsBuilder
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 
 @Component
 class AuthInterceptor(private val proxyOAuthRestTemplate: RestTemplate,
@@ -47,7 +49,7 @@ class AuthInterceptor(private val proxyOAuthRestTemplate: RestTemplate,
         return true
     }
 
-    fun getTokens(): String = getToken(tokenValidationContextHolder).tokenAsString ?: "Unknown"
+    fun getTokens(): String = URLDecoder.decode(getToken(tokenValidationContextHolder)?.encodedToken, StandardCharsets.UTF_8) ?: "Unknown"
 
     fun getSubjectFromToken() = getClaims(tokenValidationContextHolder).get("NAVident")?.toString() ?: "Unknown"
 

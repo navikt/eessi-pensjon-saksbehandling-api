@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 
 @RestController
 @Protected
@@ -43,11 +45,9 @@ class UserInfoController(
         return ResponseEntity.ok().body(mapAnyToJson(UserInfoResponse(fnr, role, expirationTime, features)))
     }
 
-    fun getTokens(): String = getToken(tokenValidationContextHolder).tokenAsString ?: "Unknown"
+    fun getTokens(): String = URLDecoder.decode(getToken(tokenValidationContextHolder)?.encodedToken, StandardCharsets.UTF_8) ?: "Unknown"
 
     fun getSubjectFromToken() = getClaims(tokenValidationContextHolder).get("NAVident")?.toString() ?: "Unknown"
-
-//    fun getSubjectFromToken(): String = getClaims(tokenValidationContextHolder).subject
 
     fun getClaims(): JwtTokenClaims = getClaims(tokenValidationContextHolder)
 }

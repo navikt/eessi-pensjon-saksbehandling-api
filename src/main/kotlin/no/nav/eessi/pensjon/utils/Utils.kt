@@ -5,8 +5,9 @@ import no.nav.security.token.support.core.jwt.JwtToken
 import no.nav.security.token.support.core.jwt.JwtTokenClaims
 import java.util.*
 
+//TODO: Flyttes til en felles modul; benyttes i fere moduler
 fun getClaims(tokenValidationContextHolder: TokenValidationContextHolder): JwtTokenClaims {
-    val context = tokenValidationContextHolder.tokenValidationContext
+    val context = tokenValidationContextHolder.getTokenValidationContext()
     if(context.issuers.isEmpty())
         throw RuntimeException("No issuer found in context")
 
@@ -23,8 +24,8 @@ fun getClaims(tokenValidationContextHolder: TokenValidationContextHolder): JwtTo
     throw RuntimeException("No valid issuer found in context")
 }
 
-fun getToken(tokenValidationContextHolder: TokenValidationContextHolder): JwtToken {
-    val context = tokenValidationContextHolder.tokenValidationContext
+fun getToken(tokenValidationContextHolder: TokenValidationContextHolder): JwtToken? {
+    val context = tokenValidationContextHolder.getTokenValidationContext()
     if(context.issuers.isEmpty())
         throw RuntimeException("No issuer found in context")
     val issuer = context.issuers.first()
