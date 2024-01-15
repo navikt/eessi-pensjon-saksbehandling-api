@@ -31,11 +31,11 @@ open class WebSocketHandShakeInterceptor(private val tokenValidationContextHolde
                 }
                 true
             } else {
-                logger.info("WebSocketHandShakeInterceptor handshake failed", request)
+                logger.info("WebSocketHandShakeInterceptor handshake failed, {}", request)
                 false
             }
         } catch(exception: HandshakeFailureException){
-            logger.error("HANDSHAKE FAILURE EXCEPTION", request, exception)
+            logger.error("HANDSHAKE FAILURE EXCEPTION, REQUEST: {}", exception)
             false
         }
     }
