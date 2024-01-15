@@ -35,7 +35,11 @@ class RestTemplateConfig(
     lateinit var proxyUrl: String
 
     @Bean
-    fun proxyOAuthRestTemplate() = restTemplate(proxyUrl, bearerTokenInterceptor(clientProperties("proxy-credentials"), oAuth2AccessTokenService))
+    fun proxyOAuthRestTemplate() = restTemplate(proxyUrl, bearerTokenInterceptor(
+        clientConfigurationProperties.registration["proxy-credentials"]
+            ?: throw RuntimeException("could not find oauth2 client config for ${"proxy-credentials"}"),
+        oAuth2AccessTokenService
+    ))
 
 
     private fun restTemplate(url: String, tokenIntercetor: ClientHttpRequestInterceptor?) : RestTemplate {
@@ -56,9 +60,6 @@ class RestTemplateConfig(
                     SimpleClientHttpRequestFactory())
             }
     }
-
-    private fun clientProperties(oAuthKey: String): ClientProperties = clientConfigurationProperties.registration[oAuthKey]
-        ?: throw RuntimeException("could not find oauth2 client config for $oAuthKey")
 
     private fun bearerTokenInterceptor(
         clientProperties: ClientProperties,
