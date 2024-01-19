@@ -10,7 +10,7 @@ spec:
     pool: nav-dev
   gcp:
     buckets:
-      - name: eessi-pensjon-saksbehandling-api-dev
+      - name: eessi-pensjon-saksbehandling-api-dev-q1
         retentionPeriodDays: 30
         lifecycleCondition:
           age: 7
