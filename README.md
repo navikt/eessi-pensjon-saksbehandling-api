@@ -5,7 +5,7 @@
 EESSI Pensjon Frontend API
 ===============================
 
-This is the web application's API module for the EESSI Pensjon, dveloped in Kotlin.
+This is the web application's API module for the EESSI Pensjon, dveloped in Kotlin
 
 ## INSTALL
 
