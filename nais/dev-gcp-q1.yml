@@ -1,0 +1,86 @@
+kind: Application
+apiVersion: nais.io/v1alpha1
+metadata:
+  name: eessi-pensjon-saksbehandling-api-q2
+  namespace: eessipensjon
+  labels:
+    team: eessipensjon
+spec:
+  kafka:
+    pool: nav-dev
+  gcp:
+    buckets:
+      - name: eessi-pensjon-saksbehandling-api-dev
+        retentionPeriodDays: 30
+        lifecycleCondition:
+          age: 7
+          createdBefore: 2020-01-01
+          numNewerVersions: 2
+          withState: ANY
+        uniformBucketLevelAccess: true
+  envFrom:
+    - secret: saksbehandlingapi-dev #secret name in Google Secret Manager
+  azure:
+    application:
+      enabled: true
+      claims:
+        groups:
+          - id: 6e921c7e-7b22-4c9a-9ff6-ee3719e3c4ba #Tilgang til 0000-ga-eessi-clerk-pensjon
+          - id: 79c6b5b5-1144-495c-a2c9-78aebfb5faf4 #Tilgang til 0000-ga-eessi-clerk-ufore
+        extra:
+          - NAVident
+  accessPolicy:
+    inbound:
+      rules:
+        - application: eessi-pensjon-frontend-ui-q1
+          namespace: eessipensjon
+          cluster: dev-gcp
+    outbound:
+      external:
+        - host: eessi-pensjon-onprem-proxy-q2.dev-fss-pub.nais.io
+  webproxy: true
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: test
+    - name: ENV
+      value: q1
+    - name: GCP_BUCKET_NAME
+      value: eessi-pensjon-saksbehandling-api-dev
+    - name: PENSJON_UTLAND_WS_ALLOWED_ORIGINS_URL
+      value: https://pensjon-utland-q1.intern.dev.nav.no
+    - name: EESSI_PEN_ONPREM_PROXY_URL
+      value: https://eessi-pensjon-onprem-proxy-q2.dev-fss-pub.nais.io
+    - name: KAFKA_SEDSENDT_TOPIC
+      value: eessibasis.sedsendt-v1-q1
+    - name: KAFKA_SEDMOTTATT_TOPIC
+      value: eessibasis.sedmottatt-v1-q1
+    - name: AZURE_APP_PROXY_CLIENT_ID
+      value: dev-fss.eessipensjon.eessi-pensjon-onprem-proxy-q2
+
+  image: {{ image }}
+  ingresses:
+    - https://eessi-pensjon-frontend-api-q1.intern.dev.nav.no
+    - https://eessi-pensjon-saksbehandling-api-q1.intern.dev.nav.no
+  liveness:
+    path: /internal/isalive
+    port: 8080
+    initialDelay: 40
+  port: 8080
+  prometheus:
+    enabled: true
+    path: /actuator/prometheus
+  readiness:
+    path: /internal/isready
+    port: 8080
+    initialDelay: 40
+  replicas:
+    min: 1
+    max: 1
+    cpuThresholdPercentage: 50
+  resources:
+    limits:
+      cpu: 4000m
+      memory: 512Mi
+    requests:
+      cpu: 2000m
+      memory: 512Mi
