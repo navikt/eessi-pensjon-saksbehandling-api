@@ -48,7 +48,7 @@ class ArchitectureTest {
                 .layer("App").definedBy("$root")
                 .layer("API").definedBy("$root.api..", "$root.personoppslag..")
                 .layer("Listeners").definedBy("$root.listeners..")
-                .layer("Health").definedBy("$root.health..")
+                .layer("Health").definedBy("$root.shared.api.health..")
                 .layer("Services").definedBy("$root.services..", "$root.personoppslag..")
                 .layer("Config").definedBy("$root.config..")
                 .layer("Interceptor").definedBy("$root.interceptor..")
