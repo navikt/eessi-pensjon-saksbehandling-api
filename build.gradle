@@ -108,4 +108,5 @@ dependencies {
 
     // Test - token-validation-spring-test dependencies
     testImplementation("no.nav.security:token-validation-spring-test:$tokenSupportVersion")
+
 }
