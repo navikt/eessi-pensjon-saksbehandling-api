@@ -1,9 +1,9 @@
 buildscript {
     ext {
-        kotlinVersion = '1.9.23'
-        springBootVersion = '3.2.4'
-        springKafkaVersion = '3.1.4'
-        jacksonModuleKotlinVersion = '2.17.0'
+        kotlinVersion = '2.0.20'
+        springBootVersion = '3.3.4'
+        springKafkaVersion = '3.2.4'
+        jacksonModuleKotlinVersion = '2.18.0'
         tokenSupportVersion = '4.1.4'
         pac4jVersion = '5.7.0'
         cxfVersion = '3.5.5'
@@ -12,7 +12,7 @@ buildscript {
 
 plugins {
     id "org.springframework.boot" version "$springBootVersion"
-    id "io.spring.dependency-management" version "1.1.4"
+    id "io.spring.dependency-management" version "1.1.6"
     id "org.jetbrains.kotlin.jvm" version "$kotlinVersion"
     id "org.jetbrains.kotlin.plugin.spring" version "$kotlinVersion"
     id "org.jetbrains.kotlin.plugin.allopen" version "$kotlinVersion"
@@ -47,10 +47,10 @@ dependencies {
         exclude module: "mockito-core"
         exclude module: "junit-vintage-engine"
     }
-    implementation("org.yaml:snakeyaml:2.2") // Pga https://security.snyk.io/package/maven/org.yaml:snakeyaml
+    implementation("org.yaml:snakeyaml:2.3") // Pga https://security.snyk.io/package/maven/org.yaml:snakeyaml
 
     // Spring Framework BOM-fil overstyrer så vi får siste patch-versjon av Spring Framework
-    implementation(platform("org.springframework:spring-framework-bom:6.1.6"))
+    implementation(platform("org.springframework:spring-framework-bom:6.1.13"))
 
     // Kafka
     implementation("org.springframework.kafka:spring-kafka:$springKafkaVersion")
@@ -67,20 +67,20 @@ dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
 
     // Logging
-    implementation("net.logstash.logback:logstash-logback-encoder:7.4")
+    implementation("net.logstash.logback:logstash-logback-encoder:8.0")
     configurations { all*.exclude group: 'commons-logging', module: 'commons-logging' }
-    implementation("org.slf4j:jcl-over-slf4j:2.0.12")
+    implementation("org.slf4j:jcl-over-slf4j:2.0.16")
 
     //GCP
-    implementation("com.google.cloud:google-cloud-storage:2.37.0")
+    implementation("com.google.cloud:google-cloud-storage:2.43.1")
 
     // Micrometer
-    implementation("io.micrometer:micrometer-registry-prometheus:1.12.5")
+    implementation("io.micrometer:micrometer-registry-prometheus:1.13.5")
 
     //ep-libs
-    implementation("no.nav.eessi.pensjon:ep-logging:2.1.61")
-    implementation("no.nav.eessi.pensjon:ep-metrics:2.0.62")
-    implementation("no.nav.eessi.pensjon:ep-eux:2.2.38")
+    implementation("no.nav.eessi.pensjon:ep-logging:2.1.75")
+    implementation("no.nav.eessi.pensjon:ep-metrics:2.0.79")
+    implementation("no.nav.eessi.pensjon:ep-eux:2.3.9")
 
     //auth
     implementation("no.nav.security:token-client-spring:${tokenSupportVersion}")
@@ -88,11 +88,11 @@ dependencies {
     implementation("no.nav.security:token-validation-jaxrs:${tokenSupportVersion}")
     implementation("no.nav.security:token-validation-test-support:2.0.5")
 
-    testImplementation(platform("org.junit:junit-bom:5.10.2"))
+    testImplementation(platform("org.junit:junit-bom:5.11.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 
     //mock
-    testImplementation('io.mockk:mockk:1.13.10')
+    testImplementation('io.mockk:mockk:1.13.12')
     testImplementation('com.ninja-squad:springmockk:4.0.2')
 
     // Architecture tests
@@ -102,11 +102,10 @@ dependencies {
     testImplementation "org.springframework.kafka:spring-kafka-test:$springKafkaVersion"
 
     // LDAP
-    implementation("org.springframework.ldap:spring-ldap-core:3.2.3")
-    implementation("org.springframework.security:spring-security-ldap:6.2.4")
-    implementation("com.unboundid:unboundid-ldapsdk:7.0.0")
+    implementation("org.springframework.ldap:spring-ldap-core:3.2.6")
+    implementation("org.springframework.security:spring-security-ldap:6.3.3")
+    implementation("com.unboundid:unboundid-ldapsdk:7.0.1")
 
     // Test - token-validation-spring-test dependencies
     testImplementation("no.nav.security:token-validation-spring-test:$tokenSupportVersion")
-
 }
