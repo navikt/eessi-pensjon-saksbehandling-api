@@ -103,10 +103,15 @@ class AuthInterceptor(private val proxyOAuthRestTemplate: RestTemplate,
         val uriParams = mapOf("navident" to navident)
         val builder = UriComponentsBuilder.fromUriString(path).buildAndExpand(uriParams)
 
-        val response = proxyOAuthRestTemplate.exchange(builder.toUriString(),
-            HttpMethod.GET,
-            null,
-            String::class.java)
+        val response = try {
+            proxyOAuthRestTemplate.exchange(builder.toUriString(),
+                HttpMethod.GET,
+                null,
+                String::class.java)
+        } catch (e: Exception) {
+            logger.error(e.stackTraceToString())
+            throw Exception("Feiler ved innhenting av navident: ${e.message}")
+        }
 
         val body = response.body ?: throw Exception("Feiler ved innhenting av navident")
         return mapJsonToAny(body)
