@@ -103,6 +103,7 @@ class AuthInterceptor(private val proxyOAuthRestTemplate: RestTemplate,
         val uriParams = mapOf("navident" to navident)
         val builder = UriComponentsBuilder.fromUriString(path).buildAndExpand(uriParams)
 
+        logger.debug("hentBrukerinformasjon: ${builder.toUriString()}")
         val response = try {
             proxyOAuthRestTemplate.exchange(builder.toUriString(),
                 HttpMethod.GET,
