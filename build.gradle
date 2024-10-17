@@ -7,9 +7,6 @@ buildscript {
         tokenSupportVersion = '4.1.4'
         pac4jVersion = '5.7.0'
         cxfVersion = '3.5.5'
-
-        //test
-        jupiterVersion = '5.11.2'
     }
 }
 
@@ -91,8 +88,7 @@ dependencies {
     implementation("no.nav.security:token-validation-jaxrs:${tokenSupportVersion}")
     implementation("no.nav.security:token-validation-test-support:2.0.5")
 
-    testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))
-    testImplementation("org.junit.jupiter:junit-jupiter:$jupiterVersion")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.11.2")
 
     //mock
     testImplementation("io.mockk:mockk:1.13.13")
