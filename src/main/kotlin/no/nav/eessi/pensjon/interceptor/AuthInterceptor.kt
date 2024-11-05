@@ -107,6 +107,7 @@ class AuthInterceptor(private val proxyOAuthRestTemplate: RestTemplate,
         return try {
             val response = proxyOAuthRestTemplate.exchange(uri, HttpMethod.GET, null, String::class.java)
 
+            // kaster exception om vi mangler response fra auth/ldap
             response.body?.let { mapJsonToAny(it) } ?: throw IllegalStateException("Mangler innhold for navident: $navident")
         } catch (e: HttpStatusCodeException) {
             logger.error("hentBrukerinformasjon: feiler ved innhenting av navident: $navident, " +
