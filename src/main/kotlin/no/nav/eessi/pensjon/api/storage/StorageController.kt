@@ -25,7 +25,6 @@ class StorageController(private val storage: GcpStorageService,
                         @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())) {
 
     private val logger = LoggerFactory.getLogger(StorageController::class.java)
-    private val secureLog = LoggerFactory.getLogger("secureLog")
 
     private lateinit var storeDocument: MetricsHelper.Metric
     private lateinit var getDocument: MetricsHelper.Metric
@@ -49,7 +48,7 @@ class StorageController(private val storage: GcpStorageService,
         return storeDocument.measure {
             return@measure try {
                 validerPath(path)
-                secureLog.info("Lagrer S3 dokument: $document")
+                logger.info("Lagrer S3 dokument: $document")
                 storage.lagre(path, document)
                 ResponseEntity.ok().body(successBody())
             } catch (gcpEx: StorageException) {
