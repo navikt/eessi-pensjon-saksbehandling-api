@@ -48,7 +48,6 @@ class StorageController(private val storage: GcpStorageService,
         return storeDocument.measure {
             return@measure try {
                 validerPath(path)
-                logger.info("Lagrer S3 dokument: $document")
                 storage.lagre(path, document)
                 ResponseEntity.ok().body(successBody())
             } catch (gcpEx: StorageException) {
