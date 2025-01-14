@@ -70,7 +70,7 @@ dependencies {
     implementation("org.slf4j:jcl-over-slf4j:2.0.16")
 
     //GCP
-    implementation("com.google.cloud:google-cloud-storage:2.46.0")
+    implementation("com.google.cloud:google-cloud-storage:2.47.0")
 
     // Micrometer
     implementation("io.micrometer:micrometer-registry-prometheus:1.14.2")
