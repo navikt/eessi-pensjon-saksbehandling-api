@@ -6,6 +6,8 @@ metadata:
   labels:
     team: eessipensjon
 spec:
+  secureLogs:
+    enabled: true
   kafka:
     pool: nav-prod
   gcp:
