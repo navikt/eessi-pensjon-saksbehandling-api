@@ -40,13 +40,19 @@ java {
     targetCompatibility = JavaVersion.VERSION_21
 }
 
-kotlin {
-    jvmToolchain(21) // Leverages Gradle JVM toolchain feature for Kotlin
-    explicitApiWarning()
-    freeCompilerArgs += "-Xjsr305=strict"
+compileKotlin {
+    kotlinOptions.jvmTarget =  "21"
+    kotlinOptions.allWarningsAsErrors = true
+    kotlinOptions.freeCompilerArgs += "-Xjsr305=strict"
 }
 
-tasks.test {
+compileTestKotlin {
+    kotlinOptions.jvmTarget =  "21"
+    kotlinOptions.allWarningsAsErrors = true
+    kotlinOptions.freeCompilerArgs += "-Xjsr305=strict"
+}
+
+test {
     useJUnitPlatform()
     failFast = false
     testlogger {
@@ -76,9 +82,7 @@ jacocoTestReport {
     }
 }
 
-tasks.sonarqube {
-    dependsOn tasks.jacocoTestReport
-}
+tasks.sonarqube.dependsOn tasks["jacocoTestReport"]
 
 wrapper {
     distributionType = Wrapper.DistributionType.ALL
