@@ -83,6 +83,7 @@ dependencies {
     implementation("no.nav.security:token-client-spring:${tokenSupportVersion}")
     implementation("no.nav.security:token-validation-spring:${tokenSupportVersion}")
     implementation("no.nav.security:token-validation-jaxrs:${tokenSupportVersion}")
+    implementation("no.nav.security:token-validation-test-support:2.0.5")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.11.4")
 

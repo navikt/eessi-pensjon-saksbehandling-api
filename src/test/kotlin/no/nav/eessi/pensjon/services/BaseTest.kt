@@ -3,16 +3,17 @@ package no.nav.eessi.pensjon.services
 
 import com.unboundid.ldap.listener.InMemoryDirectoryServer
 import com.unboundid.ldap.listener.InMemoryDirectoryServerConfig
-import okio.use
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.context.annotation.Import
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit.jupiter.SpringExtension
 
 @Suppress("DEPRECATION")
 @ActiveProfiles("test")
+@Import(no.nav.security.token.support.test.spring.TokenGeneratorConfiguration::class)
 @DirtiesContext
 @ExtendWith(SpringExtension::class)
 open class BaseTest {
@@ -35,6 +36,8 @@ open class BaseTest {
             server.connection.use { connection ->
                 System.setProperty("ldapServerPort", connection.connectedPort.toString())
             }
+
         }
     }
+
 }
