@@ -55,8 +55,10 @@ dependencies {
 
     // Apache CXF
     implementation("org.apache.cxf:cxf-spring-boot-starter-jaxws:${cxfVersion}")
-    implementation("org.apache.cxf:cxf-rt-ws-security:${cxfVersion}")
-
+    implementation("org.apache.cxf:cxf-rt-ws-security:${cxfVersion}") {
+        exclude group: "ch.qos.logback", module: "logback-classic"
+    }
+    implementation("ch.qos.logback:logback-classic:1.5.17")
 
     // Kotlin
     implementation("com.fasterxml.jackson.core:jackson-core:2.18.1")
