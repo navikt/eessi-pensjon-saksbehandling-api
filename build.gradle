@@ -61,7 +61,7 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:1.5.17")
 
     // Kotlin
-    implementation("com.fasterxml.jackson.core:jackson-core:2.18.1")
+    implementation("com.fasterxml.jackson.core:jackson-core:2.18.3")
 
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
 
