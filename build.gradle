@@ -79,7 +79,7 @@ dependencies {
     //ep-libs
     implementation("no.nav.eessi.pensjon:ep-logging:2.2.16")
     implementation("no.nav.eessi.pensjon:ep-metrics:2.0.111")
-    implementation("no.nav.eessi.pensjon:ep-eux:2.4.39")
+    implementation("no.nav.eessi.pensjon:ep-eux:2.4.54")
 
     //auth
     implementation("no.nav.security:token-client-spring:${tokenSupportVersion}")
