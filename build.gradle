@@ -2,7 +2,7 @@ buildscript {
     ext {
         kotlinVersion = '2.1.21'
         springBootVersion = '3.5.0'
-        springKafkaVersion = '3.3.5'
+        springKafkaVersion = '3.3.6'
         tokenSupportVersion = '5.0.25'
         pac4jVersion = '5.7.0'
         cxfVersion = '3.5.10'
@@ -102,8 +102,8 @@ dependencies {
     testImplementation "org.springframework.kafka:spring-kafka-test:$springKafkaVersion"
 
     // LDAP
-    implementation("org.springframework.ldap:spring-ldap-core:3.2.12")
-    implementation("org.springframework.security:spring-security-ldap:6.4.5")
+    implementation("org.springframework.ldap:spring-ldap-core:3.3.0")
+    implementation("org.springframework.security:spring-security-ldap:6.5.0")
     implementation("com.unboundid:unboundid-ldapsdk:7.0.2")
 
     // Test - token-validation-spring-test dependencies
