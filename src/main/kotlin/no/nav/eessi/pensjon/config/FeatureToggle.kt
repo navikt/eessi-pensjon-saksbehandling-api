@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component
 @Component
 class FeatureToggle {
 
-    private val listeFagfolkEllerSaksbehandlere = listOf("B101331")
+    private val listeFagfolkEllerSaksbehandlere = listOf("B101331, K105134, L137579, T120898, K137167")
 
     @Value("\${ENV}")
     private lateinit var environmentName: String
