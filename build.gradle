@@ -104,7 +104,7 @@ dependencies {
     // LDAP
     implementation("org.springframework.ldap:spring-ldap-core:3.3.1")
     implementation("org.springframework.security:spring-security-ldap:6.5.0")
-    implementation("com.unboundid:unboundid-ldapsdk:7.0.2")
+    implementation("com.unboundid:unboundid-ldapsdk:7.0.3")
 
     // Test - token-validation-spring-test dependencies
     testImplementation("no.nav.security:token-validation-spring-test:$tokenSupportVersion")
