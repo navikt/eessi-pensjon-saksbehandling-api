@@ -41,6 +41,9 @@ spec:
         - application: eessi-pensjon-frontend-ui-q2
           namespace: eessipensjon
           cluster: dev-gcp
+        - application: eessi-pensjon-fagmodul-q2
+          namespace: eessipensjon
+          cluster: dev-gcp
     outbound:
       external:
         - host: eessi-pensjon-onprem-proxy-q2.dev-fss-pub.nais.io
