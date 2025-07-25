@@ -77,9 +77,9 @@ dependencies {
     implementation("io.micrometer:micrometer-registry-prometheus:1.15.2")
 
     //ep-libs
-    implementation("no.nav.eessi.pensjon:ep-logging:2.3.4")
-    implementation("no.nav.eessi.pensjon:ep-metrics:2.1.1")
-    implementation("no.nav.eessi.pensjon:ep-eux:2.5.1")
+    implementation("no.nav.eessi.pensjon:ep-logging:2.3.5")
+    implementation("no.nav.eessi.pensjon:ep-metrics:2.1.4")
+    implementation("no.nav.eessi.pensjon:ep-eux:2.5.5")
 
     //auth
     implementation("no.nav.security:token-client-spring:${tokenSupportVersion}")
