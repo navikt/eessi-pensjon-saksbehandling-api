@@ -21,4 +21,5 @@ class SedListenerTest {
     fun `consumeSedMottatt throws JsonParseException on invalid json`() {
         assertThrows<JsonException> { sedListener.consumeSedMottatt("]\\{)))notValidJson:::.") }
     }
+
 }
