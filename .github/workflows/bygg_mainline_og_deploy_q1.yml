@@ -11,7 +11,7 @@ name: Bygg, deploy publiser for branch RINA CDM
 on:
   push:
     branches:
-      - feature/rina-cdm-2
+      - feature/rina-cdm
 
 jobs:
   bygg_deploy_dev_publiser_tag:
