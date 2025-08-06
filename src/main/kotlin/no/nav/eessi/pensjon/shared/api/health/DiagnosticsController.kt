@@ -1,14 +1,14 @@
-package no.nav.eessi.pensjon.health
+package no.nav.eessi.pensjon.shared.api.health
 
+import no.nav.security.token.support.core.api.Unprotected
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 import java.time.Instant
 
-@CrossOrigin
+@Unprotected
 @RestController
 class DiagnosticsController {
 
@@ -37,8 +37,6 @@ class DiagnosticsController {
 }
 
 data class SelftestResult(
-        val name: String = "eessi-fagmodul",
-        val version: String = "0.0.1-SNAPSHOT",
         val timestamp: Instant = Instant.now(),
         val aggregateResult: Int,
         val checks: List<Check>?

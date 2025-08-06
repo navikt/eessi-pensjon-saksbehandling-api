@@ -6,10 +6,8 @@ import org.springframework.stereotype.Component
 @Component
 class FeatureToggle {
 
-    private val listeFagfolkEllerSaksbehandlere = listOf(
-        "K105134",
-        "B101331"
-    )
+    private val listeOverTestere = listOf("B101331", "K105134", "L137579", "T120898", "K137167", "S137110", "H145594", "E153764", "B170313")
+    private val listeOverAdmins = listOf("B101331", "K105134")
 
     @Value("\${ENV}")
     private lateinit var environmentName: String
@@ -25,22 +23,24 @@ class FeatureToggle {
 
     fun getUIFeatures(ident: String): Map<String, Boolean> {
         return mapOf(
-            FeatureName.P5000_UPDATES_VISIBLE.name to featureToggleP5000Updates(ident),
-            FeatureName.ADMIN_NOTIFICATION_MESSAGE.name to featureToggleP5000Updates(ident)
+            FeatureName.ADMIN_USER.name to featureToggle(ident, listeOverAdmins),
+            FeatureName.TEST_USER.name to featureToggle(ident, listeOverTestere),
+            FeatureName.P5000_UPDATES_VISIBLE.name to featureToggle(ident, listeOverTestere),
         )
     }
 
-    fun featureToggleP5000Updates(ident: String) : Boolean = (isProductionEnv() && ident.uppercase() in listeFagfolkEllerSaksbehandlere) || !isProductionEnv()
+    fun featureToggle(
+        ident: String,
+        userList: List<String>
+    ) : Boolean = (isProductionEnv() && ident.uppercase() in userList) || !isProductionEnv()
 
 }
 
 enum class FeatureName {
     // New P5000 features visibility
     P5000_UPDATES_VISIBLE,
-    // Administrate the notification message that shows up when EP page loads
-    ADMIN_NOTIFICATION_MESSAGE,
-    ENABLE_AUTH,
-    WHITELISTING,
+    ADMIN_USER,
+    TEST_USER
 }
 
 

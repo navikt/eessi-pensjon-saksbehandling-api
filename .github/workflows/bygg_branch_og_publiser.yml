@@ -24,12 +24,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 'Pull repo'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: 'Java'
         uses: actions/setup-java@v3
         with:
-          java-version: 21
+          java-version: 21.0.4
           distribution: temurin
 
       - name: 'Bygger og tester'
@@ -51,4 +51,4 @@ jobs:
         run: echo "IMAGE=${{ env.DOCKER_METADATA_OUTPUT_TAGS }}"
 
       - name: 'Echo Image Name'
-        run: echo "### Image Name ${{ env.DOCKER_METADATA_OUTPUT_TAGS }}" >> $GITHUB_STEP_SUMMARY
+        run: echo "### Image Hash $(echo ${{  env.DOCKER_METADATA_OUTPUT_TAGS }} | cut -d':' -f2)" >> $GITHUB_STEP_SUMMARY

@@ -6,7 +6,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath "com.github.ben-manes:gradle-versions-plugin:0.46.0"
+        classpath "com.github.ben-manes:gradle-versions-plugin:0.51.0"
         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.5.0.2730"
         classpath "se.patrikerdes:gradle-use-latest-versions-plugin:0.2.18"
         classpath "org.owasp:dependency-check-gradle:8.1.0"
@@ -24,14 +24,8 @@ apply plugin: com.adarshr.gradle.testlogger.TestLoggerPlugin
 repositories {
     mavenCentral()
 
-    String token = System.getenv("GITHUB_TOKEN") ?: project.findProperty("gpr.key")
-    if (!token) throw new NullPointerException("Missing token, you have to set GITHUB_TOKEN or gpr.key, see README")
     maven {
-        url = uri("https://maven.pkg.github.com/navikt/maven-release")
-        credentials {
-            username = "token"
-            password = token
-        }
+        url = uri("https://github-package-registry-mirror.gc.nav.no/cached/maven-release")
     }
 }
 
@@ -46,21 +40,19 @@ java {
     targetCompatibility = JavaVersion.VERSION_21
 }
 
-compileKotlin {
-    kotlinOptions.jvmTarget =  "21"
-    kotlinOptions.allWarningsAsErrors = true
-    kotlinOptions.freeCompilerArgs += "-Xjsr305=strict"
-}
+kotlin {
+    jvmToolchain(21)
 
-compileTestKotlin {
-    kotlinOptions.jvmTarget =  "21"
-    kotlinOptions.allWarningsAsErrors = true
-    kotlinOptions.freeCompilerArgs += "-Xjsr305=strict"
+    compilerOptions {
+        allWarningsAsErrors.set(true)
+        freeCompilerArgs.add("-Xannotation-default-target=param-property")
+        freeCompilerArgs.add("-Xwarning-level=IDENTITY_SENSITIVE_OPERATIONS_WITH_VALUE_TYPE:disabled")
+    }
 }
 
 test {
     useJUnitPlatform()
-    failFast = true
+    failFast = false
     testlogger {
         theme 'mocha'               // task level
         showFullStackTraces true

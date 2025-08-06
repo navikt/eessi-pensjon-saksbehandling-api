@@ -6,14 +6,20 @@ metadata:
   labels:
     team: eessipensjon
 spec:
+  observability:
+    logging:
+      destinations:
+        - id: elastic
+        - id: loki
+  secureLogs:
+    enabled: true
   kafka:
     pool: nav-dev
   gcp:
     buckets:
       - name: eessi-pensjon-saksbehandling-api-dev
-        retentionPeriodDays: 30
         lifecycleCondition:
-          age: 7
+          age: 10
           createdBefore: 2020-01-01
           numNewerVersions: 2
           withState: ANY
@@ -46,16 +52,20 @@ spec:
       value: test
     - name: ENV
       value: q2
+
     - name: GCP_BUCKET_NAME
       value: eessi-pensjon-saksbehandling-api-dev
+
     - name: PENSJON_UTLAND_WS_ALLOWED_ORIGINS_URL
       value: https://pensjon-utland-q2.intern.dev.nav.no
     - name: EESSI_PEN_ONPREM_PROXY_URL
       value: https://eessi-pensjon-onprem-proxy-q2.dev-fss-pub.nais.io
+
     - name: KAFKA_SEDSENDT_TOPIC
       value: eessibasis.sedsendt-v1-q2
     - name: KAFKA_SEDMOTTATT_TOPIC
       value: eessibasis.sedmottatt-v1-q2
+
     - name: AZURE_APP_PROXY_CLIENT_ID
       value: dev-fss.eessipensjon.eessi-pensjon-onprem-proxy-q2
 
@@ -81,8 +91,8 @@ spec:
     cpuThresholdPercentage: 50
   resources:
     limits:
-      cpu: 4000m
+      cpu: 2000m
       memory: 512Mi
     requests:
-      cpu: 2000m
+      cpu: 256m
       memory: 512Mi

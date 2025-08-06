@@ -17,6 +17,7 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.web.bind.annotation.ResponseStatus
+import org.springframework.web.client.HttpStatusCodeException
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.method.HandlerMethod
 import org.springframework.web.servlet.HandlerInterceptor
@@ -98,25 +99,27 @@ class AuthInterceptor(private val proxyOAuthRestTemplate: RestTemplate,
             }
     }
 
-    fun hentBrukerinformasjon(navident: String) : BrukerInformasjon {
-        val path = "/brukerinfo/{navident}"
-        val uriParams = mapOf("navident" to navident)
-        val builder = UriComponentsBuilder.fromUriString(path).buildAndExpand(uriParams)
+    fun hentBrukerinformasjon(navident: String): BrukerInformasjon {
+        val uri = UriComponentsBuilder.fromUriString("/brukerinfo/{navident}")
+            .buildAndExpand(mapOf("navident" to navident))
+            .toUriString()
 
-        logger.debug("hentBrukerinformasjon: ${builder.toUriString()}")
-        val response = try {
-            proxyOAuthRestTemplate.exchange(builder.toUriString(),
-                HttpMethod.GET,
-                null,
-                String::class.java)
+        return try {
+            val response = proxyOAuthRestTemplate.exchange(uri, HttpMethod.GET, null, String::class.java)
+
+            // kaster exception om vi mangler response fra auth/ldap
+            response.body?.let { mapJsonToAny(it) } ?: throw IllegalStateException("Mangler innhold for navident: $navident")
+        } catch (e: HttpStatusCodeException) {
+            logger.error("hentBrukerinformasjon: feiler ved innhenting av navident: $navident, " +
+                        "status: ${e.statusCode}, response: ${e.responseBodyAsString}")
+            throw RuntimeException("Failed to fetch user info for navident: $navident", e)
         } catch (e: Exception) {
-            logger.error(e.stackTraceToString())
-            throw Exception("Feiler ved innhenting av navident: ${e.message}")
+            if (e is IllegalStateException) throw e
+            logger.error("hentBrukerinformasjon: feiler ved innhenting av navident: $navident, error: ${e.message}", e)
+            throw RuntimeException("Feiler ved innhenting av navident:", e)
         }
-
-        val body = response.body ?: throw Exception("Feiler ved innhenting av navident")
-        return mapJsonToAny(body)
     }
+
 
     /**
      * Feil som kan kastes: Ikke tilgang til EESSI-Pensjon
@@ -124,6 +127,9 @@ class AuthInterceptor(private val proxyOAuthRestTemplate: RestTemplate,
 
     @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
     class TokenIkkeTilgjengeligException(message: String?): Exception(message)
+
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    class ManglerTokenException(message: String?): Exception(message)
 
     @ResponseStatus(value = HttpStatus.FORBIDDEN)
     class AuthorisationIkkeTilgangTilEeessiPensjonException(message: String?): Exception(message)

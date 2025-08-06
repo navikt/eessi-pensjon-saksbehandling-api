@@ -36,7 +36,7 @@ class UserInfoController(
     @EessiPensjonTilgang
     @GetMapping("/userinfo")
     fun getUserInfo(): ResponseEntity <String> {
-        logger.info("Henter userinfo: ${getTokens()}")
+        logger.debug("Henter userinfo: ${getTokens()}")
         val fnr = getSubjectFromToken()
         val role = getRole(fnr)
         val features = toggle.getUIFeatures(fnr)

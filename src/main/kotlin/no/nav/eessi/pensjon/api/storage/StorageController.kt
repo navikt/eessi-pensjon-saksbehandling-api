@@ -48,8 +48,7 @@ class StorageController(private val storage: GcpStorageService,
         return storeDocument.measure {
             return@measure try {
                 validerPath(path)
-                logger.info("Lagrer S3 dokument")
-                storage.lagre(path, document)
+                storage.lagre(path, document).also { logger.info("Lagrer dokument for frontend: $path") }
                 ResponseEntity.ok().body(successBody())
             } catch (gcpEx: StorageException) {
                 val uuid = UUID.randomUUID().toString()

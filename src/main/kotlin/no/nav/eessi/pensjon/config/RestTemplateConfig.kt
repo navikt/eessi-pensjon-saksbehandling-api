@@ -46,8 +46,8 @@ class RestTemplateConfig(
         return RestTemplateBuilder()
             .rootUri(url)
             .errorHandler(DefaultResponseErrorHandler())
-            .setReadTimeout(Duration.ofSeconds(120))
-            .setConnectTimeout(Duration.ofSeconds(120))
+            .readTimeout(Duration.ofSeconds(120))
+            .connectTimeout(Duration.ofSeconds(120))
             .additionalInterceptors(
                 RequestIdHeaderInterceptor(),
                 IOExceptionRetryInterceptor(),
@@ -67,7 +67,7 @@ class RestTemplateConfig(
     ): ClientHttpRequestInterceptor {
         return ClientHttpRequestInterceptor { request: HttpRequest, body: ByteArray?, execution: ClientHttpRequestExecution ->
             val response = oAuth2AccessTokenService.getAccessToken(clientProperties)
-            request.headers.setBearerAuth(response.accessToken!!)
+            request.headers.setBearerAuth(response.access_token!!)
             execution.execute(request, body!!)
         }
     }
