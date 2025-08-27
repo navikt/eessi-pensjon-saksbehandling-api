@@ -58,7 +58,7 @@ class AuthorisationService {
      */
     fun harTilgangTilPesysSak(roller: List<AdRolle>, pesysSakstype: PesysSakstype?): Boolean {
 
-        if (pesysSakstype == null){
+        if (pesysSakstype == null) {
             throw AuthorisationUkjentSakstypeException("Ukjent sakstype fra PESYS")
         }
 
@@ -141,11 +141,13 @@ class AuthorisationService {
     }
 
     private fun erMedlemAvFortrolig(roller: List<AdRolle>): Boolean {
-        return roller.containsAll(listOf(AdRolle.PENSJON_FORTROLIG, AdRolle.GOSYS_FORTROLIG))
+        return roller.containsAll(listOf(AdRolle.PENSJON_FORTROLIG, AdRolle.GOSYS_FORTROLIG)) ||
+                roller.containsAll(listOf(AdRolle.PENSJON_FORTROLIG_1, AdRolle.GOSYS_FORTROLIG))
     }
 
     private fun erMedlemAvStrengtFortrolig(roller: List<AdRolle>): Boolean {
-        return roller.containsAll(listOf(AdRolle.PENSJON_STRENGT_FORTROLIG, AdRolle.GOSYS_STRENGT_FORTROLIG))
+        return roller.containsAll(listOf(AdRolle.PENSJON_STRENGT_FORTROLIG, AdRolle.GOSYS_STRENGT_FORTROLIG)) ||
+                roller.containsAll(listOf(AdRolle.PENSJON_STRENGT_FORTROLIG_1, AdRolle.GOSYS_STRENGT_FORTROLIG))
     }
 }
 
@@ -161,8 +163,10 @@ enum class AdRolle(val rollenavn: String) {
     PENSJON_NAV_ANSATT("0000-GA-Pensjon_UTVIDET"),
     GOSYS_STRENGT_FORTROLIG("0000-GA-GOSYS_KODE6"),
     PENSJON_STRENGT_FORTROLIG("0000-GA-Pensjon_KODE6"),
+    PENSJON_STRENGT_FORTROLIG_1(" 0000-GA-STRENGT_FORTROLIG_ADRESSE"),
     GOSYS_FORTROLIG("0000-GA-GOSYS_KODE7"),
     PENSJON_FORTROLIG("0000-GA-PENSJON_KODE7"),
+    PENSJON_FORTROLIG_1("0000-GA-FORTROLIG_ADRESSE"),
     EESSI_CLERK("0000-ga-eessi-clerk"),
     EESSI_BASIS("0000-ga-eessi-basis"),
     EESSI_CLERK_PENSJON("0000-ga-eessi-clerk-pensjon"),

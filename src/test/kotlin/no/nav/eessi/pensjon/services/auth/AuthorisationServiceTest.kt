@@ -25,6 +25,23 @@ class AuthorisationServiceTest {
     }
 
     @Test
+    fun `Gitt en pensjonsaksbehandler`() {
+
+        val autorisasjonsservice = AuthorisationService()
+        val roller = listOf(AdRolle.PENSJON_UTLAND,
+            AdRolle.PENSJON_SAKSBEHANDLER,
+            AdRolle.PENSJON_STRENGT_FORTROLIG_1,
+            AdRolle.EESSI_BASIS,
+            AdRolle.EESSI_CLERK_PENSJON)
+
+        val tilgangEessipensjon = autorisasjonsservice.harTilgangTilEessiPensjon(roller)
+
+        assertTrue(tilgangEessipensjon)
+
+    }
+
+
+    @Test
     fun `Gitt en saksbehandler som ikke har tilgang til utland Når tilgang blir etterspurt så returner FALSE`(){
 
         val autorisasjonsservice = AuthorisationService()
