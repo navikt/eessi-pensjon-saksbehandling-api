@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component
 @Component
 class FeatureToggle {
 
-    private val listeOverTestere = listOf("B101331", "K105134", "L137579", "T120898", "K137167", "S137110", "H145594", "E153764", "B170313", "S165198", "O107147", "R107597", "R170375")
+    private val listeOverTestere = listOf("B101331", "K105134", "L137579", "T120898", "K137167", "S137110", "H145594", "E153764", "B170313", "S165198", "O107147", "R107597", "R170375", "N128870", "H103790", "K137167")
     private val listeOverAdmins = listOf("B101331", "K105134")
 
     @Value("\${ENV}")
