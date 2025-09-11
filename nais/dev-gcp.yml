@@ -56,8 +56,10 @@ spec:
     - name: ENV
       value: q2
 
-    - name: unleash_server_api_token
-      value:
+    #UNLEASH
+    - name: UNLEASH_ENDPOINT_URL
+      value: https://unleash.nais.io/api/
+
     - name: GCP_BUCKET_NAME
       value: eessi-pensjon-saksbehandling-api-dev
 
