@@ -26,8 +26,6 @@ spec:
         uniformBucketLevelAccess: true
   envFrom:
     - secret: saksbehandlingapi-dev #secret name in Google Secret Manager
-    - secret: saksbehandlingapi-q2-unleash-api-token
-
   azure:
     application:
       enabled: true
