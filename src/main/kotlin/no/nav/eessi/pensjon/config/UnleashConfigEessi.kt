@@ -14,28 +14,25 @@ import org.springframework.context.annotation.Profile
 @Profile("test")
 class UnleashConfigEessi {
 
-    private val logger = LoggerFactory.getLogger(ApiMvcConfig::class.java)
+    private val logger = LoggerFactory.getLogger(UnleashConfigEessi::class.java)
 
     @Bean
     fun unleash(
-        @Value("\${APP_NAME}") app_name: String,
-        @Value("\${UNLEASH_URL}") unleash_url: String,
-        @Value("\${UNLEASH_SERVER_API_TOKEN}") unleash_token: String
-    ){
-        try {
-            val unleashConfig = UnleashConfig.builder()
-                .appName(app_name)
-                .apiKey(unleash_token)
-                .unleashAPI(unleash_url)
-                .build()
+        @Value("\${APP_NAME}") appName: String,
+        @Value("\${UNLEASH_URL}") unleashUrl: String,
+        @Value("\${UNLEASH_SERVER_API_TOKEN}") unleashToken: String
+    ): Unleash? = try {
+        val config = UnleashConfig.builder()
+            .appName(appName)
+            .apiKey(unleashToken)
+            .unleashAPI(unleashUrl)
+            .build()
 
-            DefaultUnleash(
-                unleashConfig,
-            ).also {
-                logger.info("Unleash config: ${unleashConfig.toJson()}")
-            }
-        } catch (e: Exception) {
-           logger.error("Feil ved unleash config ${e.message}")
+        DefaultUnleash(config).also {
+            logger.info("Unleash config: ${config.toJson()}")
         }
+    } catch (e: Exception) {
+        logger.error("Error in Unleash config: ${e.message}")
+        null
     }
 }
