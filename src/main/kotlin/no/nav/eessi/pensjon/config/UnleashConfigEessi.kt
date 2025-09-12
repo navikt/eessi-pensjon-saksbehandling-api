@@ -17,7 +17,7 @@ class UnleashConfigEessi {
     private val logger = LoggerFactory.getLogger(ApiMvcConfig::class.java)
 
     @Bean
-    fun unleash(@Value("\${unleash.token}") token: String): Unleash {
+    fun unleash(@Value("\${UNLEASH_SERVER_API_TOKEN}") token: String): Unleash {
         val unleashConfig = UnleashConfig.builder()
             .apiKey(token)
             .appName(APP_NAME)
