@@ -17,23 +17,25 @@ class UnleashConfigEessi {
     private val logger = LoggerFactory.getLogger(ApiMvcConfig::class.java)
 
     @Bean
-    fun unleash(@Value("\${UNLEASH_SERVER_API_TOKEN}") token: String): Unleash {
-        val unleashConfig = UnleashConfig.builder()
-            .apiKey(token)
-            .appName(APP_NAME)
-            .unleashAPI(UNLEASH_URL)
-            .build()
+    fun unleash(
+        @Value("\${APP_NAME}") app_name: String,
+        @Value("\${UNLEASH_URL}") unleash_url: String,
+        @Value("\${UNLEASH_SERVER_API_TOKEN}") unleash_token: String
+    ){
+        try {
+            val unleashConfig = UnleashConfig.builder()
+                .appName(app_name)
+                .apiKey(unleash_token)
+                .unleashAPI(unleash_url)
+                .build()
 
-        return DefaultUnleash(
-            unleashConfig
-        ).also {
-            logger.info("Unleash is enabled at $UNLEASH_URL with appName $APP_NAME")
-            logger.info("Unleash config: ${unleashConfig.toJson()}")
+            DefaultUnleash(
+                unleashConfig,
+            ).also {
+                logger.info("Unleash config: ${unleashConfig.toJson()}")
+            }
+        } catch (e: Exception) {
+           logger.error("Feil ved unleash config ${e.message}")
         }
-    }
-
-    companion object {
-        const val UNLEASH_URL = "https://eessipensjon-unleash-api.nav.cloud.nais.io/api"
-        const val APP_NAME = "saksbehandlingapi-q2"
     }
 }
