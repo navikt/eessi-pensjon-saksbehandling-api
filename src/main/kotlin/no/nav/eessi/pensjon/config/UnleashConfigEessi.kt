@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
+import java.io.File
 
 @Configuration
 @Profile("test")
@@ -22,6 +23,15 @@ class UnleashConfigEessi(
     @Bean
     fun unleash(
     ): Unleash? = try {
+        ///tmp/unleash-eessi-pensjon-saksbehandling-api-q2-repo.json
+        File("/tmp/unleash-eessi-pensjon-saksbehandling-api-q2-repo.json").let {
+            if (it.exists()) {
+                logger.info("Using local Unleash at ${it.absolutePath}")
+            } else {
+                File.createTempFile("/tmp/unleash-eessi-pensjon-saksbehandling-api-q2-repo", ".json")
+                logger.warn("Local Unleash not found at ${it.absolutePath}, will use URL: $unleashUrl")
+            }
+        }
         val config = UnleashConfig.builder()
             .appName(appName)
             .apiKey(unleashToken)
