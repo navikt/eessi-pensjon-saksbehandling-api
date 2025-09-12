@@ -1,0 +1,5 @@
+{
+  "APP_NAME": "eessi-pensjon-saksbehandling-api-q2",
+  "NAIS_CLUSTER_NAME_GCP": "dev-gcp",
+  "UNLEASH_ENVIRONMENT": "development"
+}
