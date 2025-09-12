@@ -12,15 +12,15 @@ import org.springframework.context.annotation.Profile
 
 @Configuration
 @Profile("test")
-class UnleashConfigEessi {
-
+class UnleashConfigEessi(
+    @param:Value("\${UNLEASH_URL}") private val unleashUrl: String,
+    @param:Value("\${UNLEASH_APP_NAME}") private val appName: String,
+    @param:Value("\${UNLEASH_SERVER_API_TOKEN}") private val unleashToken: String
+) {
     private val logger = LoggerFactory.getLogger(UnleashConfigEessi::class.java)
 
     @Bean
     fun unleash(
-        @Value("\${UNLEASH_URL}") unleashUrl: String,
-        @Value("\${UNLEASH_APP_NAME}") appName: String,
-        @Value("\${UNLEASH_SERVER_API_TOKEN}") unleashToken: String
     ): Unleash? = try {
         val config = UnleashConfig.builder()
             .appName(appName)
