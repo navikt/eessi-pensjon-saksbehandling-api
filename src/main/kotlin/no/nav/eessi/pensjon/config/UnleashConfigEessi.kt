@@ -18,8 +18,8 @@ class UnleashConfigEessi {
 
     @Bean
     fun unleash(
-        @Value("\${APP_NAME}") appName: String,
         @Value("\${UNLEASH_URL}") unleashUrl: String,
+        @Value("\${UNLEASH_APP_NAME}") appName: String,
         @Value("\${UNLEASH_SERVER_API_TOKEN}") unleashToken: String
     ): Unleash? = try {
         val config = UnleashConfig.builder()
