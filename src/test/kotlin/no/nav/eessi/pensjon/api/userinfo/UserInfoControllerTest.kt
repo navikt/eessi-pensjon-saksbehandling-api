@@ -2,6 +2,7 @@ package no.nav.eessi.pensjon.api.userinfo
 
 import com.nimbusds.jwt.JWTClaimsSet
 import io.mockk.every
+import io.mockk.mockk
 import io.mockk.spyk
 import no.nav.eessi.pensjon.config.FeatureToggle
 import no.nav.eessi.pensjon.utils.mapAnyToJson
@@ -24,7 +25,7 @@ class UserInfoControllerTest {
 
     @BeforeEach
     fun mockSetup() {
-        toggleMock = FeatureToggle()
+        toggleMock = FeatureToggle(mockk(relaxed = true))
         toggleMock.setCurrentEnv("q2")
         userInfoController = spyk(UserInfoController(toggleMock, SpringTokenValidationContextHolder()))
     }
