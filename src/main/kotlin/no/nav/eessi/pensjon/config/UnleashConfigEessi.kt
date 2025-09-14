@@ -24,18 +24,11 @@ class UnleashConfigEessi(
     fun unleash(
     ): Unleash? = try {
         ///tmp/unleash-eessi-pensjon-saksbehandling-api-q2-repo.json
-        File("/tmp/unleash-eessi-pensjon-saksbehandling-api-q2-repo.json").let {
-            if (it.exists()) {
-                logger.info("Using local Unleash at ${it.absolutePath}")
-            } else {
-                File.createTempFile("/tmp/unleash-eessi-pensjon-saksbehandling-api-q2-repo", ".json")
-                logger.warn("Local Unleash not found at ${it.absolutePath}, will use URL: $unleashUrl")
-            }
-        }
         val config = UnleashConfig.builder()
             .appName(appName)
             .apiKey(unleashToken)
             .unleashAPI(unleashUrl)
+            .backupFile("/tmp/unleash-eessi-pensjon-saksbehandling-api-q2-repo.json")
             .build()
 
         DefaultUnleash(config).also {
