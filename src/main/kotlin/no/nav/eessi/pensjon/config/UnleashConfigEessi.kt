@@ -26,8 +26,12 @@ class UnleashConfigEessi(
             .appName(appName)
             .apiKey(unleashToken)
             .unleashAPI(unleashUrl)
-            .backupFile("/tmp/unleash-eessi-pensjon-saksbehandling-api-q2-repo.json")
-            .build()
+            .environment(
+                when (System.getenv("NAIS_CLUSTER_NAME").orEmpty()) {
+                    "prod-gcp" -> "production"
+                    else -> "development"
+                },
+            ).build()
 
         DefaultUnleash(config).also {
             logger.info("Unleash config: $config")
