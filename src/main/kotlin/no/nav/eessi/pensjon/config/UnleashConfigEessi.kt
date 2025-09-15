@@ -3,13 +3,11 @@ package no.nav.eessi.pensjon.config
 import io.getunleash.DefaultUnleash
 import io.getunleash.Unleash
 import io.getunleash.util.UnleashConfig
-import no.nav.eessi.pensjon.utils.toJson
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
-import java.io.File
 
 @Configuration
 @Profile("test")
@@ -32,7 +30,7 @@ class UnleashConfigEessi(
             .build()
 
         DefaultUnleash(config).also {
-            logger.info("Unleash config: ${config.toJson()}")
+            logger.info("Unleash config: $config")
         }
     } catch (e: Exception) {
         logger.error("Error in Unleash config: ${e.message}")
