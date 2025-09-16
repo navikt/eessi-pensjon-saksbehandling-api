@@ -3,6 +3,8 @@ package no.nav.eessi.pensjon.config
 import io.getunleash.DefaultUnleash
 import io.getunleash.Unleash
 import io.getunleash.util.UnleashConfig
+import no.nav.eessi.pensjon.utils.getClaims
+import no.nav.security.token.support.core.context.TokenValidationContextHolder
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -14,14 +16,14 @@ import org.springframework.context.annotation.Profile
 class UnleashConfigEessi(
     @param:Value("\${UNLEASH_URL}") private val unleashUrl: String,
     @param:Value("\${UNLEASH_APP_NAME}") private val appName: String,
-    @param:Value("\${UNLEASH_SERVER_API_TOKEN}") private val unleashToken: String
+    @param:Value("\${UNLEASH_SERVER_API_TOKEN}") private val unleashToken: String,
+    private val tokenValidationContextHolder: TokenValidationContextHolder,
 ) {
     private val logger = LoggerFactory.getLogger(UnleashConfigEessi::class.java)
 
     @Bean
     fun unleash(
     ): Unleash? = try {
-        ///tmp/unleash-eessi-pensjon-saksbehandling-api-q2-repo.json
         val config = UnleashConfig.builder()
             .appName(appName)
             .apiKey(unleashToken)
@@ -32,9 +34,10 @@ class UnleashConfigEessi(
                     else -> "development"
                 },
             ).build()
-
+        val ident = getClaims(tokenValidationContextHolder).get("NAVident")?.toString() ?: throw IllegalStateException("Fant ikke NAVident i token")
         DefaultUnleash(
             config,
+            ByUserIdStrategy(ident)
         ).also {
             logger.info("Unleash config: $config")
         }
@@ -42,4 +45,7 @@ class UnleashConfigEessi(
         logger.error("Error in Unleash config: ${e.message}")
         null
     }
+
+
 }
+
