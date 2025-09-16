@@ -16,8 +16,7 @@ import org.springframework.context.annotation.Profile
 class UnleashConfigEessi(
     @param:Value("\${UNLEASH_URL}") private val unleashUrl: String,
     @param:Value("\${UNLEASH_APP_NAME}") private val appName: String,
-    @param:Value("\${UNLEASH_SERVER_API_TOKEN}") private val unleashToken: String,
-    private val tokenValidationContextHolder: TokenValidationContextHolder,
+    @param:Value("\${UNLEASH_SERVER_API_TOKEN}") private val unleashToken: String
 ) {
     private val logger = LoggerFactory.getLogger(UnleashConfigEessi::class.java)
 
@@ -34,10 +33,9 @@ class UnleashConfigEessi(
                     else -> "development"
                 },
             ).build()
-        val ident = getClaims(tokenValidationContextHolder).get("NAVident")?.toString() ?: throw IllegalStateException("Fant ikke NAVident i token")
         DefaultUnleash(
             config,
-            ByUserIdStrategy(ident)
+            ByUserIdStrategy()
         ).also {
             logger.info("Unleash config: $config")
         }

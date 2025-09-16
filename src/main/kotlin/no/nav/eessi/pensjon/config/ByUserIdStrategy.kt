@@ -4,7 +4,7 @@ import io.getunleash.UnleashContext
 import io.getunleash.strategy.Strategy
 import org.slf4j.LoggerFactory
 
-internal class ByUserIdStrategy(val userId: String? ) : Strategy {
+internal class ByUserIdStrategy() : Strategy {
     private val logger = LoggerFactory.getLogger(UnleashConfigEessi::class.java)
 
     override fun getName(): String = "byUserId"
@@ -12,15 +12,16 @@ internal class ByUserIdStrategy(val userId: String? ) : Strategy {
         val userIDs = parameters["user"]
         if (userIDs.isNullOrBlank()) return false
 
-        logger.debug("ByUserIdStrategy sjekker om saksbehandler $userId er i listen $userIDs")
+        logger.debug("ByUserIdStrategy sjekker om saksbehandler userId er i listen $userIDs")
 
-        if (userId.isNullOrBlank()) {
-            logger.warn("Unleash brukes uten innlogget saksbehandler"
-            )
-            return false
-        }
+//        if (userId.isNullOrBlank()) {
+//            logger.warn("Unleash brukes uten innlogget saksbehandler"
+//            )
+//            return false
+//        }
+        return false
 
-        return userIDs.split(",").contains(userId)
+//        return userIDs.split(",").contains(userId)
     }
 }
 
