@@ -76,7 +76,7 @@ dependencies {
     // Micrometer
     implementation("io.micrometer:micrometer-registry-prometheus:1.15.3")
 
-    implementation("io.getunleash:unleash-client-java:9.3.2")
+    implementation("io.getunleash:unleash-client-java:11.1.0")
 
     //ep-libs
     implementation("no.nav.eessi.pensjon:ep-logging:2.3.9")

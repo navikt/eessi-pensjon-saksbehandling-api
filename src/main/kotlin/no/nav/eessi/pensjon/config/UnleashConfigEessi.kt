@@ -2,10 +2,6 @@ package no.nav.eessi.pensjon.config
 
 import io.getunleash.DefaultUnleash
 import io.getunleash.Unleash
-import io.getunleash.strategy.GradualRolloutRandomStrategy
-import io.getunleash.strategy.GradualRolloutSessionIdStrategy
-import io.getunleash.strategy.GradualRolloutUserIdStrategy
-import io.getunleash.strategy.UserWithIdStrategy
 import io.getunleash.util.UnleashConfig
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -39,10 +35,6 @@ class UnleashConfigEessi(
 
         DefaultUnleash(
             config,
-            GradualRolloutSessionIdStrategy(),
-            GradualRolloutUserIdStrategy(),
-            GradualRolloutRandomStrategy(),
-            UserWithIdStrategy(),
         ).also {
             logger.info("Unleash config: $config")
         }
