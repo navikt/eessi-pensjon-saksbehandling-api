@@ -3,8 +3,6 @@ package no.nav.eessi.pensjon.config
 import io.getunleash.DefaultUnleash
 import io.getunleash.Unleash
 import io.getunleash.util.UnleashConfig
-import no.nav.eessi.pensjon.utils.getClaims
-import no.nav.security.token.support.core.context.TokenValidationContextHolder
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
