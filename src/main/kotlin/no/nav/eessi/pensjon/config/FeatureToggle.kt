@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 @Component
-class FeatureToggle(val unleashConfigEessi: UnleashConfigEessi){
+class FeatureToggle(val featureToggleService: FeatureToggleService){
 
     private val listeOverTestere = listOf("B101331", "K105134", "L137579", "T120898", "K137167", "S137110", "H145594", "E153764", "B170313", "S165198", "O107147", "R107597", "R170375", "N128870", "H103790", "K137167")
     private val listeOverAdmins = listOf("B101331", "K105134")
@@ -26,7 +26,7 @@ class FeatureToggle(val unleashConfigEessi: UnleashConfigEessi){
 
     fun getUIFeatures(ident: String): Map<String, Boolean> {
         try {
-            if(unleashConfigEessi.unleash()?.isEnabled("P5000_UPDATES_VISIBLE") == true) {
+            if(featureToggleService.isFeatureEnabled("P5000_UPDATES_VISIBLE")){
                 logger.info("Feature toggle P5000_UPDATES_VISIBLE er påslått i Unleash for alle brukere")
                 return mapOf(
                     FeatureName.ADMIN_USER.name to true,
