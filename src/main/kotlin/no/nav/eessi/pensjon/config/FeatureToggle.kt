@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component
 class FeatureToggle(val featureToggleService: FeatureToggleService){
 
     private val listeOverTestere = listOf("B101331", "K105134", "L137579", "T120898", "K137167", "S137110", "H145594", "E153764", "B170313", "S165198", "O107147", "R107597", "R170375", "N128870", "H103790", "K137167", "H148728","F150681" )
-    private val listeOverAdmins = listOf("B101331", "K105134")
+//    private val listeOverAdmins = listOf(""K105134")
     private val logger = LoggerFactory.getLogger(FeatureToggle::class.java)
 
     @Value("\${ENV}")
@@ -47,7 +47,7 @@ class FeatureToggle(val featureToggleService: FeatureToggleService){
             logger.error(e.message, e)
         }
         return mapOf(
-            FeatureName.ADMIN_USER.name to featureToggle(ident, listeOverAdmins),
+//            FeatureName.ADMIN_USER.name to featureToggle(ident, listeOverAdmins),
             FeatureName.TEST_USER.name to featureToggle(ident, listeOverTestere),
             FeatureName.P5000_UPDATES_VISIBLE.name to featureToggle(ident, listeOverTestere),
         )
