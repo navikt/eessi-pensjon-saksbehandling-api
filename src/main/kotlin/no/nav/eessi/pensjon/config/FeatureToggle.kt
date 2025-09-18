@@ -7,8 +7,6 @@ import org.springframework.stereotype.Component
 @Component
 class FeatureToggle(val featureToggleService: FeatureToggleService){
 
-    private val listeOverTestere = listOf("B101331", "K105134", "L137579", "T120898", "K137167", "S137110", "H145594", "E153764", "B170313", "S165198", "O107147", "R107597", "R170375", "N128870", "H103790", "K137167", "H148728","F150681" )
-//    private val listeOverAdmins = listOf(""K105134")
     private val logger = LoggerFactory.getLogger(FeatureToggle::class.java)
 
     @Value("\${ENV}")
@@ -24,40 +22,45 @@ class FeatureToggle(val featureToggleService: FeatureToggleService){
     }
 
     fun getUIFeatures(ident: String): Map<String, Boolean> {
-        try {
-            if(featureToggleService.isFeatureEnabled("EESSI_ADMIN")){
-                logger.info("Feature toggle EESSI_ADMIN er påslått i Unleash")
-                return mapOf(
-                    FeatureName.TEST_USER.name to true,
-                    FeatureName.ADMIN_USER.name to true,
-                    FeatureName.P5000_UPDATES_VISIBLE.name to true,
-                )
-            }
-
-            else if(featureToggleService.isFeatureEnabled("P5000_UPDATES_VISIBLE")){
-                logger.info("Feature toggle P5000_UPDATES_VISIBLE er påslått i Unleash")
-                return mapOf(
-                    FeatureName.TEST_USER.name to true,
-                    FeatureName.P5000_UPDATES_VISIBLE.name to true,
-                )
-            } else {
-                logger.info("Feature toggle P5000_UPDATES_VISIBLE er avslått i Unleash for alle brukere")
+        return try {
+            when {
+                !isProductionEnv() -> {
+                    logger.info("Ikke i produksjon, alle features er påslått")
+                    allFeaturesEnabled()
+                }
+                featureToggleService.isFeatureEnabled("EESSI_ADMIN") -> {
+                    logger.info("Feature toggle produksjon, EESSI_ADMIN er påslått i Unleash")
+                    allFeaturesEnabled()
+                }
+                featureToggleService.isFeatureEnabled("P5000_UPDATES_VISIBLE") -> {
+                    logger.info("Feature toggle produksjon, P5000_UPDATES_VISIBLE er påslått i Unleash")
+                    mapOf(
+                        FeatureName.TEST_USER.name to true,
+                        FeatureName.P5000_UPDATES_VISIBLE.name to true
+                    )
+                }
+                else -> {
+                    logger.info("Feature toggle P5000_UPDATES_VISIBLE er avslått i Unleash for alle brukere")
+                    allFeaturesDisabled()
+                }
             }
         } catch (e: Exception) {
             logger.error(e.message, e)
+            allFeaturesDisabled()
         }
-        return mapOf(
-//            FeatureName.ADMIN_USER.name to featureToggle(ident, listeOverAdmins),
-            FeatureName.TEST_USER.name to featureToggle(ident, listeOverTestere),
-            FeatureName.P5000_UPDATES_VISIBLE.name to featureToggle(ident, listeOverTestere),
-        )
     }
 
-    fun featureToggle(
-        ident: String,
-        userList: List<String>
-    ) : Boolean = (isProductionEnv() && ident.uppercase() in userList) || !isProductionEnv()
+    private fun allFeaturesEnabled() = mapOf(
+        FeatureName.TEST_USER.name to true,
+        FeatureName.ADMIN_USER.name to true,
+        FeatureName.P5000_UPDATES_VISIBLE.name to true
+    )
 
+    private fun allFeaturesDisabled() = mapOf(
+        FeatureName.TEST_USER.name to false,
+        FeatureName.ADMIN_USER.name to false,
+        FeatureName.P5000_UPDATES_VISIBLE.name to false
+    )
 }
 
 enum class FeatureName {
