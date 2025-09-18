@@ -1,6 +1,5 @@
 package no.nav.eessi.pensjon.config
 
-import no.nav.eessi.pensjon.gcp.GcpStorageService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
@@ -26,10 +25,18 @@ class FeatureToggle(val featureToggleService: FeatureToggleService){
 
     fun getUIFeatures(ident: String): Map<String, Boolean> {
         try {
-            if(featureToggleService.isFeatureEnabled("P5000_UPDATES_VISIBLE")){
-                logger.info("Feature toggle P5000_UPDATES_VISIBLE er påslått i Unleash for alle brukere")
+            if(featureToggleService.isFeatureEnabled("EESSI_ADMIN")){
+                logger.info("Feature toggle EESSI_ADMIN er påslått i Unleash")
                 return mapOf(
-//                    FeatureName.ADMIN_USER.name to true,
+                    FeatureName.TEST_USER.name to true,
+                    FeatureName.ADMIN_USER.name to true,
+                    FeatureName.P5000_UPDATES_VISIBLE.name to true,
+                )
+            }
+
+            else if(featureToggleService.isFeatureEnabled("P5000_UPDATES_VISIBLE")){
+                logger.info("Feature toggle P5000_UPDATES_VISIBLE er påslått i Unleash")
+                return mapOf(
                     FeatureName.TEST_USER.name to true,
                     FeatureName.P5000_UPDATES_VISIBLE.name to true,
                 )
