@@ -27,6 +27,7 @@ spec:
         uniformBucketLevelAccess: true
   envFrom:
     - secret: saksbehandlingapi #secret name in Google Secret Manager
+    - secret: saksbehandlingapi-unleash-api-token
   azure:
     application:
       enabled: true
@@ -53,6 +54,16 @@ spec:
       value: prod
     - name: ENV
       value: p
+
+    #UNLEASH
+    - name: UNLEASH_ENDPOINT_URL
+      value: https://unleash.nais.io/api/
+
+    - name: UNLEASH_APP_NAME
+      value: eessi-pensjon-saksbehandling-api
+
+    - name: UNLEASH_URL
+      value:  "https://eessipensjon-unleash-api.nav.cloud.nais.io/api"
 
     - name: GCP_BUCKET_NAME
       value: eessi-pensjon-saksbehandling-api-prod
