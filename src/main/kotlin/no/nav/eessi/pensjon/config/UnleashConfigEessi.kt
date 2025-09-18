@@ -33,7 +33,6 @@ class UnleashConfigEessi(
             ).build()
         DefaultUnleash(
             config,
-//            ByUserIdStrategy()
         ).also {
             logger.info("Unleash config: $config")
         }
