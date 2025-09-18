@@ -9,6 +9,9 @@ class FeatureToggle(val featureToggleService: FeatureToggleService){
 
     private val logger = LoggerFactory.getLogger(FeatureToggle::class.java)
 
+    private val listeOverTestere = listOf("B101331", "K105134", "L137579", "T120898", "K137167", "S137110", "H145594", "E153764", "B170313", "S165198", "O107147", "R107597", "R170375", "N128870", "H103790", "K137167")
+    private val listeOverAdmins = listOf("B101331", "K105134")
+
     @Value("\${ENV}")
     private lateinit var environmentName: String
 
@@ -22,33 +25,34 @@ class FeatureToggle(val featureToggleService: FeatureToggleService){
     }
 
     fun getUIFeatures(ident: String): Map<String, Boolean> {
-        return try {
+        try {
             when {
                 !isProductionEnv() -> {
                     logger.info("Ikke i produksjon, alle features er påslått")
-                    allFeaturesEnabled()
+                    return allFeaturesEnabled()
                 }
                 featureToggleService.isFeatureEnabled("EESSI_ADMIN") -> {
                     logger.info("Feature toggle produksjon, EESSI_ADMIN er påslått i Unleash")
-                    allFeaturesEnabled()
+                    return allFeaturesEnabled()
                 }
                 featureToggleService.isFeatureEnabled("P5000_UPDATES_VISIBLE") -> {
                     logger.info("Feature toggle produksjon, P5000_UPDATES_VISIBLE er påslått i Unleash")
-                    mapOf(
+                    return mapOf(
                         FeatureName.TEST_USER.name to true,
                         FeatureName.P5000_UPDATES_VISIBLE.name to true
                     )
                 }
-                else -> {
-                    logger.info("Feature toggle P5000_UPDATES_VISIBLE er avslått i Unleash for alle brukere")
-                    allFeaturesDisabled()
-                }
             }
         } catch (e: Exception) {
             logger.error(e.message, e)
-            allFeaturesDisabled()
         }
+        logger.info("ingen feature toggle funnet, prøver ordinær vurdering av bruker mot lister")
+        return allFeaturesOldSchool(ident)
     }
+    fun featureToggle(
+        ident: String,
+        userList: List<String>
+    ) : Boolean = (isProductionEnv() && ident.uppercase() in userList) || !isProductionEnv()
 
     private fun allFeaturesEnabled() = mapOf(
         FeatureName.TEST_USER.name to true,
@@ -60,6 +64,12 @@ class FeatureToggle(val featureToggleService: FeatureToggleService){
         FeatureName.TEST_USER.name to false,
         FeatureName.ADMIN_USER.name to false,
         FeatureName.P5000_UPDATES_VISIBLE.name to false
+    )
+
+    private fun allFeaturesOldSchool(ident: String) = mapOf(
+        FeatureName.ADMIN_USER.name to featureToggle(ident, listeOverAdmins),
+        FeatureName.TEST_USER.name to featureToggle(ident, listeOverTestere),
+        FeatureName.P5000_UPDATES_VISIBLE.name to featureToggle(ident, listeOverTestere),
     )
 }
 
