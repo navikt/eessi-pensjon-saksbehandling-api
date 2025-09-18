@@ -29,7 +29,7 @@ class FeatureToggle(val featureToggleService: FeatureToggleService){
             if(featureToggleService.isFeatureEnabled("P5000_UPDATES_VISIBLE")){
                 logger.info("Feature toggle P5000_UPDATES_VISIBLE er påslått i Unleash for alle brukere")
                 return mapOf(
-                    FeatureName.ADMIN_USER.name to true,
+//                    FeatureName.ADMIN_USER.name to true,
                     FeatureName.TEST_USER.name to true,
                     FeatureName.P5000_UPDATES_VISIBLE.name to true,
                 )
