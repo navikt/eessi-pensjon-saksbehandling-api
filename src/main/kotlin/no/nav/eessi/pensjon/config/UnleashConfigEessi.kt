@@ -18,8 +18,9 @@ class UnleashConfigEessi(
     private val logger = LoggerFactory.getLogger(UnleashConfigEessi::class.java)
 
     @Bean
-    fun unleash(
-    ): Unleash? = try {
+    fun unleash(): Unleash? = try {
+        logger.info("Initialiserer Unleash med url $unleashUrl og appName $appName")
+
         val config = UnleashConfig.builder()
             .appName(appName)
             .apiKey(unleashToken)
