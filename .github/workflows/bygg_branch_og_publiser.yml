@@ -39,7 +39,7 @@ jobs:
           export TZ=CET
           ./gradlew build --stacktrace
 
-      - name: deploy new Unleash Apikey to ${{github.event.inputs.environment}}
+      - name: 'deploy new Unleash Apikey to ${{github.event.inputs.environment}}'
         uses: nais/deploy/actions/deploy@v2
         env:
           CLUSTER: dev-gcp
