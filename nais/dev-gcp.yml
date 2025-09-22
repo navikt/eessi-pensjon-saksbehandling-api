@@ -21,6 +21,7 @@ spec:
         uniformBucketLevelAccess: true
   envFrom:
     - secret: saksbehandlingapi-dev #secret name in Google Secret Manager
+    - secret: eessi-pensjon-saksbehandling-api-q2-dev-gcp
 
   azure:
     application:
