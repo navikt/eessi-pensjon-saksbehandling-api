@@ -53,9 +53,16 @@ jobs:
       - name: 'deploy new Unleash Apikey to ${{github.event.inputs.environment}}'
         uses: nais/deploy/actions/deploy@v2
         env:
-          CLUSTER: prod-gcp
+          CLUSTER: dev-gcp
           RESOURCE: nais/unleash-apitoken.yml
-          VARS: nais/vars.json
+          VARS: nais/vars-q2.json
+
+      - name: 'Deploy to DEV'
+        uses: nais/deploy/actions/deploy@v2
+        env:
+          CLUSTER: dev-gcp
+          RESOURCE: nais/dev-gcp.yml
+          IMAGE: ${{ steps.docker-push.outputs.image }}
 
       - name: 'Opprett git tag'
         run: |
