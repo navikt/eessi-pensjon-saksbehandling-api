@@ -18,12 +18,6 @@ spec:
   gcp:
     buckets:
       - name: eessi-pensjon-saksbehandling-api-prod
-        retentionPeriodDays: 30
-        lifecycleCondition:
-          age: 7
-          createdBefore: 2020-01-01
-          numNewerVersions: 2
-          withState: ANY
         uniformBucketLevelAccess: true
   envFrom:
     - secret: saksbehandlingapi #secret name in Google Secret Manager
