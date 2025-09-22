@@ -27,10 +27,10 @@ class FeatureToggle(val featureToggleService: FeatureToggleService){
     fun getUIFeatures(ident: String): Map<String, Boolean> {
         try {
             when {
-                !isProductionEnv() -> {
-                    logger.info("Ikke i produksjon, alle features er påslått")
-                    return allFeaturesEnabled()
-                }
+//                !isProductionEnv() -> {
+//                    logger.info("Ikke i produksjon, alle features er påslått")
+//                    return allFeaturesEnabled()
+//                }
                 featureToggleService.isFeatureEnabled("EESSI_ADMIN") -> {
                     logger.info("Feature toggle produksjon, EESSI_ADMIN er påslått i Unleash")
                     return allFeaturesEnabled()
