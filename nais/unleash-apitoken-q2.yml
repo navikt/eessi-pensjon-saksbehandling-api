@@ -1,7 +1,7 @@
 apiVersion: unleash.nais.io/v1
 kind: ApiToken
 metadata:
-  name: eessi-pensjon-saksbehandling-api
+  name: eessi-pensjon-saksbehandling-api-q2
   namespace: eessipensjon
   labels:
     team: eessipensjon
@@ -10,8 +10,8 @@ spec:
     apiVersion: unleash.nais.io/v1
     kind: RemoteUnleash
     name: eessipensjon
-  secretName: eessi-pensjon-saksbehandling-api-unleash-api-token
+  secretName: eessi-pensjon-saksbehandling-api-q2-unleash-api-token
 
   # Specify which environment the API token should be created for.
   # Can be one of: development, or production.
-  environment: production
+  environment: development

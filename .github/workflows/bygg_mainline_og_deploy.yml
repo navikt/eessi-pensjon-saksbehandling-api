@@ -54,8 +54,8 @@ jobs:
         uses: nais/deploy/actions/deploy@v2
         env:
           CLUSTER: dev-gcp
-          RESOURCE: nais/unleash-apitoken.yml
-          VARS: nais/vars-q2.json
+          RESOURCE: nais/unleash-apitoken-q2.yml
+#          VARS: nais/vars-q2.json
 
       - name: 'Deploy to DEV'
         uses: nais/deploy/actions/deploy@v2
