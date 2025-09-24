@@ -19,10 +19,11 @@ class FeatureToggleService(
     fun isFeatureEnabled(featureName: String): Boolean {
         val claims = no.nav.eessi.pensjon.utils.getClaims(tokenValidationContextHolder).also { logger.debug("Claims: ${it.toJson()}") }
         val userId = claims.get("NAVident")?.toString() ?: "Unknown"
-        logger.info("Sjekker feature toggle for feature: $featureName for user: $userId")
         val context = UnleashContext.builder()
             .userId(userId)
             .build()
-        return unleash.isEnabled(featureName, context)
+        return unleash.isEnabled(featureName, context).also {
+            logger.info("Sjekker feature toggle for feature: $featureName for user: $userId, unleash: $it")
+        }
     }
 }
