@@ -41,6 +41,7 @@ spec:
       external:
         - host: eessi-pensjon-onprem-proxy.prod-fss-pub.nais.io
         - host: eessi-pensjon-fagmodul.intern.nav.no
+        - host: eessipensjon-unleash-api.nav.cloud.nais.io
 
   webproxy: true
   env:
