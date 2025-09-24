@@ -3,7 +3,7 @@ buildscript {
         kotlinVersion = '2.2.20'
         springBootVersion = '3.5.6'
         springKafkaVersion = '3.3.10'
-        tokenSupportVersion = '5.0.36'
+        tokenSupportVersion = '5.0.37'
         pac4jVersion = '5.7.0'
         cxfVersion = '3.5.10'
     }
