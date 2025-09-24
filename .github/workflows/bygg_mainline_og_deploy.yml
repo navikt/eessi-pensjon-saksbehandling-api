@@ -55,7 +55,6 @@ jobs:
         env:
           CLUSTER: dev-gcp
           RESOURCE: nais/unleash-apitoken-q2.yml
-#          VARS: nais/vars-q2.json
 
       - name: 'Deploy to DEV'
         uses: nais/deploy/actions/deploy@v2
@@ -63,6 +62,12 @@ jobs:
           CLUSTER: dev-gcp
           RESOURCE: nais/dev-gcp.yml
           IMAGE: ${{ steps.docker-push.outputs.image }}
+
+      - name: 'Deploy new Unleash Apikey to PROD'
+        uses: nais/deploy/actions/deploy@v2
+        env:
+          CLUSTER: prod-gcp
+          RESOURCE: nais/unleash-apitoken.yml
 
       - name: 'Opprett git tag'
         run: |
