@@ -47,7 +47,7 @@ class GcpStorageService( @param:Value("\${GCP_BUCKET_NAME}") var bucketname: Str
                 return jsonHendelse.getContent().decodeToString()
             }
         } catch ( ex: Exception) {
-            logger.warn("En feil oppstod under henting av objekt: $storageKey i bucket")
+            logger.info("Objekt $storageKey finnes ikke i bucket")
         }
         return null
     }
