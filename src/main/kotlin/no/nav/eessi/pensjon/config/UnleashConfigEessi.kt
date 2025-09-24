@@ -3,6 +3,8 @@ package no.nav.eessi.pensjon.config
 import io.getunleash.DefaultUnleash
 import io.getunleash.Unleash
 import io.getunleash.util.UnleashConfig
+import no.nav.eessi.pensjon.utils.toJson
+import no.nav.security.token.support.core.utils.EnvUtil.NAIS_CLUSTER_NAME
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -34,7 +36,7 @@ class UnleashConfigEessi(
         DefaultUnleash(
             config,
         ).also {
-            logger.info("Unleash config: $config")
+            logger.info("Unleash  naisClusterName: ${System.getenv("NAIS_CLUSTER_NAME")}")
         }
     } catch (e: Exception) {
         logger.error("Error in Unleash config: ${e.message}")
