@@ -76,12 +76,14 @@ dependencies {
     // Micrometer
     implementation("io.micrometer:micrometer-registry-prometheus:1.15.4")
 
-    implementation("io.getunleash:unleash-client-java:10.0.0")
+    implementation("io.getunleash:unleash-client-java:11.1.0")
 
     //ep-libs
     implementation("no.nav.eessi.pensjon:ep-logging:2.3.12")
     implementation("no.nav.eessi.pensjon:ep-metrics:2.1.10")
     implementation("no.nav.eessi.pensjon:ep-eux:2.5.17")
+
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8'
 
     //auth
     implementation("no.nav.security:token-client-spring:${tokenSupportVersion}")
