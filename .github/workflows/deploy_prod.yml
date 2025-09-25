@@ -31,7 +31,6 @@ jobs:
         env:
           CLUSTER: prod-gcp
           RESOURCE: nais/unleash-apitoken.yml
-#          VARS: nais/vars.json
 
       - name: 'NAIS-deploy to PROD'
         uses: nais/deploy/actions/deploy@v2
