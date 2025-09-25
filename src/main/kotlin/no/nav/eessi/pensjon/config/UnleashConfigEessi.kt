@@ -37,6 +37,7 @@ class UnleashConfigEessi(
             config,
         ).also {
             logger.info("Unleash  naisClusterName: ${System.getenv("NAIS_CLUSTER_NAME")}")
+            logger.debug("Unleash token: $unleashToken")
         }
     } catch (e: Exception) {
         logger.error("Error in Unleash config: ${e.message}")
