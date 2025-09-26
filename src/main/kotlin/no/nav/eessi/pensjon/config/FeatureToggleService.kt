@@ -45,7 +45,7 @@ class FeatureToggleService(
              *   https://eessipensjon-unleash-api.nav.cloud.nais.io/api/admin/projects/:default/features
              */
 
-            logger.debug("Henter alle features for prosjekt fra unleash: $unleashUrl | token: ${unleashToken}")
+            logger.debug("Henter alle features for prosjekt fra unleash: $unleashUrl |  ${unleash.more().featureToggleNames}")
 
             val url = "$unleashUrl/admin/projects/:default/features"
             val headers = HttpHeaders().apply {
