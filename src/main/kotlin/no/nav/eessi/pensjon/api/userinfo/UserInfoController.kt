@@ -18,7 +18,7 @@ import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 
 @RestController
-@Protected
+//@Protected
 @RequestMapping("/api")
 class UserInfoController(
     private val toggle: FeatureToggle,
@@ -48,7 +48,7 @@ class UserInfoController(
         return ResponseEntity.ok().body(mapAnyToJson(UserInfoResponse(fnr, role, expirationTime, features)))
     }
 
-    @EessiPensjonTilgang
+//    @EessiPensjonTilgang
     @GetMapping("/togglesByUser")
     fun getTogglesForUser(): ResponseEntity <String> {
         logger.debug("Henter togglesByUser")
