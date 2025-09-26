@@ -64,6 +64,13 @@ jobs:
           RESOURCE: nais/dev-gcp.yml
           IMAGE: ${{ steps.docker-push.outputs.image }}
 
+      - name: 'Deploy new Unleash Apikey to PROD'
+        uses: nais/deploy/actions/deploy@v2
+        env:
+          CLUSTER: prod-gcp
+          RESOURCE: nais/unleash-apitoken.yml
+          VARS: nais/vars.json
+
       - name: 'Opprett git tag'
         run: |
           curl -v -s -X POST https://api.github.com/repos/${{ github.repository }}/git/refs -H "Authorization: token  ${{ secrets.GITHUB_TOKEN }}" -d '{ "ref": "refs/tags/${{ env.DATE }}---${{ env.COMMIT_HASH }}",  "sha": "${{ env.COMMIT_HASH }}" }'
