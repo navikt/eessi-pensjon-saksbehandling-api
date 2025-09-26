@@ -54,6 +54,7 @@ class UserInfoController(
         logger.debug("Henter togglesByUser")
         val features = featureToggleService.getAllFeaturesForProject()
         return ResponseEntity.ok().body(features ?: "{}")
+
     }
 
     fun getTokens(): String = URLDecoder.decode(getToken(tokenValidationContextHolder)?.encodedToken, StandardCharsets.UTF_8) ?: "Unknown"
