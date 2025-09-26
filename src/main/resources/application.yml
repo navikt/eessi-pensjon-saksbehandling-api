@@ -36,6 +36,7 @@ management:
     web.exposure.include: '*'
     export.prometheus.enabled: true
     prometheus.enabled: true
+    mappings: true
   metrics:
     web:
       server:
