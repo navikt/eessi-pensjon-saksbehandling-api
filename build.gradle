@@ -6,6 +6,7 @@ buildscript {
         tokenSupportVersion = '5.0.37'
         pac4jVersion = '5.7.0'
         cxfVersion = '3.5.10'
+        jacksonModuleKotlinVersion = '2.20.0'
     }
 }
 
@@ -83,7 +84,8 @@ dependencies {
     implementation("no.nav.eessi.pensjon:ep-metrics:2.1.10")
     implementation("no.nav.eessi.pensjon:ep-eux:2.5.17")
 
-    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8'
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:${jacksonModuleKotlinVersion}")
+
 
     //auth
     implementation("no.nav.security:token-client-spring:${tokenSupportVersion}")
