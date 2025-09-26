@@ -1,6 +1,7 @@
 package no.nav.eessi.pensjon.api.userinfo
 
 import no.nav.eessi.pensjon.config.FeatureToggle
+import no.nav.eessi.pensjon.config.FeatureToggleService
 import no.nav.eessi.pensjon.services.auth.EessiPensjonTilgang
 import no.nav.eessi.pensjon.utils.getClaims
 import no.nav.eessi.pensjon.utils.getToken
@@ -21,7 +22,9 @@ import java.nio.charset.StandardCharsets
 @RequestMapping("/api")
 class UserInfoController(
     private val toggle: FeatureToggle,
-    private val tokenValidationContextHolder: TokenValidationContextHolder) {
+    private val tokenValidationContextHolder: TokenValidationContextHolder,
+    private val featureToggleService: FeatureToggleService
+) {
 
     private val logger = LoggerFactory.getLogger(UserInfoController::class.java)
 
@@ -43,6 +46,14 @@ class UserInfoController(
         val claims = getClaims()
         val expirationTime = claims.expirationTime.time
         return ResponseEntity.ok().body(mapAnyToJson(UserInfoResponse(fnr, role, expirationTime, features)))
+    }
+
+    @EessiPensjonTilgang
+    @GetMapping("/togglesByUser")
+    fun getTogglesForUser(): ResponseEntity <String> {
+        logger.debug("Henter togglesByUser")
+        val features = featureToggleService.getAllFeaturesForProject()
+        return ResponseEntity.ok().body(features ?: "{}")
     }
 
     fun getTokens(): String = URLDecoder.decode(getToken(tokenValidationContextHolder)?.encodedToken, StandardCharsets.UTF_8) ?: "Unknown"

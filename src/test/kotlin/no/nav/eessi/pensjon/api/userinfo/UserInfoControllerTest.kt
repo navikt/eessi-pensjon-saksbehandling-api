@@ -27,7 +27,7 @@ class UserInfoControllerTest {
     fun mockSetup() {
         toggleMock = FeatureToggle(mockk(relaxed = true))
         toggleMock.setCurrentEnv("q2")
-        userInfoController = spyk(UserInfoController(toggleMock, SpringTokenValidationContextHolder()))
+        userInfoController = spyk(UserInfoController(toggleMock, SpringTokenValidationContextHolder(), mockk(relaxed = true)))
     }
 
     @Test fun `Calling UserInfoController getUserInfo in Q2 returns OK response`() {
