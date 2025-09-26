@@ -18,7 +18,7 @@ import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 
 @RestController
-//@Protected
+@Protected
 @RequestMapping("/api")
 class UserInfoController(
     private val toggle: FeatureToggle,
