@@ -35,11 +35,12 @@ class FeatureToggleService(
 
     fun getAllFeaturesForProject(): String? {
         try {
-            val url = "$unleashUrl/admin/projects/default/features"
+            val url = "$unleashUrl/admin/projects/:default/features"
             val headers = HttpHeaders().apply {
                 set("Accept", "application/json")
                 set("Authorization", unleashToken)
             }
+
             val entity = org.springframework.http.HttpEntity<String>(headers)
             val response = restTemplate.exchange(
                 url,
