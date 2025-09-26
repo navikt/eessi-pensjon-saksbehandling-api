@@ -2,7 +2,6 @@ package no.nav.eessi.pensjon.config
 
 import io.getunleash.Unleash
 import io.getunleash.UnleashContext
-import no.nav.eessi.pensjon.api.userinfo.UserInfoController
 import no.nav.eessi.pensjon.utils.toJson
 import no.nav.security.token.support.core.context.TokenValidationContextHolder
 import org.slf4j.LoggerFactory
@@ -10,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
+
 
 @Service
 class FeatureToggleService(
@@ -35,6 +35,18 @@ class FeatureToggleService(
 
     fun getAllFeaturesForProject(): String? {
         try {
+            /**
+             *    Request request = new Request.Builder()
+             *   .url("<your-unleash-url>/api/admin/projects/:projectId/features")
+             *   .method("GET", body)
+             *   .addHeader("Accept", "application/json")
+             *   .addHeader("Authorization", "<Authorization>")
+             *   https://eessipensjon-unleash-api.nav.cloud.nais.io/api"
+             *   https://eessipensjon-unleash-api.nav.cloud.nais.io/api/admin/projects/:default/features
+             */
+
+            logger.debug("Henter alle features for prosjekt fra unleash: $unleashUrl | token: ${unleashToken}")
+
             val url = "$unleashUrl/admin/projects/:default/features"
             val headers = HttpHeaders().apply {
                 set("Accept", "application/json")
