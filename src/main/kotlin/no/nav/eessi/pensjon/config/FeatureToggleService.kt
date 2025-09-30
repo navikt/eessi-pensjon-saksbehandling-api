@@ -47,7 +47,7 @@ class FeatureToggleService(
 
             logger.debug("Henter alle features for prosjekt fra unleash: $unleashUrl |  ${unleash.more().featureToggleNames}")
 
-            val url = "$unleashUrl/admin/projects/:default/features"
+            val url = "$unleashUrl/admin/features"
             val headers = HttpHeaders().apply {
                 set("Accept", "application/json")
                 set("Authorization", unleashToken)

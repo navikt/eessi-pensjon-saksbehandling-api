@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.http.ResponseEntity
 import java.util.*
 
-@Disabled
+//@Disabled
 class UserInfoControllerTest {
     private lateinit var toggleMock: FeatureToggle
     private lateinit var userInfoController: UserInfoController
@@ -88,6 +88,16 @@ class UserInfoControllerTest {
         assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), result)
         val resultUserInfo = mapJsonToAny<UserInfoResponse>(result.body!!)
         assertEquals(EXPIRATION_TIME, resultUserInfo.expirationTime)
+    }
+
+    @Test
+    fun CallingUserInfoController_getTogglesForUser() {
+        createMockedToken()
+        val result = userInfoController.getTogglesForUser()
+        assertEquals(200, result.statusCode)
+
+        val resultFeatures = mapJsonToAny<Map<String, Boolean>>(result.body!!)
+        assertEquals(true, resultFeatures["P5000_SUMMER_VISIBLE"])
     }
 
     private fun createMockedToken(subject: String = "12345678910") {
