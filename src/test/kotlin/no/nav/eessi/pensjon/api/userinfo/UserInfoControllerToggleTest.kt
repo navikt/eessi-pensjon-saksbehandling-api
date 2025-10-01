@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestTemplate
 import java.util.*
 
-//@Disabled
 class UserInfoControllerToggleTest {
     private lateinit var featureToggleService: FeatureToggleService
     private lateinit var userInfoController: UserInfoController
