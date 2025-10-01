@@ -2,6 +2,7 @@ package no.nav.eessi.pensjon.config
 
 import io.getunleash.Unleash
 import io.getunleash.UnleashContext
+import no.nav.eessi.pensjon.utils.mapJsonToAny
 import no.nav.eessi.pensjon.utils.toJson
 import no.nav.security.token.support.core.context.TokenValidationContextHolder
 import org.slf4j.LoggerFactory
@@ -33,7 +34,7 @@ class FeatureToggleService(
         }
     }
 
-    fun getAllFeaturesForProject(): String? {
+    fun getAllFeaturesForProject(): List<String>? {
         try {
             /**
              *    Request request = new Request.Builder()
@@ -58,11 +59,39 @@ class FeatureToggleService(
                 url,
                 org.springframework.http.HttpMethod.GET,
                 entity,
-                String::class.java
+                FeaturesResponse::class.java
             )
-            return response.body
+            return response.body?.features?.map { it.name }
+
         } catch (e: Exception) {
             throw RuntimeException("Feil ved henting av features for project", e)
         }
     }
+
+    data class FeaturesResponse(
+        val version: Int,
+        val features: List<Feature>
+    )
+
+    data class Feature(
+        val impressionData: Boolean,
+        val enabled: Boolean,
+        val name: String,
+        val description: String?,
+        val project: String,
+        val stale: Boolean,
+        val type: String,
+        val lastSeenAt: String?,
+        val variants: List<Any>,
+        val createdAt: String,
+        val environments: List<Environment>,
+        val strategies: List<Any>
+    )
+
+    data class Environment(
+        val name: String,
+        val lastSeenAt: String,
+        val enabled: Boolean
+    )
+
 }

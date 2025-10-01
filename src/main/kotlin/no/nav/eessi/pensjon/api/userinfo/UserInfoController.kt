@@ -50,11 +50,10 @@ class UserInfoController(
 
 //    @EessiPensjonTilgang
     @GetMapping("/togglesByUser")
-    fun getTogglesForUser(): ResponseEntity <String> {
+    fun getTogglesForUser(): ResponseEntity <List<String>>? {
         logger.debug("Henter togglesByUser")
         val features = featureToggleService.getAllFeaturesForProject()
-        return ResponseEntity.ok().body(features ?: "{}")
-
+        return ResponseEntity.ok().body(features)
     }
 
     fun getTokens(): String = URLDecoder.decode(getToken(tokenValidationContextHolder)?.encodedToken, StandardCharsets.UTF_8) ?: "Unknown"
