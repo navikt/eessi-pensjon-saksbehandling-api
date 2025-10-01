@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
 import io.getunleash.Unleash
 import io.getunleash.UnleashContext
-import no.nav.eessi.pensjon.utils.mapJsonToAny
 import no.nav.eessi.pensjon.utils.toJson
 import no.nav.security.token.support.core.context.TokenValidationContextHolder
 import org.slf4j.LoggerFactory
@@ -18,6 +17,7 @@ import org.springframework.web.client.RestTemplate
 class FeatureToggleService(
     @param:Value("\${UNLEASH_URL}") private val unleashUrl: String,
     @param:Value("\${UNLEASH_SERVER_API_TOKEN}") private val unleashToken: String,
+    @param:Value("\${UNLEASH_SERVER_ADMIN_TOKEN}") private val unleashAdminToken: String,
     private val unleash: Unleash,
     private val tokenValidationContextHolder: TokenValidationContextHolder,
     private val restTemplate: RestTemplate
@@ -53,7 +53,7 @@ class FeatureToggleService(
             val url = "$unleashUrl/admin/features"
             val headers = HttpHeaders().apply {
                 set("Accept", "application/json")
-                set("Authorization", unleashToken)
+                set("Authorization", unleashAdminToken)
             }
 
             val entity = org.springframework.http.HttpEntity<String>(headers)
