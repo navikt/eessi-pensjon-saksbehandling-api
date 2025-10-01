@@ -10,7 +10,6 @@ import no.nav.security.token.support.spring.SpringTokenValidationContextHolder
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestTemplate
@@ -92,22 +91,16 @@ class UserInfoControllerToggleTest {
 
         every {
             restTemplate.exchange(
-                "/eessi-pensjon/admin/features",
+                "eessi-pensjon/admin/features",
                 HttpMethod.GET,
                 any(),
-                String::class.java,
-                any()
+                String::class.java
 
             )
         } returns ResponseEntity.ok().body(response)
 
         val result = userInfoController.getTogglesForUser()
-        assertEquals(ResponseEntity.ok().body(response), result.body)
-
-//        val resultFeatures = mapJsonToAny<Map<String, Boolean>>(result.body!!)
-//        assertEquals(true, resultFeatures["P5000_SUMMER_VISIBLE"])
-
-
+        assertEquals(response, result.body)
     }
 
     private fun createMockedToken(subject: String = "12345678910") {
