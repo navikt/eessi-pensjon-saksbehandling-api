@@ -1,5 +1,7 @@
 package no.nav.eessi.pensjon.config
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonInclude
 import io.getunleash.Unleash
 import io.getunleash.UnleashContext
 import no.nav.eessi.pensjon.utils.mapJsonToAny
@@ -61,37 +63,40 @@ class FeatureToggleService(
                 entity,
                 FeaturesResponse::class.java
             )
-            return response.body?.features?.map { it.name }
+            return response.body?.features?.map { it.name!! }
 
         } catch (e: Exception) {
             throw RuntimeException("Feil ved henting av features for project", e)
         }
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     data class FeaturesResponse(
-        val version: Int,
-        val features: List<Feature>
+        val version: Int?,
+        val features: List<Feature>?
     )
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     data class Feature(
-        val impressionData: Boolean,
-        val enabled: Boolean,
-        val name: String,
+        val impressionData: Boolean?,
+        val enabled: Boolean?,
+        val name: String?,
         val description: String?,
-        val project: String,
-        val stale: Boolean,
-        val type: String,
+        val project: String?,
+        val stale: Boolean?,
+        val type: String?,
         val lastSeenAt: String?,
-        val variants: List<Any>,
-        val createdAt: String,
-        val environments: List<Environment>,
-        val strategies: List<Any>
+        val variants: List<Any>?,
+        val createdAt: String?,
+        val environments: List<Environment>?,
+        val strategies: List<Any>?
     )
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     data class Environment(
-        val name: String,
-        val lastSeenAt: String,
-        val enabled: Boolean
+        val name: String?,
+        val lastSeenAt: String?,
+        val enabled: Boolean?
     )
 
 }

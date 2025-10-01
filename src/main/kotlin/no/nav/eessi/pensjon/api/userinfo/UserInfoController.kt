@@ -36,7 +36,7 @@ class UserInfoController(
      *
      *  @return userinfo containing: subject, role and allowed
      */
-//    @EessiPensjonTilgang
+    @EessiPensjonTilgang
     @GetMapping("/userinfo")
     fun getUserInfo(): ResponseEntity <String> {
         logger.debug("Henter userinfo: ${getTokens()}")
