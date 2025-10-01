@@ -94,9 +94,9 @@ class UserInfoControllerTest {
     fun CallingUserInfoController_getTogglesForUser() {
         createMockedToken()
         val result = userInfoController.getTogglesForUser()
-        assertEquals(200, result.statusCode)
+        assertEquals(200, result?.statusCode)
 
-        val resultFeatures = mapJsonToAny<Map<String, Boolean>>(result.body!!)
+        val resultFeatures = mapJsonToAny<Map<String, Boolean>>(result?.body as String)
         assertEquals(true, resultFeatures["P5000_SUMMER_VISIBLE"])
     }
 
