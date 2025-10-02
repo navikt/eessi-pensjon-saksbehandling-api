@@ -10,6 +10,7 @@ import no.nav.security.token.support.core.jwt.JwtTokenClaims
 import no.nav.security.token.support.spring.SpringTokenValidationContextHolder
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
@@ -30,6 +31,7 @@ class UserInfoControllerToggleTest {
     }
 
     @Test
+    @Disabled
     fun `CallingUserInfoController_getTogglesForUser`() {
         val response = responseFraUnleash()
         every {

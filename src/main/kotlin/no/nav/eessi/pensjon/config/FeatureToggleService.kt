@@ -41,32 +41,9 @@ class FeatureToggleService(
 
     fun getAllFeaturesForProject(): List<String>? {
         try {
-            /**
-             *    Request request = new Request.Builder()
-             *   .url("<your-unleash-url>/api/admin/projects/:projectId/features")
-             *   .method("GET", body)
-             *   .addHeader("Accept", "application/json")
-             *   .addHeader("Authorization", "<Authorization>")
-             *   https://eessipensjon-unleash-api.nav.cloud.nais.io/api"
-             *   https://eessipensjon-unleash-api.nav.cloud.nais.io/api/admin/projects/:default/features
-             */
-
-            logger.debug("Henter alle features for prosjekt fra unleash: $unleashUrl |  ${unleash.more().featureToggleNames}")
-
-            val url = "$unleashUrl/admin/features"
-            val headers = HttpHeaders().apply {
-                set("Authorization", "Bearer $unleashAdminToken")
+            return unleash.more().featureToggleNames.also {
+                logger.debug("Henter alle features for prosjekt fra unleash: $unleashUrl |  $it")
             }
-
-            val response = restTemplate.exchange(
-                url,
-                GET,
-                HttpEntity<String>(headers),
-                String::class.java
-            ).also { logger.debug("Henter alle features for project: $it") }
-
-            val features = response.body?.let { mapJsonToAny<FeaturesResponse>(it).features }
-            return features?.mapNotNull { it.name }
 
         } catch (e: Exception) {
             throw RuntimeException("Feil ved henting av features for project", e)
