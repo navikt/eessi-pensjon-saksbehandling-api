@@ -1,15 +1,19 @@
 package no.nav.eessi.pensjon.config
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonInclude
 import io.getunleash.Unleash
 import io.getunleash.UnleashContext
-import no.nav.eessi.pensjon.api.userinfo.UserInfoController
 import no.nav.eessi.pensjon.utils.toJson
 import no.nav.security.token.support.core.context.TokenValidationContextHolder
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+
 
 @Service
 class FeatureToggleService(
+    @param:Value("\${UNLEASH_URL}") private val unleashUrl: String,
     private val unleash: Unleash,
     private val tokenValidationContextHolder: TokenValidationContextHolder
 ) {
@@ -24,6 +28,12 @@ class FeatureToggleService(
             .build()
         return unleash.isEnabled(featureName, context).also {
             logger.info("Sjekker feature toggle for feature: $featureName for user: $userId, unleash: $it")
+        }
+    }
+
+    fun getAllFeaturesForProject(): List<String>? {
+        return unleash.more().featureToggleNames.also {
+            logger.debug("Henter alle features for prosjekt fra unleash: $unleashUrl |  $it")
         }
     }
 }
