@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
+import kotlin.collections.set
 
 
 @Service
@@ -53,7 +54,7 @@ class FeatureToggleService(
             val url = "$unleashUrl/admin/features"
             val headers = HttpHeaders().apply {
                 set("Accept", "application/json")
-                set("Authorization", unleashAdminToken)
+                set("Authorization", "Bearer $unleashAdminToken")
             }
 
             val entity = org.springframework.http.HttpEntity<String>(headers)
