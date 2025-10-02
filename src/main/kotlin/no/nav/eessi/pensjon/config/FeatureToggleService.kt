@@ -4,14 +4,16 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
 import io.getunleash.Unleash
 import io.getunleash.UnleashContext
+import no.nav.eessi.pensjon.utils.mapJsonToAny
 import no.nav.eessi.pensjon.utils.toJson
 import no.nav.security.token.support.core.context.TokenValidationContextHolder
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpMethod.GET
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
-import kotlin.collections.set
 
 
 @Service
@@ -53,18 +55,18 @@ class FeatureToggleService(
 
             val url = "$unleashUrl/admin/features"
             val headers = HttpHeaders().apply {
-                set("Accept", "application/json")
                 set("Authorization", "Bearer $unleashAdminToken")
             }
 
-            val entity = org.springframework.http.HttpEntity<String>(headers)
             val response = restTemplate.exchange(
                 url,
-                org.springframework.http.HttpMethod.GET,
-                entity,
-                FeaturesResponse::class.java
-            )
-            return response.body?.features?.map { it.name!! }
+                GET,
+                HttpEntity<String>(headers),
+                String::class.java
+            ).also { logger.debug("Henter alle features for project: $it") }
+
+            val features = response.body?.let { mapJsonToAny<FeaturesResponse>(it).features }
+            return features?.mapNotNull { it.name }
 
         } catch (e: Exception) {
             throw RuntimeException("Feil ved henting av features for project", e)

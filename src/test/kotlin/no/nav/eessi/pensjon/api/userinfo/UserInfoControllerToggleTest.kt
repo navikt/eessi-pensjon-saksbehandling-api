@@ -37,10 +37,10 @@ class UserInfoControllerToggleTest {
                 "eessi-pensjon/admin/features",
                 HttpMethod.GET,
                 any(),
-                FeatureToggleService.FeaturesResponse::class.java
+                String::class.java
 
             )
-        } returns ResponseEntity.ok().body(mapJsonToAny(response))
+        } returns ResponseEntity.ok().body(response)
 
         val result = userInfoController.getTogglesForUser()
         assertEquals(listOf("P5000_UPDATES_VISIBLE", "EESSI_ADMIN"), result?.body)
