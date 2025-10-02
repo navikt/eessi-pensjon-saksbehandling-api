@@ -49,8 +49,8 @@ class UserInfoController(
     }
 
 //    @EessiPensjonTilgang
-    @GetMapping("/togglesByUser")
-    fun getTogglesForUser(): ResponseEntity <List<String>>? {
+    @GetMapping("/availableToggles")
+    fun getAvailableToggles(): ResponseEntity <List<String>>? {
         logger.debug("Henter togglesByUser")
         val features = featureToggleService.getAllFeaturesForProject()
         return ResponseEntity.ok().body(features)

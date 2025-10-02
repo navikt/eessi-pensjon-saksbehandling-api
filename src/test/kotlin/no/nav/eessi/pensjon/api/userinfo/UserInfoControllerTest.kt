@@ -91,9 +91,9 @@ class UserInfoControllerTest {
     }
 
     @Test
-    fun CallingUserInfoController_getTogglesForUser() {
+    fun CallingUserInfoController_getAvailableToggles() {
         createMockedToken()
-        val result = userInfoController.getTogglesForUser()
+        val result = userInfoController.getAvailableToggles()
         assertEquals(200, result?.statusCode)
 
         val resultFeatures = mapJsonToAny<Map<String, Boolean>>(result?.body.toString())

@@ -31,7 +31,7 @@ class UserInfoControllerToggleTest {
 
     @Test
     @Disabled
-    fun `CallingUserInfoController_getTogglesForUser`() {
+    fun CallingUserInfoController_getAvailableToggles() {
         val response = responseFraUnleash()
         every {
             restTemplate.exchange(
@@ -43,7 +43,7 @@ class UserInfoControllerToggleTest {
             )
         } returns ResponseEntity.ok().body(response)
 
-        val result = userInfoController.getTogglesForUser()
+        val result = userInfoController.getAvailableToggles()
         assertEquals(listOf("P5000_UPDATES_VISIBLE", "EESSI_ADMIN"), result?.body)
     }
 
