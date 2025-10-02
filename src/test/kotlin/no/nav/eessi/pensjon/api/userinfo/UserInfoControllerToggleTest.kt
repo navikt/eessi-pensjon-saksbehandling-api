@@ -5,7 +5,6 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.spyk
 import no.nav.eessi.pensjon.config.FeatureToggleService
-import no.nav.eessi.pensjon.utils.mapJsonToAny
 import no.nav.security.token.support.core.jwt.JwtTokenClaims
 import no.nav.security.token.support.spring.SpringTokenValidationContextHolder
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -26,7 +25,7 @@ class UserInfoControllerToggleTest {
 
     @BeforeEach
     fun mockSetup() {
-        featureToggleService = FeatureToggleService("eessi-pensjon", "","", mockk(relaxed = true), mockk(), restTemplate)
+        featureToggleService = FeatureToggleService("eessi-pensjon", mockk(relaxed = true), mockk())
         userInfoController = UserInfoController(mockk(), SpringTokenValidationContextHolder(), featureToggleService)
     }
 
