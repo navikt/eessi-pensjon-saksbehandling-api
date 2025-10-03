@@ -4,7 +4,7 @@ import com.nimbusds.jwt.JWTClaimsSet
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.spyk
-import no.nav.eessi.pensjon.config.FeatureToggle
+import no.nav.eessi.pensjon.unleash.FeatureToggle
 import no.nav.eessi.pensjon.utils.mapAnyToJson
 import no.nav.eessi.pensjon.utils.mapJsonToAny
 import no.nav.security.token.support.core.jwt.JwtTokenClaims

@@ -4,7 +4,7 @@ import com.nimbusds.jwt.JWTClaimsSet
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.spyk
-import no.nav.eessi.pensjon.config.FeatureToggleService
+import no.nav.eessi.pensjon.unleash.FeatureToggleService
 import no.nav.security.token.support.core.jwt.JwtTokenClaims
 import no.nav.security.token.support.spring.SpringTokenValidationContextHolder
 import org.junit.jupiter.api.Assertions.assertEquals

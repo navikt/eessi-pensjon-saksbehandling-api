@@ -4,7 +4,7 @@ import com.ninjasquad.springmockk.MockkBean
 import com.ninjasquad.springmockk.MockkBeans
 import io.getunleash.Unleash
 import no.nav.eessi.pensjon.config.ApiMvcConfig
-import no.nav.eessi.pensjon.config.FeatureToggleService
+import no.nav.eessi.pensjon.unleash.FeatureToggleService
 import no.nav.eessi.pensjon.config.UnleashConfigEessi
 import no.nav.eessi.pensjon.gcp.GcpStorageService
 import no.nav.eessi.pensjon.interceptor.AuthInterceptor
