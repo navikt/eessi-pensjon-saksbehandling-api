@@ -31,7 +31,7 @@ class FeatureToggleService(
     }
 
     fun getAllFeaturesForProject(): List<FeatureToggleStatus> {
-        val featureNames = FeatureName.entries.map { it.name }
+        val featureNames = unleash.more().featureToggleNames
         return featureNames.map { name ->
             FeatureToggleStatus(
                 name = name,
