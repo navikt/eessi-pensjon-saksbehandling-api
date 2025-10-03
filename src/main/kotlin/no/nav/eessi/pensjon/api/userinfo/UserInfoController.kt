@@ -1,8 +1,9 @@
 package no.nav.eessi.pensjon.api.userinfo
 
-import no.nav.eessi.pensjon.config.FeatureToggle
-import no.nav.eessi.pensjon.config.FeatureToggleService
+import no.nav.eessi.pensjon.unleash.FeatureToggle
 import no.nav.eessi.pensjon.services.auth.EessiPensjonTilgang
+import no.nav.eessi.pensjon.unleash.FeatureToggleService
+import no.nav.eessi.pensjon.unleash.FeatureToggleStatus
 import no.nav.eessi.pensjon.utils.getClaims
 import no.nav.eessi.pensjon.utils.getToken
 import no.nav.eessi.pensjon.utils.mapAnyToJson
@@ -50,7 +51,7 @@ class UserInfoController(
 
 //    @EessiPensjonTilgang
     @GetMapping("/availableToggles")
-    fun getAvailableToggles(): ResponseEntity <List<String>>? {
+    fun getAvailableToggles(): ResponseEntity <List<FeatureToggleStatus>>? {
         logger.debug("Henter togglesByUser")
         val features = featureToggleService.getAllFeaturesForProject()
         return ResponseEntity.ok().body(features)

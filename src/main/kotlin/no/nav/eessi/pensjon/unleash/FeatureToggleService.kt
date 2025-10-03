@@ -1,27 +1,26 @@
-package no.nav.eessi.pensjon.config
+package no.nav.eessi.pensjon.unleash
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.fasterxml.jackson.annotation.JsonInclude
 import io.getunleash.Unleash
 import io.getunleash.UnleashContext
+import no.nav.eessi.pensjon.utils.getClaims
 import no.nav.eessi.pensjon.utils.toJson
 import no.nav.security.token.support.core.context.TokenValidationContextHolder
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
-
 @Service
 class FeatureToggleService(
     @param:Value("\${UNLEASH_URL}") private val unleashUrl: String,
     private val unleash: Unleash,
-    private val tokenValidationContextHolder: TokenValidationContextHolder
+    private val tokenValidationContextHolder: TokenValidationContextHolder,
 ) {
 
     private val logger = LoggerFactory.getLogger(FeatureToggleService::class.java)
 
     fun isFeatureEnabled(featureName: String): Boolean {
-        val claims = no.nav.eessi.pensjon.utils.getClaims(tokenValidationContextHolder).also { logger.debug("Claims: ${it.toJson()}") }
+        val claims = getClaims(tokenValidationContextHolder)
+            .also { logger.debug("Claims: ${it.toJson()}") }
         val userId = claims.get("NAVident")?.toString() ?: "Unknown"
         val context = UnleashContext.builder()
             .userId(userId)
@@ -31,9 +30,13 @@ class FeatureToggleService(
         }
     }
 
-    fun getAllFeaturesForProject(): List<String>? {
-        return unleash.more().featureToggleNames.also {
-            logger.debug("Henter alle features for prosjekt fra unleash: $unleashUrl |  $it")
+    fun getAllFeaturesForProject(): List<FeatureToggleStatus> {
+        val featureNames = FeatureName.entries.map { it.name }
+        return featureNames.map { name ->
+            FeatureToggleStatus(
+                name = name,
+                enabled = isFeatureEnabled(name)
+            )
         }
     }
 }
