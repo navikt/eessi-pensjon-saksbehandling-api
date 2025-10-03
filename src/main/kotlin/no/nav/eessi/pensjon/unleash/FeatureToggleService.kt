@@ -6,12 +6,10 @@ import no.nav.eessi.pensjon.utils.getClaims
 import no.nav.eessi.pensjon.utils.toJson
 import no.nav.security.token.support.core.context.TokenValidationContextHolder
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
 @Service
 class FeatureToggleService(
-    @param:Value("\${UNLEASH_URL}") private val unleashUrl: String,
     private val unleash: Unleash,
     private val tokenValidationContextHolder: TokenValidationContextHolder,
 ) {

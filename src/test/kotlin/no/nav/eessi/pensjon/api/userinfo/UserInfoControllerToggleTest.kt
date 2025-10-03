@@ -25,7 +25,7 @@ class UserInfoControllerToggleTest {
 
     @BeforeEach
     fun mockSetup() {
-        featureToggleService = FeatureToggleService("eessi-pensjon", mockk(relaxed = true), mockk())
+        featureToggleService = FeatureToggleService(mockk(relaxed = true), mockk())
         userInfoController = UserInfoController(mockk(), SpringTokenValidationContextHolder(), featureToggleService)
     }
 
