@@ -1,4 +1,4 @@
-package no.nav.eessi.pensjon.config
+package no.nav.eessi.pensjon.unleash
 
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value

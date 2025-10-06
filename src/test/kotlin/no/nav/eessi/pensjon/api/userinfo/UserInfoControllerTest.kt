@@ -4,7 +4,7 @@ import com.nimbusds.jwt.JWTClaimsSet
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.spyk
-import no.nav.eessi.pensjon.config.FeatureToggle
+import no.nav.eessi.pensjon.unleash.FeatureToggle
 import no.nav.eessi.pensjon.utils.mapAnyToJson
 import no.nav.eessi.pensjon.utils.mapJsonToAny
 import no.nav.security.token.support.core.jwt.JwtTokenClaims
@@ -27,7 +27,7 @@ class UserInfoControllerTest {
     fun mockSetup() {
         toggleMock = FeatureToggle(mockk(relaxed = true))
         toggleMock.setCurrentEnv("q2")
-        userInfoController = spyk(UserInfoController(toggleMock, SpringTokenValidationContextHolder()))
+        userInfoController = spyk(UserInfoController(toggleMock, SpringTokenValidationContextHolder(), mockk(relaxed = true)))
     }
 
     @Test fun `Calling UserInfoController getUserInfo in Q2 returns OK response`() {
@@ -88,6 +88,16 @@ class UserInfoControllerTest {
         assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), result)
         val resultUserInfo = mapJsonToAny<UserInfoResponse>(result.body!!)
         assertEquals(EXPIRATION_TIME, resultUserInfo.expirationTime)
+    }
+
+    @Test
+    fun CallingUserInfoController_getAvailableToggles() {
+        createMockedToken()
+        val result = userInfoController.getAvailableToggles()
+        assertEquals(200, result?.statusCode)
+
+        val resultFeatures = mapJsonToAny<Map<String, Boolean>>(result?.body.toString())
+        assertEquals(true, resultFeatures)
     }
 
     private fun createMockedToken(subject: String = "12345678910") {
