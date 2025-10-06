@@ -6,6 +6,7 @@ buildscript {
         tokenSupportVersion = '5.0.37'
         pac4jVersion = '5.7.0'
         cxfVersion = '3.5.10'
+        jacksonModuleKotlinVersion = '2.20.0'
     }
 }
 
@@ -71,7 +72,7 @@ dependencies {
     implementation("org.slf4j:jcl-over-slf4j:2.0.17")
 
     //GCP
-    implementation("com.google.cloud:google-cloud-storage:2.57.0")
+    implementation("com.google.cloud:google-cloud-storage:2.58.0")
 
     // Micrometer
     implementation("io.micrometer:micrometer-registry-prometheus:1.15.4")
@@ -79,11 +80,12 @@ dependencies {
     implementation("io.getunleash:unleash-client-java:11.1.0")
 
     //ep-libs
-    implementation("no.nav.eessi.pensjon:ep-logging:2.3.12")
+    implementation("no.nav.eessi.pensjon:ep-logging:2.3.13")
     implementation("no.nav.eessi.pensjon:ep-metrics:2.1.10")
     implementation("no.nav.eessi.pensjon:ep-eux:2.5.17")
 
-    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8'
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:${jacksonModuleKotlinVersion}")
+
 
     //auth
     implementation("no.nav.security:token-client-spring:${tokenSupportVersion}")
@@ -107,7 +109,7 @@ dependencies {
 
     // LDAP
     implementation("org.springframework.ldap:spring-ldap-core:3.3.3")
-    implementation("org.springframework.security:spring-security-ldap:6.5.4")
+    implementation("org.springframework.security:spring-security-ldap:6.5.5")
     implementation("com.unboundid:unboundid-ldapsdk:7.0.3")
 
     // Test - token-validation-spring-test dependencies

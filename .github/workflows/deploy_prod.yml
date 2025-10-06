@@ -26,13 +26,6 @@ jobs:
         run: |
           echo "image-tag: ${{ github.event.client_payload.image }}"
 
-      - name: 'Deploy new Unleash Apikey to PROD'
-        uses: nais/deploy/actions/deploy@v2
-        env:
-          CLUSTER: prod-gcp
-          RESOURCE: nais/unleash-apitoken.yml
-          VARS: nais/vars.json
-
       - name: 'NAIS-deploy to PROD'
         uses: nais/deploy/actions/deploy@v2
         env:
