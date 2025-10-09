@@ -7,6 +7,7 @@ import no.nav.eessi.pensjon.unleash.FeatureToggleStatus
 import no.nav.eessi.pensjon.utils.getClaims
 import no.nav.eessi.pensjon.utils.getToken
 import no.nav.eessi.pensjon.utils.mapAnyToJson
+import no.nav.eessi.pensjon.utils.toJson
 import no.nav.security.token.support.core.api.Protected
 import no.nav.security.token.support.core.context.TokenValidationContextHolder
 import no.nav.security.token.support.core.jwt.JwtTokenClaims
@@ -40,22 +41,16 @@ class UserInfoController(
     @EessiPensjonTilgang
     @GetMapping("/userinfo")
     fun getUserInfo(): ResponseEntity<String> {
-        logger.debug("Henter userinfo: ${getTokens()}")
-        val fnr = getSubjectFromToken()
-        val role = getRole(fnr)
-        val claims = getClaims()
-        val expirationTime = claims.expirationTime.time
-        return ResponseEntity.ok().body(
-            mapAnyToJson(
-                UserInfoResponse(
-                    fnr,
-                    role,
-                    expirationTime,
-                    featureToggleService.getAllFeaturesForProject().associate { it.name to it.enabled }
-                )))
+        val userInfo = UserInfoResponse(
+            subject = getSubjectFromToken(),
+            role = getRole(getSubjectFromToken()),
+            expirationTime = getClaims().expirationTime.time,
+            features = featureToggleService.getAllFeaturesForProject().associate { it.name to it.enabled }
+        )
+        logger.debug("Henter featureInfo: ${userInfo.toJson()}")
+        return ResponseEntity.ok(mapAnyToJson(userInfo))
     }
 
-//    @EessiPensjonTilgang
     @GetMapping("/availableToggles")
     fun getAvailableToggles(): ResponseEntity <List<FeatureToggleStatus>>? {
         logger.debug("Henter togglesByUser")
