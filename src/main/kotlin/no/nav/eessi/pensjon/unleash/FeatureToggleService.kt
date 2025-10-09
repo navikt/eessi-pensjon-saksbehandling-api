@@ -17,12 +17,12 @@ class FeatureToggleService(
     private val logger = LoggerFactory.getLogger(FeatureToggleService::class.java)
 
     fun isFeatureEnabled(featureName: String): Boolean {
-        val claims = getClaims(tokenValidationContextHolder)
+        val userId = getClaims(tokenValidationContextHolder)
             .also { logger.debug("Claims: ${it.toJson()}") }
-        val userId = claims.get("NAVident")?.toString() ?: "Unknown"
-        val context = UnleashContext.builder()
-            .userId(userId)
-            .build()
+            .get("NAVident")?.toString() ?: "Unknown"
+
+        val context = UnleashContext.builder().userId(userId).build()
+
         return unleash.isEnabled(featureName, context).also {
             logger.info("Sjekker feature toggle for feature: $featureName for user: $userId, unleash: $it")
         }
