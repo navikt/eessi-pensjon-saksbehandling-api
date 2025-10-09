@@ -39,14 +39,20 @@ class UserInfoController(
      */
     @EessiPensjonTilgang
     @GetMapping("/userinfo")
-    fun getUserInfo(): ResponseEntity <String> {
+    fun getUserInfo(): ResponseEntity<String> {
         logger.debug("Henter userinfo: ${getTokens()}")
         val fnr = getSubjectFromToken()
         val role = getRole(fnr)
-        val features = toggle.getUIFeatures(fnr)
         val claims = getClaims()
         val expirationTime = claims.expirationTime.time
-        return ResponseEntity.ok().body(mapAnyToJson(UserInfoResponse(fnr, role, expirationTime, features)))
+        return ResponseEntity.ok().body(
+            mapAnyToJson(
+                UserInfoResponse(
+                    fnr,
+                    role,
+                    expirationTime,
+                    featureToggleService.getAllFeaturesForProject().associate { it.name to it.enabled }
+                )))
     }
 
 //    @EessiPensjonTilgang
@@ -57,29 +63,30 @@ class UserInfoController(
         return ResponseEntity.ok().body(features)
     }
 
-    fun getTokens(): String = URLDecoder.decode(getToken(tokenValidationContextHolder)?.encodedToken, StandardCharsets.UTF_8) ?: "Unknown"
+    fun getTokens(): String =
+        URLDecoder.decode(getToken(tokenValidationContextHolder)?.encodedToken, StandardCharsets.UTF_8) ?: "Unknown"
 
     fun getSubjectFromToken() = getClaims(tokenValidationContextHolder).get("NAVident")?.toString() ?: "Unknown"
 
     fun getClaims(): JwtTokenClaims = getClaims(tokenValidationContextHolder)
 }
 
-    /**
-     * Parses the OIDC token subject and returns a role
-     * SAKSBEHANDLER, BRUKER, or UNKNOWN if the two regex has no matches
-     *
-     * if saksbehandler it will have a letter followed by 6 digits ( eg. A999999 )
-     * if citizen bruker it will have a fødselsnummer / dnummer, 11 digits
-     *
-     * @param subject
-     */
-    fun getRole(subject: String): String {
-        return when {
-            subject.matches(Regex("^[a-zA-Z]\\d{6}$")) -> "SAKSBEHANDLER"
-            subject.matches(Regex("^\\d{11}$")) -> "BRUKER"
-            else -> "UNKNOWN"
-        }
+/**
+ * Parses the OIDC token subject and returns a role
+ * SAKSBEHANDLER, BRUKER, or UNKNOWN if the two regex has no matches
+ *
+ * if saksbehandler it will have a letter followed by 6 digits ( eg. A999999 )
+ * if citizen bruker it will have a fødselsnummer / dnummer, 11 digits
+ *
+ * @param subject
+ */
+fun getRole(subject: String): String {
+    return when {
+        subject.matches(Regex("^[a-zA-Z]\\d{6}$")) -> "SAKSBEHANDLER"
+        subject.matches(Regex("^\\d{11}$")) -> "BRUKER"
+        else -> "UNKNOWN"
     }
+}
 
 data class UserInfoResponse(
     val subject: String,

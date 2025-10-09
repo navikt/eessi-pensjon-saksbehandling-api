@@ -54,11 +54,7 @@ class FeatureToggle(val featureToggleService: FeatureToggleService){
         userList: List<String>
     ) : Boolean = (isProductionEnv() && ident.uppercase() in userList) || !isProductionEnv()
 
-    private fun allFeaturesEnabled() = mapOf(
-        FeatureName.TEST_USER.name to true,
-        FeatureName.ADMIN_USER.name to true,
-        FeatureName.P5000_UPDATES_VISIBLE.name to true
-    )
+    private fun allFeaturesEnabled() = featureToggleService.getAllFeaturesForProject().associate { it.name to it.enabled }
 
     private fun allFeaturesDisabled() = mapOf(
         FeatureName.TEST_USER.name to false,
