@@ -1,6 +1,6 @@
 package no.nav.eessi.pensjon.api.userinfo
 
-import no.nav.eessi.pensjon.unleash.FeatureToggle
+import no.nav.eessi.pensjon.metrics.MetricsHelper
 import no.nav.eessi.pensjon.services.auth.EessiPensjonTilgang
 import no.nav.eessi.pensjon.unleash.FeatureToggleService
 import no.nav.eessi.pensjon.unleash.FeatureToggleStatus
@@ -12,6 +12,7 @@ import no.nav.security.token.support.core.api.Protected
 import no.nav.security.token.support.core.context.TokenValidationContextHolder
 import no.nav.security.token.support.core.jwt.JwtTokenClaims
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -23,9 +24,9 @@ import java.nio.charset.StandardCharsets
 @Protected
 @RequestMapping("/api")
 class UserInfoController(
-    private val toggle: FeatureToggle,
     private val tokenValidationContextHolder: TokenValidationContextHolder,
-    private val featureToggleService: FeatureToggleService
+    private val featureToggleService: FeatureToggleService,
+    @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper.ForTest()
 ) {
 
     private val logger = LoggerFactory.getLogger(UserInfoController::class.java)
