@@ -1,4 +1,4 @@
-ENV: Q1
+ENV: Q2
 AZURE_APP_WELL_KNOWN_URL: http://localhost:${mock-oauth2-server.port}/aad/.well-known/openid-configuration
 AZURE_OPENID_CONFIG_TOKEN_ENDPOINT: http://localhost:1111/v2.0/token
 AUTHORIZATION_URL: http://localhost:1111/v2.0/authorize
@@ -6,10 +6,22 @@ METRICS_REQUESTFILTER_ENABLE: true
 CORS:
   allowed: "http://localhost"
 
+#gcp
+GCP_ACCESS_KEY: 'dummy'
+GCP_ACCESS_SECRET: 'dummy'
+GCP_BUCKET_NAME: 'SAKSBEHANDLING_API_Q2'
+
+#unleash
+UNLEASH_URL: "unleash"
+UNLEASH_APP_NAME: "unleashApp"
+UNLEASH_SERVER_API_TOKEN: "unleashToken"
+dummy-client-id: "dummy-client-id"
+
+#azure
 no.nav.security.jwt:
   issuer.aad:
     discoveryurl: ${AZURE_APP_WELL_KNOWN_URL}
-    accepted_audience: ${AZURE_APP_CLIENT_ID}
+    accepted_audience: ${AZURE_APP_CLIENT_ID:dummy-client-id}
   client:
     registration:
       proxy-credentials:

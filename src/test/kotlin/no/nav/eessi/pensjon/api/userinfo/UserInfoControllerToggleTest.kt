@@ -3,6 +3,7 @@ package no.nav.eessi.pensjon.api.userinfo
 import io.getunleash.Unleash
 import io.mockk.every
 import io.mockk.mockk
+import no.nav.eessi.pensjon.metrics.MetricsHelper
 import no.nav.eessi.pensjon.unleash.FeatureToggleService
 import no.nav.security.token.support.core.context.TokenValidationContext
 import no.nav.security.token.support.core.jwt.JwtToken
@@ -21,7 +22,7 @@ class UserInfoControllerToggleTest {
     @BeforeEach
     fun mockSetup() {
         featureToggleService = FeatureToggleService(unleash,  tokenValidationContextHolder)
-        userInfoController = UserInfoController(mockk(), tokenValidationContextHolder, featureToggleService)
+        userInfoController = UserInfoController(tokenValidationContextHolder, featureToggleService, MetricsHelper.ForTest())
 
         every { unleash.more().featureToggleNames } returns listOf("P5000_UPDATES_VISIBLE", "EESSI_ADMIN")
         every { unleash.isEnabled("P5000_UPDATES_VISIBLE") } returns true
