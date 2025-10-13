@@ -10,9 +10,7 @@ import io.mockk.every
 import io.mockk.spyk
 import no.nav.eessi.pensjon.api.storage.StorageController
 import no.nav.eessi.pensjon.gcp.GcpStorageService
-import no.nav.eessi.pensjon.interceptor.AuthInterceptor
 import no.nav.eessi.pensjon.models.BrukerInformasjon
-import no.nav.eessi.pensjon.services.auth.AdRolle
 import no.nav.eessi.pensjon.services.auth.AuthorisationService
 import no.nav.eessi.pensjon.unleash.FeatureToggleService
 import no.nav.eessi.pensjon.unleash.FeatureToggleStatus
@@ -51,7 +49,6 @@ import java.util.*
         MockkBean(name = "restTemplate", classes = [RestTemplate::class], relaxed = true),
     ]
 )
-
 @SpykBeans(
     value = [
         SpykBean(name = "authorisationService", classes = [AuthorisationService::class])
@@ -74,13 +71,7 @@ class UserInfoControllerTest {
     lateinit var mockOAuth2Server: MockOAuth2Server
 
     @Autowired
-    lateinit var authInterceptor: AuthInterceptor
-
-    @Autowired
     lateinit var restTemplate: RestTemplate
-
-    @Autowired
-    lateinit var authorisationService: AuthorisationService
 
     @BeforeEach
     fun mockSetup() {
@@ -134,14 +125,12 @@ class UserInfoControllerTest {
         assertEquals(expected, response.contentAsString)
     }
 
-    @Disabled()
     @Test fun `Calling UserInfoController getRole`() {
         assertEquals("BRUKER", getRole("12345678910"))
         assertEquals("SAKSBEHANDLER", getRole("Z123456"))
         assertEquals("UNKNOWN", getRole("ZZZ"))
     }
 
-    @Disabled
     @Test fun CallingUserInfoController_getUserInfowithEXP() {
         createMockedToken()
         val usr =  UserInfoResponse(
@@ -155,10 +144,17 @@ class UserInfoControllerTest {
                 "ADMIN_NOTIFICATION_MESSAGE" to true
             ),
         )
-//        val result = userInfoController.getUserInfo()
-//        assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), result)
-//        val resultUserInfo = mapJsonToAny<UserInfoResponse>(result.body!!)
-//        assertEquals(EXPIRATION_TIME, resultUserInfo.expirationTime)
+        val response = mockMvc.perform(
+            get("/api/userinfo")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer $token")
+        )
+            .andExpect(status().isOk)
+            .andReturn().response
+
+        val result = response.contentAsString
+        assertEquals(ResponseEntity.ok().body(mapAnyToJson(usr)), result)
+        val resultUserInfo = mapJsonToAny<UserInfoResponse>(result.body!!)
+        assertEquals(EXPIRATION_TIME, resultUserInfo.expirationTime)
     }
 
     private fun createMockedToken(subject: String = "12345678910") {
