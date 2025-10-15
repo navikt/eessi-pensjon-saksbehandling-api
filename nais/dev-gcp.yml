@@ -18,14 +18,11 @@ spec:
   gcp:
     buckets:
       - name: eessi-pensjon-saksbehandling-api-dev
-        lifecycleCondition:
-          age: 10
-          createdBefore: 2020-01-01
-          numNewerVersions: 2
-          withState: ANY
         uniformBucketLevelAccess: true
   envFrom:
     - secret: saksbehandlingapi-dev #secret name in Google Secret Manager
+    - secret: eessi-pensjon-saksbehandling-api-q2-unleash-api-token
+
   azure:
     application:
       enabled: true
@@ -41,10 +38,14 @@ spec:
         - application: eessi-pensjon-frontend-ui-q2
           namespace: eessipensjon
           cluster: dev-gcp
+        - application: azure-token-generator
+          namespace: nais
+          cluster: dev-gcp
     outbound:
       external:
         - host: eessi-pensjon-onprem-proxy-q2.dev-fss-pub.nais.io
         - host: eessi-pensjon-fagmodul-q2.intern.dev.nav.no
+        - host: eessipensjon-unleash-api.nav.cloud.nais.io
 
   webproxy: true
   env:
@@ -52,6 +53,16 @@ spec:
       value: test
     - name: ENV
       value: q2
+
+    #UNLEASH
+    - name: UNLEASH_ENDPOINT_URL
+      value: https://unleash.nais.io/api/
+
+    - name: UNLEASH_APP_NAME
+      value: eessi-pensjon-saksbehandling-api-q2
+
+    - name: UNLEASH_URL
+      value:  "https://eessipensjon-unleash-api.nav.cloud.nais.io/api"
 
     - name: GCP_BUCKET_NAME
       value: eessi-pensjon-saksbehandling-api-dev

@@ -3,7 +3,6 @@ package no.nav.eessi.pensjon.architecture
 import com.tngtech.archunit.core.domain.JavaClasses
 import com.tngtech.archunit.core.importer.ClassFileImporter
 import com.tngtech.archunit.core.importer.ImportOption
-import com.tngtech.archunit.library.Architectures
 import com.tngtech.archunit.library.Architectures.layeredArchitecture
 import com.tngtech.archunit.library.dependencies.SlicesRuleDefinition.slices
 import no.nav.eessi.pensjon.Application
@@ -47,7 +46,6 @@ class ArchitectureTest {
             .consideringOnlyDependenciesInAnyPackage(root)
                 .layer("App").definedBy("$root")
                 .layer("API").definedBy("$root.api..", "$root.personoppslag..")
-                .layer("Listeners").definedBy("$root.listeners..")
                 .layer("Health").definedBy("$root.shared.api.health..")
                 .layer("Services").definedBy("$root.services..", "$root.personoppslag..")
                 .layer("Config").definedBy("$root.config..")
@@ -56,7 +54,6 @@ class ArchitectureTest {
                 .whereLayer("App").mayNotBeAccessedByAnyLayer()
                 .whereLayer("API").mayNotBeAccessedByAnyLayer()
                 .whereLayer("Health").mayNotBeAccessedByAnyLayer()
-                .whereLayer("Listeners").mayNotBeAccessedByAnyLayer()
                 .whereLayer("Services").mayOnlyBeAccessedByLayers("API", "Interceptor")
                 .whereLayer("Config").mayOnlyBeAccessedByLayers("API")
 

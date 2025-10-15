@@ -26,7 +26,7 @@ class GcpStorageService( @param:Value("\${GCP_BUCKET_NAME}") var bucketname: Str
     }
 
     fun lagre(storageKey: String, storageValue: String) {
-        val blobInfo =  BlobInfo.newBuilder(BlobId.of(bucketname, storageKey)).setContentType("application/octet-stream").build()
+        val blobInfo =  BlobInfo.newBuilder(BlobId.of(bucketname, storageKey)).setContentType("application/json").build()
         kotlin.runCatching {
             gcpStorage.writer(blobInfo).use {
                 it.write(ByteBuffer.wrap(storageValue.toByteArray()))
@@ -47,7 +47,7 @@ class GcpStorageService( @param:Value("\${GCP_BUCKET_NAME}") var bucketname: Str
                 return jsonHendelse.getContent().decodeToString()
             }
         } catch ( ex: Exception) {
-            logger.warn("En feil oppstod under henting av objekt: $storageKey i bucket")
+            logger.info("Objekt $storageKey finnes ikke i bucket")
         }
         return null
     }

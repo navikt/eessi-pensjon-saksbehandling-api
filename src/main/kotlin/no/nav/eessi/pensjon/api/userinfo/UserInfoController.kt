@@ -1,14 +1,18 @@
 package no.nav.eessi.pensjon.api.userinfo
 
-import no.nav.eessi.pensjon.config.FeatureToggle
+import no.nav.eessi.pensjon.metrics.MetricsHelper
 import no.nav.eessi.pensjon.services.auth.EessiPensjonTilgang
+import no.nav.eessi.pensjon.unleash.FeatureToggleService
+import no.nav.eessi.pensjon.unleash.FeatureToggleStatus
 import no.nav.eessi.pensjon.utils.getClaims
 import no.nav.eessi.pensjon.utils.getToken
 import no.nav.eessi.pensjon.utils.mapAnyToJson
+import no.nav.eessi.pensjon.utils.toJson
 import no.nav.security.token.support.core.api.Protected
 import no.nav.security.token.support.core.context.TokenValidationContextHolder
 import no.nav.security.token.support.core.jwt.JwtTokenClaims
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -20,8 +24,10 @@ import java.nio.charset.StandardCharsets
 @Protected
 @RequestMapping("/api")
 class UserInfoController(
-    private val toggle: FeatureToggle,
-    private val tokenValidationContextHolder: TokenValidationContextHolder) {
+    private val tokenValidationContextHolder: TokenValidationContextHolder,
+    private val featureToggleService: FeatureToggleService,
+    @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper.ForTest()
+) {
 
     private val logger = LoggerFactory.getLogger(UserInfoController::class.java)
 
@@ -35,39 +41,48 @@ class UserInfoController(
      */
     @EessiPensjonTilgang
     @GetMapping("/userinfo")
-    fun getUserInfo(): ResponseEntity <String> {
-        logger.debug("Henter userinfo: ${getTokens()}")
-        val fnr = getSubjectFromToken()
-        val role = getRole(fnr)
-        val features = toggle.getUIFeatures(fnr)
-        val claims = getClaims()
-        val expirationTime = claims.expirationTime.time
-        return ResponseEntity.ok().body(mapAnyToJson(UserInfoResponse(fnr, role, expirationTime, features)))
+    fun getUserInfo(): ResponseEntity<String> {
+        val userInfo = UserInfoResponse(
+            subject = getSubjectFromToken(),
+            role = getRole(getSubjectFromToken()),
+            expirationTime = getClaims().expirationTime.time,
+            features = featureToggleService.getAllFeaturesForProject().associate { it.name to it.enabled }
+        )
+        logger.debug("Henter featureInfo: ${userInfo.toJson()}")
+        return ResponseEntity.ok(mapAnyToJson(userInfo))
     }
 
-    fun getTokens(): String = URLDecoder.decode(getToken(tokenValidationContextHolder)?.encodedToken, StandardCharsets.UTF_8) ?: "Unknown"
+    @GetMapping("/availableToggles")
+    fun getAvailableToggles(): ResponseEntity <List<FeatureToggleStatus>>? {
+        logger.debug("Henter togglesByUser")
+        val features = featureToggleService.getAllFeaturesForProject()
+        return ResponseEntity.ok().body(features)
+    }
+
+    fun getTokens(): String =
+        URLDecoder.decode(getToken(tokenValidationContextHolder)?.encodedToken, StandardCharsets.UTF_8) ?: "Unknown"
 
     fun getSubjectFromToken() = getClaims(tokenValidationContextHolder).get("NAVident")?.toString() ?: "Unknown"
 
     fun getClaims(): JwtTokenClaims = getClaims(tokenValidationContextHolder)
 }
 
-    /**
-     * Parses the OIDC token subject and returns a role
-     * SAKSBEHANDLER, BRUKER, or UNKNOWN if the two regex has no matches
-     *
-     * if saksbehandler it will have a letter followed by 6 digits ( eg. A999999 )
-     * if citizen bruker it will have a fødselsnummer / dnummer, 11 digits
-     *
-     * @param subject
-     */
-    fun getRole(subject: String): String {
-        return when {
-            subject.matches(Regex("^[a-zA-Z]\\d{6}$")) -> "SAKSBEHANDLER"
-            subject.matches(Regex("^\\d{11}$")) -> "BRUKER"
-            else -> "UNKNOWN"
-        }
+/**
+ * Parses the OIDC token subject and returns a role
+ * SAKSBEHANDLER, BRUKER, or UNKNOWN if the two regex has no matches
+ *
+ * if saksbehandler it will have a letter followed by 6 digits ( eg. A999999 )
+ * if citizen bruker it will have a fødselsnummer / dnummer, 11 digits
+ *
+ * @param subject
+ */
+fun getRole(subject: String): String {
+    return when {
+        subject.matches(Regex("^[a-zA-Z]\\d{6}$")) -> "SAKSBEHANDLER"
+        subject.matches(Regex("^\\d{11}$")) -> "BRUKER"
+        else -> "UNKNOWN"
     }
+}
 
 data class UserInfoResponse(
     val subject: String,
