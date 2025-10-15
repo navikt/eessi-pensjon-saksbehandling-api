@@ -8,7 +8,8 @@ import no.nav.security.token.support.core.context.TokenValidationContextHolder
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
-@Service
+
+//@Service
 class FeatureToggleService(
     private val unleash: Unleash,
     private val tokenValidationContextHolder: TokenValidationContextHolder,
