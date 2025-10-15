@@ -76,20 +76,6 @@ class UserInfoControllerTest {
         every { featureToggleService.isFeatureEnabled("P5000_UPDATES_VISIBLE") } returns true
     }
 
-    @Test
-    fun CallingUserInfoController_getAvailableToggles() {
-        val token = mockOAuth2Server.issueToken("aad", "12345678910", audience).serialize()
-
-        val response = mockMvc.perform(
-            get("/api/availableToggles")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer $token")
-        ).andExpect(status().isOk()).andReturn().response
-
-        val isFeatureEnabled = mapJsonToAny<List<FeatureToggleStatus>>(response.contentAsString)
-            .any { it.name == "P5000_SUMMER_VISIBLE" && it.enabled }
-        assertEquals(true, isFeatureEnabled)
-    }
-
     @Test fun `Calling UserInfoController getUserInfo returns OK response`() {
         val brukerInfo = BrukerInformasjon(
             ident = "12345678910",
@@ -110,11 +96,7 @@ class UserInfoControllerTest {
             UserInfoResponse(
                 subject = ident,
                 role = "SAKSBEHANDLER",
-                expirationTime = mapJsonToAny<UserInfoResponse>(response.contentAsString).expirationTime,
-                features = mapOf(
-                    "P5000_SUMMER_VISIBLE" to true,
-                    "P5000_UPDATES_VISIBLE" to true
-                )
+                expirationTime = mapJsonToAny<UserInfoResponse>(response.contentAsString).expirationTime
             )
         )
         assertEquals(expected, response.contentAsString)

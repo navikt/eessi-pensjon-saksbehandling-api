@@ -25,7 +25,6 @@ import java.nio.charset.StandardCharsets
 @RequestMapping("/api")
 class UserInfoController(
     private val tokenValidationContextHolder: TokenValidationContextHolder,
-    private val featureToggleService: FeatureToggleService,
     @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper.ForTest()
 ) {
 
@@ -45,18 +44,10 @@ class UserInfoController(
         val userInfo = UserInfoResponse(
             subject = getSubjectFromToken(),
             role = getRole(getSubjectFromToken()),
-            expirationTime = getClaims().expirationTime.time,
-            features = featureToggleService.getAllFeaturesForProject().associate { it.name to it.enabled }
+            expirationTime = getClaims().expirationTime.time
         )
         logger.debug("Henter featureInfo: ${userInfo.toJson()}")
         return ResponseEntity.ok(mapAnyToJson(userInfo))
-    }
-
-    @GetMapping("/availableToggles")
-    fun getAvailableToggles(): ResponseEntity <List<FeatureToggleStatus>>? {
-        logger.debug("Henter togglesByUser")
-        val features = featureToggleService.getAllFeaturesForProject()
-        return ResponseEntity.ok().body(features)
     }
 
     fun getTokens(): String =
@@ -87,7 +78,6 @@ fun getRole(subject: String): String {
 data class UserInfoResponse(
     val subject: String,
     val role: String,
-    val expirationTime: Long,
-    val features: Map<String, Boolean>
+    val expirationTime: Long
 )
 
