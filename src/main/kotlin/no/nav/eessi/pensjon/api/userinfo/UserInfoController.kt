@@ -2,8 +2,6 @@ package no.nav.eessi.pensjon.api.userinfo
 
 import no.nav.eessi.pensjon.metrics.MetricsHelper
 import no.nav.eessi.pensjon.services.auth.EessiPensjonTilgang
-import no.nav.eessi.pensjon.unleash.FeatureToggleService
-import no.nav.eessi.pensjon.unleash.FeatureToggleStatus
 import no.nav.eessi.pensjon.utils.getClaims
 import no.nav.eessi.pensjon.utils.getToken
 import no.nav.eessi.pensjon.utils.mapAnyToJson
