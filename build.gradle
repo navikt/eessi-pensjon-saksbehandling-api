@@ -6,7 +6,7 @@ buildscript {
         tokenSupportVersion = '5.0.37'
         pac4jVersion = '5.7.0'
         cxfVersion = '3.5.10'
-        jacksonModuleKotlinVersion = '2.20.0'
+        jacksonModuleKotlinVersion = '2.20.1'
     }
 }
 
