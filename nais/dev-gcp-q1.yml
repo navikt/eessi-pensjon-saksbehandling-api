@@ -45,6 +45,8 @@ spec:
     outbound:
       external:
         - host: eessi-pensjon-onprem-proxy-q1.dev-fss-pub.nais.io
+        - host: eessi-pensjon-fagmodul-q1.intern.dev.nav.no
+
   webproxy: true
   env:
     - name: SPRING_PROFILES_ACTIVE
