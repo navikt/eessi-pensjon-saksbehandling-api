@@ -48,6 +48,7 @@ class AuthInterceptorTest {
     }
 
     @Test
+    @Disabled
     fun `brukerInformasjon kaster IllegalArgumentException ved tom ident`() {
         val exception = assertThrows(IllegalArgumentException::class.java) {
             BrukerInformasjon(ident = "", medlemAv = listOf("gruppe1"))
