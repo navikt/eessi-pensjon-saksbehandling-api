@@ -22,8 +22,8 @@ ldap:
     baseDn: "dc=dummy,dc=local"
     domain: "dummyDomain"
 
-srvfagmodulusername: "srvUsername"
-srvfagmodulpassword: "srvPassword"
+srvusername: "srvUsername"
+srvpassword: "srvPassword"
 
 #azure
 no.nav.security.jwt:
