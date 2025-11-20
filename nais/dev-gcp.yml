@@ -122,12 +122,12 @@ spec:
     requests:
       cpu: 256m
       memory: 512Mi
-  vault:
-    enabled: true
-    paths:
-      - kvPath: /serviceuser/data/dev/srveessi-pensjon-journalforing
-        mountPath: /var/run/secrets/nais.io/srveessi-pensjon-journalforing-q2
-      - kvPath: /serviceuser/data/dev/srveessipensjon
-        mountPath: /var/run/secrets/nais.io/srveessipensjon
-      - kvPath: /serviceuser/data/dev/srveessipensjonpdlp
-        mountPath: /var/run/secrets/nais.io/srveessipensjonpdlp
+#  vault:
+#    enabled: true
+#    paths:
+#      - kvPath: /serviceuser/data/dev/srveessi-pensjon-journalforing
+#        mountPath: /var/run/secrets/nais.io/srveessi-pensjon-journalforing-q2
+#      - kvPath: /serviceuser/data/dev/srveessipensjon
+#        mountPath: /var/run/secrets/nais.io/srveessipensjon
+#      - kvPath: /serviceuser/data/dev/srveessipensjonpdlp
+#        mountPath: /var/run/secrets/nais.io/srveessipensjonpdlp

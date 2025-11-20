@@ -22,9 +22,9 @@ class LdapConfig {
     @Value("\${ldap.basedn}")
     private val ldapBasedn: String? = null
 
-    @Value("\${srvfagmodulusername}")
+    @Value("\${srvusername}")
     private val ldapUsername: String? = null
-    @Value("\${srvfagmodulpassword}")
+    @Value("\${srvpassword}")
     private val ldapPassword: String? = null
 
     @Bean
