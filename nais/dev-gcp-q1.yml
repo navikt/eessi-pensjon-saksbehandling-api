@@ -72,7 +72,6 @@ spec:
   image: {{ image }}
   ingresses:
     - https://eessi-pensjon-frontend-api-q1.intern.dev.nav.no
-    - https://eessi-pensjon-frontend-api-q1-experimental.intern.dev.nav.no
     - https://eessi-pensjon-saksbehandling-api-q1.intern.dev.nav.no
   liveness:
     path: /internal/isalive
