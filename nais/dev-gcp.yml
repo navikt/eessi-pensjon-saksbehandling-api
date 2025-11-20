@@ -73,8 +73,8 @@ spec:
 
     - name: PENSJON_UTLAND_WS_ALLOWED_ORIGINS_URL
       value: https://pensjon-utland-q2.intern.dev.nav.no
-#    - name: EESSI_PEN_ONPREM_PROXY_URL
-#      value: https://eessi-pensjon-onprem-proxy-q2.dev-fss-pub.nais.io
+    - name: EESSI_PEN_ONPREM_PROXY_URL
+      value: https://eessi-pensjon-onprem-proxy-q2.dev-fss-pub.nais.io
 
     - name: KAFKA_SEDSENDT_TOPIC
       value: eessibasis.sedsendt-v1-q2
