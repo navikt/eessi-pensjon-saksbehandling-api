@@ -49,7 +49,6 @@ spec:
         - host: eessi-pensjon-onprem-proxy-q2.dev-fss-pub.nais.io
         - host: eessi-pensjon-fagmodul-q2.intern.dev.nav.no
         - host: eessipensjon-unleash-api.nav.cloud.nais.io
-        - host: ldapgw.preprod.local:636
 
   webproxy: true
   env:
