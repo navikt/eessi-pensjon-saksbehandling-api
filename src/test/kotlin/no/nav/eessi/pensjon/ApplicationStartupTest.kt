@@ -7,6 +7,7 @@ import no.nav.eessi.pensjon.config.ApiMvcConfig
 import no.nav.eessi.pensjon.config.UnleashConfigEessi
 import no.nav.eessi.pensjon.gcp.GcpStorageService
 import no.nav.eessi.pensjon.interceptor.AuthInterceptor
+import no.nav.eessi.pensjon.ldap.BrukerInformasjonService
 import no.nav.eessi.pensjon.unleash.FeatureToggleService
 import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import org.junit.jupiter.api.Test
@@ -24,6 +25,7 @@ import org.springframework.boot.test.context.SpringBootTest
         MockkBean(classes = [AuthInterceptor::class], relaxed = true),
         MockkBean(classes = [GcpStorageService::class], relaxed = true),
         MockkBean(classes = [UnleashConfigEessi::class], relaxed = true),
+        MockkBean(classes = [BrukerInformasjonService::class], relaxed = true),
         MockkBean(classes = [FeatureToggleService::class], relaxed = true)
     ]
 )

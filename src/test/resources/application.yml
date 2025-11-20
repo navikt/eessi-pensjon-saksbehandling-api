@@ -17,6 +17,14 @@ UNLEASH_APP_NAME: "unleashApp"
 UNLEASH_SERVER_API_TOKEN: "unleashToken"
 dummy-client-id: "dummy-client-id"
 
+ldap:
+    url: "ldap://localhost:1389"
+    baseDn: "dc=dummy,dc=local"
+    domain: "dummyDomain"
+
+srvfagmodulusername: "srvUsername"
+srvfagmodulpassword: "srvPassword"
+
 #azure
 no.nav.security.jwt:
   issuer.aad:

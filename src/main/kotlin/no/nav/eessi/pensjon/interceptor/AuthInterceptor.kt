@@ -2,31 +2,26 @@ package no.nav.eessi.pensjon.interceptor
 
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import no.nav.eessi.pensjon.models.BrukerInformasjon
+import no.nav.eessi.pensjon.ldap.BrukerInformasjonService
 import no.nav.eessi.pensjon.services.auth.AdRolle
 import no.nav.eessi.pensjon.services.auth.AuthorisationService
 import no.nav.eessi.pensjon.services.auth.EessiPensjonTilgang
 import no.nav.eessi.pensjon.utils.getClaims
 import no.nav.eessi.pensjon.utils.getToken
-import no.nav.eessi.pensjon.utils.mapJsonToAny
 import no.nav.security.token.support.core.context.TokenValidationContextHolder
 import no.nav.security.token.support.core.jwt.JwtTokenClaims
 import org.slf4j.LoggerFactory
 import org.springframework.core.Ordered
-import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.web.bind.annotation.ResponseStatus
-import org.springframework.web.client.HttpStatusCodeException
-import org.springframework.web.client.RestTemplate
 import org.springframework.web.method.HandlerMethod
 import org.springframework.web.servlet.HandlerInterceptor
-import org.springframework.web.util.UriComponentsBuilder
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 
 @Component
-class AuthInterceptor(private val proxyOAuthRestTemplate: RestTemplate,
+class AuthInterceptor(private val ldapService: BrukerInformasjonService,
                       private val authorisationService: AuthorisationService,
                       private val tokenValidationContextHolder: TokenValidationContextHolder
                       ) : HandlerInterceptor, Ordered {
@@ -80,7 +75,7 @@ class AuthInterceptor(private val proxyOAuthRestTemplate: RestTemplate,
             logger.info("Ident: $ident,  expire: $expirationTime")
             logger.debug("Henter ut brukerinformasjon fra AD/Ldap")
             return try {
-                val brukerInformasjon = hentBrukerinformasjon(ident)
+                val brukerInformasjon = ldapService.hentBrukerInformasjon(ident)
                 logger.info("Ldap brukerinformasjon hentet")
                 logger.debug("Ldap brukerinfo: $brukerInformasjon")
 
@@ -99,26 +94,26 @@ class AuthInterceptor(private val proxyOAuthRestTemplate: RestTemplate,
             }
     }
 
-    fun hentBrukerinformasjon(navident: String): BrukerInformasjon {
-        val uri = UriComponentsBuilder.fromUriString("/brukerinfo/{navident}")
-            .buildAndExpand(mapOf("navident" to navident))
-            .toUriString()
-
-        return try {
-            val response = proxyOAuthRestTemplate.exchange(uri, HttpMethod.GET, null, String::class.java)
-
-            // kaster exception om vi mangler response fra auth/ldap
-            response.body?.let { mapJsonToAny(it) } ?: throw IllegalStateException("Mangler innhold for navident: $navident")
-        } catch (e: HttpStatusCodeException) {
-            logger.error("hentBrukerinformasjon: feiler ved innhenting av navident: $navident, " +
-                        "status: ${e.statusCode}, response: ${e.responseBodyAsString}")
-            throw RuntimeException("Failed to fetch user info for navident: $navident", e)
-        } catch (e: Exception) {
-            if (e is IllegalStateException) throw e
-            logger.error("hentBrukerinformasjon: feiler ved innhenting av navident: $navident, error: ${e.message}", e)
-            throw RuntimeException("Feiler ved innhenting av navident:", e)
-        }
-    }
+//    fun hentBrukerinformasjon(navident: String): BrukerInformasjon {
+//        val uri = UriComponentsBuilder.fromUriString("/brukerinfo/{navident}")
+//            .buildAndExpand(mapOf("navident" to navident))
+//            .toUriString()
+//
+//        return try {
+//            val response = proxyOAuthRestTemplate.exchange(uri, HttpMethod.GET, null, String::class.java)
+//
+//            // kaster exception om vi mangler response fra auth/ldap
+//            response.body?.let { mapJsonToAny(it) } ?: throw IllegalStateException("Mangler innhold for navident: $navident")
+//        } catch (e: HttpStatusCodeException) {
+//            logger.error("hentBrukerinformasjon: feiler ved innhenting av navident: $navident, " +
+//                        "status: ${e.statusCode}, response: ${e.responseBodyAsString}")
+//            throw RuntimeException("Failed to fetch user info for navident: $navident", e)
+//        } catch (e: Exception) {
+//            if (e is IllegalStateException) throw e
+//            logger.error("hentBrukerinformasjon: feiler ved innhenting av navident: $navident, error: ${e.message}", e)
+//            throw RuntimeException("Feiler ved innhenting av navident:", e)
+//        }
+//    }
 
 
     /**
