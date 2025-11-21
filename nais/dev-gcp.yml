@@ -81,8 +81,8 @@ spec:
     - name: KAFKA_SEDMOTTATT_TOPIC
       value: eessibasis.sedmottatt-v1-q2
 
-    - name: AZURE_APP_PROXY_CLIENT_ID
-      value: dev-fss.eessipensjon.eessi-pensjon-onprem-proxy-q2
+#    - name: AZURE_APP_PROXY_CLIENT_ID
+#      value: dev-fss.eessipensjon.eessi-pensjon-onprem-proxy-q2
 
     - name: LDAP_USER_BASEDN
       value: ou=NAV,ou=BusinessUnits,dc=preprod,dc=local
