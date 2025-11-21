@@ -50,6 +50,8 @@ spec:
         - host: eessi-pensjon-fagmodul-q2.intern.dev.nav.no
         - host: eessipensjon-unleash-api.nav.cloud.nais.io
         - host: ldapgw.preprod.local
+          ports:
+            - port: 636
 
   webproxy: true
   env:
