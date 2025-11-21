@@ -46,7 +46,6 @@ spec:
           cluster: dev-gcp
     outbound:
       external:
-        - host: eessi-pensjon-onprem-proxy-q2.dev-fss-pub.nais.io
         - host: eessi-pensjon-fagmodul-q2.intern.dev.nav.no
         - host: eessipensjon-unleash-api.nav.cloud.nais.io
         - host: ldapgw.preprod.local
@@ -63,10 +62,8 @@ spec:
     #UNLEASH
     - name: UNLEASH_ENDPOINT_URL
       value: https://unleash.nais.io/api/
-
     - name: UNLEASH_APP_NAME
       value: eessi-pensjon-saksbehandling-api-q2
-
     - name: UNLEASH_URL
       value:  "https://eessipensjon-unleash-api.nav.cloud.nais.io/api"
 
@@ -75,16 +72,11 @@ spec:
 
     - name: PENSJON_UTLAND_WS_ALLOWED_ORIGINS_URL
       value: https://pensjon-utland-q2.intern.dev.nav.no
-    - name: EESSI_PEN_ONPREM_PROXY_URL
-      value: https://eessi-pensjon-onprem-proxy-q2.dev-fss-pub.nais.io
 
     - name: KAFKA_SEDSENDT_TOPIC
       value: eessibasis.sedsendt-v1-q2
     - name: KAFKA_SEDMOTTATT_TOPIC
       value: eessibasis.sedmottatt-v1-q2
-
-#    - name: AZURE_APP_PROXY_CLIENT_ID
-#      value: dev-fss.eessipensjon.eessi-pensjon-onprem-proxy-q2
 
     - name: LDAP_USER_BASEDN
       value: ou=NAV,ou=BusinessUnits,dc=preprod,dc=local
@@ -124,12 +116,3 @@ spec:
     requests:
       cpu: 256m
       memory: 512Mi
-#  vault:
-#    enabled: true
-#    paths:
-#      - kvPath: /serviceuser/data/dev/srveessi-pensjon-journalforing
-#        mountPath: /var/run/secrets/nais.io/srveessi-pensjon-journalforing-q2
-#      - kvPath: /serviceuser/data/dev/srveessipensjon
-#        mountPath: /var/run/secrets/nais.io/srveessipensjon
-#      - kvPath: /serviceuser/data/dev/srveessipensjonpdlp
-#        mountPath: /var/run/secrets/nais.io/srveessipensjonpdlp
