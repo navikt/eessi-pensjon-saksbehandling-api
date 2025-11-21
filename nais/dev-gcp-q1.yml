@@ -48,6 +48,9 @@ spec:
     outbound:
       external:
         - host: eessi-pensjon-fagmodul-q1.intern.dev.nav.no
+        - host: ldapgw.preprod.local
+          ports:
+            - port: 636
 
   webproxy: true
   env:
@@ -67,6 +70,16 @@ spec:
       value: eessibasis.sedmottatt-v1-q1
     - name: AZURE_APP_PROXY_CLIENT_ID
       value: dev-fss.eessipensjon.eessi-pensjon-onprem-proxy-q1
+    - name: LDAP_USER_BASEDN
+      value: ou=NAV,ou=BusinessUnits,dc=preprod,dc=local
+    - name: LDAP_SERVICEUSER_BASEDN
+      value: ou=ServiceAccounts,dc=preprod,dc=local
+    - name: LDAP_DOMAIN
+      value: PREPROD.LOCAL
+    - name: LDAP_BASEDN
+      value: dc=preprod,dc=local
+    - name: LDAP_URL
+      value: ldaps://ldapgw.preprod.local:636
 
   image: {{ image }}
   ingresses:
