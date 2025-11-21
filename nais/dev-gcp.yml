@@ -38,14 +38,19 @@ spec:
         - application: eessi-pensjon-frontend-ui-q2
           namespace: eessipensjon
           cluster: dev-gcp
+        - application: eessi-pensjon-frontend-ui-q2-experimental
+          namespace: eessipensjon
+          cluster: dev-gcp
         - application: azure-token-generator
           namespace: nais
           cluster: dev-gcp
     outbound:
       external:
-        - host: eessi-pensjon-onprem-proxy-q2.dev-fss-pub.nais.io
         - host: eessi-pensjon-fagmodul-q2.intern.dev.nav.no
         - host: eessipensjon-unleash-api.nav.cloud.nais.io
+        - host: ldapgw.preprod.local
+          ports:
+            - port: 636
 
   webproxy: true
   env:
@@ -57,10 +62,8 @@ spec:
     #UNLEASH
     - name: UNLEASH_ENDPOINT_URL
       value: https://unleash.nais.io/api/
-
     - name: UNLEASH_APP_NAME
       value: eessi-pensjon-saksbehandling-api-q2
-
     - name: UNLEASH_URL
       value:  "https://eessipensjon-unleash-api.nav.cloud.nais.io/api"
 
@@ -69,16 +72,22 @@ spec:
 
     - name: PENSJON_UTLAND_WS_ALLOWED_ORIGINS_URL
       value: https://pensjon-utland-q2.intern.dev.nav.no
-    - name: EESSI_PEN_ONPREM_PROXY_URL
-      value: https://eessi-pensjon-onprem-proxy-q2.dev-fss-pub.nais.io
 
     - name: KAFKA_SEDSENDT_TOPIC
       value: eessibasis.sedsendt-v1-q2
     - name: KAFKA_SEDMOTTATT_TOPIC
       value: eessibasis.sedmottatt-v1-q2
 
-    - name: AZURE_APP_PROXY_CLIENT_ID
-      value: dev-fss.eessipensjon.eessi-pensjon-onprem-proxy-q2
+    - name: LDAP_USER_BASEDN
+      value: ou=NAV,ou=BusinessUnits,dc=preprod,dc=local
+    - name: LDAP_SERVICEUSER_BASEDN
+      value: ou=ServiceAccounts,dc=preprod,dc=local
+    - name: LDAP_DOMAIN
+      value: PREPROD.LOCAL
+    - name: LDAP_BASEDN
+      value: dc=preprod,dc=local
+    - name: LDAP_URL
+      value: ldaps://ldapgw.preprod.local:636
 
   image: {{ image }}
   ingresses:
