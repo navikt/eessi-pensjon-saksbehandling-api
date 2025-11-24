@@ -8,13 +8,13 @@ import io.micrometer.core.instrument.MeterRegistry
 import io.mockk.every
 import no.nav.eessi.pensjon.api.storage.StorageController
 import no.nav.eessi.pensjon.gcp.GcpStorageService
-import no.nav.eessi.pensjon.models.BrukerInformasjon
+import no.nav.eessi.pensjon.ldap.BrukerInformasjon
+import no.nav.eessi.pensjon.ldap.BrukerInformasjonService
 import no.nav.eessi.pensjon.services.auth.AuthorisationService
 import no.nav.eessi.pensjon.unleash.FeatureToggleService
 import no.nav.eessi.pensjon.unleash.FeatureToggleStatus
 import no.nav.eessi.pensjon.utils.mapAnyToJson
 import no.nav.eessi.pensjon.utils.mapJsonToAny
-import no.nav.eessi.pensjon.utils.toJson
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -24,8 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -42,6 +40,7 @@ import org.springframework.web.client.RestTemplate
         MockkBean(name = "gcpStorageService", classes = [GcpStorageService::class], relaxed = true),
         MockkBean(name = "storageController", classes = [StorageController::class], relaxed = true),
         MockkBean(name = "restTemplate", classes = [RestTemplate::class], relaxed = true),
+        MockkBean(name = "brukerInformasjonService", classes = [BrukerInformasjonService::class]),
     ]
 )
 @SpykBeans(
@@ -62,6 +61,9 @@ class UserInfoControllerTest {
 
     @Autowired
     lateinit var mockOAuth2Server: MockOAuth2Server
+
+    @Autowired
+    lateinit var brukerInformasjonService: BrukerInformasjonService
 
     @Autowired
     lateinit var restTemplate: RestTemplate
@@ -96,9 +98,10 @@ class UserInfoControllerTest {
             medlemAv = listOf("0000-GA-Pensjon_Utland", "0000-ga-eessi-basis")
         )
         val ident = "Z123456"
-        every { restTemplate.exchange(any<String>(), any(), any(), String::class.java) } returns ResponseEntity(
-            brukerInfo.toJson(), HttpStatus.OK
-        )
+//        every { restTemplate.exchange(any<String>(), any(), any(), String::class.java) } returns ResponseEntity(
+//            brukerInfo.toJson(), HttpStatus.OK
+//        )
+        every { brukerInformasjonService.hentBrukerInformasjon(any()) } returns brukerInfo
 
         val token = generateMockAuth2Token(ident)
 
