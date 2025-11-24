@@ -42,6 +42,7 @@ class LdapConfig {
         try {
             context = InitialLdapContext()
         } catch (e: NamingException) {
+            logger.error("LDAP klient feiler under init", e)
         }
 
         return LdapKlient(environment, context, searchBase)

@@ -42,6 +42,10 @@ spec:
         - host: eessi-pensjon-onprem-proxy.prod-fss-pub.nais.io
         - host: eessi-pensjon-fagmodul.intern.nav.no
         - host: eessipensjon-unleash-api.nav.cloud.nais.io
+        - host: ldapgw.adeo.no
+        - host: ldapgw.adeo.no
+          ports:
+            - port: 636
 
   webproxy: true
   env:
@@ -75,6 +79,17 @@ spec:
 
     - name: AZURE_APP_PROXY_CLIENT_ID
       value: prod-fss.eessipensjon.eessi-pensjon-onprem-proxy
+
+    - name: LDAP_DOMAIN
+      value: ADEO.NO
+    - name: LDAP_BASEDN
+      value: dc=adeo,dc=no
+    - name: LDAP_URL
+      value: ldaps://ldapgw.adeo.no
+    - name: LDAP_USER_BASEDN
+      value: ou=NAV,ou=BusinessUnits,dc=adeo,dc=no
+    - name: LDAP_SERVICEUSER_BASEDN
+      value: ou=ServiceAccounts,dc=adeo,dc=no
 
   image: {{ image }}
   ingresses:

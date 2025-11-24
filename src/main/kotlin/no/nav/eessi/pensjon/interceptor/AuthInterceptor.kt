@@ -86,35 +86,13 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
                     logger.warn("Bruker har ikke korrekt tilganger vi avviser med $avvistIdent")
                     throw AuthorisationIkkeTilgangTilEeessiPensjonException("Du har ikke tilgang til EESSI-Pensjon")
                 }
-                logger.debug("Saksbehandler tilgang til EESSI-Pensjon er i orden")
+                logger.info("Saksbehandler tilgang til EESSI-Pensjon er i orden")
                 true
             } catch (ex: Exception) {
                 logger.error("Feil ved henting av ldap brukerinformasjon", ex)
                 throw AuthorisationIkkeTilgangTilEeessiPensjonException("Ikke tilgang til EESSI-Pensjon")
             }
     }
-
-//    fun hentBrukerinformasjon(navident: String): BrukerInformasjon {
-//        val uri = UriComponentsBuilder.fromUriString("/brukerinfo/{navident}")
-//            .buildAndExpand(mapOf("navident" to navident))
-//            .toUriString()
-//
-//        return try {
-//            val response = proxyOAuthRestTemplate.exchange(uri, HttpMethod.GET, null, String::class.java)
-//
-//            // kaster exception om vi mangler response fra auth/ldap
-//            response.body?.let { mapJsonToAny(it) } ?: throw IllegalStateException("Mangler innhold for navident: $navident")
-//        } catch (e: HttpStatusCodeException) {
-//            logger.error("hentBrukerinformasjon: feiler ved innhenting av navident: $navident, " +
-//                        "status: ${e.statusCode}, response: ${e.responseBodyAsString}")
-//            throw RuntimeException("Failed to fetch user info for navident: $navident", e)
-//        } catch (e: Exception) {
-//            if (e is IllegalStateException) throw e
-//            logger.error("hentBrukerinformasjon: feiler ved innhenting av navident: $navident, error: ${e.message}", e)
-//            throw RuntimeException("Feiler ved innhenting av navident:", e)
-//        }
-//    }
-
 
     /**
      * Feil som kan kastes: Ikke tilgang til EESSI-Pensjon
