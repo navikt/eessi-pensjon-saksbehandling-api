@@ -55,10 +55,10 @@ dependencies {
     implementation("org.springframework.kafka:spring-kafka:$springKafkaVersion")
 
     // Apache CXF
-    implementation("org.apache.cxf:cxf-spring-boot-starter-jaxws:${cxfVersion}")
-    implementation("org.apache.cxf:cxf-rt-ws-security:${cxfVersion}") {
-        exclude group: "ch.qos.logback", module: "logback-classic"
-    }
+//    implementation("org.apache.cxf:cxf-spring-boot-starter-jaxws:${cxfVersion}")
+//    implementation("org.apache.cxf:cxf-rt-ws-security:${cxfVersion}") {
+//        exclude group: "ch.qos.logback", module: "logback-classic"
+//    }
     implementation("ch.qos.logback:logback-classic:1.5.21")
 
     // Kotlin
