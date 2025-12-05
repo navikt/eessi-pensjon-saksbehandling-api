@@ -24,6 +24,10 @@ no.nav.security.jwt:
 
 METRICS_REQUESTFILTER_ENABLE: true
 
+logging:
+  level:
+    org.springframework.boot.context.properties: TRACE
+
 server:
   port: 8080
   tomcat:
