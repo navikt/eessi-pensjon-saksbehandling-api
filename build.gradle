@@ -42,13 +42,13 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-aop:3.5.8")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-restclient")
-    implementation("org.springframework.boot:spring-boot-starter-cache")
+    testImplementation("org.springframework.boot:spring-boot-starter-cache")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude module: 'junit'
         exclude module: "mockito-core"
         exclude module: "junit-vintage-engine"
     }
-    implementation("org.springframework.boot:spring-boot-starter-webmvc-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
     implementation("org.yaml:snakeyaml:2.5") // Pga https://security.snyk.io/package/maven/org.yaml:snakeyaml
 
     // Spring Framework BOM-fil overstyrer så vi får siste patch-versjon av Spring Framework
