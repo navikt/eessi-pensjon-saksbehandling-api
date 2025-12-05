@@ -42,7 +42,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-aop:3.5.8")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-restclient")
-    testImplementation("org.springframework.boot:spring-boot-starter-cache")
+    implementation("org.springframework.boot:spring-boot-starter-cache")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude module: 'junit'
         exclude module: "mockito-core"
