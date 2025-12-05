@@ -11,8 +11,8 @@ import no.nav.eessi.pensjon.ldap.BrukerInformasjonService
 import no.nav.eessi.pensjon.unleash.FeatureToggleService
 import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import org.junit.jupiter.api.Test
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 
 
 @AutoConfigureMockMvc
