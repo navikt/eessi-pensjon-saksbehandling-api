@@ -57,6 +57,9 @@ http.proxy.parametername: 'dontuse.proxy'
 redirectscheme: 'https'
 
 spring:
+  jackson:
+    serialization:
+      write_dates_as_timestamps: false
   kafka:
     listener:
       ack-mode: record
