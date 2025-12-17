@@ -111,7 +111,7 @@ dependencies {
     testImplementation "org.springframework.kafka:spring-kafka-test:$springKafkaVersion"
 
     // LDAP
-    implementation("org.springframework.ldap:spring-ldap-core:3.3.4")
+    implementation("org.springframework.ldap:spring-ldap-core:4.0.1")
     implementation("org.springframework.security:spring-security-ldap:7.0.2")
     implementation("com.unboundid:unboundid-ldapsdk:7.0.3")
 
