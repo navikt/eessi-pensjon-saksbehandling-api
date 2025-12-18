@@ -26,11 +26,11 @@ class StorageController(private val storage: GcpStorageService,
 
     private val logger = LoggerFactory.getLogger(StorageController::class.java)
 
-    private lateinit var storeDocument: MetricsHelper.Metric
-    private lateinit var getDocument: MetricsHelper.Metric
-    private lateinit var listDocuments: MetricsHelper.Metric
-    private lateinit var deleteDocument: MetricsHelper.Metric
-    private lateinit var deleteMultipleDocuments: MetricsHelper.Metric
+    private var storeDocument: MetricsHelper.Metric
+    private var getDocument: MetricsHelper.Metric
+    private var listDocuments: MetricsHelper.Metric
+    private var deleteDocument: MetricsHelper.Metric
+    private var deleteMultipleDocuments: MetricsHelper.Metric
 
     init {
         storeDocument = metricsHelper.init("storeDocument")

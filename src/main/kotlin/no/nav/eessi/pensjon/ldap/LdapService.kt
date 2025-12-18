@@ -19,7 +19,7 @@ class LdapService(private val ldapKlient: LdapKlient,
     private val IDENT_PATTERN = Pattern.compile("^[a-zA-Z][0-9]*")
     private val logger = LoggerFactory.getLogger(LdapService::class.java)
 
-    private lateinit var hentBrukerInformasjon: MetricsHelper.Metric
+    private var hentBrukerInformasjon: MetricsHelper.Metric
 
     init {
         hentBrukerInformasjon = metricsHelper.init("hentBrukerInformasjon")
