@@ -38,6 +38,9 @@ spec:
           namespace: eessipensjon
           cluster: prod-gcp
     outbound:
+      rules:
+        - application: logging
+          namespace: nais-system
       external:
         - host: eessi-pensjon-fagmodul.intern.nav.no
         - host: eessipensjon-unleash-api.nav.cloud.nais.io

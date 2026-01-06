@@ -46,6 +46,9 @@ spec:
           namespace: eessipensjon
           cluster: dev-gcp
     outbound:
+      rules:
+        - application: logging
+          namespace: nais-system
       external:
         - host: eessi-pensjon-fagmodul-q1.intern.dev.nav.no
         - host: ldapgw.preprod.local
