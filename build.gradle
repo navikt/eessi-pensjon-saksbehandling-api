@@ -63,7 +63,7 @@ dependencies {
 //    implementation("org.apache.cxf:cxf-rt-ws-security:${cxfVersion}") {
 //        exclude group: "ch.qos.logback", module: "logback-classic"
 //    }
-    implementation("ch.qos.logback:logback-classic:1.5.23")
+    implementation("ch.qos.logback:logback-classic:1.5.24")
 
     // Kotlin
     implementation("com.fasterxml.jackson.core:jackson-core:2.20.1")
