@@ -24,12 +24,7 @@ class UnleashConfigEessi(
             .appName(appName)
             .apiKey(unleashToken)
             .unleashAPI(unleashUrl)
-            .environment(
-                when (System.getenv("NAIS_CLUSTER_NAME").orEmpty()) {
-                    "prod-gcp" -> "production"
-                    else -> "development"
-                },
-            ).build()
+            .build()
         DefaultUnleash(
             config,
         ).also {
