@@ -81,7 +81,7 @@ dependencies {
     implementation("io.getunleash:unleash-client-java:12.1.1")
 
     //ep-libs
-    implementation("no.nav.eessi.pensjon:ep-logging:3.0.15")
+    implementation("no.nav.eessi.pensjon:ep-logging:3.0.20")
     implementation("no.nav.eessi.pensjon:ep-metrics:3.0.12")
     implementation("no.nav.eessi.pensjon:ep-eux:3.0.24")
 
