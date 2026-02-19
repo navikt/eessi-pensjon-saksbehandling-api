@@ -1,8 +1,8 @@
 buildscript {
     ext {
         kotlinVersion = '2.3.10'
-        springBootVersion = '4.0.2'
-        springKafkaVersion = '4.0.2'
+        springBootVersion = '4.0.3'
+        springKafkaVersion = '4.0.3'
         tokenSupportVersion = '6.0.2'
         pac4jVersion = '5.7.0'
         cxfVersion = '3.5.10'
