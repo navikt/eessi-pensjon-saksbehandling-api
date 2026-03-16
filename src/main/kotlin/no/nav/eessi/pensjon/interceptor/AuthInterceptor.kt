@@ -76,7 +76,6 @@ class AuthInterceptor(private val ldapService: BrukerInformasjonService,
             logger.debug("Henter ut brukerinformasjon fra AD/Ldap")
             return try {
                 val brukerInformasjon = ldapService.hentBrukerInformasjon(ident)
-                logger.info("Ldap brukerinformasjon hentet")
                 logger.debug("Ldap brukerinfo: $brukerInformasjon")
 
                 val adRoller = AdRolle.konverterAdRollerTilEnum(brukerInformasjon.medlemAv)
