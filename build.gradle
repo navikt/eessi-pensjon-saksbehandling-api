@@ -76,7 +76,7 @@ dependencies {
     implementation("com.google.cloud:google-cloud-storage:2.64.0")
 
     // Micrometer
-    implementation("io.micrometer:micrometer-registry-prometheus:1.16.3")
+    implementation("io.micrometer:micrometer-registry-prometheus:1.16.4")
 
     implementation("io.getunleash:unleash-client-java:12.2.0")
 
