@@ -46,6 +46,9 @@ spec:
         - application: eessi-pensjon-frontend-ui-q1-experimental
           namespace: eessipensjon
           cluster: dev-gcp
+        - application: eessi-pensjon-frontend-ui-q1-parallell
+          namespace: eessipensjon
+          cluster: dev-gcp
     outbound:
       rules:
         - application: logging
