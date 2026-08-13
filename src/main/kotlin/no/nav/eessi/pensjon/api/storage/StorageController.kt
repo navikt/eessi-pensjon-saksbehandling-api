@@ -1,5 +1,6 @@
 package no.nav.eessi.pensjon.api.storage
 
+import com.fasterxml.jackson.databind.JsonNode
 import com.google.cloud.storage.StorageException
 import io.micrometer.core.annotation.Timed
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry
@@ -7,6 +8,7 @@ import no.nav.eessi.pensjon.api.FrontEndResponse
 import no.nav.eessi.pensjon.gcp.GcpStorageService
 import no.nav.eessi.pensjon.metrics.MetricsHelper
 import no.nav.eessi.pensjon.services.auth.EessiPensjonTilgang
+import no.nav.eessi.pensjon.utils.mapJsonToAny
 import no.nav.eessi.pensjon.utils.maskerPersonIdentifier
 import no.nav.security.token.support.core.api.Protected
 import org.slf4j.LoggerFactory
@@ -64,12 +66,12 @@ class StorageController(private val storage: GcpStorageService,
     @EessiPensjonTilgang
     @Timed("s3.get")
     @GetMapping(value = ["/get/{path}"], produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun getDocument(@PathVariable(required = true) path: String): ResponseEntity<FrontEndResponse<String>> {
+    fun getDocument(@PathVariable(required = true) path: String): ResponseEntity<FrontEndResponse<Any>> {
         return getDocument.measure {
             return@measure try {
                 validerPath(path)
                 logger.info("Henter S3 dokument")
-                ResponseEntity.ok(FrontEndResponse(result = storage.hent(path), status = HttpStatus.OK.name))
+                ResponseEntity.ok(FrontEndResponse(result = storage.hent(path)?.let { mapJsonToAny<Any>(it) }, status = HttpStatus.OK.name))
             } catch (gcpEx: StorageException) {
                 val status = HttpStatus.valueOf(gcpEx.code)
                 ResponseEntity.status(status).body(
