@@ -63,7 +63,7 @@ class StorageController(private val storage: GcpStorageService,
 
     @EessiPensjonTilgang
     @Timed("s3.get")
-    @GetMapping(value = ["/get/{path}"])
+    @GetMapping(value = ["/get/{path}"], produces = [MediaType.APPLICATION_JSON_VALUE])
     fun getDocument(@PathVariable(required = true) path: String): ResponseEntity<FrontEndResponse<String>> {
         return getDocument.measure {
             return@measure try {
