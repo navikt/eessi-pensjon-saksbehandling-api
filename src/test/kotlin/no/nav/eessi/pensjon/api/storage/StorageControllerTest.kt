@@ -3,7 +3,6 @@ package no.nav.eessi.pensjon.api.storage
 import com.google.cloud.storage.StorageException
 import io.mockk.every
 import io.mockk.mockk
-import no.nav.eessi.pensjon.api.FrontEndResponse
 import no.nav.eessi.pensjon.gcp.GcpStorageService
 import no.nav.eessi.pensjon.metrics.MetricsHelper
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -62,15 +61,15 @@ class StorageControllerTest {
     // getDocument
 
     @Test
-    fun `getDocument happy path returns 200 with parsed JSON as result`() {
-        every { gcpStorageService.hent(any()) } returns """{"rinaSakId":"123","bucs":[]}"""
+    fun `getDocument happy path returns 200 with raw document as result`() {
+        val document = """{"rinaSakId":"123","bucs":[]}"""
+        every { gcpStorageService.hent(any()) } returns document
 
         val response = storageController.getDocument("12345678901___bucs")
 
         assertEquals(HttpStatus.OK, response.statusCode)
         assertEquals(HttpStatus.OK.name, response.body?.status)
-        val result = response.body?.result
-        assertEquals("123", result?.get("rinaSakId")?.asText())
+        assertEquals(document, response.body?.result)
     }
 
     @Test
