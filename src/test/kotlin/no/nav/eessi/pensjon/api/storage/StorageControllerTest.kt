@@ -7,7 +7,6 @@ import no.nav.eessi.pensjon.api.FrontEndResponse
 import no.nav.eessi.pensjon.gcp.GcpStorageService
 import no.nav.eessi.pensjon.metrics.MetricsHelper
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -34,7 +33,7 @@ class StorageControllerTest {
 
         assertEquals(HttpStatus.OK, response.statusCode)
         assertEquals(HttpStatus.OK.name, response.body?.status)
-        assertNull(response.body?.result)
+        assertEquals(true, response.body?.result)
     }
 
     @Test
@@ -70,12 +69,8 @@ class StorageControllerTest {
 
         assertEquals(HttpStatus.OK, response.statusCode)
         assertEquals(HttpStatus.OK.name, response.body?.status)
-        assertNotNull(response.body?.result)
-        // result is parsed JSON — should be a Map, not a raw String
         val result = response.body?.result
-        assert(result is Map<*, *>) { "Expected Map but got ${result?.javaClass}" }
-        @Suppress("UNCHECKED_CAST")
-        assertEquals("123", (result as Map<String, Any>)["rinaSakId"])
+        assertEquals("123", result?.get("rinaSakId")?.asText())
     }
 
     @Test
@@ -135,5 +130,16 @@ class StorageControllerTest {
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.statusCode)
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.name, response.body?.status)
         assertEquals("Klarte ikke å liste s3 dokumenter", response.body?.message)
+    }
+
+    @Test
+    fun `deleteDocument happy path returns deletion result`() {
+        every { gcpStorageService.slett(any()) } returns true
+
+        val response = storageController.deleteDocument("12345678901___bucs")
+
+        assertEquals(HttpStatus.OK, response.statusCode)
+        assertEquals(HttpStatus.OK.name, response.body?.status)
+        assertEquals(true, response.body?.result)
     }
 }

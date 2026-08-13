@@ -1,6 +1,7 @@
 package no.nav.eessi.pensjon.api.storage
 
 import com.google.cloud.storage.StorageException
+import com.fasterxml.jackson.databind.JsonNode
 import io.micrometer.core.annotation.Timed
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import no.nav.eessi.pensjon.api.FrontEndResponse
@@ -44,12 +45,12 @@ class StorageController(private val storage: GcpStorageService,
     @Timed("s3.put")
     @PostMapping("/{path}")
     fun storeDocument(@PathVariable(required = true) path: String,
-                      @RequestBody(required = true) document: String): ResponseEntity<FrontEndResponse<Unit>> {
+                      @RequestBody(required = true) document: String): ResponseEntity<FrontEndResponse<Boolean>> {
         return storeDocument.measure {
             return@measure try {
                 validerPath(path)
                 storage.lagre(path, document).also { logger.info("Lagrer dokument for frontend: $path") }
-                ResponseEntity.ok(FrontEndResponse(status = HttpStatus.OK.name))
+                ResponseEntity.ok(FrontEndResponse(result = true, status = HttpStatus.OK.name))
             } catch (gcpEx: StorageException) {
                 val status = HttpStatus.valueOf(gcpEx.code)
                 ResponseEntity.status(status).body(
@@ -66,12 +67,12 @@ class StorageController(private val storage: GcpStorageService,
     @EessiPensjonTilgang
     @Timed("s3.get")
     @GetMapping(value = ["/get/{path}"], produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun getDocument(@PathVariable(required = true) path: String): ResponseEntity<FrontEndResponse<Any>> {
+    fun getDocument(@PathVariable(required = true) path: String): ResponseEntity<FrontEndResponse<JsonNode>> {
         return getDocument.measure {
             return@measure try {
                 validerPath(path)
                 logger.info("Henter S3 dokument")
-                ResponseEntity.ok(FrontEndResponse(result = storage.hent(path)?.let { mapJsonToAny(it) }, status = HttpStatus.OK.name))
+                ResponseEntity.ok(FrontEndResponse(result = storage.hent(path)?.let { mapJsonToAny<JsonNode>(it) }, status = HttpStatus.OK.name))
             } catch (gcpEx: StorageException) {
                 val status = HttpStatus.valueOf(gcpEx.code)
                 ResponseEntity.status(status).body(
@@ -116,12 +117,11 @@ class StorageController(private val storage: GcpStorageService,
     @EessiPensjonTilgang
     @Timed("s3.delete")
     @DeleteMapping("/{path}")
-    fun deleteDocument(@PathVariable(required = true) path: String): ResponseEntity<FrontEndResponse<Unit>> {
+    fun deleteDocument(@PathVariable(required = true) path: String): ResponseEntity<FrontEndResponse<Boolean>> {
         return deleteDocument.measure {
             return@measure try {
                 validerPath(path)
-                storage.slett(path)
-                ResponseEntity.ok(FrontEndResponse(status = HttpStatus.OK.name))
+                ResponseEntity.ok(FrontEndResponse(result = storage.slett(path), status = HttpStatus.OK.name))
             } catch (gcpEx: StorageException) {
                 val status = HttpStatus.valueOf(gcpEx.code)
                 ResponseEntity.status(status).body(
