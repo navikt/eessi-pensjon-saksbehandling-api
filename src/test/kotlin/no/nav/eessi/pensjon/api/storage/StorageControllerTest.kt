@@ -6,6 +6,7 @@ import io.mockk.mockk
 import no.nav.eessi.pensjon.gcp.GcpStorageService
 import no.nav.eessi.pensjon.metrics.MetricsHelper
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -61,15 +62,18 @@ class StorageControllerTest {
     // getDocument
 
     @Test
-    fun `getDocument happy path returns 200 with raw document as result`() {
-        val document = """{"rinaSakId":"123","bucs":[]}"""
-        every { gcpStorageService.hent(any()) } returns document
+    fun `getDocument happy path returns 200 with parsed JSON as result`() {
+        every { gcpStorageService.hent(any()) } returns """{"rinaSakId":"123","bucs":[]}"""
 
         val response = storageController.getDocument("12345678901___bucs")
 
         assertEquals(HttpStatus.OK, response.statusCode)
         assertEquals(HttpStatus.OK.name, response.body?.status)
-        assertEquals(document, response.body?.result)
+        assertNotNull(response.body?.result)
+        val result = response.body?.result
+        assert(result is Map<*, *>) { "Expected Map but got ${result?.javaClass}" }
+        @Suppress("UNCHECKED_CAST")
+        assertEquals("123", (result as Map<String, Any>)["rinaSakId"])
     }
 
     @Test
