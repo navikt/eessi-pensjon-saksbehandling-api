@@ -25,7 +25,6 @@ spec:
           createdBefore: 2020-01-01
           numNewerVersions: 2
           withState: ANY
-        uniformBucketLevelAccess: true
   envFrom:
     - secret: saksbehandlingapi-dev #secret name in Google Secret Manager
   azure:
