@@ -19,7 +19,6 @@ spec:
   gcp:
     buckets:
       - name: eessi-pensjon-saksbehandling-api-prod
-        uniformBucketLevelAccess: true
   envFrom:
     - secret: saksbehandlingapi #secret name in Google Secret Manager
     - secret: eessi-pensjon-saksbehandling-api-unleash-api-token
