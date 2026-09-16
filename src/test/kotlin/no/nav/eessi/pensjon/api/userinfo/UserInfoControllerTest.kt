@@ -1,9 +1,7 @@
 package no.nav.eessi.pensjon.api.userinfo
 
 import com.ninjasquad.springmockk.MockkBean
-import com.ninjasquad.springmockk.MockkBeans
-import com.ninjasquad.springmockk.SpykBean
-import com.ninjasquad.springmockk.SpykBeans
+import com.ninjasquad.springmockk.MockkSpyBean
 import io.micrometer.core.instrument.MeterRegistry
 import io.mockk.every
 import no.nav.eessi.pensjon.api.storage.StorageController
@@ -38,21 +36,13 @@ import org.springframework.web.client.RestTemplate
 @ActiveProfiles(profiles = ["unsecured-webmvctest"])
 @EnableMockOAuth2Server
 @WebMvcTest(UserInfoController::class)
-@MockkBeans(
-    value = [
-        MockkBean(name = "featureToggleService", classes = [FeatureToggleService::class]),
-        MockkBean(name = "meterRegistry", classes = [MeterRegistry::class], relaxed = true),
-        MockkBean(name = "gcpStorageService", classes = [GcpStorageService::class], relaxed = true),
-        MockkBean(name = "storageController", classes = [StorageController::class], relaxed = true),
-        MockkBean(name = "restTemplate", classes = [RestTemplate::class], relaxed = true),
-        MockkBean(name = "brukerInformasjonService", classes = [BrukerInformasjonService::class]),
-    ]
-)
-@SpykBeans(
-    value = [
-        SpykBean(name = "authorisationService", classes = [AuthorisationService::class])
-    ]
-)
+@MockkBean(name = "featureToggleService", types = [FeatureToggleService::class])
+@MockkBean(name = "meterRegistry", types = [MeterRegistry::class], relaxed = true)
+@MockkBean(name = "gcpStorageService", types = [GcpStorageService::class], relaxed = true)
+@MockkBean(name = "storageController", types = [StorageController::class], relaxed = true)
+@MockkBean(name = "restTemplate", types = [RestTemplate::class], relaxed = true)
+@MockkBean(name = "brukerInformasjonService", types = [BrukerInformasjonService::class])
+@MockkSpyBean(name = "authorisationService", types = [AuthorisationService::class])
 class UserInfoControllerTest {
 
     @Value("\${no.nav.security.jwt.issuer.aad.accepted_audience}")
@@ -77,6 +67,9 @@ class UserInfoControllerTest {
     class CacheConfig {
         @Bean
         fun cacheManager(): CacheManager = ConcurrentMapCacheManager("default")
+
+        @Bean
+        fun authorisationService(): AuthorisationService = AuthorisationService()
     }
 
     @BeforeEach

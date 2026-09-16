@@ -1,7 +1,6 @@
 package no.nav.eessi.pensjon
 
 import com.ninjasquad.springmockk.MockkBean
-import com.ninjasquad.springmockk.MockkBeans
 import io.getunleash.Unleash
 import no.nav.eessi.pensjon.config.ApiMvcConfig
 import no.nav.eessi.pensjon.config.UnleashConfigEessi
@@ -18,17 +17,13 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 @AutoConfigureMockMvc
 @SpringBootTest(classes = [Application::class], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @EnableMockOAuth2Server
-@MockkBeans(
-    value = [
-        MockkBean(classes = [Unleash::class], relaxed = true),
-        MockkBean(classes = [ApiMvcConfig::class], relaxed = true),
-        MockkBean(classes = [AuthInterceptor::class], relaxed = true),
-        MockkBean(classes = [GcpStorageService::class], relaxed = true),
-        MockkBean(classes = [UnleashConfigEessi::class], relaxed = true),
-        MockkBean(classes = [BrukerInformasjonService::class], relaxed = true),
-        MockkBean(classes = [FeatureToggleService::class], relaxed = true)
-    ]
-)
+@MockkBean(types = [Unleash::class], relaxed = true)
+@MockkBean(types = [ApiMvcConfig::class], relaxed = true)
+@MockkBean(types = [AuthInterceptor::class], relaxed = true)
+@MockkBean(types = [GcpStorageService::class], relaxed = true)
+@MockkBean(types = [UnleashConfigEessi::class], relaxed = true)
+@MockkBean(types = [BrukerInformasjonService::class], relaxed = true)
+@MockkBean(types = [FeatureToggleService::class], relaxed = true)
 internal class ApplicationStartupTest {
 
     @Test
