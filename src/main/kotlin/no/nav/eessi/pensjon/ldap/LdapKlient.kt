@@ -13,9 +13,10 @@ open class LdapKlient(
     private val searchBase: String?) {
 
     private val logger = LoggerFactory.getLogger(LdapKlient::class.java)
+    private val secureLog = LoggerFactory.getLogger("secureLog")
 
     open fun ldapSearch(ident: String): SearchResult? {
-        logger.info("ldapSearch: $ident")
+        secureLog.info("ldapSearch: $ident")
         try {
             context = InitialLdapContext(environment, null)
 
